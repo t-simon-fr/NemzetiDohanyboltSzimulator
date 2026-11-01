@@ -1,0 +1,292 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public enum ShopPhase { Preparing, Open, Closing, Summary }
+public enum ShopModal { None, Welcome, Help, Supplier, Cash, Summary }
+public enum ServiceStage { None, Order, Payment, Thanks }
+
+public sealed class MvpShopController : MonoBehaviour
+{
+    [SerializeField] private PlayerInteractor player;
+    [SerializeField] private ProductSlot delivery;
+    [SerializeField] private GameObject customerTemplate;
+    [SerializeField] private ProductSlot[] shelfSlots;
+    [SerializeField] private int[] shelfTypes;
+    [SerializeField] private Material[] productMaterials;
+    [SerializeField] private Transform supplyPoint;
+    [SerializeField] private Transform tillPoint;
+    private readonly List<ShopProduct> stock = new List<ShopProduct>();
+    private readonly List<MvpCustomerActor> queue = new List<MvpCustomerActor>();
+    private readonly List<MvpCustomerActor> departing = new List<MvpCustomerActor>();
+    private readonly List<Shipment> shipments = new List<Shipment>();
+    private readonly List<int> changeCoins = new List<int>();
+    private readonly int[] warehouse = new int[3];
+    private MvpCustomerActor active;
+    private ShopProduct prepared;
+    private float spawnTimer;
+    private float thanksTimer;
+    private Transform stockRoot;
+    private Transform actorRoot;
+    private sealed class Shipment { public int Type; public int Quantity; public float Remaining; }
+    public static MvpShopController Instance { get; private set; }
+    public ShopPhase Phase { get; private set; }
+    public ShopModal Modal { get; private set; }
+    public ServiceStage Stage { get; private set; }
+    public ShopLedger Ledger { get; private set; }
+    public int Day { get; private set; } = 1;
+    public float Elapsed { get; private set; }
+    public int Spawned { get; private set; }
+    public int Missed { get; private set; }
+    public int QueueCount => queue.Count;
+    public int SelectedSupply { get; private set; }
+    public int ChangeSelected => changeCoins.Sum();
+    public int TotalVisitors => ShopCatalog.VisitProducts.Length;
+    public MvpCustomerActor ActiveCustomer => active;
+    public ProductSlot DeliverySlot => delivery;
+    public string Dialogue { get; private set; } = "";
+    public string Message { get; private set; } = "";
+    public bool ManualTick { get; set; }
+
+    public void Configure(PlayerInteractor interactor, ProductSlot tray, GameObject template, ProductSlot[] slots, int[] types, Material[] materials, Transform crate, Transform till)
+    {
+        player = interactor; delivery = tray; customerTemplate = template; shelfSlots = slots; shelfTypes = types;
+        productMaterials = materials; supplyPoint = crate; tillPoint = till;
+    }
+    private void Awake() { Instance = this; }
+    private void OnEnable() { if (delivery != null) delivery.ProductPlaced += OnDelivery; }
+    private void OnDisable()
+    {
+        if (delivery != null) delivery.ProductPlaced -= OnDelivery;
+        ShopInputGate.Blocked = false; Cursor.lockState = CursorLockMode.None; Cursor.visible = true;
+        if (Instance == this) Instance = null;
+    }
+    private void Start()
+    {
+        stockRoot = new GameObject("MVP Stock").transform; stockRoot.SetParent(transform, false);
+        actorRoot = new GameObject("MVP Customers").transform; actorRoot.SetParent(transform, false);
+        stock.AddRange(FindObjectsByType<ShopProduct>().Where(p => p.gameObject.scene == gameObject.scene));
+        ResetDemo();
+    }
+    private void Update()
+    {
+        if (ManualTick || Ledger == null) return;
+        Keyboard keyboard = Keyboard.current;
+        if (Application.isFocused && keyboard != null)
+        {
+            if (Modal != ShopModal.None)
+            {
+                if (keyboard.escapeKey.wasPressedThisFrame && Modal != ShopModal.Summary) ClosePanel();
+            }
+            else if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                if (keyboard.bKey.wasPressedThisFrame) SetModal(ShopModal.Supplier);
+                else if (keyboard.hKey.wasPressedThisFrame) SetModal(ShopModal.Help);
+                else if (keyboard.fKey.wasPressedThisFrame) OpenCash();
+                else if (keyboard.oKey.wasPressedThisFrame) { if (Phase == ShopPhase.Preparing) OpenShop(); else RequestClose(); }
+                else if (keyboard.xKey.wasPressedThisFrame) SkipCurrent();
+            }
+        }
+        if (Application.isFocused && (Cursor.lockState == CursorLockMode.Locked || Modal == ShopModal.Supplier || Modal == ShopModal.Cash)) Tick(Time.deltaTime);
+    }
+    public void Tick(float dt)
+    {
+        if (Ledger == null || Phase == ShopPhase.Summary) return;
+        dt = Mathf.Max(0f, dt);
+        for (int i = shipments.Count - 1; i >= 0; i--)
+        {
+            shipments[i].Remaining -= dt;
+            if (shipments[i].Remaining > 0f) continue;
+            warehouse[shipments[i].Type] += shipments[i].Quantity;
+            Message = "Megérkezett: " + shipments[i].Quantity + " × " + ShopCatalog.Names[shipments[i].Type] + ". Vedd ki a hátsó dobozból!";
+            shipments.RemoveAt(i);
+        }
+        if (Modal != ShopModal.None || Phase == ShopPhase.Preparing) return;
+        Elapsed += dt;
+        if (Phase == ShopPhase.Open && Spawned < TotalVisitors)
+        {
+            spawnTimer -= dt;
+            if (spawnTimer <= 0f && queue.Count < 3) { SpawnCustomer(); spawnTimer = Spawned >= 3 && Spawned <= 5 ? 12f : 22f; }
+        }
+        for (int i = departing.Count - 1; i >= 0; i--)
+        {
+            if (!departing[i].Advance(dt, Vector3.zero)) continue;
+            Destroy(departing[i].gameObject); departing.RemoveAt(i);
+        }
+        for (int i = 0; i < queue.Count; i++)
+        {
+            MvpCustomerActor customer = queue[i];
+            Vector3 target = i == 0 ? new Vector3(.13f,0,-2.95f) : new Vector3(-1.2f * i,0,-3.2f);
+            bool arrived = customer.Advance(dt, target);
+            if (i == 0 && active == null && arrived)
+            {
+                active = customer; Stage = ServiceStage.Order;
+                Dialogue = ShopPeople.Greetings[active.Person];
+                if (delivery.Occupant != null) OnDelivery(delivery.Occupant);
+            }
+            if (customer != active || Stage == ServiceStage.Order) customer.WaitTime += dt;
+        }
+        if (active != null && Stage == ServiceStage.Order && active.WaitTime > 180f) SkipCurrent();
+        if (active != null && Stage == ServiceStage.Payment && !PreparedIsValid())
+        {
+            prepared = null; Stage = ServiceStage.Order; if (Modal == ShopModal.Cash) ClosePanel();
+            Dialogue = "A termék visszakerült a pultról. Tedd újra az átadóhelyre.";
+        }
+        if (active != null && Stage == ServiceStage.Thanks)
+        {
+            thanksTimer -= dt;
+            if (thanksTimer <= 0f) DismissActive();
+        }
+        if (Phase == ShopPhase.Open && Spawned >= TotalVisitors && queue.Count == 0) Phase = ShopPhase.Closing;
+        if (Phase == ShopPhase.Closing && queue.Count == 0 && departing.Count == 0) FinishDay();
+    }
+    private void SpawnCustomer()
+    {
+        int visit = Spawned++;
+        GameObject clone = Instantiate(customerTemplate, actorRoot);
+        clone.SetActive(false);
+        var legacy = clone.GetComponent<CustomerOrderController>(); if (legacy != null) legacy.enabled = false;
+        MvpCustomerActor actor = clone.AddComponent<MvpCustomerActor>();
+        actor.Initialize((visit + Day - 1) % 4, ShopCatalog.VisitProducts[visit], visit);
+        clone.SetActive(true); queue.Add(actor);
+    }
+    private void OnDelivery(ShopProduct product)
+    {
+        if (active == null || Stage != ServiceStage.Order || product == null || product.IsHeld || product.CurrentSlot != delivery) return;
+        if (ShopCatalog.Index(product.ProductId) != active.Product)
+        {
+            Dialogue = ShopPeople.Wrong[active.Person]; Message = "Vedd vissza a téves árut, és tedd félre egy másik pulthelyre."; return;
+        }
+        prepared = product; Stage = ServiceStage.Payment; changeCoins.Clear();
+        Dialogue = "Tessék a pénz. A visszajárót azért megvárom.";
+        OpenCash();
+    }
+    private bool PreparedIsValid() => prepared != null && prepared.gameObject.activeSelf && !prepared.IsHeld && prepared.CurrentSlot == delivery && delivery.Occupant == prepared && active != null && ShopCatalog.Index(prepared.ProductId) == active.Product;
+    public bool SubmitChange(int amount)
+    {
+        if (Stage != ServiceStage.Payment || !PreparedIsValid()) { Message = "Előbb a megfelelő árut tedd az átadóhelyre."; return false; }
+        int type = active.Product;
+        if (!Ledger.TrySell(ShopCatalog.Prices[type], ShopCatalog.Costs[type], active.Tender, amount))
+        {
+            Message = "Nem stimmel a visszajáró. Számold újra, vagy töröld a kiválasztott címleteket."; return false;
+        }
+        ShopProduct sold = prepared; prepared = null; sold.AcceptDelivery();
+        Stage = ServiceStage.Thanks; thanksTimer = 2.5f;
+        Dialogue = ShopPeople.Thanks[active.Person]; Message = "Sikeres fizetés. A kassza és a készlet frissült.";
+        SetModal(ShopModal.None); changeCoins.Clear(); return true;
+    }
+    public void AddChange(int value) { if (Stage == ServiceStage.Payment && Array.IndexOf(ShopCatalog.Denominations,value) >= 0 && ChangeSelected + value <= 10000) changeCoins.Add(value); }
+    public void UndoChange() { if (changeCoins.Count > 0) changeCoins.RemoveAt(changeCoins.Count - 1); }
+    public void ClearChange() => changeCoins.Clear();
+    public void OpenCash()
+    {
+        if (Stage != ServiceStage.Payment || !PreparedIsValid()) { Message = "A kasszázáshoz előbb készítsd elő a kért terméket."; return; }
+        if (player != null && tillPoint != null && Vector3.Distance(player.transform.position, tillPoint.position) > 3.5f) { Message = "Menj a kasszához a fizetéshez."; return; }
+        Message = "Számold meg a kapott pénzt, és válaszd ki a visszajárót.";
+        SetModal(ShopModal.Cash);
+    }
+    public void OpenShop()
+    {
+        if (Phase != ShopPhase.Preparing || Ledger == null) return;
+        Phase = ShopPhase.Open; spawnTimer = 0f; SetModal(ShopModal.None);
+        Message = "Nyitva! Készítsd elő a rendelést, majd számolj el a kasszánál.";
+    }
+    public void RequestClose()
+    {
+        if (Phase != ShopPhase.Open) return;
+        Phase = ShopPhase.Closing; Message = "Zárunk. A bent várakozókat még kiszolgálhatod; X-szel udvariasan elküldheted az aktuális vásárlót.";
+    }
+    public void SkipCurrent()
+    {
+        if (active == null || (Stage != ServiceStage.Order && Stage != ServiceStage.Payment)) return;
+        Missed++; Dialogue = "Most nem tudtuk kiszolgálni. Majd legközelebb!";
+        if (Modal == ShopModal.Cash) SetModal(ShopModal.None);
+        DismissActive();
+    }
+    private void DismissActive()
+    {
+        queue.Remove(active); active.Leave(); departing.Add(active); active = null; prepared = null; Stage = ServiceStage.None;
+    }
+    private void FinishDay()
+    {
+        foreach (Shipment order in shipments) warehouse[order.Type] += order.Quantity;
+        shipments.Clear(); Ledger.Close(300); Phase = ShopPhase.Summary; SetModal(ShopModal.Summary);
+    }
+    public void NextDay()
+    {
+        if (Phase != ShopPhase.Summary) return;
+        Day++; Ledger = new ShopLedger(Ledger.Cash); BeginPreparation();
+    }
+    private void BeginPreparation()
+    {
+        Phase = ShopPhase.Preparing; Stage = ServiceStage.None; Spawned = 0; Missed = 0; Elapsed = 0f;
+        active = null; prepared = null; changeCoins.Clear(); Message = "Nézd át a készletet. B – Beszerzés, O – Nyitás.";
+        SetModal(ShopModal.Welcome);
+    }
+    public void ResetDemo()
+    {
+        if (stockRoot == null) return;
+        if (player != null) player.CancelHeld();
+        foreach (MvpCustomerActor actor in queue.Concat(departing)) if (actor != null) Destroy(actor.gameObject);
+        queue.Clear(); departing.Clear(); active = null;
+        foreach (ShopProduct item in stock) if (item != null) item.RemoveFromWorld();
+        stock.Clear(); shipments.Clear(); Array.Clear(warehouse,0,warehouse.Length);
+        Day = 1; Ledger = new ShopLedger(6000);
+        for (int type = 0; type < 3; type++)
+        {
+            int seeded = 0;
+            for (int i = 0; i < shelfSlots.Length && seeded < 2; i++)
+            {
+                if (shelfTypes[i] != type) continue;
+                ShopProduct product = CreateProduct(type); product.AssignInitialSlot(shelfSlots[i]); seeded++;
+            }
+        }
+        BeginPreparation();
+    }
+    private ShopProduct CreateProduct(int type)
+    {
+        GameObject item = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        item.name = "Product blockout"; item.transform.SetParent(stockRoot, false);
+        item.transform.localScale = new Vector3(.28f,.26f,.24f);
+        item.GetComponent<Renderer>().sharedMaterial = productMaterials[type];
+        ShopProduct product = item.AddComponent<ShopProduct>(); product.ConfigureProduct(ShopCatalog.Ids[type], ShopCatalog.Names[type]);
+        stock.Add(product); return product;
+    }
+    public int StockCount(int type) => stock.Count(p => p != null && p.gameObject.activeSelf && p.ProductId == ShopCatalog.Ids[type]);
+    public int WarehouseCount(int type) => warehouse[type];
+    public int PendingQuantity(int type) => shipments.Where(s => s.Type == type).Sum(s => s.Quantity);
+    public float NextDelivery => shipments.Count == 0 ? 0f : shipments.Min(s => s.Remaining);
+    public bool OrderSupply(int type)
+    {
+        if (type < 0 || type >= 3 || Phase == ShopPhase.Summary) return false;
+        if (warehouse[type] + PendingQuantity(type) + 3 > 24) { Message = "A dobozban már elég áru vár ebből a termékből."; return false; }
+        if (!Ledger.TryBuy(ShopCatalog.Costs[type],3)) { Message = "A kasszában nincs elég pénz erre a rendelésre."; return false; }
+        shipments.Add(new Shipment { Type = type, Quantity = 3, Remaining = 8f }); SelectedSupply = type;
+        Message = "Megrendelve 3 × " + ShopCatalog.Names[type] + ". A szállítás 8 másodperc.";
+        SetModal(ShopModal.None); return true;
+    }
+    public void CycleSupply() { SelectedSupply = (SelectedSupply + 1) % 3; Message = "Dobozból kiválasztva: " + ShopCatalog.Names[SelectedSupply]; }
+    public bool TryCreateSupply(int type, out ShopProduct product)
+    {
+        product = null;
+        if (type < 0 || type >= 3 || Phase == ShopPhase.Summary || warehouse[type] <= 0) return false;
+        if (!shelfSlots.Any(s => s != null && s.Occupant == null)) { Message = "Előbb szabadíts fel egy polchelyet."; return false; }
+        product = CreateProduct(type); product.transform.position = supplyPoint.position + Vector3.up;
+        warehouse[type]--; return true;
+    }
+    public void TakeSupply(PlayerInteractor interactor)
+    {
+        if (interactor.HasHeldProduct) return;
+        if (!TryCreateSupply(SelectedSupply, out ShopProduct product)) { Message = "Ebből nincs áru a dobozban. B – Beszerzés, Q – Másik termék."; return; }
+        if (!interactor.TryHold(product)) { warehouse[SelectedSupply]++; product.RemoveFromWorld(); }
+    }
+    public void SetModal(ShopModal modal)
+    {
+        Modal = modal; ShopInputGate.Blocked = modal != ShopModal.None;
+        Cursor.lockState = ShopInputGate.Blocked ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = ShopInputGate.Blocked;
+    }
+    public void ClosePanel() { if (Phase != ShopPhase.Summary) SetModal(ShopModal.None); }
+}
