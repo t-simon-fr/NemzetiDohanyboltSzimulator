@@ -20,11 +20,17 @@ A teljes nap ellenőrzött mintája: nyolc kiszolgált vásárló, 3100 Ft árbe
 
 134 automatikus ellenőrzés sikerült. A Windows-build sikeres, nulla hibával és figyelmeztetéssel. A külön alkalmazás grafika nélküli indulási próbája is sikerült. A felületeket az Editor Game nézetéből készült képeken ellenőriztük.
 
-## Következő alkalom
+## Következő alkalom – a felhasználó konkrét jegyzetei
 
-1. Egy teljes műszak játékosi végigjátszása.
-2. A visszajelzések alapján a kezelés, tempó, sor, árak, készlet és humor finomítása.
-3. Ezután a következő konkrét fejlesztés kiválasztása.
+Az alábbiak új, megállapodott fejlesztési irányok. Még tervezettek, nem részei a most elmentett MVP-nek.
+
+1. **Rendeléskezelő monitor a pult bal oldalán.** Kerüljön oda egy játékbeli monitor, amelyen kezelhetők a rendelések. Ebből induljunk ki a jelenlegi rendelési/beszerzési panel átdolgozásánál.
+2. **Fizikai pénztárgép magyar pénzzel.** A fizetés a játékbeli pénztárgépen történjen a lebegő fizetési modal helyett. A játékos a kasszából vegyen ki valódi magyar forintcímleteknek megfelelő bankjegyeket és érméket a visszajáróhoz. A konkrét kezelés és megjelenés még kidolgozandó.
+3. **Kisebb, cigarettákkal feltöltött kezdőbolt.** A kezdő helyiség legyen kompaktabb, és a kezdő választékban jelenjenek meg a cigaretták. A mostani víz/rágó/sör tesztválaszték és nagy graybox terem ehhez igazítandó.
+4. **Későbbi területbővítés, helyben maradó pulttal.** A bolt területe legyen növelhető, miközben a pult ugyanabban a pozícióban marad. A bővítési fokozatok és árak még nyitottak.
+5. **Vásárlói önkiszolgálás az új polcoknál.** A bővített terület új polcairól a vásárlók önállóan gyűjtsék össze a vásárlásukat, majd ugyanahhoz a pulthoz menjenek fizetni. Az útvonalak és polccélpontok kövessék a bővítéseket.
+
+A következő fejlesztési tervet ezekre építsük; a működő MVP műszak- és pénzügyi alapjait felhasználhatjuk hozzá. A teljes műszak további játékosi próbája és a tempó, gazdaság, kezelés, humor finomítása továbbra is hasznos.
 
 A látvány és a figurák még szürkedobozosak. A tartós játékmentés nincs implementálva: a napváltás a futó alkalmazáson belül őrzi meg az állapotot. A játék bezárásakor a pénz/készlet nem kerül lemezre.
 

@@ -27,6 +27,18 @@ Ez a dokumentum a játék iránytűje. Új funkció, karakter, feladat vagy lát
 - A tempó alapvetően kezelhető és hétköznapi; időnként forgalmas, többfeladatos csúcsok gyorsítják fel.
 - A boltos teendők és a vásárlókkal való találkozások egyaránt a játék középpontjában állnak.
 
+## Következő fejlesztési irány – felhasználói jegyzet, 2026. november 1.
+
+Az alábbi irányok a működő MVP következő átdolgozására vonatkoznak; még nincsenek megvalósítva.
+
+- A pult bal oldalára játékbeli monitor kerül, amelyről kezelhetők a rendelések.
+- A fizetési modal helyét a játékbeli pénztárgép veszi át. A játékos rendes magyar forintcímleteknek megfelelő bankjegyeket és érméket vesz ki a kasszából a visszajáróhoz.
+- A kezdő bolt kisebb lesz, cigarettákkal feltöltött választékkal.
+- Később a bolt területe növelhető, de a pult helye állandó marad.
+- Az új polcokról a vásárlók önállóan gyűjtik össze vásárlásukat, és a változatlan helyű pulthoz mennek fizetni.
+
+A felület átalakításánál a rendeléskezelő monitor és a fizikai kassza legyen a kiindulópont. A konkrét pénzkezelési interakció, a cigarettaválaszték és a bővítések mérete, sorrendje, ára a következő tervezési feladat.
+
 ## Munkahipotézisek, amelyeket később megerősíthetünk
 
 - Első körben PC-re készül.
@@ -147,9 +159,9 @@ Ha egy ötlet egyik pillért sem erősíti, vagy elvonja az időt az alap műsza
 ## Még nyitott tervezési kérdések
 
 - Mennyire legyen realisztikus a látvány: stilizált, félrealisztikus vagy realisztikus?
-- Mely termékkategóriák legyenek az első változatban?
-- Az MVP kasszája címletgombokkal működik; a későbbi vizuális kasszakezelés és vonalkódolvasás formája még nyitott.
-- Milyen legyen a hosszabb távú fejlődés és a bolt bővítése?
+- Pontosan mely cigarettatermékekkel és további árukkal töltsük fel a kisebb kezdőboltot?
+- A következő verzió fizikai pénztárgépet és magyar címleteket használ; a konkrét kezelés és a vonalkódolvasás formája még nyitott.
+- Milyen méretű és árú bővítési fokozatok épüljenek az állandó helyű pult köré?
 - Milyen mértékben lehessen a párbeszédet befolyásolni?
 
 Ezeket a prototípus és a későbbi közös tervezés során döntjük el.
