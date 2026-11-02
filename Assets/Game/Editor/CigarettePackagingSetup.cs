@@ -100,6 +100,7 @@ public static class CigarettePackagingSetup
             string name = "Brand price " + brand; var old = rack.Find(name); if (old != null) Object.DestroyImmediate(old.gameObject);
             ProductVisuals.Text(rack, name, ShopCatalog.Names[brand] + "\n" + ShopCatalog.Money(ShopCatalog.Prices[brand]), new Vector3((brand - 1.5f) * .8f, 1.78f, -.055f), Quaternion.identity, .048f, Color.black);
         }
+        if (rack.Find("Interior Rack Detail") != null) InteriorArtSetup.RefreshRackArt();
         EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene); AssetDatabase.SaveAssets();
         Debug.Log("CIGARETTE_PACKAGING_READY: 4 brands, 32 cigarette slots, 7 warehouse docks; existing layout preserved.");
     }
