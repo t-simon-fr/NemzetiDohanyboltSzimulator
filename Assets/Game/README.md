@@ -1,20 +1,24 @@
 # Játékprototípus
 
-A teljes használati útmutató a Unity-projekt gyökerében található [MVP_GUIDE.md](../../MVP_GUIDE.md) fájlban van.
+A használati útmutató: [MVP_GUIDE.md](../../MVP_GUIDE.md). Játékirány: [Docs/GAME_VISION.md](../../Docs/GAME_VISION.md). Következő alkalom: [Docs/CONTINUE.md](../../Docs/CONTINUE.md).
 
-A `Scenes/ShopPrototype.unity` már tartalmazza a teljes MVP-t. Play módban nyitópanel fogad; a bolt a panelről vagy O-val nyitható. A kis kezdőkészlet, az automatikus vásárlók, a sor, a fizetés, az utánrendelés, a kézi polcfeltöltés és a napvégi elszámolás összekapcsolódik.
+A `Scenes/ShopPrototype.unity` a kompakt, cigarettával induló bolt. A bal oldali monitor beszerzésre és bővítésre használható, a kasszából darabonként vehető ki magyar címletértékű pénz. A bővített rész polcairól a vásárlók maguk gyűjtik be az árut.
 
-## Kód
+## Forráskód
 
-- `Scripts/Mvp/ShopLedger.cs`: termékadatok, árak, pénzügyi számítások, szereplők szövegei.
-- `Scripts/Mvp/MvpShopController.cs`: napciklus, sor, rendelés, fizetés, utánpótlás és készlet.
-- `Scripts/Mvp/MvpShopHud.cs`: játékbeli állapotok és panelek.
-- `Scripts/Mvp/MvpCustomerActor.cs`: a próbafigurák útvonalai.
-- `Scripts/Mvp/ShopStation.cs`: kassza, szállítódoboz és nyitástábla.
-- `Scripts/Interaction`: termékek, fix helyek és a játékos interakciói.
-- `Scripts/Player`: első személyű vezérlő.
-- `Editor/MvpSetup.cs`: az MVP bekötése a graybox jelenetbe.
+- `Editor/CompactShopSetup.cs`: menthető teljes jelenet, kompakt bolt és bővítés, állandó pultpozíció.
+- `Scripts/Mvp/MvpShopController.cs`: műszak, vásárlói sor, készlet, fizetés és beszerzés.
+- `Scripts/Mvp/ShopDevices.cs`: játékbeli monitor, kasszafiók, kamera és pénztálca.
+- `Scripts/Mvp/ShopWorldControl.cs`: kattintható fizikai gombok és pénzrekeszek.
+- `Scripts/Mvp/ShopCashDrawer.cs`: címletek darabszámai, kiválasztás, pénzváltás, elkülönített vásárlói pénz.
+- `Scripts/Mvp/ShopLayout.cs`: térbővítés, önkiszolgáló polcok és célpontok.
+- `Scripts/Mvp/MvpCustomerActor.cs`: útvonal, polcról felvett termék és visszarakás megszakításkor.
+- `Scripts/Mvp/ShopLedger.cs`: termékkatalógus, gazdaság, karakterek szövegei.
+- `Scripts/Mvp/MvpShopHud.cs`: rövid állapotkijelzés, súgó és napi összesítés.
+- `Scripts/Mvp/ProductVisuals.cs`, `ShopWorldText.cs`, `Shaders/WorldText.shader`: próbaáruk és takaráshelyes feliratok.
+- `Scripts/Interaction`: termékfelvétel és terméktípushoz kötött fix helyek.
+- `Scripts/Player`: belső nézetű vezérlés.
 
-A korábbi egyvásárlós `CustomerOrderController` az inaktív figuramintán megmarad. Az MVP-ben az új műszakvezérlő kezeli a vásárlókat. A graybox újragenerálása és az **Enable Complete MVP** menüpont egyaránt beköti a teljes változatot.
+A **Build Compact Shop** menüpont újraépíti a jelenetet. A régi **Build Graybox Shop Scene** ugyanoda vezet. A korábbi egyvásárlós segédkód megmaradt, a kompakt jelenet nem használja; a régi bekapcsolómenük nem tesznek mellé második vásárlókezelőt.
 
-A játék iránydokumentuma egy szinttel a Unity-projekt fölött, a `GAME_VISION.md` fájlban található.
+A tartós játékmentés és a végleges grafika még hiányzik. A Windows-build a `Builds/MVP` mappában készül, Git nem tárolja. A próbák a projekt `Tools/Checks` mappájában vannak.

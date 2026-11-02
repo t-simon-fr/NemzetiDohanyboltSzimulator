@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,6 +17,7 @@ public static class ShopCustomerSetup
 
     public static void ConfigureScene(Scene scene, bool useUndo)
     {
+        if (Object.FindAnyObjectByType<ShopLayout>() != null) return;
         ProductSlot delivery = null;
         GameObject visit = null;
         Material water = MaterialAsset("MAT_Product_Water", new Color(0.1f, 0.5f, 0.95f));

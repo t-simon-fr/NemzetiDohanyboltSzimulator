@@ -1,10 +1,10 @@
-# Nemzeti Dohánybolt Szimulátor
+﻿# Nemzeti Dohánybolt Szimulátor
 
-## Jelenlegi MVP-állapot – 2026. november 1.
+## Jelenlegi prototípus – 2026. november 2.
 
-Az összefüggő MVP elkészült: nyitás előtti felkészülés, automatikus nyolcvásárlós műszak négy visszatérő karakterrel, sor, termékösszekészítés, címletes fizetés és visszajáró, rendelhető szállítmány, kézi polcfeltöltés, korai vagy automatikus zárás, elszámolás és következő nap.
+Az összefüggő nyolcvásárlós MVP a kompakt boltra épül: három fiktív cigarettamárkával feltöltött kezdőpolc, játékbeli rendelési monitor a pult bal oldalán, fizikai kassza magyar címletekkel, kézi polcfeltöltés, zárás és elszámolás. Egy megvehető bővítésben víz, rágó és sör önkiszolgáló polcai nyílnak meg; a vásárlók innen gyűjtik be az árut, majd a változatlan helyű pulthoz mennek fizetni.
 
-A használat és a pontos szabályok a [MVP_GUIDE.md](../MVP_GUIDE.md) fájlban találhatók. A szürkedobozos látvány, a karaktermozgás, a tartós mentés és a későbbi ellenőri/hiteles/lopási helyzetek további fejlesztések. A következő lépés a teljes műszak játékosi kipróbálása és a tempó, gazdaság, kezelés és humor közös finomítása.
+A használat és a pontos szabályok a [MVP_GUIDE.md](../MVP_GUIDE.md) fájlban találhatók. A látvány és a mozgás még próbamodell. A tartós mentés, a többfokozatú bővítés és az ellenőri/hiteles/lopási helyzetek későbbi feladatok. A következő lépés a játékosi kipróbálás és a tempó, gazdaság, kezelés és humor finomítása.
 
 ## A dokumentum célja
 
@@ -27,17 +27,17 @@ Ez a dokumentum a játék iránytűje. Új funkció, karakter, feladat vagy lát
 - A tempó alapvetően kezelhető és hétköznapi; időnként forgalmas, többfeladatos csúcsok gyorsítják fel.
 - A boltos teendők és a vásárlókkal való találkozások egyaránt a játék középpontjában állnak.
 
-## Következő fejlesztési irány – felhasználói jegyzet, 2026. november 1.
+## Megvalósított irányok – a november 1-jei jegyzetek alapján
 
-Az alábbi irányok a működő MVP következő átdolgozására vonatkoznak; még nincsenek megvalósítva.
+Az alábbi irányok első kipróbálható változata november 2-án elkészült. A részletek a játékosi próba alapján változhatnak.
 
-- A pult bal oldalára játékbeli monitor kerül, amelyről kezelhetők a rendelések.
-- A fizetési modal helyét a játékbeli pénztárgép veszi át. A játékos rendes magyar forintcímleteknek megfelelő bankjegyeket és érméket vesz ki a kasszából a visszajáróhoz.
-- A kezdő bolt kisebb lesz, cigarettákkal feltöltött választékkal.
-- Később a bolt területe növelhető, de a pult helye állandó marad.
+- A pult bal oldalán játékbeli monitor kezeli a beszerzési rendeléseket és a bővítést.
+- A fizetési modal helyét a játékbeli pénztárgép vette át. A játékos rendes magyar forintcímleteknek megfelelő bankjegyeket és érméket vesz ki a kasszából a visszajáróhoz.
+- A kezdő bolt kisebb, cigarettákkal feltöltött választékkal.
+- A bolt területe egyelőre egy fokozattal növelhető, a pult helye állandó marad.
 - Az új polcokról a vásárlók önállóan gyűjtik össze vásárlásukat, és a változatlan helyű pulthoz mennek fizetni.
 
-A felület átalakításánál a rendeléskezelő monitor és a fizikai kassza legyen a kiindulópont. A konkrét pénzkezelési interakció, a cigarettaválaszték és a bővítések mérete, sorrendje, ára a következő tervezési feladat.
+A prototípus 6000 Ft-tal és 24 doboz cigarettával indul, egy 2000 Ft-os bővítéssel. Ezek próbabeállítások. A pénz címletértéke és darabszáma működik; a végleges pénzgrafika, a további bővítések és az árak kiegyensúlyozása további feladatok.
 
 ## Munkahipotézisek, amelyeket később megerősíthetünk
 
@@ -159,8 +159,8 @@ Ha egy ötlet egyik pillért sem erősíti, vagy elvonja az időt az alap műsza
 ## Még nyitott tervezési kérdések
 
 - Mennyire legyen realisztikus a látvány: stilizált, félrealisztikus vagy realisztikus?
-- Pontosan mely cigarettatermékekkel és további árukkal töltsük fel a kisebb kezdőboltot?
-- A következő verzió fizikai pénztárgépet és magyar címleteket használ; a konkrét kezelés és a vonalkódolvasás formája még nyitott.
+- A Pannon Piros / Duna Kék / Alföld Arany próbaválaszték után milyen további fiktív márkák és áruk jelenjenek meg?
+- Hogyan finomítsuk a már működő fizikai kassza kezelését, és kerüljön-e bele vonalkódolvasás?
 - Milyen méretű és árú bővítési fokozatok épüljenek az állandó helyű pult köré?
 - Milyen mértékben lehessen a párbeszédet befolyásolni?
 

@@ -1,43 +1,45 @@
-# MVP ellenőrzési jegyzőkönyv
+﻿# Ellenőrzött állapot – 2026. november 2.
 
-Dátum: 2026. november 1. • Unity 6000.6.7f1 • Jelenet: `Assets/Game/Scenes/ShopPrototype.unity`
+A kompakt bolt jelenete és a forráskód el van mentve. Unity 6000.6.7f1, URP. A szkriptfordítás sikeres, fordítási hiba nélkül.
 
-## Lefutott vizsgálatok
+## Automatikus ellenőrzések
 
-| Vizsgálat | Eredmény |
-|---|---|
-| Unity scriptfordítás | Sikeres, fordítási hiba nélkül |
-| `LedgerChecks.Run` | 12 sikeres ellenőrzés |
-| `ProductInteractionChecks.Run` | 24 sikeres ellenőrzés |
-| `FullMvpChecks.RunDay` | 92 sikeres ellenőrzés a tényleges boltjelenetben |
-| `FullMvpChecks.CheckNextDayAndReset` | 6 sikeres ellenőrzés |
+| Ellenőrzés | Sikeres állítás |
+|---|---:|
+| `LedgerChecks.Run` – pénzügyi alapok | 12 |
+| `ProductInteractionChecks.Run` – felvétel, fix hely, visszarakás, ütközés | 24 |
+| `CompactShopChecks.CashModel` – címletek, darabszám, váltás, függő vásárlói pénz | 12 |
+| `CompactShopChecks.BaseDay` – teljes nyolcvásárlós cigarettás nap | 107 |
+| `CompactShopChecks.ExpandedDay` – bővítés, utánrendelés, kézi feltöltés, négy önkiszolgáló vásárló | 134 |
+| `CompactShopChecks.EdgeCases` – megszakítás, visszatett áru, korai zárás, fizetésképtelenség | 17 |
+| `CompactShopChecks.DeviceControls` – monitor- és kasszagombok a fókuszált kamera képén, helyes egérsugár-találat | 68 |
+| `CompactShopChecks.PlayerRoute` – tényleges CharacterController mozgás a pult mellett és az új polcokhoz | 12 |
+| **Összesen** | **386** |
 
-Összesen 134 sikeres automatikus ellenőrzés. A tesztek a Unity Pipeline helyi felületén futottak, és a játék metódusait, fizikáját és jelenetobjektumait használták. A tényleges billentyű- és egérkattintásokat nem szimulálták.
+A próbák Play módban, a tényleges jeleneten futottak. A vezérlőfüggvényeket és a fizikai célzás sugarát ellenőrzik; nem a felhasználó billentyűzetét/egerét mozgatják. A karakterek végigjárják a polc és a pult közötti útvonalat, de a fejlett karakterelkerülést és a játékmenet szubjektív élményét ezek nem igazolják.
 
-## A teljes nap eredménye
+Eredményminták:
 
-Nyolc helyesen kiszolgált vásárló, négy személyiség, háromfős sor, téves áru visszavétele, manuálisan kijavított visszajáró, víz utánrendelése és polcra rakása.
+- Kezdőbolt: 8 eladás, 18 200 Ft árbevétel, 5300 Ft nyereség, 23 900 Ft zárókassza.
+- Bővített bolt: 8 eladás, 4 önkiszolgáló vevő, 10 800 Ft árbevétel, 3350 Ft nyereség; 2000 Ft beruházás és 1590 Ft beszerzés után 12 910 Ft zárókassza.
+- A következő nap megőrzi a pénz darabszámait, készletet és bővítést; az új játék visszaállítja a kezdőállapotot.
 
-- Árbevétel: **3100 Ft**.
-- Eladott áruk beszerzési értéke: **1360 Ft**.
-- Napi működési költség: **300 Ft**.
-- Nyereség: **1440 Ft**.
-- Utánrendelésre kifizetett összeg: **450 Ft**.
-- Zárókassza: **8350 Ft**.
-- Megmaradt készlet a boltban és a dobozban összesen: **1 darab**.
+A gépi eredmény helyben: `Temp/CompactChecks/check-results.json`.
 
-A napváltás átviszi a kasszát és a készletet. Az új játék visszaállítja a 6000 Ft-os kezdőállapotot és a termékenkénti két darabot. A korai zárás egyszer vonja le a napi költséget, a már megvett, úton lévő áru pedig megmarad.
+## Futtatás
 
-## Vizuális ellenőrzés
+A futó Unity helyi Pipeline kapcsolatával:
 
-A nyitópanelt, a játékbeli sort és készletszámlálót, a címletes fizetést, a beszerzést és a napvégi összesítőt a Game nézetből rögzített képen is ellenőriztem. A képek a projekt figyelmen kívül hagyott `Temp/MvpChecks` mappájában vannak.
+```powershell
+& Tools/Invoke-Pipeline.ps1 -Command 'script run' -Parameters '{"file":"Tools/Checks/CompactShopChecks.cs","entry":"CompactShopChecks.BaseDay"}'
+```
 
-## Játékosi próba
+A többi belépési pont a fenti táblázatban szerepel. A napi próbák végén a játék visszaáll a kezdőállapotba. A kapcsolat hitelesítési adatát a segéd nem jeleníti meg, nem tartalmazza a forráskód, és nem kerül Gitbe.
 
-A következő lépés egy teljes műszak kézi végigjátszása a végleges tempó és kezelés finomításához. A látvány szürkedobozos, a figurák előre meghatározott útvonalakon haladnak. A játékmenet bezárás utáni tartós mentése későbbi feladat.
+## Látvány és Windows-változat
 
-## Önálló Windows-változat
+A Game nézetből készült képeken ellenőriztük a monitort, a kasszát és a cigarettapolcot. A betűméretet, a mélységhelyes takarást és a pénztálca elrendezését korrigáltuk. A képek helyben a `Temp/CompactChecks` könyvtárban vannak.
 
-A `Builds/MVP/NemzetiDohanyboltSzimulator.exe` elkészült. A Unity BuildReport eredménye **Succeeded**, nulla hiba és nulla figyelmeztetés. A csomag mérete körülbelül 105 MB (100 MiB).
+A végső **StandaloneWindows64 build sikeres**, nulla hibával és nulla figyelmeztetéssel. Időtartama 22,562 másodperc, mérete 104 984 429 bájt. A teljes futtatható mappa: `Builds/MVP`; indító: `NemzetiDohanyboltSzimulator.exe`.
 
-A külön indítható alkalmazás nyolc másodperces, grafika nélküli indulási próbán is futva maradt, és a naplóban nem jelent meg futásidejű kivétel. A grafikus felületek vizuális ellenőrzése az Editor Game nézetében történt.
+Az önálló alkalmazás grafika nélküli indulási próbájában a folyamat futva maradt, a naplóban nem volt futásidejű kivétel/hiba. Ez a próba az indulást igazolja; a megjelenítést a Unity Game nézetében ellenőriztük. A végső kasszakép: `Temp/CompactChecks/cash-verified.png`.

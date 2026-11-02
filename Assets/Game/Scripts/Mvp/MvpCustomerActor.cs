@@ -9,46 +9,75 @@ public sealed class MvpCustomerActor : MonoBehaviour
     public bool Entered { get; private set; }
     public bool Leaving { get; private set; }
     public bool Gone { get; private set; }
-    private int exitStep;
-    private static readonly Vector3 Inside = new Vector3(0.13f, 0f, -3.8f);
-    private static readonly Vector3 Entry = new Vector3(0.13f, 0f, -4.9f);
-    public void Initialize(int person, int product, int visit)
+    public ShopProduct BasketItem { get; private set; }
+    public bool ShoppingComplete { get; private set; }
+    private int exitStep, shoppingStep;
+    private ShopLayout layout;
+    private ShopProduct shelfItem;
+    private Transform basket;
+    private static readonly Vector3 Inside = new Vector3(.13f,0,-3.65f);
+    private static readonly Vector3 Entry = new Vector3(.13f,0,-4.95f);
+    public void Initialize(int person,int product,int visit)
     {
-        Person = person; Product = product;
-        Tender = visit % 3 == 1 ? ShopCatalog.Prices[product] : product == 2 ? 1000 : 500;
-        transform.position = Entry;
-        transform.rotation = Quaternion.identity;
-        CharacterController body = GetComponent<CharacterController>();
-        if (body != null) body.enabled = false;
-        var old = GetComponent<CustomerOrderController>();
-        if (old != null) old.enabled = false;
-        foreach (Renderer renderer in GetComponentsInChildren<Renderer>(true))
+        Person=person;Product=product;
+        int price=ShopCatalog.Prices[product];
+        Tender=visit%3==1?price:price>2000?5000:price>500?1000:500;
+        transform.SetPositionAndRotation(Entry,Quaternion.identity);
+        CharacterController body=GetComponent<CharacterController>();if(body!=null)body.enabled=false;
+        var old=GetComponent<CustomerOrderController>();if(old!=null)old.enabled=false;
+        foreach(Renderer renderer in GetComponentsInChildren<Renderer>(true))
         {
-            if (renderer.name != "Body") continue;
-            var block = new MaterialPropertyBlock();
-            renderer.GetPropertyBlock(block); block.SetColor("_BaseColor", ShopPeople.Colors[person]); renderer.SetPropertyBlock(block);
+            if(renderer.name!="Body")continue;
+            var block=new MaterialPropertyBlock();renderer.GetPropertyBlock(block);
+            block.SetColor("_BaseColor",ShopPeople.Colors[person]);renderer.SetPropertyBlock(block);
         }
-        gameObject.name = "Vásárló - " + ShopPeople.Names[person];
-    }
-    public bool Advance(float dt, Vector3 queueTarget)
-    {
-        if (Gone) return true;
-        if (Leaving)
+        gameObject.name="Vásárló - "+ShopPeople.Names[person];
+        layout=Object.FindAnyObjectByType<ShopLayout>();
+        ShoppingComplete=layout==null||!layout.IsPublicProduct(product);
+        if(!ShoppingComplete)
         {
-            Vector3 target = exitStep == 0 ? new Vector3(1.35f,0,-3.2f) : exitStep == 1 ? new Vector3(1.35f,0,-3.85f) : Entry;
-            if (Move(target, dt)) { exitStep++; if (exitStep >= 3) Gone = true; }
-            return Gone;
+            basket=new GameObject("Kosár").transform;basket.SetParent(transform,false);basket.localPosition=new Vector3(.3f,1.05f,.25f);
         }
-        if (!Entered) { if (Move(Inside, dt)) Entered = true; return false; }
-        return Move(queueTarget, dt);
     }
-    public void Leave() { Leaving = true; exitStep = 0; }
-    private bool Move(Vector3 target, float dt)
+    public bool Advance(float dt,Vector3 queueTarget)
     {
-        Vector3 delta = target - transform.position;
-        if (delta.sqrMagnitude < .0025f) return true;
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(delta), 360f * dt);
-        transform.position = Vector3.MoveTowards(transform.position, target, 1.3f * dt);
-        return (transform.position - target).sqrMagnitude < .0025f;
+        if(Gone)return true;
+        if(Leaving)
+        {
+            Vector3 target=exitStep==0?new Vector3(1.4f,0,-3.25f):exitStep==1?new Vector3(1.4f,0,-4f):Entry;
+            if(Move(target,dt)){exitStep++;if(exitStep>=3)Gone=true;}return Gone;
+        }
+        if(!Entered){if(Move(Inside,dt))Entered=true;return false;}
+        if(!ShoppingComplete)
+        {
+            if(shoppingStep==0)
+            {
+                if(Move(layout.AisleGate,dt))shoppingStep=1;
+            }
+            else if(shoppingStep==1)
+            {
+                shelfItem=layout.FindPublicStock(Product);
+                if(shelfItem==null){shoppingStep=2;return false;}
+                if(Move(layout.ShelfApproach(shelfItem),dt))
+                {
+                    // Selection and reservation happen together on the Unity main thread.
+                    if(shelfItem.PickUp(basket))BasketItem=shelfItem;
+                    shoppingStep=2;
+                }
+            }
+            else if(Move(layout.AisleGate,dt))ShoppingComplete=true;
+            return false;
+        }
+        return Move(queueTarget,dt);
+    }
+    public void ReturnBasket(){if(BasketItem!=null)BasketItem.ReturnToPickupPosition();BasketItem=null;}
+    public void SellBasket(){if(BasketItem!=null)BasketItem.RemoveFromWorld();BasketItem=null;}
+    public void Leave(){Leaving=true;exitStep=0;}
+    private bool Move(Vector3 target,float dt)
+    {
+        Vector3 delta=target-transform.position;if(delta.sqrMagnitude<.0025f)return true;
+        transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(delta),360f*dt);
+        transform.position=Vector3.MoveTowards(transform.position,target,1.3f*dt);
+        return(transform.position-target).sqrMagnitude<.0025f;
     }
 }

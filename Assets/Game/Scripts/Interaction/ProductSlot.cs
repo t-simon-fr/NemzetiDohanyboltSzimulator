@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(BoxCollider))]
@@ -6,10 +6,13 @@ public sealed class ProductSlot : MonoBehaviour
 {
     [SerializeField] private Vector3 capacity = new Vector3(0.65f, 0.38f, 0.65f);
     [SerializeField] private ShopProduct occupant;
+    [SerializeField] private string allowedProductId = "";
+    public void RestrictTo(string id) => allowedProductId = id;
     public event System.Action<ShopProduct> ProductPlaced;
     public void NotifyProductPlaced(ShopProduct product) => ProductPlaced?.Invoke(product);
     public ShopProduct Occupant => occupant;
-    public bool CanAccept(ShopProduct product) => isActiveAndEnabled && product != null && (occupant == null || occupant == product);
+    public bool AcceptsType(ShopProduct product) => product != null && (string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId);
+    public bool CanAccept(ShopProduct product) => isActiveAndEnabled && AcceptsType(product) && (occupant == null || occupant == product);
 
     public void Configure(Vector3 availableSize)
     {

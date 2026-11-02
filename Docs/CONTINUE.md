@@ -1,45 +1,50 @@
 # Folytatás innen
 
-Mentési pont: 2026. november 1.
+Mentési pont: 2026. november 2.
 
 ## Projekt
 
-- Unity: **6000.6.7f1**, URP.
+- Unity **6000.6.7f1**, URP, Input System.
 - Projektgyökér: `D:\Projects\nemzeti-dohanybolt-sim\NemzetiDohanyboltSzimulator`.
 - Jelenet: `Assets/Game/Scenes/ShopPrototype.unity`.
 - Windows-változat: `Builds/MVP/NemzetiDohanyboltSzimulator.exe`.
-- Használat: `MVP_GUIDE.md`.
-- Ellenőrzések: `MVP_CHECKS.md`.
-- Játékirány: `Docs/GAME_VISION.md` (a projekt fölötti iránydokumentum mostani, verziókezelt másolata).
+- Játékosi használat: `MVP_GUIDE.md`. Ellenőrzések: `MVP_CHECKS.md`.
+- Iránydokumentum: `Docs/GAME_VISION.md`.
 
-## Elkészült állapot
+## A tegnapi jegyzetekből elkészült
 
-A teljes, összefüggő MVP működik: nyitás előtti felkészülés, nyolcvásárlós nap négy karakterrel, háromfős sor, három termék, fix polc- és pulthelyek, rendelésösszekészítés, készpénzes fizetés és címletes visszajáró, utánrendelés, szállítódoboz és kézi feltöltés, automatikus vagy korai zárás, napi elszámolás és következő nap. A humor és az alap vezérlés magyar nyelvű.
+1. A pult bal oldalán játékbeli beszerzési monitor: hat terméktípus, készlet/raktár/úton levő áru, rendelés és bővítés.
+2. A fizetési modal helyett fizikai kassza: mind a tizenkét magyar címletérték, véges darabszám, darabonkénti kivétel, pénztálca, visszatétel, váltópénz és átadás. A grafika még próbamodell.
+3. Kisebb, 5 × 6,3 méteres kezdőbolt; Pannon Piros, Duna Kék és Alföld Arany cigarettából 8-8 doboz.
+4. Egy 2000 Ft-os, nyitás előtt megvehető, 4 × 6,3 méteres bővítés. A pult `(0, .55, -2.05)` pozíciója állandó. A pult mellett a játékos is elfér.
+5. A bővítés új polcairól a vásárlók önállóan veszik fel a vizet, rágót vagy sört, majd ugyanahhoz a pulthoz mennek fizetni. A cigarettát az eladó adja ki.
 
-A teljes nap ellenőrzött mintája: nyolc kiszolgált vásárló, 3100 Ft árbevétel, 1360 Ft eladottáru-költség, 300 Ft működés, 1440 Ft nyereség, 450 Ft utánrendelés, 8350 Ft zárókassza.
+A monitor és kassza közelről használható, kamerafókusszal és kattintható térbeli kezelőszervekkel. Az eszközhasználat szünetelteti a vásárlókat. A nyitóképernyő, súgó és napi összesítés továbbra is külön képernyő.
 
-134 automatikus ellenőrzés sikerült. A Windows-build sikeres, nulla hibával és figyelmeztetéssel. A külön alkalmazás grafika nélküli indulási próbája is sikerült. A felületeket az Editor Game nézetéből készült képeken ellenőriztük.
+Megmaradt az összefüggő nyolcvásárlós műszak, a humoros rövid párbeszéd, a sor, az utánrendelés és kézi feltöltés, a korai/automatikus zárás és a napváltás. A kassza, a készlet és a bővítés a futó alkalmazáson belül megmarad a következő napra.
 
-## Következő alkalom – a felhasználó konkrét jegyzetei
+Az önkiszolgáló vásárlás megszakításakor az áru az eredeti, addig lefoglalt polchelyére kerül vissza. A kapott vásárlói pénz a fizetésig külön van kezelve, visszajáróhoz felváltható, elküldéskor visszaadható. A könyvelés a beruházást külön kezeli. Elfogyott kasszapénznél a napvégi tartozás után új játék szükséges.
 
-Az alábbiak új, megállapodott fejlesztési irányok. Még tervezettek, nem részei a most elmentett MVP-nek.
+## Következő közös próba
 
-1. **Rendeléskezelő monitor a pult bal oldalán.** Kerüljön oda egy játékbeli monitor, amelyen kezelhetők a rendelések. Ebből induljunk ki a jelenlegi rendelési/beszerzési panel átdolgozásánál.
-2. **Fizikai pénztárgép magyar pénzzel.** A fizetés a játékbeli pénztárgépen történjen a lebegő fizetési modal helyett. A játékos a kasszából vegyen ki valódi magyar forintcímleteknek megfelelő bankjegyeket és érméket a visszajáróhoz. A konkrét kezelés és megjelenés még kidolgozandó.
-3. **Kisebb, cigarettákkal feltöltött kezdőbolt.** A kezdő helyiség legyen kompaktabb, és a kezdő választékban jelenjenek meg a cigaretták. A mostani víz/rágó/sör tesztválaszték és nagy graybox terem ehhez igazítandó.
-4. **Későbbi területbővítés, helyben maradó pulttal.** A bolt területe legyen növelhető, miközben a pult ugyanabban a pozícióban marad. A bővítési fokozatok és árak még nyitottak.
-5. **Vásárlói önkiszolgálás az új polcoknál.** A bővített terület új polcairól a vásárlók önállóan gyűjtsék össze a vásárlásukat, majd ugyanahhoz a pulthoz menjenek fizetni. Az útvonalak és polccélpontok kövessék a bővítéseket.
+- Játékosként végigjátszani a kis boltot, majd bővíteni és feltölteni az új polcokat.
+- Kasszakamera, olvashatóság, rekeszek kattintása és visszajáró tálcájának elrendezése.
+- A polc, pult és szállítódoboz közötti mozgás kényelme.
+- Gazdasági arányok: az árak, a 24 dobozos kezdőkészlet, a bővítés ára még prototípus-beállítások.
+- A jelenlegi egytermékes rendelések és a figurák mozgásának finomítása.
 
-A következő fejlesztési tervet ezekre építsük; a működő MVP műszak- és pénzügyi alapjait felhasználhatjuk hozzá. A teljes műszak további játékosi próbája és a tempó, gazdaság, kezelés, humor finomítása továbbra is hasznos.
+## Még tervezett tartalom
 
-A látvány és a figurák még szürkedobozosak. A tartós játékmentés nincs implementálva: a napváltás a futó alkalmazáson belül őrzi meg az állapotot. A játék bezárásakor a pénz/készlet nem kerül lemezre.
+Tartós játékmentés; kész bolti modellek és magyar pénzgrafika; több bővítési fokozat; összetettebb kosarak és tömegelkerülés; ellenőr és igazolvány; hitelkérés; félreszámolt pénz és készpénzes trükkök; figyelemeltereléses lopás; reggeli törzsvendégek és további humoros párbeszédek. Ezek nem részei a mostani implementációnak.
 
-Az ellenőr, hitelkérés, készpénzes trükkök, figyelemeltereléses lopás és a reggeli törzsvendégek további történetei kötelezően tervezett későbbi tartalmak.
+## Ellenőrzés és fejlesztés
 
-## Fontos technikai tudnivalók
+A teljes ellenőrzési eredmény és a build állapota: `MVP_CHECKS.md`. A `Tools/Checks/CompactShopChecks.cs` tartalmazza a két teljes nap, a pénz, az összes eszközgomb, a megszakítások és a tényleges játékosi útvonal próbáit. A régi víz/rágó/sör MVP-hez kötött napteszteket ezek váltották fel.
 
-- Az MVP-t a `Scripts/Mvp/MvpShopController.cs` és a `MvpShopHud.cs` vezérli. A régi `CustomerOrderController` csak az inaktív figuramintán maradt meg.
-- Meglévő jelenetet a **Nemzeti Dohánybolt > Enable Complete MVP** kapcsol be, újragenerálás a **Build Graybox Shop Scene** menüponttal lehetséges. A jelenet már be van kötve és el van mentve.
-- A Unity Pipeline csomag telepítve van. A futó Editor helyi kapcsolatának leírója a `Library/Pipeline/.unity-pipeline-port` fájlban van; hitelesítési adatot tartalmaz, ezért a tartalmát ne jelenítsük meg vagy verziókezeljük.
-- A `Library`, `Temp`, `Logs` és `Builds` könyvtárakat a Git figyelmen kívül hagyja. A Windows-build helyben megmarad, de nem része a forráskód-commitnak.
-- A munkamenet eredeti C:-s mappáját a felhasználó áthelyezte. Minden fájlművelethez a fenti D:-s munkakönyvtárat használjuk; a korábbi sandbox miatt a D:-s írásokhoz az eszközben engedélyezett emelt hozzáférés kellett.
+- A jelenetet a **Nemzeti Dohánybolt > Build Compact Shop** újraépíti. A régi Build Graybox menü is erre vezet; ne a korábbi nagytermes generátort állítsuk vissza.
+- Fő kód: `MvpShopController`, `ShopDevices`, `ShopCashDrawer`, `ShopLayout`, `MvpCustomerActor`. Generátor: `Editor/CompactShopSetup.cs`.
+- A régi egyvásárlós `CustomerOrderController` a kompatibilitási forrásban maradt; a kompakt jelenetben nincs aktív példánya.
+- A Pipeline kapcsolat leírója: `Library/Pipeline/.unity-pipeline-port`. Hitelesítési adatot tartalmaz, ne írassuk ki. A `Tools/Invoke-Pipeline.ps1` kezeli anélkül, hogy megjelenítené.
+- Play módban ne mentsük a jelenetet: a futás során létrejött készlet és vásárlók nem szerkesztett jelenetadatok.
+- `Library`, `Temp`, `Logs` és `Builds` nem kerül Gitbe.
+- Az eredeti C:-s munkakönyvtár már nem létezik. Minden parancshoz a fenti D:-s munkakönyvtár kell; a sandboxon kívüli írást az eszköz engedélyezett emelt futtatása kezeli.

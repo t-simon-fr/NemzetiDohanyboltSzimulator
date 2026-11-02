@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,7 +23,7 @@ public sealed class MvpShopController : MonoBehaviour
     private readonly List<MvpCustomerActor> departing = new List<MvpCustomerActor>();
     private readonly List<Shipment> shipments = new List<Shipment>();
     private readonly List<int> changeCoins = new List<int>();
-    private readonly int[] warehouse = new int[3];
+    private readonly int[] warehouse = new int[ShopCatalog.Count];
     private MvpCustomerActor active;
     private ShopProduct prepared;
     private float spawnTimer;
@@ -49,13 +49,19 @@ public sealed class MvpShopController : MonoBehaviour
     public string Dialogue { get; private set; } = "";
     public string Message { get; private set; } = "";
     public bool ManualTick { get; set; }
+    public ShopCashDrawer Drawer { get; private set; }
+    public ShopDevices Devices { get; private set; }
+    public ShopLayout Layout { get; private set; }
+    public int AvailableProducts => Layout != null && Layout.Expanded ? ShopCatalog.Count : 3;
+    public int SelectedPieces(int value) => changeCoins.Count(c=>c==value);
+    public bool HasHeldProduct => player != null && player.HasHeldProduct;
 
     public void Configure(PlayerInteractor interactor, ProductSlot tray, GameObject template, ProductSlot[] slots, int[] types, Material[] materials, Transform crate, Transform till)
     {
         player = interactor; delivery = tray; customerTemplate = template; shelfSlots = slots; shelfTypes = types;
         productMaterials = materials; supplyPoint = crate; tillPoint = till;
     }
-    private void Awake() { Instance = this; }
+    private void Awake() { Instance = this; Devices = GetComponent<ShopDevices>(); Layout = GetComponent<ShopLayout>(); }
     private void OnEnable() { if (delivery != null) delivery.ProductPlaced += OnDelivery; }
     private void OnDisable()
     {
@@ -80,16 +86,18 @@ public sealed class MvpShopController : MonoBehaviour
             {
                 if (keyboard.escapeKey.wasPressedThisFrame && Modal != ShopModal.Summary) ClosePanel();
             }
+            else if (Devices != null && Devices.Focused)
+            { if (keyboard.escapeKey.wasPressedThisFrame) ClosePanel(); }
             else if (Cursor.lockState == CursorLockMode.Locked)
             {
-                if (keyboard.bKey.wasPressedThisFrame) SetModal(ShopModal.Supplier);
+                if (keyboard.bKey.wasPressedThisFrame) OpenSupplier();
                 else if (keyboard.hKey.wasPressedThisFrame) SetModal(ShopModal.Help);
                 else if (keyboard.fKey.wasPressedThisFrame) OpenCash();
                 else if (keyboard.oKey.wasPressedThisFrame) { if (Phase == ShopPhase.Preparing) OpenShop(); else RequestClose(); }
                 else if (keyboard.xKey.wasPressedThisFrame) SkipCurrent();
             }
         }
-        if (Application.isFocused && (Cursor.lockState == CursorLockMode.Locked || Modal == ShopModal.Supplier || Modal == ShopModal.Cash)) Tick(Time.deltaTime);
+        if (Application.isFocused && (Cursor.lockState == CursorLockMode.Locked || (Devices != null && Devices.Focused))) Tick(Time.deltaTime);
     }
     public void Tick(float dt)
     {
@@ -103,7 +111,7 @@ public sealed class MvpShopController : MonoBehaviour
             Message = "Megérkezett: " + shipments[i].Quantity + " × " + ShopCatalog.Names[shipments[i].Type] + ". Vedd ki a hátsó dobozból!";
             shipments.RemoveAt(i);
         }
-        if (Modal != ShopModal.None || Phase == ShopPhase.Preparing) return;
+        if (Modal != ShopModal.None || (Devices != null && Devices.Focused) || Phase == ShopPhase.Preparing) return;
         Elapsed += dt;
         if (Phase == ShopPhase.Open && Spawned < TotalVisitors)
         {
@@ -118,20 +126,22 @@ public sealed class MvpShopController : MonoBehaviour
         for (int i = 0; i < queue.Count; i++)
         {
             MvpCustomerActor customer = queue[i];
-            Vector3 target = i == 0 ? new Vector3(.13f,0,-2.95f) : new Vector3(-1.2f * i,0,-3.2f);
+            Vector3 target = i == 0 ? new Vector3(.13f,0,-2.95f) : new Vector3(-1f * i,0,-3.3f);
             bool arrived = customer.Advance(dt, target);
             if (i == 0 && active == null && arrived)
             {
                 active = customer; Stage = ServiceStage.Order;
                 Dialogue = ShopPeople.Greetings[active.Person];
-                if (delivery.Occupant != null) OnDelivery(delivery.Occupant);
+                if (active.BasketItem != null)
+                { prepared = active.BasketItem; BeginPayment(); }
+                else if (delivery.Occupant != null) OnDelivery(delivery.Occupant);
             }
             if (customer != active || Stage == ServiceStage.Order) customer.WaitTime += dt;
         }
         if (active != null && Stage == ServiceStage.Order && active.WaitTime > 180f) SkipCurrent();
         if (active != null && Stage == ServiceStage.Payment && !PreparedIsValid())
         {
-            prepared = null; Stage = ServiceStage.Order; if (Modal == ShopModal.Cash) ClosePanel();
+            Drawer.CancelTender(); changeCoins.Clear(); prepared = null; Stage = ServiceStage.Order; if (Devices != null && Devices.FocusKind == ShopDeviceKind.Till) ClosePanel();
             Dialogue = "A termék visszakerült a pultról. Tedd újra az átadóhelyre.";
         }
         if (active != null && Stage == ServiceStage.Thanks)
@@ -149,7 +159,8 @@ public sealed class MvpShopController : MonoBehaviour
         clone.SetActive(false);
         var legacy = clone.GetComponent<CustomerOrderController>(); if (legacy != null) legacy.enabled = false;
         MvpCustomerActor actor = clone.AddComponent<MvpCustomerActor>();
-        actor.Initialize((visit + Day - 1) % 4, ShopCatalog.VisitProducts[visit], visit);
+        int type = Layout != null && Layout.Expanded && visit % 2 == 1 ? 3 + (visit % 3) : ShopCatalog.VisitProducts[visit];
+        actor.Initialize((visit + Day - 1) % 4, type, visit);
         clone.SetActive(true); queue.Add(actor);
     }
     private void OnDelivery(ShopProduct product)
@@ -159,33 +170,55 @@ public sealed class MvpShopController : MonoBehaviour
         {
             Dialogue = ShopPeople.Wrong[active.Person]; Message = "Vedd vissza a téves árut, és tedd félre egy másik pulthelyre."; return;
         }
-        prepared = product; Stage = ServiceStage.Payment; changeCoins.Clear();
-        Dialogue = "Tessék a pénz. A visszajárót azért megvárom.";
-        OpenCash();
+        prepared = product; BeginPayment();
     }
-    private bool PreparedIsValid() => prepared != null && prepared.gameObject.activeSelf && !prepared.IsHeld && prepared.CurrentSlot == delivery && delivery.Occupant == prepared && active != null && ShopCatalog.Index(prepared.ProductId) == active.Product;
+    private void BeginPayment()
+    {
+        Stage = ServiceStage.Payment; changeCoins.Clear(); Drawer.OfferTender(active.Tender);
+        Dialogue = "Tessék a pénz. A visszajárót azért megvárom.";
+        Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";
+    }
+    private bool PreparedIsValid() => prepared != null && prepared.gameObject.activeSelf && active != null && ShopCatalog.Index(prepared.ProductId) == active.Product &&
+        ((active.BasketItem == prepared && prepared.IsHeld) || (!prepared.IsHeld && prepared.CurrentSlot == delivery && delivery.Occupant == prepared));
     public bool SubmitChange(int amount)
     {
         if (Stage != ServiceStage.Payment || !PreparedIsValid()) { Message = "Előbb a megfelelő árut tedd az átadóhelyre."; return false; }
         int type = active.Product;
+        int[] pieces = ShopCatalog.Denominations.Select(SelectedPieces).ToArray();
+        if (amount != ChangeSelected || !Drawer.CanSettle(active.Tender,pieces)) { Message = "A visszajárót a kassza rekeszeiből vedd ki."; return false; }
         if (!Ledger.TrySell(ShopCatalog.Prices[type], ShopCatalog.Costs[type], active.Tender, amount))
         {
             Message = "Nem stimmel a visszajáró. Számold újra, vagy töröld a kiválasztott címleteket."; return false;
         }
-        ShopProduct sold = prepared; prepared = null; sold.AcceptDelivery();
+        Drawer.Settle(active.Tender,pieces);
+        ShopProduct sold = prepared; prepared = null;
+        if (active.BasketItem == sold) active.SellBasket(); else sold.AcceptDelivery();
         Stage = ServiceStage.Thanks; thanksTimer = 2.5f;
         Dialogue = ShopPeople.Thanks[active.Person]; Message = "Sikeres fizetés. A kassza és a készlet frissült.";
         SetModal(ShopModal.None); changeCoins.Clear(); return true;
     }
-    public void AddChange(int value) { if (Stage == ServiceStage.Payment && Array.IndexOf(ShopCatalog.Denominations,value) >= 0 && ChangeSelected + value <= 10000) changeCoins.Add(value); }
+    public void AddChange(int value)
+    {
+        if (Stage != ServiceStage.Payment || Array.IndexOf(ShopCatalog.Denominations,value)<0) return;
+        if (!Drawer.CanSelect(value,SelectedPieces(value))) { Message = "Ebből a címletből kiürült a rekesz. Más címletekből állítsd össze!"; return; }
+        if (ChangeSelected + value > active.Tender) return;
+        changeCoins.Add(value);
+    }
     public void UndoChange() { if (changeCoins.Count > 0) changeCoins.RemoveAt(changeCoins.Count - 1); }
     public void ClearChange() => changeCoins.Clear();
+    public void ExchangeCash()
+    {
+        ClearChange();
+        foreach(int value in ShopCatalog.Denominations)
+            if(value>=50 && Drawer.Exchange(value)) { Message = "Felváltva: " + ShopCatalog.Money(value) + ". A kassza összege nem változott."; return; }
+        Message = "Nincs további felváltható címlet.";
+    }
     public void OpenCash()
     {
         if (Stage != ServiceStage.Payment || !PreparedIsValid()) { Message = "A kasszázáshoz előbb készítsd elő a kért terméket."; return; }
         if (player != null && tillPoint != null && Vector3.Distance(player.transform.position, tillPoint.position) > 3.5f) { Message = "Menj a kasszához a fizetéshez."; return; }
         Message = "Számold meg a kapott pénzt, és válaszd ki a visszajárót.";
-        SetModal(ShopModal.Cash);
+        if (Devices != null) Devices.Focus(ShopDeviceKind.Till);
     }
     public void OpenShop()
     {
@@ -202,42 +235,44 @@ public sealed class MvpShopController : MonoBehaviour
     {
         if (active == null || (Stage != ServiceStage.Order && Stage != ServiceStage.Payment)) return;
         Missed++; Dialogue = "Most nem tudtuk kiszolgálni. Majd legközelebb!";
-        if (Modal == ShopModal.Cash) SetModal(ShopModal.None);
+        if (Devices != null && Devices.Focused) ClosePanel();
         DismissActive();
     }
     private void DismissActive()
     {
-        queue.Remove(active); active.Leave(); departing.Add(active); active = null; prepared = null; Stage = ServiceStage.None;
+        active.ReturnBasket(); Drawer.CancelTender(); changeCoins.Clear(); queue.Remove(active); active.Leave(); departing.Add(active); active = null; prepared = null; Stage = ServiceStage.None;
     }
     private void FinishDay()
     {
         foreach (Shipment order in shipments) warehouse[order.Type] += order.Quantity;
-        shipments.Clear(); Ledger.Close(300); Phase = ShopPhase.Summary; SetModal(ShopModal.Summary);
+        shipments.Clear(); ClosePanel(); Drawer.Spend(Mathf.Min(300,Drawer.Total)); Ledger.Close(300); Phase = ShopPhase.Summary; SetModal(ShopModal.Summary);
     }
     public void NextDay()
     {
         if (Phase != ShopPhase.Summary) return;
+        if (Ledger.Cash < 0) { Message = "Elfogyott a kasszapénz. Indíts új játékot."; return; }
         Day++; Ledger = new ShopLedger(Ledger.Cash); BeginPreparation();
     }
     private void BeginPreparation()
     {
         Phase = ShopPhase.Preparing; Stage = ServiceStage.None; Spawned = 0; Missed = 0; Elapsed = 0f;
-        active = null; prepared = null; changeCoins.Clear(); Message = "Nézd át a készletet. B – Beszerzés, O – Nyitás.";
+        active = null; prepared = null; changeCoins.Clear(); Message = "Nézd át a cigarettapolcot. A pult bal oldalán találod a rendelési monitort. O – Nyitás.";
         SetModal(ShopModal.Welcome);
     }
     public void ResetDemo()
     {
         if (stockRoot == null) return;
         if (player != null) player.CancelHeld();
-        foreach (MvpCustomerActor actor in queue.Concat(departing)) if (actor != null) Destroy(actor.gameObject);
+        foreach (MvpCustomerActor actor in queue.Concat(departing)) if (actor != null) { actor.ReturnBasket(); Destroy(actor.gameObject); }
         queue.Clear(); departing.Clear(); active = null;
         foreach (ShopProduct item in stock) if (item != null) item.RemoveFromWorld();
         stock.Clear(); shipments.Clear(); Array.Clear(warehouse,0,warehouse.Length);
-        Day = 1; Ledger = new ShopLedger(6000);
+        ClosePanel(); if (Layout != null) Layout.SetExpanded(false);
+        SelectedSupply = 0; Day = 1; Ledger = new ShopLedger(6000); Drawer = new ShopCashDrawer();
         for (int type = 0; type < 3; type++)
         {
             int seeded = 0;
-            for (int i = 0; i < shelfSlots.Length && seeded < 2; i++)
+            for (int i = 0; i < shelfSlots.Length && seeded < 8; i++)
             {
                 if (shelfTypes[i] != type) continue;
                 ShopProduct product = CreateProduct(type); product.AssignInitialSlot(shelfSlots[i]); seeded++;
@@ -249,9 +284,10 @@ public sealed class MvpShopController : MonoBehaviour
     {
         GameObject item = GameObject.CreatePrimitive(PrimitiveType.Cube);
         item.name = "Product blockout"; item.transform.SetParent(stockRoot, false);
-        item.transform.localScale = new Vector3(.28f,.26f,.24f);
+        item.transform.localScale = type < 3 ? new Vector3(.16f,.26f,.08f) : new Vector3(.22f,.26f,.18f);
         item.GetComponent<Renderer>().sharedMaterial = productMaterials[type];
         ShopProduct product = item.AddComponent<ShopProduct>(); product.ConfigureProduct(ShopCatalog.Ids[type], ShopCatalog.Names[type]);
+        ProductVisuals.Add(item,type);
         stock.Add(product); return product;
     }
     public int StockCount(int type) => stock.Count(p => p != null && p.gameObject.activeSelf && p.ProductId == ShopCatalog.Ids[type]);
@@ -260,33 +296,52 @@ public sealed class MvpShopController : MonoBehaviour
     public float NextDelivery => shipments.Count == 0 ? 0f : shipments.Min(s => s.Remaining);
     public bool OrderSupply(int type)
     {
-        if (type < 0 || type >= 3 || Phase == ShopPhase.Summary) return false;
+        if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary) { Message = "Ez az áru a boltbővítés után rendelhető."; return false; }
         if (warehouse[type] + PendingQuantity(type) + 3 > 24) { Message = "A dobozban már elég áru vár ebből a termékből."; return false; }
         if (!Ledger.TryBuy(ShopCatalog.Costs[type],3)) { Message = "A kasszában nincs elég pénz erre a rendelésre."; return false; }
+        Drawer.Spend(ShopCatalog.Costs[type]*3);
         shipments.Add(new Shipment { Type = type, Quantity = 3, Remaining = 8f }); SelectedSupply = type;
         Message = "Megrendelve 3 × " + ShopCatalog.Names[type] + ". A szállítás 8 másodperc.";
-        SetModal(ShopModal.None); return true;
+        return true;
     }
-    public void CycleSupply() { SelectedSupply = (SelectedSupply + 1) % 3; Message = "Dobozból kiválasztva: " + ShopCatalog.Names[SelectedSupply]; }
+    public void CycleSupply() { SelectedSupply = (SelectedSupply + 1) % AvailableProducts; Message = "Dobozból kiválasztva: " + ShopCatalog.Names[SelectedSupply]; }
     public bool TryCreateSupply(int type, out ShopProduct product)
     {
         product = null;
-        if (type < 0 || type >= 3 || Phase == ShopPhase.Summary || warehouse[type] <= 0) return false;
-        if (!shelfSlots.Any(s => s != null && s.Occupant == null)) { Message = "Előbb szabadíts fel egy polchelyet."; return false; }
+        if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary || warehouse[type] <= 0) return false;
+        if (!shelfSlots.Where((s,i) => shelfTypes[i] == type).Any(s => s != null && s.isActiveAndEnabled && s.Occupant == null)) { Message = "Előbb szabadíts fel egy polchelyet."; return false; }
         product = CreateProduct(type); product.transform.position = supplyPoint.position + Vector3.up;
         warehouse[type]--; return true;
     }
     public void TakeSupply(PlayerInteractor interactor)
     {
         if (interactor.HasHeldProduct) return;
-        if (!TryCreateSupply(SelectedSupply, out ShopProduct product)) { Message = "Ebből nincs áru a dobozban. B – Beszerzés, Q – Másik termék."; return; }
+        if (!TryCreateSupply(SelectedSupply, out ShopProduct product)) { if(warehouse[SelectedSupply] <= 0) Message = "Ebből nincs áru a dobozban. B – Beszerzés, Q – Másik termék."; return; }
         if (!interactor.TryHold(product)) { warehouse[SelectedSupply]++; product.RemoveFromWorld(); }
     }
     public void SetModal(ShopModal modal)
     {
+        if (modal == ShopModal.Cash) { OpenCash(); return; }
+        if (modal == ShopModal.Supplier) { OpenSupplier(); return; }
+        if (Devices != null) Devices.Release();
         Modal = modal; ShopInputGate.Blocked = modal != ShopModal.None;
         Cursor.lockState = ShopInputGate.Blocked ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = ShopInputGate.Blocked;
+    }
+    public void OpenSupplier()
+    {
+        if (Devices == null || Phase == ShopPhase.Summary) return;
+        if (HasHeldProduct) { Message = "Előbb tedd le a kezedben levő árut."; return; }
+        if (Vector3.Distance(player.GetComponentInChildren<Camera>().transform.position, Devices.MonitorPosition) > 2.5f) { Message = "Menj a pult bal oldalán levő monitorhoz."; return; }
+        Devices.Focus(ShopDeviceKind.Monitor);
+    }
+    public bool TryExpand()
+    {
+        if (Layout == null || Layout.Expanded || Phase != ShopPhase.Preparing) { Message = "Bővíteni nyitás előtt lehet, üres boltban."; return false; }
+        if (!Ledger.TryImprove(ShopLayout.ExpansionPrice)) { Message = "Nincs elég pénz a bővítéshez."; return false; }
+        Drawer.Spend(ShopLayout.ExpansionPrice); Layout.SetExpanded(true);
+        Message = "Megnyílt az önkiszolgáló rész! Rendelj árut, és töltsd fel az új polcokat. A pult a helyén maradt.";
+        return true;
     }
     public void ClosePanel() { if (Phase != ShopPhase.Summary) SetModal(ShopModal.None); }
 }

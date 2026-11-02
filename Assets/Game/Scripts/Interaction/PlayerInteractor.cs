@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 [DisallowMultipleComponent]
@@ -131,6 +131,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         }
         GUI.color = previousColor;
         string placementPrompt = canPlace ? "E – Lerakás a kijelölt helyre" :
+            targetSlot != null && !targetSlot.AcceptsType(heldProduct) ? "Ez a hely másik termékhez tartozik" :
             targetSlot != null && !targetSlot.CanAccept(heldProduct) ? "Ez a termékhely foglalt" :
             targetSlot != null ? "Az áru nem fér el ezen a helyen" : "Nézz egy kijelölt, üres polc- vagy pulthelyre";
         string prompt = !cursorLocked ? "Kattints a játékba a folytatáshoz" :

@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,6 +27,7 @@ public static class ShopInteractionSetup
 
     public static int ConfigureScene(Scene scene, bool useUndo)
     {
+        if (Object.FindAnyObjectByType<ShopLayout>() != null) return 0;
         FirstPersonController player = null;
         foreach (GameObject root in scene.GetRootGameObjects())
         {
