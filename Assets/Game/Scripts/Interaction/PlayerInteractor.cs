@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 [DisallowMultipleComponent]
@@ -6,7 +7,7 @@ public sealed class PlayerInteractor : MonoBehaviour
 {
     [SerializeField] private Camera viewCamera;
     [SerializeField, Min(0.1f)] private float reach = 2.5f;
-    [SerializeField] private Vector3 carryOffset = new Vector3(0.3f, -0.25f, 0.65f);
+    [SerializeField] private Vector3 carryOffset = new Vector3(.26f, -.07f, .65f);
     private Transform holdPoint;
     private ShopStation station;
     private ShopProduct target;
@@ -17,16 +18,33 @@ public sealed class PlayerInteractor : MonoBehaviour
     private GUIStyle hintStyle;
 
     public void Configure(Camera cameraReference) => viewCamera = cameraReference;
+    private ProductSlot[] placementSlots;
     public bool HasHeldProduct => heldProduct != null;
+    public ShopProduct HeldProduct => heldProduct;
+    public ProductSlot TargetSlot => targetSlot;
+    public bool CanPlaceHeld => canPlace;
+    public bool LookingAtSupplies => station != null && station.IsSupplies;
     public bool TryHold(ShopProduct product)
     {
         if (heldProduct != null || product == null || !product.PickUp(holdPoint)) return false;
-        heldProduct = product; target = null; return true;
+        heldProduct = product; target = null;
+        placementSlots=FindObjectsByType<ProductSlot>(FindObjectsInactive.Include);
+        UpdatePlacementHints(); return true;
     }
     public void CancelHeld()
     {
         if (heldProduct != null) heldProduct.ReturnToPickupPosition();
-        heldProduct = null;
+        heldProduct = null; UpdatePlacementHints();
+    }
+    public bool RemoveHeld(ShopProduct expected)
+    {
+        if (heldProduct == null || heldProduct != expected) return false;
+        heldProduct.RemoveFromWorld(); heldProduct=null; UpdatePlacementHints(); return true;
+    }
+    public bool TryPlaceHeld()
+    {
+        if (heldProduct == null || !canPlace || !heldProduct.TryPlace(targetSlot)) return false;
+        heldProduct=null; UpdatePlacementHints(); return true;
     }
 
     private void Awake()
@@ -40,50 +58,78 @@ public sealed class PlayerInteractor : MonoBehaviour
         }
         holdPoint = new GameObject("Product Hold Point").transform;
         holdPoint.SetParent(viewCamera.transform, false);
+        // Migrate the old serialized offset so the control panel no longer hides the pack.
+        if (Vector3.Distance(carryOffset,new Vector3(.3f,-.25f,.65f))<.001f) carryOffset=new Vector3(.26f,-.07f,.65f);
         holdPoint.localPosition = carryOffset;
     }
 
     private void Update()
     {
-        station = null;
-        target = null;
-        targetSlot = null;
-        canPlace = false;
-        if (ShopInputGate.Blocked || viewCamera == null || Cursor.lockState != CursorLockMode.Locked || !Application.isFocused) return;
-        Ray ray = viewCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        QueryTriggerInteraction triggers = heldProduct != null ? QueryTriggerInteraction.Collide : QueryTriggerInteraction.Ignore;
-        if (Physics.Raycast(ray, out RaycastHit hit, reach, Physics.DefaultRaycastLayers, triggers))
-        {
-            if (heldProduct != null)
-            {
-                targetSlot = hit.collider.GetComponent<ProductSlot>();
-                if (targetSlot == null)
-                {
-                    ShopProduct hitProduct = hit.collider.GetComponentInParent<ShopProduct>();
-                    if (hitProduct != null) targetSlot = hitProduct.CurrentSlot;
-                }
-                canPlace = heldProduct.TryGetPlacement(targetSlot, out _);
-            }
-            else
-            {
-                station = hit.collider.GetComponentInParent<ShopStation>();
-                target = hit.collider.GetComponentInParent<ShopProduct>();
-                if (target != null && (!target.enabled || target.IsHeld)) target = null;
-            }
-        }
+        if (ShopInputGate.Blocked || viewCamera == null || Cursor.lockState != CursorLockMode.Locked || !Application.isFocused)
+        { station=null;target=null;targetSlot=null;canPlace=false;UpdatePlacementHints(false);return; }
+        RefreshTarget(viewCamera.ViewportPointToRay(new Vector3(.5f,.5f,0)));
         if (Keyboard.current == null) return;
-        if (station != null && Keyboard.current.qKey.wasPressedThisFrame) station.Cycle();
+        if (station != null && !HasHeldProduct && Keyboard.current.qKey.wasPressedThisFrame) station.Cycle();
         if (!Keyboard.current.eKey.wasPressedThisFrame) return;
         if (heldProduct != null)
         {
-            if (!canPlace || !heldProduct.TryPlace(targetSlot)) return;
-            heldProduct = null;
+            if (LookingAtSupplies) station.Use(this);
+            else TryPlaceHeld();
         }
         else if (station != null) station.Use(this);
-        else if (target != null && target.PickUp(holdPoint))
+        else if (target != null) TryHold(target);
+    }
+    // Shared by keyboard interaction and the scene-level targeting checks.
+    public void RefreshTarget(Ray ray)
+    {
+        station=null;target=null;targetSlot=null;canPlace=false;
+        foreach (var hit in Physics.RaycastAll(ray,reach,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Collide).OrderBy(h=>h.distance))
         {
-            heldProduct = target;
-            target = null;
+            var slot=hit.collider.GetComponent<ProductSlot>();
+            if (hit.collider.isTrigger)
+            {
+                if (heldProduct != null && slot != null)
+                { targetSlot=slot;canPlace=heldProduct.TryGetPlacement(slot,out _);break; }
+                continue;
+            }
+            station=hit.collider.GetComponentInParent<ShopStation>();
+            var product=hit.collider.GetComponentInParent<ShopProduct>();
+            if (heldProduct != null)
+            {
+                if (!LookingAtSupplies)
+                {
+                    targetSlot=product != null ? product.CurrentSlot : NearestSlotOnSurface(hit,ray.origin);
+                    canPlace=heldProduct.TryGetPlacement(targetSlot,out _);
+                }
+            }
+            else if (product != null && product.enabled && !product.IsHeld) target=product;
+            break;
+        }
+        UpdatePlacementHints();
+    }
+    private ProductSlot NearestSlotOnSurface(RaycastHit hit,Vector3 eye)
+    {
+        Transform scope=hit.collider.transform.parent;
+        if (scope==null || placementSlots==null) return null;
+        bool counterSurface=hit.collider.name=="Counter top"||hit.collider.name=="Blue handover tray";
+        var nearest=placementSlots.Where(s=>s!=null&&s.isActiveAndEnabled&&
+            (s.transform.parent==scope || (counterSurface&&s.transform.IsChildOf(scope))))
+            .OrderBy(s=>(s.HintCenter-hit.point).sqrMagnitude).FirstOrDefault();
+        if (nearest==null || Vector3.Distance(nearest.HintCenter,hit.point)>.34f) return null;
+        Vector3 delta=nearest.HintCenter-eye;
+        if (Physics.Raycast(eye,delta.normalized,delta.magnitude-.03f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore)) return null;
+        return nearest;
+    }
+    private void UpdatePlacementHints(bool visible=true)
+    {
+        if (placementSlots==null) return;
+        foreach (var slot in placementSlots)
+        {
+            if (slot==null) continue;
+            bool selected=slot==targetSlot;
+            bool show=visible && heldProduct!=null && slot.isActiveAndEnabled &&
+                (selected || slot.CanAccept(heldProduct));
+            slot.ShowPlacementHint(show,selected,!selected||canPlace);
         }
     }
 
@@ -92,7 +138,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         if (heldProduct != null) heldProduct.ReturnToPickupPosition();
         heldProduct = null;
         target = null;
-        targetSlot = null;
+        targetSlot = null; UpdatePlacementHints(false);
     }
 
     private void OnDestroy()
@@ -135,7 +181,7 @@ public sealed class PlayerInteractor : MonoBehaviour
             targetSlot != null && !targetSlot.CanAccept(heldProduct) ? "Ez a termékhely foglalt" :
             targetSlot != null ? "Az áru nem fér el ezen a helyen" : "Nézz egy kijelölt, üres polc- vagy pulthelyre";
         string prompt = !cursorLocked ? "Kattints a játékba a folytatáshoz" :
-            heldProduct != null ? placementPrompt :
+            heldProduct != null ? (LookingAtSupplies ? "E – Kézben tartott áru visszarakása a dobozba" : placementPrompt) :
             station != null ? station.Prompt : target != null ? "E – Felvétel: " + target.DisplayName : "Nézz egy termékre vagy egy interakciós pontra";
         float panelWidth = Mathf.Min(620f, Screen.width - 24f);
         Rect panel = new Rect((Screen.width - panelWidth) * 0.5f, Screen.height - 116, panelWidth, 96);
@@ -145,6 +191,13 @@ public sealed class PlayerInteractor : MonoBehaviour
         GUI.Label(new Rect(panel.x + 10, panel.y + 5, panel.width - 20, 48), prompt, promptStyle);
         string hint = heldProduct != null ? "Kézben: " + heldProduct.DisplayName + "  •  A termék automatikusan igazodik a helyéhez" : "WASD – Mozgás  •  Egér – Körülnézés  •  Escape – Kurzor";
         GUI.Label(new Rect(panel.x + 10, panel.y + 54, panel.width - 20, 32), hint, hintStyle);
+        if (LookingAtSupplies)
+        {
+            Rect contents=new Rect(12,158,330,220);
+            GUI.color=new Color(0,0,0,.88f);GUI.DrawTexture(contents,Texture2D.whiteTexture);GUI.color=previousColor;
+            var stockStyle=new GUIStyle(hintStyle){alignment=TextAnchor.UpperLeft,fontSize=16};
+            GUI.Label(new Rect(contents.x+12,contents.y+10,contents.width-24,contents.height-20),station.Contents,stockStyle);
+        }
     }
 
     private static void DrawSlotMarker(float x, float y)

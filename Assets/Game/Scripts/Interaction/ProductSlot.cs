@@ -8,6 +8,25 @@ public sealed class ProductSlot : MonoBehaviour
     [SerializeField] private ShopProduct occupant;
     [SerializeField] private string allowedProductId = "";
     public void RestrictTo(string id) => allowedProductId = id;
+    private LineRenderer placementHint;
+    private static Material hintMaterial;
+    public Vector3 HintCenter => transform.TransformPoint(Vector3.up * .16f);
+    public void ShowPlacementHint(bool show, bool selected, bool valid)
+    {
+        if (!show) { if (placementHint != null) placementHint.enabled=false; return; }
+        if (placementHint == null)
+        {
+            if (hintMaterial == null) hintMaterial=new Material(Shader.Find("Universal Render Pipeline/Unlit")){name="Placement guide"};
+            var go=new GameObject("Placement guide");go.transform.SetParent(transform,false);
+            placementHint=go.AddComponent<LineRenderer>();placementHint.sharedMaterial=hintMaterial;
+            placementHint.useWorldSpace=false;placementHint.loop=true;placementHint.positionCount=4;
+            placementHint.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;placementHint.receiveShadows=false;
+            float x=capacity.x*.47f,z=capacity.z*.47f;
+            placementHint.SetPositions(new[]{new Vector3(-x,.02f,-z),new Vector3(x,.02f,-z),new Vector3(x,.02f,z),new Vector3(-x,.02f,z)});
+        }
+        placementHint.enabled=true;placementHint.widthMultiplier=selected?.012f:.005f;
+        var block=new MaterialPropertyBlock();block.SetColor("_BaseColor",valid?new Color(.2f,1f,.45f):new Color(1f,.2f,.12f));placementHint.SetPropertyBlock(block);
+    }
     public event System.Action<ShopProduct> ProductPlaced;
     public void NotifyProductPlaced(ShopProduct product) => ProductPlaced?.Invoke(product);
     public ShopProduct Occupant => occupant;

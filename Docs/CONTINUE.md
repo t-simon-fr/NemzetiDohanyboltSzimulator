@@ -11,7 +11,15 @@ Mentési pont: 2026. november 2.
 - Játékosi használat: `MVP_GUIDE.md`. Ellenőrzések: `MVP_CHECKS.md`.
 - Iránydokumentum: `Docs/GAME_VISION.md`.
 
-## Legutóbbi javítás – kézzel áthelyezett pult, kisebb eszközök, kasszafiók
+## Legutóbbi javítás – doboz, kézben tartott áru és polcfeltöltés
+
+A szállítódoboz készletlista és a kiválasztott típus/darabszám megjelenítését kapta; az üres doboz és az úton lévő rendelés külön üzenetet ad. A kezdő raktár továbbra is üres, a monitoron kell rendelni. Ha a kiválasztott típusból nincs, de másikból van megérkezett áru, a kivétel automatikusan elérhető típust választ.
+
+A játékos akkor is kézbe veheti az árut, ha a megfelelő polc tele van; a dobozra nézve E-vel visszarakható. A kézben tartott termék magasabban, a vezérlősáv felett látszik, névvel együtt. A megfelelő üres helyeket zöld LineRenderer keret mutatja. A peremre célzás közeli polchelyre illesztést is enged, láthatóságellenőrzéssel. A rossz terméktípus és a foglalt hely továbbra sem fogad árut.
+
+A `PlayerInteractor.RefreshTarget` és `TryPlaceHeld` ugyanazt az interakciót szolgálja ki a billentyűzetből és a valódi jeleneten futó `RestockingChecks.Run` próbából. A dobozba visszarakás darabszámot és helyfoglalást is helyesen rendez. Nem került be ingyenes vagy végtelen készlet.
+
+## Előző javítás – kézzel áthelyezett pult, kisebb eszközök, kasszafiók
 
 A felhasználó szerkesztőben, még nem mentett állapotban mozgatta a pultot és a pultlapot. Ezeket a módosításokat a frissítés előtt elmentettük; helyi biztonsági másolat: `Temp/CounterUpgrade/BeforeFixtures.unity`. A bolt nem lett újragenerálva.
 

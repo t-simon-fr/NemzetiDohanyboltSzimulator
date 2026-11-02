@@ -314,15 +314,37 @@ public sealed class MvpShopController : MonoBehaviour
     {
         product = null;
         if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary || warehouse[type] <= 0) return false;
-        if (!shelfSlots.Where((s,i) => shelfTypes[i] == type).Any(s => s != null && s.isActiveAndEnabled && s.Occupant == null)) { Message = "Előbb szabadíts fel egy polchelyet."; return false; }
         product = CreateProduct(type); product.transform.position = supplyPoint.position + Vector3.up;
         warehouse[type]--; return true;
     }
     public void TakeSupply(PlayerInteractor interactor)
     {
         if (interactor.HasHeldProduct) return;
-        if (!TryCreateSupply(SelectedSupply, out ShopProduct product)) { if(warehouse[SelectedSupply] <= 0) Message = "Ebből nincs áru a dobozban. B – Beszerzés, Q – Másik termék."; return; }
-        if (!interactor.TryHold(product)) { warehouse[SelectedSupply]++; product.RemoveFromWorld(); }
+        if (warehouse[SelectedSupply] == 0)
+        {
+            int available = Array.FindIndex(warehouse, n => n > 0);
+            if (available >= 0 && available < AvailableProducts) SelectedSupply = available;
+        }
+        if (!TryCreateSupply(SelectedSupply, out ShopProduct product))
+        {
+            Message = PendingQuantity(SelectedSupply) > 0
+                ? ShopCatalog.Names[SelectedSupply] + " még úton van. Várd meg a szállítást!"
+                : "A dobozban nincs megérkezett áru. Rendelj a pult bal oldalán lévő monitoron; a szállítás 8 másodperc.";
+            return;
+        }
+        if (!interactor.TryHold(product)) { warehouse[SelectedSupply]++; product.RemoveFromWorld(); return; }
+        Message = "Kézben: " + product.DisplayName + ". A zöld keretek jelzik a megfelelő helyeket. E – lerakás; a doboznál E – visszarakás.";
+    }
+    public bool ReturnSupply(PlayerInteractor interactor)
+    {
+        ShopProduct product = interactor.HeldProduct;
+        int type = product == null ? -1 : ShopCatalog.Index(product.ProductId);
+        if (type < 0 || Phase == ShopPhase.Summary) return false;
+        if (warehouse[type] + PendingQuantity(type) >= 24) { Message = "Ebből a termékből megtelt a szállítódoboz."; return false; }
+        if (!interactor.RemoveHeld(product)) return false;
+        warehouse[type]++; SelectedSupply = type;
+        Message = "Visszatéve a dobozba: " + ShopCatalog.Names[type] + ".";
+        return true;
     }
     public void SetModal(ShopModal modal)
     {

@@ -52,6 +52,12 @@ A vásárlótól kapott pénz felváltható és használható a visszajáróhoz,
 
 A monitoron válaszd a termék háromdarabos csomagját. A költség azonnal levonódik, a szállítás nyolc másodperc. Az áru a jobb hátsó barna dobozba kerül. A dobozra nézve Q-val váltod a terméket, E-vel kiveszel egyet, majd a neki kijelölt üres polchelyre teszed.
 
+A doboz kezdetben üres: a monitoron leadott rendelés nyolc másodperc után válik kivehetővé. A dobozra nézve készletlista mutatja a kiválasztott típust, a darabszámokat és az úton lévő rendeléseket. Ha a kiválasztott típus elfogyott, de másikból van áru, E a rendelkezésre álló terméket veszi kézbe.
+
+A kézben tartott termék a látómező jobb oldalán, a vezérlősáv fölött látszik, a neve is megjelenik. A megfelelő szabad polc- és pulthelyeket zöld keret jelöli. Célozz a keretre vagy a közvetlenül előtte levő polcperemre, majd E-vel tedd le. Foglalt vagy más típushoz tartozó helyre nem lehet lerakni; az áru ilyenkor a kezedben marad.
+
+Tele polc mellett is kiveheted az árut, és a dobozra nézve E-vel visszateheted. A doboz darabszáma csak sikeres kivételkor csökken, visszarakáskor nő.
+
 A polchelyek típushoz kötöttek; a pult átadó- és ideiglenes tárolóhelye többféle árut fogad. A kezdőpolc tele van: az első utánrendelt cigarettákat az eladások után felszabaduló helyekre töltheted fel. A raktár típusonként legfeljebb 24 darabot fogad, a már megrendelt áruval együtt.
 
 | Áru | Eladási ár | Darab beszerzése | 3 db rendelése |
