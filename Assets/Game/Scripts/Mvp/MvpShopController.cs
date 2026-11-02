@@ -54,7 +54,10 @@ public sealed class MvpShopController : MonoBehaviour
     public ShopLayout Layout { get; private set; }
     public int AvailableProducts => Layout != null && Layout.Expanded ? ShopCatalog.Count : 3;
     public int SelectedPieces(int value) => changeCoins.Count(c=>c==value);
-    public bool HasHeldProduct => player != null && player.HasHeldProduct;
+    public bool HasHeldProduct => player != null && player.HasHeldItem;
+    public WarehouseArea Warehouse { get; private set; }
+    public void Notify(string text) => Message=text;
+    public void ConfigureWarehouse(WarehouseArea area) { Warehouse=area;supplyPoint=area.Dock(0); }
 
     public void Configure(PlayerInteractor interactor, ProductSlot tray, GameObject template, ProductSlot[] slots, int[] types, Material[] materials, Transform crate, Transform till)
     {
@@ -66,7 +69,7 @@ public sealed class MvpShopController : MonoBehaviour
     {
         delivery = tray; tillPoint = till;
     }
-    private void Awake() { Instance = this; Counter = FindAnyObjectByType<CounterLayout>(); Devices = GetComponent<ShopDevices>(); Layout = GetComponent<ShopLayout>(); }
+    private void Awake() { Instance = this; Warehouse=GetComponent<WarehouseArea>(); Counter = FindAnyObjectByType<CounterLayout>(); Devices = GetComponent<ShopDevices>(); Layout = GetComponent<ShopLayout>(); }
     private void OnEnable() { if (delivery != null) delivery.ProductPlaced += OnDelivery; }
     private void OnDisable()
     {
@@ -112,8 +115,8 @@ public sealed class MvpShopController : MonoBehaviour
         {
             shipments[i].Remaining -= dt;
             if (shipments[i].Remaining > 0f) continue;
-            warehouse[shipments[i].Type] += shipments[i].Quantity;
-            Message = "Megérkezett: " + shipments[i].Quantity + " × " + ShopCatalog.Names[shipments[i].Type] + ". Vedd ki a hátsó dobozból!";
+            warehouse[shipments[i].Type] += shipments[i].Quantity; Warehouse?.SyncBoxes();
+            Message = "Megérkezett: " + shipments[i].Quantity + " × " + ShopCatalog.Names[shipments[i].Type] + ". A raktárban megtalálod a márka dobozában!";
             shipments.RemoveAt(i);
         }
         if (Modal != ShopModal.None || (Devices != null && Devices.Focused) || Phase == ShopPhase.Preparing) return;
@@ -250,6 +253,7 @@ public sealed class MvpShopController : MonoBehaviour
     private void FinishDay()
     {
         foreach (Shipment order in shipments) warehouse[order.Type] += order.Quantity;
+        Warehouse?.SyncBoxes();
         shipments.Clear(); ClosePanel(); Drawer.Spend(Mathf.Min(300,Drawer.Total)); Ledger.Close(300); Phase = ShopPhase.Summary; SetModal(ShopModal.Summary);
     }
     public void NextDay()
@@ -271,7 +275,7 @@ public sealed class MvpShopController : MonoBehaviour
         foreach (MvpCustomerActor actor in queue.Concat(departing)) if (actor != null) { actor.ReturnBasket(); Destroy(actor.gameObject); }
         queue.Clear(); departing.Clear(); active = null;
         foreach (ShopProduct item in stock) if (item != null) item.RemoveFromWorld();
-        stock.Clear(); shipments.Clear(); Array.Clear(warehouse,0,warehouse.Length);
+        stock.Clear(); shipments.Clear(); Array.Clear(warehouse,0,warehouse.Length); Warehouse?.ResetStorage();
         ClosePanel(); if (Layout != null) Layout.SetExpanded(false);
         SelectedSupply = 0; Day = 1; Ledger = new ShopLedger(6000); Drawer = new ShopCashDrawer();
         for (int type = 0; type < 3; type++)
@@ -314,13 +318,16 @@ public sealed class MvpShopController : MonoBehaviour
     {
         product = null;
         if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary || warehouse[type] <= 0) return false;
-        product = CreateProduct(type); product.transform.position = supplyPoint.position + Vector3.up;
-        warehouse[type]--; return true;
+        product = CreateProduct(type); product.transform.position = (Warehouse!=null ? Warehouse.Dock(type).position : supplyPoint.position) + Vector3.up*.25f;
+        warehouse[type]--; Warehouse?.SyncBoxes(); return true;
     }
-    public void TakeSupply(PlayerInteractor interactor)
+    public void TakeSupply(PlayerInteractor interactor) => TakeSupply(interactor,-1);
+    public void TakeSupply(PlayerInteractor interactor,int brand)
     {
-        if (interactor.HasHeldProduct) return;
-        if (warehouse[SelectedSupply] == 0)
+        if (interactor.HasHeldItem) return;
+        if (brand>=0 && brand<AvailableProducts) SelectedSupply=brand;
+        else if (brand>=AvailableProducts) { Message="Ez a márka a boltbővítés után rendelhető.";return; }
+        if (brand<0 && warehouse[SelectedSupply] == 0)
         {
             int available = Array.FindIndex(warehouse, n => n > 0);
             if (available >= 0 && available < AvailableProducts) SelectedSupply = available;
@@ -332,17 +339,18 @@ public sealed class MvpShopController : MonoBehaviour
                 : "A dobozban nincs megérkezett áru. Rendelj a pult bal oldalán lévő monitoron; a szállítás 8 másodperc.";
             return;
         }
-        if (!interactor.TryHold(product)) { warehouse[SelectedSupply]++; product.RemoveFromWorld(); return; }
+        if (!interactor.TryHold(product)) { warehouse[SelectedSupply]++; product.RemoveFromWorld(); Warehouse?.SyncBoxes(); return; }
         Message = "Kézben: " + product.DisplayName + ". A zöld keretek jelzik a megfelelő helyeket. E – lerakás; a doboznál E – visszarakás.";
     }
-    public bool ReturnSupply(PlayerInteractor interactor)
+    public bool ReturnSupply(PlayerInteractor interactor,int brand=-1)
     {
         ShopProduct product = interactor.HeldProduct;
         int type = product == null ? -1 : ShopCatalog.Index(product.ProductId);
         if (type < 0 || Phase == ShopPhase.Summary) return false;
+        if (brand>=0 && brand!=type) { Message="Ez másik márka doboza. Keresd a "+ShopCatalog.Names[type]+" feliratot.";return false; }
         if (warehouse[type] + PendingQuantity(type) >= 24) { Message = "Ebből a termékből megtelt a szállítódoboz."; return false; }
         if (!interactor.RemoveHeld(product)) return false;
-        warehouse[type]++; SelectedSupply = type;
+        warehouse[type]++; SelectedSupply = type; Warehouse?.SyncBoxes();
         Message = "Visszatéve a dobozba: " + ShopCatalog.Names[type] + ".";
         return true;
     }

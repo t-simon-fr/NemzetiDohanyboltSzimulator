@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using UnityEngine;
 
@@ -30,7 +30,7 @@ public static class RestockingChecks
     {
         checks=0;game=MvpShopController.Instance;player=UnityEngine.Object.FindAnyObjectByType<PlayerInteractor>();
         game.ManualTick=true;game.ResetDemo();game.ClosePanel();
-        var station=GameObject.Find("Supply Crate").GetComponent<ShopStation>();
+        var station=game.Warehouse.Dock(0).GetComponent<ShopStation>();
         try
         {
             station.Use(player);Require(!player.HasHeldProduct&&game.WarehouseCount(0)==0,"Empty crate does not create free stock");
@@ -38,7 +38,7 @@ public static class RestockingChecks
             Require(game.OrderSupply(0),"Order a paid cigarette pack");
             station.Use(player);Require(!player.HasHeldProduct&&game.Message.Contains("úton"),"Pending shipment is distinguished from missing stock");
             game.Tick(8.1f);game.CycleSupply();station.Use(player);
-            Require(player.HasHeldProduct&&player.HeldProduct.ProductId=="cig_red"&&game.SelectedSupply==0&&game.WarehouseCount(0)==2,"Taking switches from empty type to available delivered stock");
+            Require(player.HasHeldProduct&&player.HeldProduct.ProductId=="cig_red"&&game.SelectedSupply==0&&game.WarehouseCount(0)==2,"Brand dock dispenses its delivered stock");
             VisibleInHand();
             station.Use(player);Require(!player.HasHeldProduct&&game.WarehouseCount(0)==3&&game.StockCount(0)==8,"Return carried supply to crate without losing or duplicating stock");
             var old=UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="cig_red");ProductSlot source=old.CurrentSlot;
@@ -62,7 +62,7 @@ public static class RestockingChecks
             var wrong=UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant!=null&&s.Occupant.ProductId=="cig_blue");
             player.RefreshTarget(Aim(wrong));Require(player.TargetSlot==wrong&&!player.CanPlaceHeld&&!player.TryPlaceHeld(),"Wrong product type is rejected by real targeting");
             station.Use(player);Require(!player.HasHeldProduct&&game.WarehouseCount(0)==2,"Failed placement remains recoverable by returning to crate");
-            game.ResetDemo();game.ClosePanel();Require(game.TryExpand()&&game.OrderSupply(3),"Prepare larger convenience item");game.Tick(8.1f);station.Use(player);
+            game.ResetDemo();game.ClosePanel();Require(game.TryExpand()&&game.OrderSupply(3),"Prepare larger convenience item");game.Tick(8.1f);station=game.Warehouse.Dock(3).GetComponent<ShopStation>();station.Use(player);
             Require(player.HasHeldProduct&&player.HeldProduct.ProductId=="water","Convenience stock can be carried too");VisibleInHand();
             Require(station.Contents.Contains("Buborék ásványvíz: 2 db"),"Crate list reflects removed convenience unit");
             return new{passed=checks,failed=0};

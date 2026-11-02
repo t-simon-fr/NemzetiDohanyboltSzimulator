@@ -70,14 +70,14 @@ public sealed class MvpShopHud : MonoBehaviour
         GUILayout.Space(22);
         Label("A pult mögötti polcon három kitalált cigarettamárka várja a vásárlókat: Pannon Piros, Duna Kék és Alföld Arany.");
         GUILayout.Space(14);Label("E-vel vedd fel a kért dobozt, és tedd a kék átadóhelyre. A pénztárgépből valódi magyar címletértékű bankjegyeket és érméket kattints ki a visszajáróhoz, majd nyomd meg az ÁTADÁS gombot.");
-        GUILayout.Space(14);Label("A pult bal oldalán levő monitoron rendelhetsz utánpótlást és vehetsz boltbővítést. A szállítódobozból E-vel veszed ki az árut; Q váltja a típust.");
+        GUILayout.Space(14);Label("A pult bal oldalán levő monitoron rendelhetsz utánpótlást és vehetsz boltbővítést. A kassza felőli falon nyíló raktárban márkánként külön dobozból veheted ki és teheted vissza az árut E-vel. Az üres kartonokat a hátsó udvar papírgyűjtőjébe viheted.");
         GUILayout.Space(14);Label("A bővítés új önkiszolgáló polcokat nyit. Ezekről a vásárlók maguk veszik le a vizet, rágót és sört, majd ugyanahhoz a pulthoz jönnek fizetni.");
         GUILayout.FlexibleSpace();if(Button("Körülnézek és felkészülök"))shop.ClosePanel();if(Button("Kinyitom a boltot"))shop.OpenShop();if(Button("Kilépés"))Quit();
     }
     private void Help()
     {
         Label("Műszaksegéd",true);
-        Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a monitor közelében: beszerzés és bővítés\nE a kasszán / F: fizetés a pénztárgépen\nQ a szállítódoboznál: másik árutípus\nO: nyitás vagy korai zárás • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
+        Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a monitor közelében: beszerzés és bővítés\nE a kasszán / F: fizetés a pénztárgépen\nRaktári márkadoboznál E: kivétel vagy visszarakás\nÜres kartonon E: felvétel • Papírgyűjtőn E: kidobás\nO: nyitás vagy korai zárás • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
         GUILayout.Space(14);Label("A kasszában a rekeszekre kattintva egy bankjegyet vagy érmét veszel ki. A kivett darabok a tálcára kerülnek. Vissza: egy darab visszatétele. Törlés: az egész visszajáró visszarakása. Váltás: nagy címlet felváltása kisebbekre. Átadás: fizetés lezárása.");
         GUILayout.Space(14);Label("Bővíteni 2000 Ft-ért, nyitás előtt lehet. A monitor és a kassza használata közben a vásárlók várakozása szünetel. A készletet neked kell feltöltened az új polcokon is.");
         GUILayout.FlexibleSpace();if(Button("Vissza a boltba"))shop.ClosePanel();

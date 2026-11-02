@@ -11,7 +11,21 @@ Mentési pont: 2026. november 2.
 - Játékosi használat: `MVP_GUIDE.md`. Ellenőrzések: `MVP_CHECKS.md`.
 - Iránydokumentum: `Docs/GAME_VISION.md`.
 
-## Legutóbbi javítás – doboz, kézben tartott áru és polcfeltöltés
+## Legutóbbi fejlesztés – kasszaoldali raktár, márkadobozok és hátsó udvar
+
+A bolt megtartásával hozzáépült egy 3,5 × 4 méteres raktár a kassza felőli, világkoordináta szerinti bal oldalfal mögött. A régi `Left wall` inaktív maradt meg, a résfalak 1,3 méteres nyílást hagynak. A raktárból hátul kis, kerített udvarra lehet kimenni a nagy zöld papírgyűjtőhöz. A pult, a kézi pultlap-igazítások és a meglévő polcok nem lettek újraépítve. Biztonsági másolat a hozzáépítés előtti jelenetről: `Temp/Warehouse/BeforeWarehouse.unity`.
+
+Mind a hat terméktípus saját, feliratozott `Brand Dock` helyet kapott. A megérkezett készlet a saját márka kartonjában jelenik meg; a típust most a konkrét doboz választja ki, nem Q. Egy márka raktári darabszámát egy doboz fogja össze, a plafon 24 darab. Az első megérkező áru vagy visszatett termék létrehozza a dobozt. A víz/rágó/sör beszerzése továbbra is boltbővítéshez kötött.
+
+E a dobozon terméket vesz ki; kézben levő termékkel a megfelelő dobozon E visszarakja. A rossz márka nem fogadja el. A kiürült karton E-vel kézbe vehető és a hátsó kukánál E-vel kidobható. Teli karton és eladható áru nem dobható ki. Ha az üres karton hordozása közben új szállítmány érkezik, az új doboz külön jön létre, a régi kidobása nem töröl készletet.
+
+Fő kód: `WarehouseArea` (fizikai dobozok és dokkok), `WarehouseCarton` (üres csomagolás és megjelenített mennyiség), `WarehouseBin` (papírgyűjtő), a márkához köthető `ShopStation` és a kibővített `PlayerInteractor`. A készlet továbbra is a műszakvezérlőben van, a kartonok ezt jelenítik meg. Napváltás megőrzi a raktárt és a csomagolást, új játék törli az új dobozokat és a kukaszámlálót.
+
+Szerkesztői hozzáadás: **Nemzeti Dohánybolt > Add Warehouse And Rear Yard**; meglévő raktár esetén nem generálja újra. A `Build Compact Shop` is hozzáadja az új alapelrendezéshez. A `Warehouse And Rear Yard` csoport a jelenetben átrendezhető; a dobozok a hivatkozott dokkokhoz igazodnak.
+
+Próbák: `WarehouseChecks.InventoryAndTrash`, `WarehouseChecks.WalkingRoute`. Az aktuális összesített eredmény a `MVP_CHECKS.md` fájlban van.
+
+## Előző javítás – doboz, kézben tartott áru és polcfeltöltés
 
 A szállítódoboz készletlista és a kiválasztott típus/darabszám megjelenítését kapta; az üres doboz és az úton lévő rendelés külön üzenetet ad. A kezdő raktár továbbra is üres, a monitoron kell rendelni. Ha a kiválasztott típusból nincs, de másikból van megérkezett áru, a kivétel automatikusan elérhető típust választ.
 

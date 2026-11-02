@@ -4,6 +4,8 @@
 
 Az összefüggő nyolcvásárlós MVP a kompakt boltra épül: három fiktív cigarettamárkával feltöltött kezdőpolc, játékbeli rendelési monitor a pult bal oldalán, fizikai kassza magyar címletekkel, kézi polcfeltöltés, zárás és elszámolás. Egy megvehető bővítésben víz, rágó és sör önkiszolgáló polcai nyílnak meg; a vásárlók innen gyűjtik be az árut, majd a változatlan helyű pulthoz mennek fizetni.
 
+A kassza felőli fal mögött kis raktár és hátsó udvar is működik. A megrendelt készlet márkánként külön kartonba érkezik; a játékos innen tölti fel a polcokat, és ide hozhat vissza termékeket. Az üres kartonokat a raktáron át lehet kivinni a hátsó papírgyűjtőbe.
+
 A használat és a pontos szabályok a [MVP_GUIDE.md](../MVP_GUIDE.md) fájlban találhatók. A látvány és a mozgás még próbamodell. A tartós mentés, a többfokozatú bővítés és az ellenőri/hiteles/lopási helyzetek későbbi feladatok. A következő lépés a játékosi kipróbálás és a tempó, gazdaság, kezelés és humor finomítása.
 
 ## A dokumentum célja

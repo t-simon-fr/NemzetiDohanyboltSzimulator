@@ -4,8 +4,14 @@ A használati útmutató: [MVP_GUIDE.md](../../MVP_GUIDE.md). Játékirány: [Do
 
 A `Scenes/ShopPrototype.unity` a kompakt, cigarettával induló bolt. A bal oldali monitor beszerzésre és bővítésre használható, a kasszából darabonként vehető ki magyar címletértékű pénz. A bővített rész polcairól a vásárlók maguk gyűjtik be az árut.
 
+A kassza felőli oldalfalon nyíló raktárban minden márkának külön kartonja van. Innen vihető a termék a boltba és vissza. A kiürült karton a raktár hátsó kijáratán át a nagy papírgyűjtőhöz hordható.
+
 ## Forráskód
 
+- `Editor/WarehouseSetup.cs`: raktár, hat márkadokk, átjárók, hátsó udvar és papírgyűjtő hozzáadása a meglevő bolthoz.
+- `Scripts/Mvp/WarehouseArea.cs`: raktári kartonok létrehozása és állapota.
+- `Scripts/Mvp/WarehouseCarton.cs`: márkánkénti doboz és hordozható üres csomagolás.
+- `Scripts/Mvp/WarehouseBin.cs`: üres kartonok kidobása, termékek védelme.
 - `Editor/CounterFixtureSetup.cs`: meglévő, kézzel szerkesztett pult felszerelésének igazítása; a bolt többi része megmarad.
 - `Scripts/Mvp/CounterLayout.cs`: mozgatható pultcsoport és vásárlói megállási/sorhelyek.
 - `Scripts/Mvp/CashRegisterDrawer.cs`: pénzfiók nyitás-zárás és kattintás tiltása mozgás közben.

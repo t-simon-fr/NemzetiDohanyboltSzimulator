@@ -12,7 +12,7 @@ A jelenet már el van mentve. A **Nemzeti Dohánybolt > Build Compact Shop** men
 
 A kezdő helyiség 5 × 6,3 méter. A pult és a pultlap a kézzel beállított új helyén maradt; a bővítés ezt a helyet őrzi meg. A hátad mögötti polcon három kitalált cigarettamárkából nyolc-nyolc doboz van. A pénztár 6000 Ft-tal indul. A bal és jobb oldal az eladó nézőpontjából értendő.
 
-A pult bal oldalán a beszerzési monitor, jobb oldalán a pénztárgép áll. Középen a kék átadóhelyre kell tenni a vásárló által kért cigarettát. Az áru csak a sikeres fizetéskor fogy el a készletből.
+A pult bal oldalán a beszerzési monitor, jobb oldalán a pénztárgép áll. A kassza felőli falon a RAKTÁR felirat jelzi az új átjárót. Középen a kék átadóhelyre kell tenni a vásárló által kért cigarettát. Az áru csak a sikeres fizetéskor fogy el a készletből.
 
 ## Vezérlés
 
@@ -22,7 +22,6 @@ A pult bal oldalán a beszerzési monitor, jobb oldalán a pénztárgép áll. K
 | E | Áru felvétele/lerakása, monitor, kassza, szállítódoboz vagy nyitástábla használata |
 | B | A közeli rendelési monitor használata |
 | F | A közeli pénztárgép használata fizetés közben |
-| Q a doboznál | Kivett terméktípus váltása |
 | O | Nyitás vagy korai zárás kérése |
 | X | Az aktuális vásárló elküldése |
 | H | Súgó |
@@ -48,17 +47,19 @@ Címletek: 20 000, 10 000, 5000, 2000, 1000, 500 Ft-os bankjegyek; 200, 100, 50,
 
 A vásárlótól kapott pénz felváltható és használható a visszajáróhoz, de az eladás lezárásáig külön van nyilvántartva. Elküldéskor visszajár a vásárlónak; az önkiszolgáló áru is visszakerül az eredeti polchelyre. A kassza és a készlet csak sikeres fizetéskor könyvel el eladást.
 
-## Monitor, rendelés és polcfeltöltés
+## Monitor, raktár és polcfeltöltés
 
-A monitoron válaszd a termék háromdarabos csomagját. A költség azonnal levonódik, a szállítás nyolc másodperc. Az áru a jobb hátsó barna dobozba kerül. A dobozra nézve Q-val váltod a terméket, E-vel kiveszel egyet, majd a neki kijelölt üres polchelyre teszed.
+A monitoron válaszd a termék háromdarabos csomagját. A költség azonnal levonódik, a szállítás nyolc másodperc. Az áru a **kassza felőli oldalfalon nyíló raktárba** érkezik. A raktár az alapbolt része, nem kell külön megvenni.
 
-A doboz kezdetben üres: a monitoron leadott rendelés nyolc másodperc után válik kivehetővé. A dobozra nézve készletlista mutatja a kiválasztott típust, a darabszámokat és az úton lévő rendeléseket. Ha a kiválasztott típus elfogyott, de másikból van áru, E a rendelkezésre álló terméket veszi kézbe.
+A raktárban mind a hat termékmárkának saját, feliratozott dobozhelye van. Egy márka összes megérkezett raktári készletét a saját kartondoboza fogja össze. Az üres helyre az első beérkezett szállítmány hoz dobozt; a benne maradó termékek száma a dobozon és célzáskor a készletjelzésben látható. A víz, rágó és sör továbbra is a boltbővítés után rendelhető.
 
-A kézben tartott termék a látómező jobb oldalán, a vezérlősáv fölött látszik, a neve is megjelenik. A megfelelő szabad polc- és pulthelyeket zöld keret jelöli. Célozz a keretre vagy a közvetlenül előtte levő polcperemre, majd E-vel tedd le. Foglalt vagy más típushoz tartozó helyre nem lehet lerakni; az áru ilyenkor a kezedben marad.
+- **E a teli márkadobozon:** egy termék kézbe vétele.
+- **E ugyanannak a márkának a dobozán/helyén, termékkel a kézben:** visszapakolás a raktárba.
+- **E zöld polc- vagy pulthelyre célozva:** a kézben tartott termék lerakása.
 
-Tele polc mellett is kiveheted az árut, és a dobozra nézve E-vel visszateheted. A doboz darabszáma csak sikeres kivételkor csökken, visszarakáskor nő.
+A másik márka doboza nem fogadja el az árut. Tele polc mellett is kivehetsz terméket, majd visszateheted a megfelelő raktári helyre. A csomag a látómező jobb oldalán, a vezérlősáv fölött látszik, névvel együtt. A polc peremére célzás közeli, szabad termékhelyet is kiválaszt. Foglalt vagy rossz típusú helyre nem lehet lerakni; az áru ilyenkor a kezedben marad.
 
-A polchelyek típushoz kötöttek; a pult átadó- és ideiglenes tárolóhelye többféle árut fogad. A kezdőpolc tele van: az első utánrendelt cigarettákat az eladások után felszabaduló helyekre töltheted fel. A raktár típusonként legfeljebb 24 darabot fogad, a már megrendelt áruval együtt.
+A polchelyek típushoz kötöttek, a pult átadó- és ideiglenes tárolóhelye többféle árut fogad. A kezdőpolc tele van: az első utánrendelt cigarettákat az eladások után felszabaduló helyekre töltheted fel. A raktár típusonként legfeljebb 24 darabot fogad, a már megrendelt áruval együtt.
 
 | Áru | Eladási ár | Darab beszerzése | 3 db rendelése |
 |---|---:|---:|---:|
@@ -70,6 +71,14 @@ A polchelyek típushoz kötöttek; a pult átadó- és ideiglenes tárolóhelye 
 | Pirkadat sör | 550 Ft | 260 Ft | 780 Ft |
 
 Ezek a prototípus saját gazdasági beállításai.
+
+## Üres kartonok és hátsó papírgyűjtő
+
+Ha egy kartonból az utolsó terméket is kivetted, a doboz ott marad **ÜRES KARTON** felirattal. Előbb tedd le a kezedben levő árut, aztán E-vel felveheted magát a kartondobozt.
+
+A raktár hátsó nyílásán ki lehet menni a kis, körbekerített udvarra. A nagy zöld **PAPÍRGYŰJTŐ** kukára célozva E-vel kidobhatod az üres kartont. A kuka számolja az eltávolított dobozokat. Terméket vagy teli kartont nem enged kidobni.
+
+Az üres karton visszavihető a saját márkájának raktári helyére. Ha közben új áru érkezett oda, a régi, üres csomagolás külön marad: a régi karton kidobása az új készletet nem érinti. A raktár és a kuka állapota napváltáskor megmarad, új játéknál visszaáll.
 
 ## Boltbővítés és önkiszolgálás
 
