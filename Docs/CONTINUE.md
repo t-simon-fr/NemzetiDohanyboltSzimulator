@@ -1,6 +1,6 @@
 # Folytatás innen
 
-Mentési pont: 2026. november 2.
+Mentési pont: 2026. november 3.
 
 ## Projekt
 
@@ -10,6 +10,14 @@ Mentési pont: 2026. november 2.
 - Windows-változat: `Builds/MVP/NemzetiDohanyboltSzimulator.exe`.
 - Játékosi használat: `MVP_GUIDE.md`. Ellenőrzések: `MVP_CHECKS.md`.
 - Iránydokumentum: `Docs/GAME_VISION.md`.
+
+## TobaccOS – aktuális számítógép
+
+A számítógép új TobaccOS asztalt, képes **Árurendelés** és **Üzletfejlesztés** alkalmazást kapott. A termékekből 1–12 darab választható; az összeg a kiválasztott mennyiség beszerzési ára. Kezdőboltban kizárólag a négy cigarettamárka jelenik meg. A ReturAqua, Loca Cola és Hamster Energy neve, képe és kattintási célpontja csak a megvásárolt önkiszolgáló bővítés után látható. Az áru nyolc másodperc után a megfelelő raktári kartonba érkezik.
+
+A meglévő bővítés és extra cigarettapolc megmaradt. Új bútorbolt, bútor-elhelyezés és személyre szabás későbbi feladat; ezeket most nem implementáltuk. Aktuális működés, továbbfejlesztési határok és ellenőrzési parancsok: `Docs/TobaccOS.md`. A korábbi szakaszokban szereplő hattermékes katalógus és régi alkalmazásnevek történeti előzmények.
+
+Unity-próbák: **585 sikeres ellenőrzés**, benne az új `TobaccOSChecks.Run` 83 ellenőrzésével. Jelentés: `Builds/TobaccOSPreview/checks.json`. Az új WebGL-build és a publikált változat böngészős ellenőrzését a `Tools/Verify-WebGL.cjs --tobaccos` munkafolyamat támogatja. A publikus repó kizárólag a lefordított játékfájlokat tartalmazza.
 
 ## Legutóbbi fejlesztés – raktári polcok, dobozból feltöltés, számítógépes alkalmazások
 

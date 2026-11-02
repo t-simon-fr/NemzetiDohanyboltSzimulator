@@ -33,12 +33,16 @@ public static class ProductVisuals
     {
         if(fontMaterial!=null && font==Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"))fontMaterial.mainTexture=font.material.mainTexture;
     }
+    private static readonly string[] ModelPaths = { "CigarettePacks/LuckyStroke", "CigarettePacks/Marlbroke", "CigarettePacks/Downhill", "CigarettePacks/Davidon", "Drinks/ReturAqua", "Drinks/LocaCola", "Drinks/HamsterEnergy" };
+    public static GameObject LoadModel(int type)
+    {
+        if (type < 0 || type >= ModelPaths.Length) throw new System.ArgumentOutOfRangeException(nameof(type));
+        return Resources.Load<GameObject>(ModelPaths[type]);
+    }
     public static void Add(GameObject item,int type)
     {
         // Product roots retain their interaction collider; prefabs contain only visual meshes.
-        string[] models = { "CigarettePacks/LuckyStroke", "CigarettePacks/Marlbroke", "CigarettePacks/Downhill", "CigarettePacks/Davidon", "Drinks/ReturAqua", "Drinks/LocaCola", "Drinks/HamsterEnergy" };
-        if (type < 0 || type >= models.Length) throw new System.ArgumentOutOfRangeException(nameof(type));
-        var prefab = Resources.Load<GameObject>(models[type]);
+        var prefab = LoadModel(type);
         if (prefab != null)
         {
             var model = Object.Instantiate(prefab, item.transform, false);
@@ -49,7 +53,7 @@ public static class ProductVisuals
             if (oldRenderer != null) oldRenderer.enabled = false;
             return;
         }
-        Debug.LogError("Missing product packaging prefab: " + models[type]);
+        Debug.LogError("Missing product packaging prefab for " + ShopCatalog.Names[type]);
         Transform face=new GameObject("Package print").transform;face.SetParent(item.transform,false);
         face.localPosition=new Vector3(0,0,-.506f);face.localRotation=Quaternion.identity;
         string label=ShopCatalog.IsCigarette(type)?ShopCatalog.Names[type].Replace(" ","\n")+"\n\n18+\nA dohányzás káros":ShopCatalog.ShortNames[type];

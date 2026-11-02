@@ -5,6 +5,7 @@ public static class ShopCatalog
 {
     public const int Count = 7;
     public const int CigaretteCount = 4;
+    public const int MaxOrderQuantity = 12;
     public static bool IsCigarette(int type) => type >= 0 && type < CigaretteCount;
     public static readonly string[] Ids = { "cig_red", "cig_blue", "cig_gold", "cig_davidon", "water", "cola", "energy" };
     public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy" };

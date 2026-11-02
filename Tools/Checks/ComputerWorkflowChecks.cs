@@ -31,8 +31,8 @@ public static class ComputerWorkflowChecks
             game.OpenSupplier();Require(devices.FocusKind==ShopDeviceKind.Monitor&&devices.ComputerApp==ShopComputerApp.Desktop,"B opens desktop from a forgiving distance without precise aiming");
             Require(!UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Any(c=>c.Kind==WorldControlKind.Order||c.Kind==WorldControlKind.Expand),"Desktop only exposes app shortcuts, no hidden purchase clicks");
             Click(WorldControlKind.OpenApp,(int)ShopComputerApp.Orders);
-            Require(devices.ComputerApp==ShopComputerApp.Orders&&UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Count(c=>c.Kind==WorldControlKind.Order)==ShopCatalog.Count,"Order app has all seven brands");
-            foreach (int brand in Enumerable.Range(0,ShopCatalog.Count))
+            Require(devices.ComputerApp==ShopComputerApp.Orders&&UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Count(c=>c.Kind==WorldControlKind.Order)==game.AvailableProducts,"Order app shows only available products");
+            foreach (int brand in Enumerable.Range(0,game.AvailableProducts))
             {
                 var control = Control(WorldControlKind.Order,brand); var screen = Camera.main.WorldToScreenPoint(control.transform.position); Physics.SyncTransforms();
                 Require(screen.z>0&&screen.x>0&&screen.x<Camera.main.pixelWidth&&screen.y>0&&screen.y<Camera.main.pixelHeight,"Every order button visible");

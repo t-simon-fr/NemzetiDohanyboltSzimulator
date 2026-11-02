@@ -12,7 +12,8 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   let server, browser, ws;
   const messages = [];
   try {
-    let url = process.argv[2];
+    const requestedUrl = process.argv.slice(2).find(value => !value.startsWith('--'));
+    let url = requestedUrl;
     if (!url) {
       const root = path.resolve('Builds/WebGL');
       server = http.createServer((req, res) => {
@@ -46,16 +47,33 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
       else if (m.method === 'Page.javascriptDialogOpening') { messages.push({ type: 'dialog', text: m.params.message }); send('Page.handleJavaScriptDialog', { accept: true }); }
     };
     await send('Runtime.enable'); await send('Page.enable'); await send('Page.bringToFront'); await send('Emulation.setFocusEmulationEnabled', { enabled: true }); await send('Page.navigate', { url }); await sleep(35000);
-    // First menu button enters preparation mode in the standard 960 x 600 player.
-    const click = { x: 632, y: 488, button: 'left', clickCount: 1 };
-    await send('Input.dispatchMouseEvent', { ...click, type: 'mousePressed' });
-    await send('Input.dispatchMouseEvent', { ...click, type: 'mouseReleased' }); await sleep(3000);
-    const screenshot = await send('Page.captureScreenshot', { format: 'png' });
-    const label = process.argv[2] ? 'live' : 'local';
-    fs.writeFileSync(path.join(output, label + '.png'), Buffer.from(screenshot.data, 'base64'));
+    const boundsResult = await send('Runtime.evaluate', { expression: 'JSON.stringify(document.querySelector("canvas").getBoundingClientRect().toJSON())', returnByValue: true });
+    const bounds = JSON.parse(boundsResult.result.value);
+    const clickAt = async (x, y) => {
+      const click = { x: bounds.x + bounds.width*x, y: bounds.y + bounds.height*y, button: 'left', clickCount: 1 };
+      await send('Input.dispatchMouseEvent', { ...click, type: 'mousePressed' });
+      await send('Input.dispatchMouseEvent', { ...click, type: 'mouseReleased' }); await sleep(500);
+    };
+    const label = requestedUrl ? 'live' : 'local'; const saved = [];
+    const capture = async suffix => {
+      const screenshot = await send('Page.captureScreenshot', { format: 'png' });
+      const file = path.join(output, label + (suffix ? '-' + suffix : '') + '.png');
+      fs.writeFileSync(file, Buffer.from(screenshot.data, 'base64')); saved.push(file);
+    };
+    // The first welcome button is anchored above the last two buttons.
+    await clickAt(.5, .72); await sleep(2500); await capture('');
+    if (process.argv.includes('--tobaccos')) {
+      await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'b', code: 'KeyB', windowsVirtualKeyCode: 66 }); await sleep(100);
+      await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'b', code: 'KeyB', windowsVirtualKeyCode: 66 }); await sleep(1500);
+      await capture('tobaccos-desktop');
+      await clickAt(.27, .49); await sleep(1000); await capture('tobaccos-starter');
+      await clickAt(.49, .30); await clickAt(.27, .38); await sleep(9200); await capture('tobaccos-arrival');
+      await clickAt(.27, .835); await clickAt(.73, .49); await clickAt(.5, .515);
+      await clickAt(.27, .835); await clickAt(.27, .49); await sleep(1000); await capture('tobaccos-expanded');
+    }
     fs.writeFileSync(path.join(output, label + '-console.json'), JSON.stringify(messages, null, 2));
     const errors = messages.filter(m => ['error', 'exception', 'dialog'].includes(m.type));
-    console.log(JSON.stringify({ url, screenshot: path.join(output, label + '.png'), errors }, null, 2));
+    console.log(JSON.stringify({ url, screenshots: saved, errors }, null, 2));
     if (errors.length) process.exitCode = 1;
   } finally { ws?.close(); browser?.kill(); server?.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
