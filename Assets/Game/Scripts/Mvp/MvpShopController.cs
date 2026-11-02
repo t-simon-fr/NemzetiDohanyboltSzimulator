@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -276,7 +276,7 @@ public sealed class MvpShopController : MonoBehaviour
         queue.Clear(); departing.Clear(); active = null;
         foreach (ShopProduct item in stock) if (item != null) item.RemoveFromWorld();
         stock.Clear(); shipments.Clear(); Array.Clear(warehouse,0,warehouse.Length); Warehouse?.ResetStorage();
-        ClosePanel(); if (Layout != null) Layout.SetExpanded(false);
+        ClosePanel(); if (Layout != null) { Layout.SetExpanded(false); Layout.SetExtraShelf(false); }
         SelectedSupply = 0; Day = 1; Ledger = new ShopLedger(6000); Drawer = new ShopCashDrawer();
         for (int type = 0; type < 3; type++)
         {
@@ -320,6 +320,16 @@ public sealed class MvpShopController : MonoBehaviour
         if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary || warehouse[type] <= 0) return false;
         product = CreateProduct(type); product.transform.position = (Warehouse!=null ? Warehouse.Dock(type).position : supplyPoint.position) + Vector3.up*.25f;
         warehouse[type]--; Warehouse?.SyncBoxes(); return true;
+    }
+    public bool StockFromCarton(WarehouseCarton carton,ProductSlot slot)
+    {
+        if(carton==null||!carton.IsHeld||Phase==ShopPhase.Summary||!carton.CanPlace(slot)||warehouse[carton.ProductType]<=0)return false;
+        var product=CreateProduct(carton.ProductType);
+        if(!product.AssignInitialSlot(slot)){product.RemoveFromWorld();return false;}
+        warehouse[carton.ProductType]--;carton.AdjustQuantity(-1);
+        slot.NotifyProductPlaced(product);
+        Message=product.DisplayName+" a polcon. A dobozban még "+carton.Quantity+" db.";
+        return true;
     }
     public void TakeSupply(PlayerInteractor interactor) => TakeSupply(interactor,-1);
     public void TakeSupply(PlayerInteractor interactor,int brand)
@@ -367,7 +377,7 @@ public sealed class MvpShopController : MonoBehaviour
     {
         if (Devices == null || Phase == ShopPhase.Summary) return;
         if (HasHeldProduct) { Message = "Előbb tedd le a kezedben levő árut."; return; }
-        if (Vector3.Distance(player.GetComponentInChildren<Camera>().transform.position, Devices.MonitorPosition) > 2.5f) { Message = "Menj a pult bal oldalán levő monitorhoz."; return; }
+        if (Vector3.Distance(player.GetComponentInChildren<Camera>().transform.position, Devices.MonitorPosition) > 3.5f) { Message = "Menj a pult közelébe; B – számítógép."; return; }
         Devices.Focus(ShopDeviceKind.Monitor);
     }
     public bool TryExpand()
@@ -377,6 +387,13 @@ public sealed class MvpShopController : MonoBehaviour
         Drawer.Spend(ShopLayout.ExpansionPrice); Layout.SetExpanded(true);
         Message = "Megnyílt az önkiszolgáló rész! Rendelj árut, és töltsd fel az új polcokat. A pult a helyén maradt.";
         return true;
+    }
+    public bool BuyExtraShelf()
+    {
+        if(Layout==null||Layout.ExtraShelfOwned||Phase!=ShopPhase.Preparing){Message="Berendezést nyitás előtt vehetsz. Ez a polc csak egyszer vásárolható meg.";return false;}
+        if(!Ledger.TryImprove(ShopLayout.ExtraShelfPrice)){Message="Nincs elég pénz a kiegészítő polcra.";return false;}
+        Drawer.Spend(ShopLayout.ExtraShelfPrice);Layout.SetExtraShelf(true);
+        Message="Kiegészítő cigarettapolc a jobb oldali személyzeti falnál: 9 új termékhely. A pult a helyén maradt.";return true;
     }
     public void ClosePanel() { if (Phase != ShopPhase.Summary) SetModal(ShopModal.None); }
 }

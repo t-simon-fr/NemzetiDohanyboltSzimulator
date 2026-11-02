@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -39,7 +39,7 @@ public static class RegisterFixtureChecks
             Vector3 localService=assembly.InverseTransformPoint(oldService);
             assembly.position+=new Vector3(.16f,0,.10f);assembly.rotation=Quaternion.Euler(0,17,0)*rootRotation;
             Require(Vector3.Distance(game.Counter.ServicePoint,assembly.TransformPoint(localService))<.001f,"Customer service point follows a moved and rotated counter");
-            devices.Focus(ShopDeviceKind.Monitor);
+            devices.Focus(ShopDeviceKind.Monitor);devices.OpenApp(ShopComputerApp.Orders);
             var order=UnityEngine.Object.FindObjectsByType<ShopWorldControl>().First(c=>c.Kind==WorldControlKind.Order&&c.Value==0);
             Physics.SyncTransforms();Vector3 orderScreen=Camera.main.WorldToScreenPoint(order.transform.position);
             Require(orderScreen.z>0&&orderScreen.x>0&&orderScreen.x<Camera.main.pixelWidth&&orderScreen.y>0&&orderScreen.y<Camera.main.pixelHeight,"Monitor remains in frame after moving assembly");

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public sealed class WarehouseArea : MonoBehaviour
@@ -21,14 +22,28 @@ public sealed class WarehouseArea : MonoBehaviour
         if(docks==null||Shop.Ledger==null)return;
         for(int i=0;i<docks.Length;i++)
         {
-            if(Shop.WarehouseCount(i)>0&&current[i]==null)
+            int delta=Shop.WarehouseCount(i)-cartons.Where(c=>c!=null&&c.ProductType==i).Sum(c=>c.Quantity);
+            if(delta>0)
             {
-                var box=new GameObject("Carton - "+ShopCatalog.Names[i]);
-                box.transform.SetParent(docks[i],false);
-                box.transform.localPosition=Vector3.up*.055f;
-                var carton=box.AddComponent<WarehouseCarton>();
-                carton.Configure(this,i,cardboard,packingTape,productMaterials[i]);
-                cartons.Add(carton);current[i]=carton;
+                if(current[i]==null)
+                {
+                    var box=new GameObject("Carton - "+ShopCatalog.Names[i]);
+                    box.transform.SetParent(docks[i],false);
+                    box.transform.localPosition=Vector3.up*.055f;
+                    var carton=box.AddComponent<WarehouseCarton>();
+                    carton.Configure(this,i,cardboard,packingTape,productMaterials[i]);
+                    cartons.Add(carton);current[i]=carton;
+                }
+                current[i].AdjustQuantity(delta);
+            }
+            else if(delta<0)
+            {
+                // Legacy single-unit callers still share the same finite inventory.
+                foreach(var carton in cartons.Where(c=>c!=null&&c.ProductType==i).OrderBy(c=>c.IsHeld))
+                {
+                    int remove=Mathf.Min(carton.Quantity,-delta);carton.AdjustQuantity(-remove);delta+=remove;
+                    if(delta==0)break;
+                }
             }
             if(current[i]!=null)current[i].Refresh();
         }
@@ -44,11 +59,20 @@ public sealed class WarehouseArea : MonoBehaviour
         }
         else
         {
-            carton.DropLoose(transform,looseCardboardPoint.position+Vector3.up*.02f);
+            var dock=docks[type];
+            foreach(float height in new[]{.605f,-.495f})
+            {
+                Vector3 point=dock.TransformPoint(Vector3.up*height);
+                if(cartons.Any(c=>c!=null&&c!=carton&&!c.IsHeld&&Vector3.Distance(c.transform.position,point)<.2f))continue;
+                carton.DropLoose(dock,point);return;
+            }
+            int loose=cartons.Count(c=>c!=null&&c.transform.parent==looseCardboardPoint);
+            carton.DropLoose(looseCardboardPoint,looseCardboardPoint.position+Vector3.up*(.02f+loose*.30f));
         }
     }
     public void Dispose(WarehouseCarton carton)
     {
+        if(carton==null||carton.Quantity!=0||!cartons.Contains(carton))return;
         Release(carton);cartons.Remove(carton);DiscardedCartons++;
         carton.gameObject.SetActive(false);Destroy(carton.gameObject);
         Shop.Notify("Üres kartondoboz a papírgyűjtőben. Kidobva: "+DiscardedCartons+" db.");

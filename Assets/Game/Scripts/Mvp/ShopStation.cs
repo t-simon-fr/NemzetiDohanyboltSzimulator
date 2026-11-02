@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public enum ShopStationKind { Till, Supplies, Door, Monitor }
 public sealed class ShopStation : MonoBehaviour
@@ -32,13 +32,13 @@ public sealed class ShopStation : MonoBehaviour
     {
         get
         {
-            if(kind==ShopStationKind.Monitor)return "E – Rendelések és boltbővítés a monitoron";
+            if(kind==ShopStationKind.Monitor)return "E / B – Számítógép: rendelések és berendezés";
             if(kind==ShopStationKind.Till)return "E – Kassza / fizetés";
             if(kind==ShopStationKind.Door)return "E – Nyitás / zárás";
             var carton=GetComponent<WarehouseCarton>();
             if(carton!=null&&carton.Quantity==0)return "Üres "+ShopCatalog.Names[productType]+" karton\nE – Felvétel és kivitel a papírgyűjtőhöz";
             int type=productType>=0?productType:shop.SelectedSupply;
-            return ShopCatalog.Names[type]+" • "+shop.WarehouseCount(type)+" db\nE – Termék kivétele / visszarakása";
+            return ShopCatalog.Names[type]+" • "+(carton!=null?carton.Quantity:shop.WarehouseCount(type))+" db\nE – Doboz felvétele / visszarakása";
         }
     }
     public void Use(PlayerInteractor player)
@@ -56,8 +56,9 @@ public sealed class ShopStation : MonoBehaviour
         else
         {
             var carton=GetComponent<WarehouseCarton>();
-            if(carton!=null&&carton.Quantity==0)player.TryHoldCarton(carton);
-            else shop.TakeSupply(player,productType);
+            if(carton==null && productType>=0)carton=shop.Warehouse.Carton(productType);
+            if(carton!=null)player.TryHoldCarton(carton);
+            else shop.Notify(productType>=0&&shop.PendingQuantity(productType)>0 ? "Ez a márka még úton van. Várd meg a szállítást!" : "Nincs doboz ezen a polcon. Rendelj a monitor Rendelések alkalmazásában.");
         }
     }
     public void Cycle(){if(IsSupplies&&productType<0)shop.CycleSupply();}

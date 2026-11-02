@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public sealed class ShopLayout : MonoBehaviour
 {
     public const int ExpansionPrice=2000;
+    public const int ExtraShelfPrice=1200;
+    [SerializeField] private GameObject extraShelf;
+    public bool ExtraShelfOwned { get; private set; }
+    public void ConfigureExtraShelf(GameObject shelf){extraShelf=shelf;SetExtraShelf(false);}
+    public void SetExtraShelf(bool enabled){ExtraShelfOwned=enabled;if(extraShelf!=null)extraShelf.SetActive(enabled);}
     [SerializeField] private GameObject starterWall;
     [SerializeField] private GameObject extension;
     [SerializeField] private ProductSlot[] publicSlots;

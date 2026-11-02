@@ -1,4 +1,4 @@
-﻿# Folytatás innen
+# Folytatás innen
 
 Mentési pont: 2026. november 2.
 
@@ -11,7 +11,23 @@ Mentési pont: 2026. november 2.
 - Játékosi használat: `MVP_GUIDE.md`. Ellenőrzések: `MVP_CHECKS.md`.
 - Iránydokumentum: `Docs/GAME_VISION.md`.
 
-## Legutóbbi fejlesztés – kasszaoldali raktár, márkadobozok és hátsó udvar
+## Legutóbbi fejlesztés – raktári polcok, dobozból feltöltés, számítógépes alkalmazások
+
+Az előző raktári asztalok helyén hat, többszintes fémpolc áll. A pult és az ajtók megmaradtak. A frissítés helyben történt, a korábbi jelenet: `Temp/CartonWorkflow/BeforeChanges.unity`. Szerkesztői menü: **Upgrade Carton And Computer Workflow**; külön **Upgrade Warehouse Shelves** is elérhető. A teljes generátor is hozzáadja az új berendezést.
+
+**E a dobozon a teljes kartont veszi fel, akár teli is. E a megfelelő üres bolti polchelyen egy darabot pakol ki, a doboz kézben marad.** A `WarehouseCarton` saját mennyiséget tárol; a vezérlő raktári tömbje ezek összege. A `WarehouseArea.SyncBoxes` a különbséget egyezteti, a pozitív szállítás a dokkolt kartonba kerül, vagy új kartont hoz létre. Kézben levő dobozba nem érkezik új áru. A fogyást a `StockFromCarton` könyveli a tényleges sikeres lerakás után. A legacy `TryCreateSupply` a régi napi ellenőrzéseket szolgálja ki, játékban a márkaállomások teljes dobozt adnak.
+
+A cartonhoz a `ProductSlot.CanStock` csak márkához kötött, üres, méretben megfelelő, fizikailag szabad polchelyet enged; a kassza átadóhelyét nem. A zöld keretek és a ray-célzás dobozzal is működnek. A félig teli doboz visszavihető. Foglalt dokknál két szabad polcszint valamelyikére kerül, majd telítettség esetén a külön kartongyűjtő helyre. Csak üres karton dobható a kukába.
+
+**B a pult közeléből megnyitja az asztalt**, legfeljebb 3,5 méterre a monitor képernyőjétől. E a teljes monitoron működik, mert az assembly gyökerén is van `ShopStation`. A számítógépen `ShopComputerApp.Desktop`, `Orders`, `Furnishing` oldalak váltják egymást, az inaktív oldal nem foghat kattintást. `WorldControlKind.OpenApp`, `Desktop`, `ExtraShelf` kezeli a navigációt. Minden megnyitás az asztalra vezet.
+
+A **Berendezés** alkalmazásban a 2000 Ft-os bővítés mellett egy 1200 Ft-os extra cigarettapolc is megvehető nyitás előtt, egyszer. A jobb oldali személyzeti falnál 9 márkához kötött helyet ad, ingyenáru nélkül. `ShopLayout` tárolja a hivatkozását és tulajdonlását; napváltás megtartja, ResetDemo elrejti. A bolt többi része nem mozdul. Szabad játékbeli bútor-elhelyezés még nincs.
+
+Ellenőrzések és friss build: `MVP_CHECKS.md`. Az új alkalmazás- és készletpróbák: `ComputerWorkflowChecks.Run`; a `RestockingChecks` és `WarehouseChecks` már az új, dobozból egyenként kipakoló működést kérik számon. Képek: `Temp/CartonWorkflow/`.
+
+## Előző fejlesztés – kasszaoldali raktár, márkadobozok és hátsó udvar
+
+Az alábbi előzmények a korábbi állapotot írják le; a jelenlegi dobozos feltöltéshez a fenti rész és a `MVP_GUIDE.md` az irányadó.
 
 A bolt megtartásával hozzáépült egy 3,5 × 4 méteres raktár a kassza felőli, világkoordináta szerinti bal oldalfal mögött. A régi `Left wall` inaktív maradt meg, a résfalak 1,3 méteres nyílást hagynak. A raktárból hátul kis, kerített udvarra lehet kimenni a nagy zöld papírgyűjtőhöz. A pult, a kézi pultlap-igazítások és a meglévő polcok nem lettek újraépítve. Biztonsági másolat a hozzáépítés előtti jelenetről: `Temp/Warehouse/BeforeWarehouse.unity`.
 

@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-public enum WorldControlKind { Order, Expand, Denomination, Undo, Clear, Pay, Exit, Exchange }
+public enum WorldControlKind { Order, Expand, Denomination, Undo, Clear, Pay, Exit, Exchange, OpenApp, Desktop, ExtraShelf }
 public sealed class ShopWorldControl : MonoBehaviour
 {
     public WorldControlKind Kind;
@@ -9,6 +9,9 @@ public sealed class ShopWorldControl : MonoBehaviour
     {
         switch(Kind)
         {
+            case WorldControlKind.OpenApp:shop.Devices.OpenApp((ShopComputerApp)Value);break;
+            case WorldControlKind.Desktop:shop.Devices.OpenApp(ShopComputerApp.Desktop);break;
+            case WorldControlKind.ExtraShelf:shop.BuyExtraShelf();break;
             case WorldControlKind.Order:shop.OrderSupply(Value);break;
             case WorldControlKind.Expand:shop.TryExpand();break;
             case WorldControlKind.Denomination:shop.AddChange(Value);break;

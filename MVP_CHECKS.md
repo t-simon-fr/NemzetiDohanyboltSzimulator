@@ -1,4 +1,4 @@
-﻿# Ellenőrzött állapot – 2026. november 2.
+# Ellenőrzött állapot – 2026. november 2.
 
 A kompakt bolt jelenete és a forráskód el van mentve. Unity 6000.6.7f1, URP. A szkriptfordítás sikeres, fordítási hiba nélkül.
 
@@ -6,7 +6,7 @@ A kompakt bolt jelenete és a forráskód el van mentve. Unity 6000.6.7f1, URP. 
 
 A korábbi VISSZA sor a kivett címletek összegét mutatta. Most külön VISSZAJÁRÓ sor mutatja a kapott pénz és az ár különbségét, és KIVÉVE sor a játékos által már kiválasztott pénzt. A futó jelenet tényleges TextMesh kijelzőjén ellenőrizve: 2200 Ft ár / 5000 Ft kapott pénz mellett 0 Ft és 500 Ft kivételekor is 2800 Ft marad a járó visszajáró. Mindkét állapot helyes. A négy sor elfér a kijelzőn; kamera-renderen is ellenőrizve.
 
-Az alábbi 488 állítás a raktár és hátsó udvar elkészítése után újra lefuttatott teljes ellenőrzéssor eredménye. A visszajáró-kijelzéshez a fenti célzott próbák is sikerültek.
+Az alábbi 537 állítás a raktári polcok, dobozból történő feltöltés és számítógépes alkalmazások elkészítése után újra lefuttatott teljes ellenőrzéssor eredménye. A visszajáró-kijelzéshez a fenti célzott próbák is sikerültek.
 
 ## Automatikus ellenőrzések
 
@@ -18,13 +18,14 @@ Az alábbi 488 állítás a raktár és hátsó udvar elkészítése után újra
 | `CompactShopChecks.BaseDay` – teljes nyolcvásárlós cigarettás nap | 107 |
 | `CompactShopChecks.ExpandedDay` – bővítés, utánrendelés, kézi feltöltés, négy önkiszolgáló vásárló | 134 |
 | `CompactShopChecks.EdgeCases` – megszakítás, visszatett áru, korai zárás, fizetésképtelenség | 17 |
-| `CompactShopChecks.DeviceControls` – monitor- és kasszagombok a fókuszált kamera képén, helyes egérsugár-találat | 68 |
+| `CompactShopChecks.DeviceControls` – monitor- és kasszagombok a fókuszált kamera képén, helyes egérsugár-találat mindhárom számítógépes oldalon | 82 |
 | `CompactShopChecks.PlayerRoute` – tényleges CharacterController mozgás a pult mellett és az új polcokhoz | 12 |
 | `RegisterFixtureChecks.Run` – kisebb eszközök, kihúzható fiók, mozgatott/forgatott pult és kamerák | 16 |
-| `RestockingChecks.Run` – valódi játékosi kivétel, készletjelzés, kézben láthatóság, polcperemre célzás, foglalt/rossz hely, visszarakás | 25 |
-| `WarehouseChecks.InventoryAndTrash` – márkadobozok, oda-vissza árumozgás, üres karton, új szállítmány, papírgyűjtő, készletmegőrzés | 40 |
-| `WarehouseChecks.WalkingRoute` – tényleges mozgás a boltból a raktáron át a kukához és vissza, kartonnal | 21 |
-| **Összesen** | **488** |
+| `RestockingChecks.Run` – teli doboz felvétele, egyenként kipakolás, láthatóság, zöld keret, foglalt/rossz hely, visszarakás | 25 |
+| `WarehouseChecks.InventoryAndTrash` – márkadobozok, oda-vissza árumozgás, üres karton, új szállítmány, papírgyűjtő, készletmegőrzés | 36 |
+| `WarehouseChecks.WalkingRoute` – tényleges mozgás a boltból a raktáron át a kukához és vissza, kartonnal | 19 |
+| `ComputerWorkflowChecks.Run` – asztal és alkalmazások kattintása, berendezésvásárlás, új polc feltöltése, napváltás, hordozás közbeni új szállítmány | 41 |
+| **Összesen** | **537** |
 
 A próbák Play módban, a tényleges jeleneten futottak. A vezérlőfüggvényeket és a fizikai célzás sugarát ellenőrzik; nem a felhasználó billentyűzetét/egerét mozgatják. A karakterek végigjárják a polc és a pult közötti útvonalat, de a fejlett karakterelkerülést és a játékmenet szubjektív élményét ezek nem igazolják.
 
@@ -34,7 +35,7 @@ Eredményminták:
 - Bővített bolt: 8 eladás, 4 önkiszolgáló vevő, 10 800 Ft árbevétel, 3350 Ft nyereség; 2000 Ft beruházás és 1590 Ft beszerzés után 12 910 Ft zárókassza.
 - A következő nap megőrzi a pénz darabszámait, készletet és bővítést; az új játék visszaállítja a kezdőállapotot.
 
-A mostani gépi eredmény helyben: `Temp/Warehouse/check-results.json`. A kézzel szerkesztett pult és pultlap helye megmaradt; a vásárlók a pulthoz kötött kiszolgálási ponthoz érkeznek.
+A mostani gépi eredmény helyben: `Temp/CartonWorkflow/check-results.json`. A kézzel szerkesztett pult és pultlap helye megmaradt; a vásárlók a pulthoz kötött kiszolgálási ponthoz érkeznek.
 
 ## Futtatás
 
@@ -52,4 +53,8 @@ A Game nézetből készült képeken ellenőriztük a monitort, a kasszát és a
 
 A kasszaoldali átjárót, a hat márkadoboz raktári elrendezését és a hátsó papírgyűjtőt kameraképen ellenőriztük. A raktár 1,3 méteres ajtónyílásain a CharacterController kartont hordozva is átjut, a padlók folyamatosak. Képek: `Temp/Warehouse/warehouse-room-final.png`, `rear-yard.png`, `warehouse-entrance.png`.
 
-A friss StandaloneWindows64 build sikeres: 0 hiba, 0 figyelmeztetés, 27,309 másodperc, 105 103 197 bájt. Indító: `Builds/MVP/NemzetiDohanyboltSzimulator.exe`. Az önálló alkalmazás grafika nélküli indulási próbája is sikerült: futva maradt, a naplóban nem volt futásidejű kivétel vagy hiba.
+A friss StandaloneWindows64 build sikeres: 0 hiba, 0 figyelmeztetés, 18,793 másodperc, 105 136 109 bájt. Indító: `Builds/MVP/NemzetiDohanyboltSzimulator.exe`. Az önálló alkalmazás grafika nélküli indulási próbája is sikerült: futva maradt, a naplóban nem volt futásidejű kivétel vagy hiba.
+
+A legújabb képek a `Temp/CartonWorkflow/` mappában: raktári fémpolcok márkafeliratokkal, doboz hordozása, új cigarettapolc, számítógépes asztal és alkalmazások. A teljes doboz kézben marad, E egy darabot pakol ki. Az alkalmazáspróba valódi kamerából küldött egérsugárral ellenőrzi a külön oldalak gombjait; nem szimulál tényleges billentyűzet- vagy egérbemenetet.
+
+Alkalmazásváltáskor a dinamikus betűkészlet statikus feliratai késleltetve újraépülnek; a Rendelések és Berendezés oldalon az ASZTAL, KILÉPÉS és TRAFIK OS feliratok a végső kameraképeken is láthatók. E javítás után a 41 alkalmazás- és 82 eszközellenőrzés újra sikerült.

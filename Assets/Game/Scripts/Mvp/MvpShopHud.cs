@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public sealed class MvpShopHud : MonoBehaviour
 {
@@ -23,7 +23,7 @@ public sealed class MvpShopHud : MonoBehaviour
             if(shop.Devices!=null&&shop.Devices.Focused)
             {
                 Panel(new Rect(250,612,780,94));GUILayout.BeginArea(new Rect(266,622,748,78));
-                GUILayout.Label((shop.Devices.FocusKind==ShopDeviceKind.Till?"Kattints a kassza címleteire, majd az ÁTADÁS gombra.":"Kattints a monitor rendelési vagy bővítési gombjára.")+"  Esc: vissza",small);
+                GUILayout.Label((shop.Devices.FocusKind==ShopDeviceKind.Till?"Kattints a kassza címleteire, majd az ÁTADÁS gombra.":"Az asztalról nyisd meg a Rendelések vagy Berendezés alkalmazást.")+"  Esc: vissza",small);
                 GUILayout.Label(shop.Message,small);GUILayout.EndArea();return;
             }
             if(shop.Modal==ShopModal.None){Game();return;}
@@ -47,7 +47,7 @@ public sealed class MvpShopHud : MonoBehaviour
         Label(shop.Day+". nap • "+(shop.Phase==ShopPhase.Preparing?"Felkészülés":shop.Phase==ShopPhase.Open?"Nyitva":"Zárunk"),true);
         Label("Kassza: "+ShopCatalog.Money(shop.Ledger.Cash));
         GUILayout.Label("Eladások: "+shop.Ledger.Sales+" • Sorban: "+shop.QueueCount+" • Érkezett: "+shop.Spawned+"/"+shop.TotalVisitors,small);
-        GUILayout.Label("H Súgó  •  O Nyitás/zárás  •  X Elküldés",small);GUILayout.EndArea();
+        GUILayout.Label("B Számítógép • H Súgó • O Nyitás/zárás",small);GUILayout.EndArea();
         if(shop.ActiveCustomer!=null)
         {
             var c=shop.ActiveCustomer;Panel(new Rect(844,12,424,216));GUILayout.BeginArea(new Rect(860,24,392,190));
@@ -70,16 +70,16 @@ public sealed class MvpShopHud : MonoBehaviour
         GUILayout.Space(22);
         Label("A pult mögötti polcon három kitalált cigarettamárka várja a vásárlókat: Pannon Piros, Duna Kék és Alföld Arany.");
         GUILayout.Space(14);Label("E-vel vedd fel a kért dobozt, és tedd a kék átadóhelyre. A pénztárgépből valódi magyar címletértékű bankjegyeket és érméket kattints ki a visszajáróhoz, majd nyomd meg az ÁTADÁS gombot.");
-        GUILayout.Space(14);Label("A pult bal oldalán levő monitoron rendelhetsz utánpótlást és vehetsz boltbővítést. A kassza felőli falon nyíló raktárban márkánként külön dobozból veheted ki és teheted vissza az árut E-vel. Az üres kartonokat a hátsó udvar papírgyűjtőjébe viheted.");
+        GUILayout.Space(14);Label("B-vel nyisd meg a pult számítógépét. Az asztalon külön Rendelések és Berendezés alkalmazás van. A raktári polcról E-vel a teljes márkadobozt veszed fel, majd a bolti polc üres helyeire E-vel egyesével pakolhatsz. Az üres kartont vidd a hátsó papírgyűjtőbe.");
         GUILayout.Space(14);Label("A bővítés új önkiszolgáló polcokat nyit. Ezekről a vásárlók maguk veszik le a vizet, rágót és sört, majd ugyanahhoz a pulthoz jönnek fizetni.");
         GUILayout.FlexibleSpace();if(Button("Körülnézek és felkészülök"))shop.ClosePanel();if(Button("Kinyitom a boltot"))shop.OpenShop();if(Button("Kilépés"))Quit();
     }
     private void Help()
     {
         Label("Műszaksegéd",true);
-        Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a monitor közelében: beszerzés és bővítés\nE a kasszán / F: fizetés a pénztárgépen\nRaktári márkadoboznál E: kivétel vagy visszarakás\nÜres kartonon E: felvétel • Papírgyűjtőn E: kidobás\nO: nyitás vagy korai zárás • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
+        Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a pult közelében: számítógép, alkalmazások\nE a kasszán / F: fizetés a pénztárgépen\nRaktári polcnál E: teljes doboz felvétele / visszarakása\nDobozzal a kézben, zöld polchelynél E: egy termék kipakolása\nÜres kartonon E: felvétel • Papírgyűjtőn E: kidobás\nO: nyitás vagy korai zárás • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
         GUILayout.Space(14);Label("A kasszában a rekeszekre kattintva egy bankjegyet vagy érmét veszel ki. A kivett darabok a tálcára kerülnek. Vissza: egy darab visszatétele. Törlés: az egész visszajáró visszarakása. Váltás: nagy címlet felváltása kisebbekre. Átadás: fizetés lezárása.");
-        GUILayout.Space(14);Label("Bővíteni 2000 Ft-ért, nyitás előtt lehet. A monitor és a kassza használata közben a vásárlók várakozása szünetel. A készletet neked kell feltöltened az új polcokon is.");
+        GUILayout.Space(14);Label("A Berendezés alkalmazásban nyitás előtt 2000 Ft-ért bővíthetsz, vagy 1200 Ft-ért kilenchelyes cigarettapolcot vehetsz. A monitor és a kassza használata közben a vásárlók várakozása szünetel. A készletet neked kell feltöltened az új polcokon is.");
         GUILayout.FlexibleSpace();if(Button("Vissza a boltba"))shop.ClosePanel();
     }
     private void Summary()

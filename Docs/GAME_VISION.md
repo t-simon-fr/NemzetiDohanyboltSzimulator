@@ -1,10 +1,10 @@
-﻿# Nemzeti Dohánybolt Szimulátor
+# Nemzeti Dohánybolt Szimulátor
 
 ## Jelenlegi prototípus – 2026. november 2.
 
 Az összefüggő nyolcvásárlós MVP a kompakt boltra épül: három fiktív cigarettamárkával feltöltött kezdőpolc, játékbeli rendelési monitor a pult bal oldalán, fizikai kassza magyar címletekkel, kézi polcfeltöltés, zárás és elszámolás. Egy megvehető bővítésben víz, rágó és sör önkiszolgáló polcai nyílnak meg; a vásárlók innen gyűjtik be az árut, majd a változatlan helyű pulthoz mennek fizetni.
 
-A kassza felőli fal mögött kis raktár és hátsó udvar is működik. A megrendelt készlet márkánként külön kartonba érkezik; a játékos innen tölti fel a polcokat, és ide hozhat vissza termékeket. Az üres kartonokat a raktáron át lehet kivinni a hátsó papírgyűjtőbe.
+A kassza felőli fal mögött kis raktár és hátsó udvar is működik. A raktári fémpolcról teljes kartont viszünk a bolti polchoz, ott egyenként pakoljuk ki a termékeket. A megrendelt készlet márkánként külön kartonba érkezik; a játékos innen tölti fel a polcokat, és ide hozhat vissza termékeket. Az üres kartonokat a raktáron át lehet kivinni a hátsó papírgyűjtőbe.
 
 A használat és a pontos szabályok a [MVP_GUIDE.md](../MVP_GUIDE.md) fájlban találhatók. A látvány és a mozgás még próbamodell. A tartós mentés, a többfokozatú bővítés és az ellenőri/hiteles/lopási helyzetek későbbi feladatok. A következő lépés a játékosi kipróbálás és a tempó, gazdaság, kezelés és humor finomítása.
 
@@ -33,7 +33,7 @@ Ez a dokumentum a játék iránytűje. Új funkció, karakter, feladat vagy lát
 
 Az alábbi irányok első kipróbálható változata november 2-án elkészült. A részletek a játékosi próba alapján változhatnak.
 
-- A pult bal oldalán játékbeli monitor kezeli a beszerzési rendeléseket és a bővítést.
+- A pult bal oldalán játékbeli számítógép van: asztal, külön Rendelések és Berendezés alkalmazás. Utóbbiban bővítés és egy kilenchelyes extra cigarettapolc vásárolható, a pult megtartásával.
 - A fizetési modal helyét a játékbeli pénztárgép vette át. A játékos rendes magyar forintcímleteknek megfelelő bankjegyeket és érméket vesz ki a kasszából a visszajáróhoz.
 - A kezdő bolt kisebb, cigarettákkal feltöltött választékkal.
 - A bolt területe egyelőre egy fokozattal növelhető, a pult helye állandó marad.

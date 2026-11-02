@@ -1,4 +1,4 @@
-﻿# Nemzeti Dohánybolt Szimulátor – játszható prototípus
+# Nemzeti Dohánybolt Szimulátor – játszható prototípus
 
 Frissítve: 2026. november 2.
 
@@ -20,7 +20,7 @@ A pult bal oldalán a beszerzési monitor, jobb oldalán a pénztárgép áll. A
 |---|---|
 | WASD + egér | Mozgás és körülnézés |
 | E | Áru felvétele/lerakása, monitor, kassza, szállítódoboz vagy nyitástábla használata |
-| B | A közeli rendelési monitor használata |
+| B | A számítógép asztalának megnyitása a pult közelében, pontos célzás nélkül |
 | F | A közeli pénztárgép használata fizetés közben |
 | O | Nyitás vagy korai zárás kérése |
 | X | Az aktuális vásárló elküldése |
@@ -49,17 +49,26 @@ A vásárlótól kapott pénz felváltható és használható a visszajáróhoz,
 
 ## Monitor, raktár és polcfeltöltés
 
-A monitoron válaszd a termék háromdarabos csomagját. A költség azonnal levonódik, a szállítás nyolc másodperc. Az áru a **kassza felőli oldalfalon nyíló raktárba** érkezik. A raktár az alapbolt része, nem kell külön megvenni.
+A monitor teljes háza, képernyője, talpa és állványa E-vel használható. **B** a pult közeléből, a kamerától legfeljebb 3,5 méterre levő monitor asztalát nyitja meg, célzás nélkül. Előbb tedd vissza a kézben levő árut vagy dobozt.
 
-A raktárban mind a hat termékmárkának saját, feliratozott dobozhelye van. Egy márka összes megérkezett raktári készletét a saját kartondoboza fogja össze. Az üres helyre az első beérkezett szállítmány hoz dobozt; a benne maradó termékek száma a dobozon és célzáskor a készletjelzésben látható. A víz, rágó és sör továbbra is a boltbővítés után rendelhető.
+Az asztalon két kattintható alkalmazás van:
 
-- **E a teli márkadobozon:** egy termék kézbe vétele.
-- **E ugyanannak a márkának a dobozán/helyén, termékkel a kézben:** visszapakolás a raktárba.
-- **E zöld polc- vagy pulthelyre célozva:** a kézben tartott termék lerakása.
+- **RENDELÉSEK:** hat márka, polckészlet, raktári összes darab és úton levő mennyiség. A háromdarabos csomag ára azonnal levonódik, nyolc másodperc alatt érkezik meg. A víz, rágó és sör boltbővítés után rendelhető.
+- **BERENDEZÉS:** 2000 Ft-os önkiszolgáló bővítés és 1200 Ft-os, kilenchelyes kiegészítő cigarettapolc vásárlása. Mindkettő egyszer, nyitás előtt vehető meg. A pult a helyén marad.
 
-A másik márka doboza nem fogadja el az árut. Tele polc mellett is kivehetsz terméket, majd visszateheted a megfelelő raktári helyre. A csomag a látómező jobb oldalán, a vezérlősáv fölött látszik, névvel együtt. A polc peremére célzás közeli, szabad termékhelyet is kiválaszt. Foglalt vagy rossz típusú helyre nem lehet lerakni; az áru ilyenkor a kezedben marad.
+Az **ASZTAL** gomb visszalép az alkalmazásból. **KILÉPÉS / Escape** visszavisz a boltba. A vásárlók várakozása eszközhasználat közben szünetel, a szállítmányok megérkezhetnek.
 
-A polchelyek típushoz kötöttek, a pult átadó- és ideiglenes tárolóhelye többféle árut fogad. A kezdőpolc tele van: az első utánrendelt cigarettákat az eladások után felszabaduló helyekre töltheted fel. A raktár típusonként legfeljebb 24 darabot fogad, a már megrendelt áruval együtt.
+Az áru a **kassza felőli oldalfalon nyíló raktárba** érkezik. A raktár az alapbolt része. Asztalok helyett márkánként feliratozott, többszintes fémpolcok vannak benne. Az első rendelés hozza létre az adott márka kartonját.
+
+1. **E a raktári márkadobozon vagy a polcán:** a teljes kartont veszed fel, a benne levő mennyiséggel. Egyedi termék nem kerül a kezedbe.
+2. Vidd a dobozt a megfelelő bolti polchoz. A zöld keretek mutatják az üres, azonos márkához tartozó helyeket.
+3. **E egy kijelölt helyen:** pontosan egy termék kerül a fix helyére. A doboz a kezedben marad, a darabszáma eggyel csökken.
+4. Nézz a következő üres helyre, majd ismét E. A foglalt, más márkához tartozó vagy fizikailag eltorlaszolt hely nem fogyaszt árut.
+5. A teli, félig teli és üres doboz is visszavihető: **E a saját raktári márkapolcán**. A rossz márka polca nem fogadja el.
+
+Ha dobozhordás közben ugyanabból a márkából új áru érkezik, külön dobozt kap a raktári polcon. A kezedben levő karton nem töltődik újra. Ha visszaviszed a régebbit, a szabad felső vagy alsó polcszintre kerül; ha ezek is foglaltak, a kartonok gyűjtőhelyére. A márkán belüli újabb rendelés a helyén maradó aktív szállítódobozhoz is hozzáadódhat. A raktári összesítés minden kartont, a kézben levőt is számolja; a típusonkénti korlát a függő rendeléssel együtt 24 darab.
+
+A bolti polcról továbbra is egyedi terméket veszel fel E-vel a vásárló kiszolgálásához. Ezzel E a kék átadóhelyen lerakja az árut, vagy E a megfelelő raktári márkapolcon visszaviszi a készletbe. A pult átadóhelye nem dobozból való feltöltésre szolgál. A kezdő cigarettapolc tele van: előbb adj el róla, vagy vedd meg a kiegészítő polcot.
 
 | Áru | Eladási ár | Darab beszerzése | 3 db rendelése |
 |---|---:|---:|---:|
@@ -74,7 +83,7 @@ Ezek a prototípus saját gazdasági beállításai.
 
 ## Üres kartonok és hátsó papírgyűjtő
 
-Ha egy kartonból az utolsó terméket is kivetted, a doboz ott marad **ÜRES KARTON** felirattal. Előbb tedd le a kezedben levő árut, aztán E-vel felveheted magát a kartondobozt.
+Ha az utolsó terméket is kipakoltad, a karton **a kezedben marad**, és ÜRES KARTON feliratot kap. Visszaviheted a raktárba, vagy rögtön a hátsó kukához mehetsz vele.
 
 A raktár hátsó nyílásán ki lehet menni a kis, körbekerített udvarra. A nagy zöld **PAPÍRGYŰJTŐ** kukára célozva E-vel kidobhatod az üres kartont. A kuka számolja az eltávolított dobozokat. Terméket vagy teli kartont nem enged kidobni.
 
@@ -82,11 +91,13 @@ Az üres karton visszavihető a saját márkájának raktári helyére. Ha közb
 
 ## Boltbővítés és önkiszolgálás
 
-Nyitás előtt a monitor **BOLTBŐVÍTÉS** gombja 2000 Ft-ért megnyitja a pult körül elérhető új, 4 × 6,3 méteres területet. A pult, a kassza és a monitor a helyén marad. A változás jelenleg azonnali, építkezési animáció nélkül.
+Nyitás előtt a monitor **BERENDEZÉS** alkalmazásának **ÖNKISZOLGÁLÓ BŐVÍTÉS** gombja 2000 Ft-ért megnyitja a pult körül elérhető új, 4 × 6,3 méteres területet. A pult, a kassza és a monitor a helyén marad. A változás jelenleg azonnali, építkezési animáció nélkül.
 
 Az új polcon három típusnak hat-hat helye van: víz, rágó, sör. A bővítés üres polcokat ad, az árut külön kell megrendelni és kézzel feltölteni. Ezután a nyolc látogatóból négy önkiszolgáló terméket keres: a polchoz megy, felvesz egyet, majd a változatlan helyű pénztárhoz jön. A cigarettát továbbra is az eladó adja ki.
 
 Ha nincs készlet a keresett önkiszolgáló termékből, a vásárló a pulthoz jön a kérésével. Feltöltés után kézzel is kiszolgálhatod, vagy X-szel elküldheted. Egyelőre egy bővítési fokozat van; több fokozat és a kiegyensúlyozott árak későbbi feladatok.
+
+A Berendezés alkalmazás külön 1200 Ft-os cigarettapolca a személyzeti rész jobb oldali falán jelenik meg, kilenc szabad hellyel, márkánként hárommal. Nem ad ingyenes termékeket. A feltöltött árut ugyanúgy felveheted a vásárló kiszolgálásához. A polc és a készlete napváltáskor megmarad, új játéknál visszaáll. A berendezés helye jelenleg rögzített; szabad játékbeli elhelyező mód még nincs.
 
 ## Műszak és elszámolás
 
@@ -94,7 +105,7 @@ Nyolc látogató érkezik, legfeljebb hárman várnak egyszerre. O-val korábban
 
 A napi működés 300 Ft. A nyereség az árbevétel mínusz az eladott áru költsége és a működés. A kasszapénzből a beszerzés és a beruházás is levonódik. A már kifizetett, úton levő áru záráskor a raktárba kerül. Ha a működés sem fizethető ki, az összesítés tartozást mutat és új játékot kér.
 
-A következő nap megőrzi a kassza címleteit, a készletet és a bővítést a futó alkalmazáson belül. **Lemezes játékmentés még nincs**: bezáráskor a haladás elveszik. Az Új játék az eredeti kompakt boltot és kezdőkészletet állítja vissza.
+A következő nap megőrzi a kassza címleteit, a készletet, bővítést és megvásárolt polcot a futó alkalmazáson belül. **Lemezes játékmentés még nincs**: bezáráskor a haladás elveszik. Az Új játék az eredeti kompakt boltot és kezdőkészletet állítja vissza.
 
 ## Az elrendezés kézi módosítása
 

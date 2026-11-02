@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ public static class WarehouseChecks
     private static void Require(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks++;}
     private static void PutOnShelf(int type)
     {
-        var slot=UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.CanAccept(player.HeldProduct)&&s.name.StartsWith(type<3?"Cigarette slot":"Public slot"));
+        var slot=UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.CanAcceptStock(ShopCatalog.Ids[player.HeldCarton.ProductType])&&s.name.StartsWith(type<3?"Cigarette slot":"Public slot"));
         var point=slot.HintCenter;Physics.SyncTransforms();player.RefreshTarget(new Ray(point-slot.transform.forward*1.1f,slot.transform.forward));
         Require(player.TargetSlot==slot&&player.TryPlaceHeld(),"Carry unit from brand carton onto actual fixed shop shelf");
     }
@@ -20,10 +20,9 @@ public static class WarehouseChecks
         var carton=game.Warehouse.Carton(type);Require(carton!=null&&carton.Quantity==3,"Shipment creates its branded physical carton");
         var units=UnityEngine.Object.FindObjectsByType<ShopProduct>().Where(p=>p.ProductId==ShopCatalog.Ids[type]&&!p.IsHeld).Take(3).ToArray();
         foreach(var item in units)item.RemoveFromWorld();
-        for(int i=0;i<3;i++)
-        {
-            carton.GetComponent<ShopStation>().Use(player);Require(player.HasHeldProduct&&player.HeldProduct.ProductId==ShopCatalog.Ids[type],"Brand box dispenses only its own product");PutOnShelf(type);
-        }
+        carton.GetComponent<ShopStation>().Use(player);Require(player.HeldCarton==carton&&!player.HasHeldProduct,"Pick the filled branded carton, rather than a single unit");
+        for(int i=0;i<3;i++)PutOnShelf(type);
+        player.ReturnCarton();
         Require(carton.Quantity==0,"Unpacking all units leaves a real empty carton");return carton;
     }
     public static object InventoryAndTrash()
@@ -50,7 +49,7 @@ public static class WarehouseChecks
             Require(game.OrderSupply(3),"Another shipment can be ordered while old packaging is carried");game.Tick(8.1f);
             var replacement=area.Carton(3);Require(replacement!=null&&replacement!=old&&replacement.Quantity==3&&old.Quantity==0,"New delivery has a separate filled box and does not refill carried empty cardboard");
             Require(bin.Use(player)&&game.WarehouseCount(3)==3&&replacement.gameObject.activeSelf,"Throwing old packaging cannot delete newly arrived stock");
-            Require(!player.TryHoldCarton(replacement),"Filled carton cannot be mistaken for empty waste");
+            Require(player.TryHoldCarton(replacement)&&!bin.Use(player)&&replacement.Quantity==3,"Filled carton is carryable but cannot be thrown away");player.ReturnCarton();
             var product=UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="water");Require(player.TryHold(product),"Bring shelf stock back to storage");
             area.Dock(0).GetComponent<ShopStation>().Use(player);Require(player.HasHeldProduct&&game.WarehouseCount(0)==0,"Wrong-brand box rejects return without losing product");
             Require(!bin.Use(player)&&player.HasHeldProduct,"Paper dumpster rejects saleable goods");

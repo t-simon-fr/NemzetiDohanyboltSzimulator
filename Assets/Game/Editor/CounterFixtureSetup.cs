@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -48,6 +48,7 @@ public static class CounterFixtureSetup
         Box(change,"Change plate",Vector3.zero,new Vector3(.28f,.018f,.29f),dark);
         ProductVisuals.Text(change,"Visszajáró felirat","VISSZAJÁRÓ",new Vector3(0,.015f,.17f),Quaternion.Euler(90,180,0),.021f,Color.black);
         Transform monitor=Node(surface,"Order Monitor Assembly",new Vector3(1.06f,0,-.04f),Quaternion.identity);
+        Station(monitor.gameObject,game,ShopStationKind.Monitor);
         var monitorBody=Box(monitor,"Order Monitor",new Vector3(0,.36f,0),new Vector3(.62f,.37f,.035f),dark);
         Station(monitorBody,game,ShopStationKind.Monitor);
         Box(monitor,"Monitor stand",new Vector3(0,.11f,-.005f),new Vector3(.045f,.2f,.055f),metal);

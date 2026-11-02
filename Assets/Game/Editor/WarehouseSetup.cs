@@ -47,9 +47,7 @@ public static class WarehouseSetup
             var dock=new GameObject("Brand Dock - "+ShopCatalog.Names[i]).transform;dock.SetParent(root,false);
             if(i<3){dock.localPosition=new Vector3(-5.45f+i*1.2f,.75f,-1.45f);dock.localRotation=Quaternion.Euler(0,180,0);}
             else{dock.localPosition=new Vector3(-5.55f,.75f,-.35f+(i-3)*.9f);dock.localRotation=Quaternion.Euler(0,-90,0);}
-            Box(dock,"Dock top",Vector3.zero,new Vector3(.82f,.10f,.70f),cardboard);
-            for(int x=-1;x<=1;x+=2)for(int z=-1;z<=1;z+=2)Box(dock,"Dock leg",new Vector3(x*.34f,-.4f,z*.27f),new Vector3(.055f,.7f,.055f),dark);
-            ProductVisuals.Text(dock,"Brand dock label",ShopCatalog.Names[i],new Vector3(0,.015f,-.357f),Quaternion.identity,.042f,Color.black);
+            BuildRack(dock,cardboard,dark,i);
             dock.gameObject.AddComponent<ShopStation>().ConfigureBrand(shop,i);docks[i]=dock;
         }
         var loose=new GameObject("Loose empty cartons").transform;loose.SetParent(root,false);loose.position=new Vector3(-3.15f,0,1.25f);
@@ -69,6 +67,37 @@ public static class WarehouseSetup
         var lamp=new GameObject("Warehouse ceiling lamp");lamp.transform.SetParent(root,false);lamp.transform.position=new Vector3(-4.25f,2.65f,0);var light=lamp.AddComponent<Light>();light.type=LightType.Point;light.range=6;light.intensity=3.5f;light.color=new Color(1,.91f,.75f);
         EditorUtility.SetDirty(shop);EditorUtility.SetDirty(area);EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();
         Debug.Log("Added cashier-side warehouse, six brand docks, rear yard and paper dumpster; existing counter and shelves retained.");
+    }
+    private static void BuildRack(Transform dock,Material shelf,Material metal,int type)
+    {
+        for(int row=0;row<3;row++)Box(dock,"Warehouse shelf "+row,new Vector3(0,-.55f+row*.55f,0),new Vector3(.82f,.06f,.70f),shelf);
+        // Highest board is above the delivery carton, leaving enough room to lift it.
+        Box(dock,"Warehouse top shelf",new Vector3(0,1.05f,0),new Vector3(.82f,.06f,.70f),shelf);
+        for(int x=-1;x<=1;x+=2)for(int z=-1;z<=1;z+=2)
+            Box(dock,"Rack upright",new Vector3(x*.38f,.2f,z*.31f),new Vector3(.035f,1.9f,.035f),metal);
+        Box(dock,"Rack back brace",new Vector3(0,.2f,.33f),new Vector3(.76f,1.9f,.025f),metal);
+        Box(dock,"Brand shelf label plate",new Vector3(0,-.055f,-.35f),new Vector3(.76f,.11f,.008f),AssetDatabase.LoadAssetAtPath<Material>("Assets/Game/Materials/MAT_CartonTape.mat"));
+        ProductVisuals.Text(dock,"Brand dock label",ShopCatalog.Names[type],new Vector3(0,-.055f,-.357f),Quaternion.identity,.042f,Color.black);
+    }
+    [MenuItem("Nemzeti Dohánybolt/Upgrade Warehouse Shelves")]
+    public static void UpgradeShelves()
+    {
+        if(EditorApplication.isPlayingOrWillChangePlaymode)return;
+        var area=Object.FindAnyObjectByType<WarehouseArea>();if(area==null)return;
+        var shelf=AssetDatabase.LoadAssetAtPath<Material>("Assets/Game/Materials/MAT_Cardboard.mat");
+        var metal=AssetDatabase.LoadAssetAtPath<Material>("Assets/Game/Materials/MAT_WarehouseMetal.mat");
+        for(int i=0;i<ShopCatalog.Count;i++)
+        {
+            var dock=area.Dock(i);
+            if(dock.Find("Warehouse shelf 0")!=null)
+            {
+                if(dock.Find("Brand shelf label plate")==null)Box(dock,"Brand shelf label plate",new Vector3(0,-.055f,-.35f),new Vector3(.76f,.11f,.008f),AssetDatabase.LoadAssetAtPath<Material>("Assets/Game/Materials/MAT_CartonTape.mat"));
+                continue;
+            }
+            for(int c=dock.childCount-1;c>=0;c--)Object.DestroyImmediate(dock.GetChild(c).gameObject);
+            BuildRack(dock,shelf,metal,i);
+        }
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
     }
     private static GameObject Box(Transform parent,string name,Vector3 p,Vector3 size,Material material)
     {

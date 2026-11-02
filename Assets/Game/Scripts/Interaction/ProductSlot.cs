@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(BoxCollider))]
@@ -32,6 +32,13 @@ public sealed class ProductSlot : MonoBehaviour
     public ShopProduct Occupant => occupant;
     public bool AcceptsType(ShopProduct product) => product != null && (string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId);
     public bool CanAccept(ShopProduct product) => isActiveAndEnabled && AcceptsType(product) && (occupant == null || occupant == product);
+
+    public bool CanAcceptStock(string id) => isActiveAndEnabled && occupant==null && !string.IsNullOrEmpty(allowedProductId) && allowedProductId==id;
+    public bool CanStock(string id,Vector3 size,out Pose pose)
+    {
+        pose=GetPose(size*.5f,Vector3.zero);
+        return CanAcceptStock(id) && Fits(size) && !Physics.CheckBox(pose.position,size*.49f,pose.rotation,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore);
+    }
 
     public void Configure(Vector3 availableSize)
     {

@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public sealed class WarehouseCarton : MonoBehaviour
 {
     public int ProductType { get; private set; }
     public bool IsHeld { get; private set; }
     public bool IsDocked { get; private set; }
-    public int Quantity => IsDocked ? area.Shop.WarehouseCount(ProductType) : 0;
+    public int Quantity { get; private set; }
+    public void AdjustQuantity(int delta) { Quantity=Mathf.Max(0,Quantity+delta);Refresh(); }
+    public bool CanPlace(ProductSlot slot) => Quantity>0 && slot!=null && slot.CanStock(ShopCatalog.Ids[ProductType], ProductSize, out _);
+    private Vector3 ProductSize => ProductType<3?new Vector3(.16f,.26f,.08f):new Vector3(.22f,.26f,.18f);
+    public bool TryPlaceOne(ProductSlot slot) => IsHeld && area.Shop.StockFromCarton(this,slot);
     private WarehouseArea area;
     private Collider[] colliders;
     private TextMesh frontLabel;
@@ -43,10 +47,10 @@ public sealed class WarehouseCarton : MonoBehaviour
     }
     public bool PickUp(Transform hand)
     {
-        if(IsHeld||Quantity!=0||hand==null)return false;
+        if(IsHeld||hand==null)return false;
         area.Release(this);IsDocked=false;IsHeld=true;
         foreach(var c in colliders)if(c!=null)c.enabled=false;
-        transform.SetParent(hand,true);transform.localPosition=new Vector3(0,-.18f,.35f);transform.localRotation=Quaternion.identity;
+        transform.SetParent(hand,true);transform.localPosition=new Vector3(-.20f,-.24f,.32f);transform.localRotation=Quaternion.identity;
         Refresh();return true;
     }
     public void ReturnToStorage(){if(IsHeld){IsHeld=false;area.PutBack(this);}}
@@ -57,7 +61,7 @@ public sealed class WarehouseCarton : MonoBehaviour
     }
     public void DropLoose(Transform parent,Vector3 position)
     {
-        IsHeld=false;IsDocked=false;transform.SetParent(parent,true);transform.SetPositionAndRotation(position,Quaternion.identity);
+        IsHeld=false;IsDocked=false;transform.SetParent(parent,true);transform.SetPositionAndRotation(position,parent.rotation);
         foreach(var c in colliders)if(c!=null)c.enabled=true;Refresh();
     }
     public void ThrowAway(){if(IsHeld&&Quantity==0)area.Dispose(this);}

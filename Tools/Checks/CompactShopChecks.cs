@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -38,7 +38,7 @@ public static class CompactShopChecks
             Check(!game.OrderSupply(3)&&!game.OrderSupply(-1),"Locked and invalid product rejected");
             var counter=GameObject.Find("Service counter").transform;Vector3 counterPosition=counter.position;
             game.OpenSupplier();Check(game.Modal==ShopModal.None&&game.Devices.FocusKind==ShopDeviceKind.Monitor&&ShopInputGate.Blocked,"Monitor focus replaces supplier modal");
-            CheckVisibleControl(WorldControlKind.Order,0);
+            game.Devices.OpenApp(ShopComputerApp.Orders);CheckVisibleControl(WorldControlKind.Order,0);
             game.ClosePanel();Check(!game.Devices.Focused&&!ShopInputGate.Blocked,"Device releases input gate");
             if(expanded)
             {
@@ -176,7 +176,11 @@ public static class CompactShopChecks
     public static object DeviceControls()
     {
         game=MvpShopController.Instance;passed=0;game.ResetDemo();game.ClosePanel();game.OpenSupplier();
-        foreach(var c in UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Where(c=>c.Kind==WorldControlKind.Order||c.Kind==WorldControlKind.Expand||c.Kind==WorldControlKind.Exit))CheckRay(c);
+        foreach(var app in new[]{ShopComputerApp.Desktop,ShopComputerApp.Orders,ShopComputerApp.Furnishing})
+        {
+            game.Devices.OpenApp(app);
+            foreach(var c in UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Where(c=>c.transform.IsChildOf(GameObject.Find("Order screen").transform)))CheckRay(c);
+        }
         game.ClosePanel();game.OpenShop();game.ManualTick=true;hand=new GameObject("Temporary Device Hand").transform;hand.position=Vector3.one*1000;
         for(int i=0;i<100;i++)game.Tick(.1f);Offer(UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="cig_red"));game.OpenCash();game.Devices.RegisterDrawer.Advance(1f);
         foreach(var c in UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Where(c=>c.Kind==WorldControlKind.Denomination||c.Kind==WorldControlKind.Pay||c.Kind==WorldControlKind.Exchange||c.Kind==WorldControlKind.Clear||c.Kind==WorldControlKind.Undo))CheckRay(c);
