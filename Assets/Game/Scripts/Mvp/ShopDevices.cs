@@ -87,7 +87,7 @@ public sealed class ShopDevices : MonoBehaviour
         {
             float y=.20f-(i/2)*.155f,x=i%2==0?.45f:-.45f;
             stockLabels.Add(Label(orderPage,"",new Vector3(x,y+.065f,.025f),.021f));
-            MonitorButton(orderPage,"3 × "+ShopCatalog.Names[i]+" | "+ShopCatalog.Money(ShopCatalog.Costs[i]*3),new Vector3(x,y-.008f,.02f),WorldControlKind.Order,i);
+            MonitorButton(orderPage,"3 × "+ShopCatalog.Names[i]+"\n"+ShopCatalog.Money(ShopCatalog.Costs[i]*3),new Vector3(x,y-.008f,.02f),WorldControlKind.Order,i);
         }
         Label(furnishingPage,"BOLTTERVEZŐ",new Vector3(0,.18f,.025f),.047f);
         furnishingStatus=Label(furnishingPage,"",new Vector3(0,.06f,.025f),.027f);

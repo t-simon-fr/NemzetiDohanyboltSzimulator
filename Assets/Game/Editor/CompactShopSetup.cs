@@ -101,7 +101,7 @@ public static class CompactShopSetup
         RenderSettings.ambientLight=new Color(.58f,.57f,.54f);
         var lamp=new GameObject("Interior light");lamp.transform.position=new Vector3(0,2.7f,-.7f);var point=lamp.AddComponent<Light>();point.type=LightType.Point;point.range=12;point.intensity=5;point.color=new Color(1,.9f,.72f);
         PlayerSettings.productName="Nemzeti Dohánybolt Szimulátor";PlayerSettings.defaultScreenWidth=1280;PlayerSettings.defaultScreenHeight=720;PlayerSettings.fullScreenMode=FullScreenMode.Windowed;PlayerSettings.resizableWindow=true;
-        const string path="Assets/Game/Scenes/ShopPrototype.unity";EditorSceneManager.SaveScene(scene,path);CounterFixtureSetup.UpgradeCurrentScene();WarehouseSetup.AddToCurrentScene();ShopWorkflowSetup.UpgradeCurrentScene();CigarettePackagingSetup.UpgradeCurrentScene();EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(path,true)};AssetDatabase.SaveAssets();
+        const string path="Assets/Game/Scenes/ShopPrototype.unity";EditorSceneManager.SaveScene(scene,path);CounterFixtureSetup.UpgradeCurrentScene();WarehouseSetup.AddToCurrentScene();ShopWorkflowSetup.UpgradeCurrentScene();CigarettePackagingSetup.UpgradeCurrentScene();DrinkPackagingSetup.UpgradeCurrentScene();EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(path,true)};AssetDatabase.SaveAssets();
         Debug.Log("Compact shop saved: 32 cigarette slots, 18 expansion slots, physical monitor and register. Counter remains at (0, .55, -2.05).");
     }
     private static Material Mat(string name,Color color)

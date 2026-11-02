@@ -22,6 +22,7 @@ public static class CigarettePackagingChecks
             for (int type = 0; type < 4; type++)
             {
                 check(game.StockCount(type) == 8, "Eight packs for brand " + type);
+                check(UnityEngine.Object.FindObjectsByType<ShopProduct>().Where(p=>p.ProductId==ShopCatalog.Ids[type]).All(p=>p.CurrentSlot!=null&&p.CurrentSlot.isActiveAndEnabled), "All starting packs occupy active shelf slots");
                 var product = UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p => p.ProductId == ShopCatalog.Ids[type]);
                 check(product.DisplayName == ShopCatalog.Names[type], "Correct interaction name");
                 check(!product.GetComponent<MeshRenderer>().enabled, "Blockout renderer replaced");

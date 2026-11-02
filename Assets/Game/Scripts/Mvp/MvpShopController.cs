@@ -283,8 +283,10 @@ public sealed class MvpShopController : MonoBehaviour
             int seeded = 0;
             for (int i = 0; i < shelfSlots.Length && seeded < 8; i++)
             {
-                if (shelfTypes[i] != type) continue;
-                ShopProduct product = CreateProduct(type); product.AssignInitialSlot(shelfSlots[i]); seeded++;
+                if (shelfTypes[i] != type || shelfSlots[i] == null || !shelfSlots[i].isActiveAndEnabled) continue;
+                ShopProduct product = CreateProduct(type);
+                if (product.AssignInitialSlot(shelfSlots[i])) seeded++;
+                else product.RemoveFromWorld();
             }
         }
         BeginPreparation();
@@ -293,7 +295,7 @@ public sealed class MvpShopController : MonoBehaviour
     {
         GameObject item = GameObject.CreatePrimitive(PrimitiveType.Cube);
         item.name = ShopCatalog.Names[type]; item.transform.SetParent(stockRoot, false);
-        item.transform.localScale = ShopCatalog.IsCigarette(type) ? new Vector3(.16f,.26f,.08f) : new Vector3(.22f,.26f,.18f);
+        item.transform.localScale = ProductVisuals.Size(type);
         item.GetComponent<Renderer>().sharedMaterial = productMaterials[type];
         ShopProduct product = item.AddComponent<ShopProduct>(); product.ConfigureProduct(ShopCatalog.Ids[type], ShopCatalog.Names[type]);
         ProductVisuals.Add(item,type);

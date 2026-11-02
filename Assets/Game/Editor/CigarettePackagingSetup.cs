@@ -25,7 +25,7 @@ public static class CigarettePackagingSetup
         var oldSlots = ReadObjects<ProductSlot>(serialized.FindProperty("shelfSlots"));
         var all = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Transform>(true)).ToArray();
         var rack = all.First(t => t.name == "Cigarette rack");
-        var slots = oldSlots.Where(s => s != null && !s.transform.IsChildOf(rack)).ToList();
+        var slots = oldSlots.Where(s => s != null && !s.transform.IsChildOf(rack) && !s.name.StartsWith("Extra cigarette slot ")).ToList();
         for (int row = 0; row < 4; row++)
         {
             var first = rack.Find("Cigarette slot " + row + "-0");

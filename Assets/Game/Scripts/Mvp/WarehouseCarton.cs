@@ -8,7 +8,7 @@ public sealed class WarehouseCarton : MonoBehaviour
     public int Quantity { get; private set; }
     public void AdjustQuantity(int delta) { Quantity=Mathf.Max(0,Quantity+delta);Refresh(); }
     public bool CanPlace(ProductSlot slot) => Quantity>0 && slot!=null && slot.CanStock(ShopCatalog.Ids[ProductType], ProductSize, out _);
-    private Vector3 ProductSize => ShopCatalog.IsCigarette(ProductType)?new Vector3(.16f,.26f,.08f):new Vector3(.22f,.26f,.18f);
+    private Vector3 ProductSize => ProductVisuals.Size(ProductType);
     public bool TryPlaceOne(ProductSlot slot) => IsHeld && area.Shop.StockFromCarton(this,slot);
     private WarehouseArea area;
     private Collider[] colliders;
@@ -31,7 +31,8 @@ public sealed class WarehouseCarton : MonoBehaviour
         {
             samples[i]=Box("Packed product",new Vector3((i%3-1)*.13f,.15f,(i/3-.5f)*.13f),new Vector3(.105f,.16f,.065f),product);
             Destroy(samples[i].GetComponent<Collider>());
-            if (ShopCatalog.IsCigarette(type)) ProductVisuals.Add(samples[i], type);
+            if (!ShopCatalog.IsCigarette(type)) samples[i].transform.localScale = ProductVisuals.Size(type) * .60f;
+            ProductVisuals.Add(samples[i], type);
         }
         gameObject.AddComponent<ShopStation>().ConfigureBrand(area.Shop,type);
         colliders=GetComponentsInChildren<Collider>();Refresh();
