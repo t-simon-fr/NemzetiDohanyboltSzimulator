@@ -17,7 +17,7 @@ public sealed class ShopLayout : MonoBehaviour
     { starterWall=wall;extension=room;publicSlots=slots;publicTypes=types;SetExpanded(false); }
     public void SetExpanded(bool expanded)
     { Expanded=expanded;starterWall.SetActive(!expanded);extension.SetActive(expanded); }
-    public bool IsPublicProduct(int type)=>Expanded && type>=3;
+    public bool IsPublicProduct(int type)=>Expanded && type>=ShopCatalog.CigaretteCount && type<ShopCatalog.Count;
     public ShopProduct FindPublicStock(int type)
     {
         if(!IsPublicProduct(type))return null;

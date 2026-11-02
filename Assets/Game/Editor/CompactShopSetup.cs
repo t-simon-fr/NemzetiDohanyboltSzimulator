@@ -49,9 +49,9 @@ public static class CompactShopSetup
         for(int row=0;row<4;row++)
         {
             float y=.25f+row*.42f;Box(rack,"Shelf "+row,new Vector3(0,y,0),new Vector3(3.5f,.06f,.4f),trim);
-            for(int col=0;col<6;col++)
+            for(int col=0;col<8;col++)
             {
-                var slot=Slot(rack,"Cigarette slot "+row+"-"+col,new Vector3((col-2.5f)*.52f,y+.03f,0),Quaternion.identity,new Vector3(.35f,.36f,.3f));
+                var slot=Slot(rack,"Cigarette slot "+row+"-"+col,new Vector3((col-3.5f)*.40f,y+.03f,0),Quaternion.identity,new Vector3(.35f,.36f,.3f));
                 slot.RestrictTo(ShopCatalog.Ids[col/2]);slots.Add(slot);types.Add(col/2);
             }
         }
@@ -64,9 +64,9 @@ public static class CompactShopSetup
             for(int col=0;col<6;col++)
             {
                 var slot=Slot(publicRack,"Public slot "+row+"-"+col,new Vector3(0,y+.03f,(col-2.5f)*.5f),Quaternion.Euler(0,90,0),new Vector3(.4f,.38f,.4f));
-                slot.RestrictTo(ShopCatalog.Ids[row+3]);slots.Add(slot);types.Add(row+3);publicSlots.Add(slot);publicTypes.Add(row+3);
+                slot.RestrictTo(ShopCatalog.Ids[row+ShopCatalog.CigaretteCount]);slots.Add(slot);types.Add(row+ShopCatalog.CigaretteCount);publicSlots.Add(slot);publicTypes.Add(row+ShopCatalog.CigaretteCount);
             }
-            ProductVisuals.Text(publicRack,"Árcímke",ShopCatalog.Names[row+3]+" • "+ShopCatalog.Money(ShopCatalog.Prices[row+3]),new Vector3(-.29f,y-.06f,0),Quaternion.Euler(0,90,0),.09f,Color.black);
+            ProductVisuals.Text(publicRack,"Árcímke",ShopCatalog.Names[row+ShopCatalog.CigaretteCount]+" • "+ShopCatalog.Money(ShopCatalog.Prices[row+ShopCatalog.CigaretteCount]),new Vector3(-.29f,y-.06f,0),Quaternion.Euler(0,90,0),.09f,Color.black);
         }
         var player=new GameObject("Player");player.transform.SetPositionAndRotation(new Vector3(0,.05f,-.7f),Quaternion.Euler(0,180,0));
         var cc=player.AddComponent<CharacterController>();cc.height=1.8f;cc.radius=.27f;cc.center=new Vector3(0,.9f,0);
@@ -79,7 +79,7 @@ public static class CompactShopSetup
         var sign=Box(room,"Open Close Sign",new Vector3(1.9f,1.5f,-4.25f),new Vector3(.6f,.45f,.08f),dark);Station(sign,game,ShopStationKind.Door);
         ProductVisuals.Text(room,"Nyitás felirat","NYITÁS / ZÁRÁS\nE vagy O",new Vector3(1.9f,1.5f,-4.19f),Quaternion.Euler(0,180,0),.06f,Color.white);
         var tray=Slot(room,"Counter Slot 2",new Vector3(.15f,1.18f,-2.05f),Quaternion.identity,new Vector3(.38f,.36f,.36f));
-        Box(room,"Blue handover tray",new Vector3(.15f,1.173f,-2.05f),new Vector3(.4f,.012f,.38f),products[3]);
+        Box(room,"Blue handover tray",new Vector3(.15f,1.173f,-2.05f),new Vector3(.4f,.012f,.38f),products[ShopCatalog.CigaretteCount]);
         ProductVisuals.Text(room,"Átadó felirat","ÁRU ÁTADÁSA",new Vector3(.15f,1.185f,-1.8f),Quaternion.Euler(90,180,0),.035f,Color.black);
         Slot(room,"Counter Slot 1",new Vector3(.72f,1.18f,-2.05f),Quaternion.identity,new Vector3(.35f,.36f,.36f));
         var till=Box(room,"Register blockout",new Vector3(-1.18f,1.23f,-2.05f),new Vector3(1.18f,.12f,.82f),dark);Station(till,game,ShopStationKind.Till);
@@ -101,8 +101,8 @@ public static class CompactShopSetup
         RenderSettings.ambientLight=new Color(.58f,.57f,.54f);
         var lamp=new GameObject("Interior light");lamp.transform.position=new Vector3(0,2.7f,-.7f);var point=lamp.AddComponent<Light>();point.type=LightType.Point;point.range=12;point.intensity=5;point.color=new Color(1,.9f,.72f);
         PlayerSettings.productName="Nemzeti Dohánybolt Szimulátor";PlayerSettings.defaultScreenWidth=1280;PlayerSettings.defaultScreenHeight=720;PlayerSettings.fullScreenMode=FullScreenMode.Windowed;PlayerSettings.resizableWindow=true;
-        const string path="Assets/Game/Scenes/ShopPrototype.unity";EditorSceneManager.SaveScene(scene,path);CounterFixtureSetup.UpgradeCurrentScene();WarehouseSetup.AddToCurrentScene();ShopWorkflowSetup.UpgradeCurrentScene();EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(path,true)};AssetDatabase.SaveAssets();
-        Debug.Log("Compact shop saved: 24 cigarette slots, 18 expansion slots, physical monitor and register. Counter remains at (0, .55, -2.05).");
+        const string path="Assets/Game/Scenes/ShopPrototype.unity";EditorSceneManager.SaveScene(scene,path);CounterFixtureSetup.UpgradeCurrentScene();WarehouseSetup.AddToCurrentScene();ShopWorkflowSetup.UpgradeCurrentScene();CigarettePackagingSetup.UpgradeCurrentScene();EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(path,true)};AssetDatabase.SaveAssets();
+        Debug.Log("Compact shop saved: 32 cigarette slots, 18 expansion slots, physical monitor and register. Counter remains at (0, .55, -2.05).");
     }
     private static Material Mat(string name,Color color)
     {

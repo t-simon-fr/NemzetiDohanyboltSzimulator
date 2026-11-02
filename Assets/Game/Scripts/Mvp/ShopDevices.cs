@@ -85,7 +85,7 @@ public sealed class ShopDevices : MonoBehaviour
         Label(desktopPage,"Minden műszak itt kezdődik. A kávé külön fut.",new Vector3(0,-.315f,.025f),.025f);
         for(int i=0;i<ShopCatalog.Count;i++)
         {
-            float y=.17f-(i/2)*.19f,x=i%2==0?.45f:-.45f;
+            float y=.20f-(i/2)*.155f,x=i%2==0?.45f:-.45f;
             stockLabels.Add(Label(orderPage,"",new Vector3(x,y+.065f,.025f),.021f));
             MonitorButton(orderPage,"3 × "+ShopCatalog.Names[i]+" | "+ShopCatalog.Money(ShopCatalog.Costs[i]*3),new Vector3(x,y-.008f,.02f),WorldControlKind.Order,i);
         }

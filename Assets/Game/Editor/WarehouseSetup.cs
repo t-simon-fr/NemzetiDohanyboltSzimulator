@@ -45,8 +45,8 @@ public static class WarehouseSetup
         for(int i=0;i<docks.Length;i++)
         {
             var dock=new GameObject("Brand Dock - "+ShopCatalog.Names[i]).transform;dock.SetParent(root,false);
-            if(i<3){dock.localPosition=new Vector3(-5.45f+i*1.2f,.75f,-1.45f);dock.localRotation=Quaternion.Euler(0,180,0);}
-            else{dock.localPosition=new Vector3(-5.55f,.75f,-.35f+(i-3)*.9f);dock.localRotation=Quaternion.Euler(0,-90,0);}
+            if(i<ShopCatalog.CigaretteCount){dock.localPosition=new Vector3(-5.50f+i*.85f,.75f,-1.45f);dock.localRotation=Quaternion.Euler(0,180,0);}
+            else{dock.localPosition=new Vector3(-5.55f,.75f,-.35f+(i-ShopCatalog.CigaretteCount)*.9f);dock.localRotation=Quaternion.Euler(0,-90,0);}
             BuildRack(dock,cardboard,dark,i);
             dock.gameObject.AddComponent<ShopStation>().ConfigureBrand(shop,i);docks[i]=dock;
         }
@@ -66,7 +66,7 @@ public static class WarehouseSetup
         var text=ProductVisuals.Text(binRoot,"Paper bin label","PAPÍRGYŰJTŐ",new Vector3(0,.75f,-.435f),Quaternion.identity,.055f,Color.white);bin.Configure(area,text);
         var lamp=new GameObject("Warehouse ceiling lamp");lamp.transform.SetParent(root,false);lamp.transform.position=new Vector3(-4.25f,2.65f,0);var light=lamp.AddComponent<Light>();light.type=LightType.Point;light.range=6;light.intensity=3.5f;light.color=new Color(1,.91f,.75f);
         EditorUtility.SetDirty(shop);EditorUtility.SetDirty(area);EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);AssetDatabase.SaveAssets();
-        Debug.Log("Added cashier-side warehouse, six brand docks, rear yard and paper dumpster; existing counter and shelves retained.");
+        Debug.Log("Added cashier-side warehouse, seven brand docks, rear yard and paper dumpster; existing counter and shelves retained.");
     }
     private static void BuildRack(Transform dock,Material shelf,Material metal,int type)
     {

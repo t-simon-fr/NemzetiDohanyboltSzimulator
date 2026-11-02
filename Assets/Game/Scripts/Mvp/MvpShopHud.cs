@@ -68,7 +68,7 @@ public sealed class MvpShopHud : MonoBehaviour
     {
         Label("Nemzeti Dohánybolt Szimulátor",true);Label(shop.Day+". műszak • Kis bolt, nagy történetek.");
         GUILayout.Space(22);
-        Label("A pult mögötti polcon három kitalált cigarettamárka várja a vásárlókat: Pannon Piros, Duna Kék és Alföld Arany.");
+        Label("A pult mögötti polcon négy cigarettamárka várja a vásárlókat: Lucky Stroke, Marlbroke, Downhill és Davidon.");
         GUILayout.Space(14);Label("E-vel vedd fel a kért dobozt, és tedd a kék átadóhelyre. A pénztárgépből valódi magyar címletértékű bankjegyeket és érméket kattints ki a visszajáróhoz, majd nyomd meg az ÁTADÁS gombot.");
         GUILayout.Space(14);Label("B-vel nyisd meg a pult számítógépét. Az asztalon külön Rendelések és Berendezés alkalmazás van. A raktári polcról E-vel a teljes márkadobozt veszed fel, majd a bolti polc üres helyeire E-vel egyesével pakolhatsz. Az üres kartont vidd a hátsó papírgyűjtőbe.");
         GUILayout.Space(14);Label("A bővítés új önkiszolgáló polcokat nyit. Ezekről a vásárlók maguk veszik le a vizet, rágót és sört, majd ugyanahhoz a pulthoz jönnek fizetni.");

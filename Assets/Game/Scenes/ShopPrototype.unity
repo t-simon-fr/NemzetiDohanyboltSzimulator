@@ -209,6 +209,144 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8516223}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &11267382
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 11267383}
+  - component: {fileID: 11267384}
+  - component: {fileID: 11267385}
+  m_Layer: 0
+  m_Name: Cigarette slot 3-6
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &11267383
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11267382}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 1.54, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &11267384
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11267382}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35, y: 0.36, z: 0.3}
+  m_Center: {x: 0, y: 0.19500001, z: 0}
+--- !u!114 &11267385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11267382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7f4d287efa88246be5f7f38d5704b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
+  capacity: {x: 0.35, y: 0.36, z: 0.3}
+  occupant: {fileID: 0}
+  allowedProductId: cig_davidon
+--- !u!1 &20924063
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 20924064}
+  - component: {fileID: 20924065}
+  - component: {fileID: 20924066}
+  m_Layer: 0
+  m_Name: Cigarette slot 1-7
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &20924064
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20924063}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.4, y: 0.6999999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &20924065
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20924063}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35, y: 0.36, z: 0.3}
+  m_Center: {x: 0, y: 0.19500001, z: 0}
+--- !u!114 &20924066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20924063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7f4d287efa88246be5f7f38d5704b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
+  capacity: {x: 0.35, y: 0.36, z: 0.3}
+  occupant: {fileID: 0}
+  allowedProductId: cig_davidon
 --- !u!1 &21699799
 GameObject:
   m_ObjectHideFlags: 0
@@ -918,7 +1056,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1035,7 +1173,124 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &66788490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 66788491}
+  - component: {fileID: 66788494}
+  - component: {fileID: 66788493}
+  - component: {fileID: 66788492}
+  m_Layer: 0
+  m_Name: Brand price 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &66788491
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66788490}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.4, y: 1.78, z: -0.055}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &66788492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66788490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae37f8538b1e5f64389bcf5f8642339e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopWorldText
+--- !u!102 &66788493
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66788490}
+  m_Text: "Marlbroke\n2\_300 Ft"
+  m_OffsetZ: 0
+  m_CharacterSize: 0.008640001
+  m_LineSpacing: 1
+  m_Anchor: 4
+  m_Alignment: 1
+  m_TabSize: 4
+  m_FontSize: 64
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278190080
+--- !u!23 &66788494
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66788490}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1524,7 +1779,124 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &87274874
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 87274875}
+  - component: {fileID: 87274878}
+  - component: {fileID: 87274877}
+  - component: {fileID: 87274876}
+  m_Layer: 0
+  m_Name: Brand price 3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &87274875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87274874}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.2, y: 1.78, z: -0.055}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &87274876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87274874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae37f8538b1e5f64389bcf5f8642339e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopWorldText
+--- !u!102 &87274877
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87274874}
+  m_Text: "Davidon\n2\_600 Ft"
+  m_OffsetZ: 0
+  m_CharacterSize: 0.008640001
+  m_LineSpacing: 1
+  m_Anchor: 4
+  m_Alignment: 1
+  m_TabSize: 4
+  m_FontSize: 64
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278190080
+--- !u!23 &87274878
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87274874}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1870,7 +2242,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2130,7 +2502,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2181,7 +2553,7 @@ Transform:
   m_GameObject: {fileID: 145608105}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.3, y: 0.28, z: 0}
+  m_LocalPosition: {x: -1.4, y: 0.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2964,6 +3336,75 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 236229619}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &279043387
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 279043388}
+  - component: {fileID: 279043389}
+  - component: {fileID: 279043390}
+  m_Layer: 0
+  m_Name: Cigarette slot 2-6
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &279043388
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279043387}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 1.1199999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &279043389
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279043387}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35, y: 0.36, z: 0.3}
+  m_Center: {x: 0, y: 0.19500001, z: 0}
+--- !u!114 &279043390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279043387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7f4d287efa88246be5f7f38d5704b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
+  capacity: {x: 0.35, y: 0.36, z: 0.3}
+  occupant: {fileID: 0}
+  allowedProductId: cig_davidon
 --- !u!1 &279795459
 GameObject:
   m_ObjectHideFlags: 0
@@ -2991,7 +3432,7 @@ Transform:
   m_GameObject: {fileID: 279795459}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.78, y: 1.1199999, z: 0}
+  m_LocalPosition: {x: -1, y: 1.1199999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3609,7 +4050,7 @@ Transform:
   m_GameObject: {fileID: 314414759}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.78, y: 1.54, z: 0}
+  m_LocalPosition: {x: -1, y: 1.54, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4014,7 +4455,7 @@ Transform:
   m_GameObject: {fileID: 391470379}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.26, y: 1.54, z: 0}
+  m_LocalPosition: {x: -0.6, y: 1.54, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4271,7 +4712,7 @@ GameObject:
   - component: {fileID: 403129945}
   - component: {fileID: 403129946}
   m_Layer: 0
-  m_Name: Brand Dock - Pannon Piros
+  m_Name: Brand Dock - Lucky Stroke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4638,7 +5079,7 @@ Transform:
   m_GameObject: {fileID: 441611575}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.78, y: 0.28, z: 0}
+  m_LocalPosition: {x: -1, y: 0.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4915,7 +5356,7 @@ GameObject:
   - component: {fileID: 478995499}
   - component: {fileID: 478995500}
   m_Layer: 0
-  m_Name: "Brand Dock - Duna K\xE9k"
+  m_Name: Brand Dock - Marlbroke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4962,6 +5403,123 @@ MonoBehaviour:
   kind: 1
   shop: {fileID: 1629517054}
   productType: 1
+--- !u!1 &493028041
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 493028042}
+  - component: {fileID: 493028045}
+  - component: {fileID: 493028044}
+  - component: {fileID: 493028043}
+  m_Layer: 0
+  m_Name: Brand price 0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &493028042
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493028041}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.2, y: 1.78, z: -0.055}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &493028043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493028041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae37f8538b1e5f64389bcf5f8642339e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopWorldText
+--- !u!102 &493028044
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493028041}
+  m_Text: "Lucky Stroke\n2\_200 Ft"
+  m_OffsetZ: 0
+  m_CharacterSize: 0.008640001
+  m_LineSpacing: 1
+  m_Anchor: 4
+  m_Alignment: 1
+  m_TabSize: 4
+  m_FontSize: 64
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278190080
+--- !u!23 &493028045
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493028041}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 535202442}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &510016326
 GameObject:
   m_ObjectHideFlags: 0
@@ -4989,7 +5547,7 @@ Transform:
   m_GameObject: {fileID: 510016326}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.26, y: 1.1199999, z: 0}
+  m_LocalPosition: {x: -0.6, y: 1.1199999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5367,6 +5925,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 527226221}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!21 &535202442
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: World font
+  m_Shader: {fileID: 4800000, guid: f81dc87b8fbcb72489e1952c708dcf64, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 10103, guid: 0000000000000000e000000000000000, type: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats: []
+    m_Colors: []
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &535522261
 GameObject:
   m_ObjectHideFlags: 0
@@ -5491,7 +6081,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5542,7 +6132,7 @@ Transform:
   m_GameObject: {fileID: 541295928}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.26, y: 1.1199999, z: 0}
+  m_LocalPosition: {x: -0.2, y: 1.1199999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5901,7 +6491,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7313,7 +7903,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8086,6 +8676,123 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 313929468}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &689004308
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 689004309}
+  - component: {fileID: 689004312}
+  - component: {fileID: 689004311}
+  - component: {fileID: 689004310}
+  m_Layer: 0
+  m_Name: Brand dock label
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &689004309
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689004308}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.055, z: -0.357}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1314184301}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &689004310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689004308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae37f8538b1e5f64389bcf5f8642339e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopWorldText
+--- !u!102 &689004311
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689004308}
+  m_Text: Davidon
+  m_OffsetZ: 0
+  m_CharacterSize: 0.0075600003
+  m_LineSpacing: 1
+  m_Anchor: 4
+  m_Alignment: 1
+  m_TabSize: 4
+  m_FontSize: 64
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278190080
+--- !u!23 &689004312
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689004308}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8898,7 +9605,7 @@ Transform:
   m_GameObject: {fileID: 726970915}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3, y: 1.1199999, z: 0}
+  m_LocalPosition: {x: 0.6, y: 1.1199999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9271,7 +9978,7 @@ TextMesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 771612092}
-  m_Text: "Alf\xF6ld Arany"
+  m_Text: Downhill
   m_OffsetZ: 0
   m_CharacterSize: 0.0075600003
   m_LineSpacing: 1
@@ -9310,7 +10017,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9520,7 +10227,7 @@ Transform:
   m_GameObject: {fileID: 824168055}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.26, y: 0.6999999, z: 0}
+  m_LocalPosition: {x: -0.6, y: 0.6999999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9589,7 +10296,7 @@ Transform:
   m_GameObject: {fileID: 837061351}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.3, y: 0.6999999, z: 0}
+  m_LocalPosition: {x: -1.4, y: 0.6999999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9790,7 +10497,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
   capacity: {x: 0.32, y: 0.38, z: 0.3}
   occupant: {fileID: 0}
-  allowedProductId: cig_red
+  allowedProductId: cig_davidon
 --- !u!65 &841721679
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9905,7 +10612,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10022,7 +10729,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10759,6 +11466,123 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 903526801}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &905375629
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 905375630}
+  - component: {fileID: 905375633}
+  - component: {fileID: 905375632}
+  - component: {fileID: 905375631}
+  m_Layer: 0
+  m_Name: Brand price 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &905375630
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905375629}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.4, y: 1.78, z: -0.055}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &905375631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905375629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae37f8538b1e5f64389bcf5f8642339e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopWorldText
+--- !u!102 &905375632
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905375629}
+  m_Text: "Downhill\n2\_400 Ft"
+  m_OffsetZ: 0
+  m_CharacterSize: 0.008640001
+  m_LineSpacing: 1
+  m_Anchor: 4
+  m_Alignment: 1
+  m_TabSize: 4
+  m_FontSize: 64
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278190080
+--- !u!23 &905375633
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905375629}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 535202442}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &913307834
 GameObject:
   m_ObjectHideFlags: 0
@@ -11255,7 +12079,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12201,7 +13025,7 @@ TextMesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1010678571}
-  m_Text: "Duna K\xE9k"
+  m_Text: Marlbroke
   m_OffsetZ: 0
   m_CharacterSize: 0.0075600003
   m_LineSpacing: 1
@@ -12240,7 +13064,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12311,7 +13135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
   capacity: {x: 0.32, y: 0.38, z: 0.3}
   occupant: {fileID: 0}
-  allowedProductId: cig_red
+  allowedProductId: cig_gold
 --- !u!65 &1012434776
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12472,7 +13296,7 @@ Transform:
   m_GameObject: {fileID: 1021981041}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.78, y: 0.6999999, z: 0}
+  m_LocalPosition: {x: 0.2, y: 0.6999999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12568,7 +13392,7 @@ TextMesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1033813785}
-  m_Text: Pannon Piros
+  m_Text: Lucky Stroke
   m_OffsetZ: 0
   m_CharacterSize: 0.0075600003
   m_LineSpacing: 1
@@ -12607,7 +13431,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12905,7 +13729,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13246,7 +14070,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13325,6 +14149,7 @@ Transform:
   - {fileID: 74830591}
   - {fileID: 1950801501}
   - {fileID: 866666765}
+  - {fileID: 1314184301}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1098507628
@@ -13727,7 +14552,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
   capacity: {x: 0.32, y: 0.38, z: 0.3}
   occupant: {fileID: 0}
-  allowedProductId: cig_blue
+  allowedProductId: cig_davidon
 --- !u!65 &1134160615
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13954,7 +14779,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14440,7 +15265,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopStation
   kind: 1
   shop: {fileID: 1629517054}
-  productType: 5
+  productType: 6
 --- !u!1 &1176831167
 GameObject:
   m_ObjectHideFlags: 0
@@ -14712,7 +15537,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
   capacity: {x: 0.32, y: 0.38, z: 0.3}
   occupant: {fileID: 0}
-  allowedProductId: cig_gold
+  allowedProductId: cig_blue
 --- !u!65 &1182007187
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14761,7 +15586,7 @@ Transform:
   m_GameObject: {fileID: 1183146989}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3, y: 0.6999999, z: 0}
+  m_LocalPosition: {x: 0.6, y: 0.6999999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14896,7 +15721,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14947,7 +15772,7 @@ Transform:
   m_GameObject: {fileID: 1189229109}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3, y: 0.28, z: 0}
+  m_LocalPosition: {x: 0.6, y: 0.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15711,7 +16536,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15894,7 +16719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
   capacity: {x: 0.32, y: 0.38, z: 0.3}
   occupant: {fileID: 0}
-  allowedProductId: cig_blue
+  allowedProductId: cig_red
 --- !u!65 &1244783475
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16605,7 +17430,7 @@ Transform:
   m_GameObject: {fileID: 1299617078}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.26, y: 0.28, z: 0}
+  m_LocalPosition: {x: -0.6, y: 0.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16674,7 +17499,7 @@ Transform:
   m_GameObject: {fileID: 1308581068}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.26, y: 0.28, z: 0}
+  m_LocalPosition: {x: -0.2, y: 0.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16716,6 +17541,76 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.35, y: 0.36, z: 0.3}
   m_Center: {x: 0, y: 0.19500001, z: 0}
+--- !u!1 &1314184300
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1314184301}
+  - component: {fileID: 1314184303}
+  - component: {fileID: 1314184302}
+  m_Layer: 0
+  m_Name: Brand Dock - Davidon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1314184301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314184300}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: -0.00000004371139}
+  m_LocalPosition: {x: -3.0499997, y: 1.3, z: -1.45}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 689004309}
+  m_Father: {fileID: 1089212233}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1314184302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314184300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 368cf797d7273004ebbea645da800afb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopStation
+  kind: 1
+  shop: {fileID: 1629517054}
+  productType: 3
+--- !u!65 &1314184303
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314184300}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.76, y: 0.1, z: 0.7}
+  m_Center: {x: 0, y: -0.055, z: 0}
 --- !u!1 &1331116673
 GameObject:
   m_ObjectHideFlags: 0
@@ -16774,6 +17669,18 @@ Transform:
   - {fileID: 1842570824}
   - {fileID: 1591057174}
   - {fileID: 1548428499}
+  - {fileID: 1960065875}
+  - {fileID: 1778547501}
+  - {fileID: 1587730900}
+  - {fileID: 20924064}
+  - {fileID: 279043388}
+  - {fileID: 1358728471}
+  - {fileID: 11267383}
+  - {fileID: 1623078455}
+  - {fileID: 493028042}
+  - {fileID: 66788491}
+  - {fileID: 905375630}
+  - {fileID: 87274875}
   m_Father: {fileID: 822582325}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1331917461
@@ -17035,7 +17942,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopStation
   kind: 1
   shop: {fileID: 1629517054}
-  productType: 3
+  productType: 4
 --- !u!1 &1339330453
 GameObject:
   m_ObjectHideFlags: 0
@@ -17241,7 +18148,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -17355,6 +18262,75 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1358464886}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1358728470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1358728471}
+  - component: {fileID: 1358728472}
+  - component: {fileID: 1358728473}
+  m_Layer: 0
+  m_Name: Cigarette slot 2-7
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1358728471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358728470}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.4, y: 1.1199999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1358728472
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358728470}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35, y: 0.36, z: 0.3}
+  m_Center: {x: 0, y: 0.19500001, z: 0}
+--- !u!114 &1358728473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358728470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7f4d287efa88246be5f7f38d5704b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
+  capacity: {x: 0.35, y: 0.36, z: 0.3}
+  occupant: {fileID: 0}
+  allowedProductId: cig_davidon
 --- !u!1 &1368647106
 GameObject:
   m_ObjectHideFlags: 0
@@ -18077,7 +19053,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -18159,7 +19135,7 @@ Transform:
   m_GameObject: {fileID: 1430322263}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.3, y: 1.1199999, z: 0}
+  m_LocalPosition: {x: -1.4, y: 1.1199999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18228,7 +19204,7 @@ Transform:
   m_GameObject: {fileID: 1436680512}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.78, y: 1.1199999, z: 0}
+  m_LocalPosition: {x: 0.2, y: 1.1199999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18297,7 +19273,7 @@ Transform:
   m_GameObject: {fileID: 1490634370}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.78, y: 0.28, z: 0}
+  m_LocalPosition: {x: 0.2, y: 0.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18845,7 +19821,7 @@ Transform:
   m_GameObject: {fileID: 1548428498}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3, y: 1.54, z: 0}
+  m_LocalPosition: {x: 0.6, y: 1.54, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18914,7 +19890,7 @@ Transform:
   m_GameObject: {fileID: 1558727090}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.78, y: 0.6999999, z: 0}
+  m_LocalPosition: {x: -1, y: 0.6999999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -19115,7 +20091,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
   capacity: {x: 0.32, y: 0.38, z: 0.3}
   occupant: {fileID: 0}
-  allowedProductId: cig_gold
+  allowedProductId: cig_red
 --- !u!65 &1573074646
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19251,6 +20227,75 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.4, y: 0.38, z: 0.4}
   m_Center: {x: 0, y: 0.205, z: 0}
+--- !u!1 &1587730899
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1587730900}
+  - component: {fileID: 1587730901}
+  - component: {fileID: 1587730902}
+  m_Layer: 0
+  m_Name: Cigarette slot 1-6
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1587730900
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587730899}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 0.6999999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1587730901
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587730899}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35, y: 0.36, z: 0.3}
+  m_Center: {x: 0, y: 0.19500001, z: 0}
+--- !u!114 &1587730902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587730899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7f4d287efa88246be5f7f38d5704b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
+  capacity: {x: 0.35, y: 0.36, z: 0.3}
+  occupant: {fileID: 0}
+  allowedProductId: cig_davidon
 --- !u!1 &1589651390
 GameObject:
   m_ObjectHideFlags: 0
@@ -19313,7 +20358,7 @@ Transform:
   m_GameObject: {fileID: 1591057173}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.78, y: 1.54, z: 0}
+  m_LocalPosition: {x: 0.2, y: 1.54, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -19617,7 +20662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopStation
   kind: 1
   shop: {fileID: 1629517054}
-  productType: 4
+  productType: 5
 --- !u!1 &1600492828
 GameObject:
   m_ObjectHideFlags: 0
@@ -19708,6 +20753,75 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1600492828}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1623078454
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1623078455}
+  - component: {fileID: 1623078456}
+  - component: {fileID: 1623078457}
+  m_Layer: 0
+  m_Name: Cigarette slot 3-7
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1623078455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623078454}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.4, y: 1.54, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1623078456
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623078454}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35, y: 0.36, z: 0.3}
+  m_Center: {x: 0, y: 0.19500001, z: 0}
+--- !u!114 &1623078457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623078454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7f4d287efa88246be5f7f38d5704b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
+  capacity: {x: 0.35, y: 0.36, z: 0.3}
+  occupant: {fileID: 0}
+  allowedProductId: cig_davidon
 --- !u!1 &1623370454
 GameObject:
   m_ObjectHideFlags: 0
@@ -19735,7 +20849,7 @@ Transform:
   m_GameObject: {fileID: 1623370454}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.3, y: 1.54, z: 0}
+  m_LocalPosition: {x: -1.4, y: 1.54, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -19865,7 +20979,7 @@ MonoBehaviour:
   - {fileID: 293860227}
   - {fileID: 1735806686}
   - {fileID: 152613822}
-  publicTypes: 030000000300000003000000030000000300000003000000040000000400000004000000040000000400000004000000050000000500000005000000050000000500000005000000i
+  publicTypes: 040000000400000004000000040000000400000004000000050000000500000005000000050000000500000005000000060000000600000006000000060000000600000006000000i
   entryOutside: {fileID: 936710654}
   entryInside: {fileID: 1761031819}
   aisleGate: {fileID: 1538545168}
@@ -19886,30 +21000,6 @@ MonoBehaviour:
   delivery: {fileID: 1798259025}
   customerTemplate: {fileID: 1938598073}
   shelfSlots:
-  - {fileID: 145608107}
-  - {fileID: 441611577}
-  - {fileID: 1299617080}
-  - {fileID: 1308581070}
-  - {fileID: 1490634372}
-  - {fileID: 1189229111}
-  - {fileID: 837061353}
-  - {fileID: 1558727092}
-  - {fileID: 824168057}
-  - {fileID: 1847251201}
-  - {fileID: 1021981043}
-  - {fileID: 1183146991}
-  - {fileID: 1430322265}
-  - {fileID: 279795461}
-  - {fileID: 510016328}
-  - {fileID: 541295930}
-  - {fileID: 1436680514}
-  - {fileID: 726970917}
-  - {fileID: 1623370456}
-  - {fileID: 314414761}
-  - {fileID: 391470381}
-  - {fileID: 1842570825}
-  - {fileID: 1591057175}
-  - {fileID: 1548428500}
   - {fileID: 1576979190}
   - {fileID: 2121496663}
   - {fileID: 405064931}
@@ -19928,11 +21018,53 @@ MonoBehaviour:
   - {fileID: 293860227}
   - {fileID: 1735806686}
   - {fileID: 152613822}
-  shelfTypes: 000000000000000001000000010000000200000002000000000000000000000001000000010000000200000002000000000000000000000001000000010000000200000002000000000000000000000001000000010000000200000002000000030000000300000003000000030000000300000003000000040000000400000004000000040000000400000004000000050000000500000005000000050000000500000005000000i
+  - {fileID: 1385740739}
+  - {fileID: 1038514424}
+  - {fileID: 2013871846}
+  - {fileID: 841721678}
+  - {fileID: 1244783474}
+  - {fileID: 1182007186}
+  - {fileID: 1012434775}
+  - {fileID: 1134160614}
+  - {fileID: 1573074645}
+  - {fileID: 145608107}
+  - {fileID: 441611577}
+  - {fileID: 1299617080}
+  - {fileID: 1308581070}
+  - {fileID: 1490634372}
+  - {fileID: 1189229111}
+  - {fileID: 1960065877}
+  - {fileID: 1778547503}
+  - {fileID: 837061353}
+  - {fileID: 1558727092}
+  - {fileID: 824168057}
+  - {fileID: 1847251201}
+  - {fileID: 1021981043}
+  - {fileID: 1183146991}
+  - {fileID: 1587730902}
+  - {fileID: 20924066}
+  - {fileID: 1430322265}
+  - {fileID: 279795461}
+  - {fileID: 510016328}
+  - {fileID: 541295930}
+  - {fileID: 1436680514}
+  - {fileID: 726970917}
+  - {fileID: 279043390}
+  - {fileID: 1358728473}
+  - {fileID: 1623370456}
+  - {fileID: 314414761}
+  - {fileID: 391470381}
+  - {fileID: 1842570825}
+  - {fileID: 1591057175}
+  - {fileID: 1548428500}
+  - {fileID: 11267385}
+  - {fileID: 1623078457}
+  shelfTypes: 0400000004000000040000000400000004000000040000000500000005000000050000000500000005000000050000000600000006000000060000000600000006000000060000000000000001000000020000000300000000000000010000000200000003000000000000000000000000000000010000000100000002000000020000000300000003000000000000000000000001000000010000000200000002000000030000000300000000000000000000000100000001000000020000000200000003000000030000000000000000000000010000000100000002000000020000000300000003000000i
   productMaterials:
   - {fileID: 2100000, guid: 7fa6f25203bbe2343a9840cc019ab54c, type: 2}
   - {fileID: 2100000, guid: 69b4452dd019b7645b49c93966615c26, type: 2}
   - {fileID: 2100000, guid: e1f7cb35a0ba91245a1af3646e44ed88, type: 2}
+  - {fileID: 2100000, guid: c3cd9abb0f11b574c970181a92862e7c, type: 2}
   - {fileID: 2100000, guid: e62d386634021ba4bba8cfc60361c15c, type: 2}
   - {fileID: 2100000, guid: ae7089a8e07333c4bb5956fb4c067a7d, type: 2}
   - {fileID: 2100000, guid: af7645be303e7bb439ac9460edd9cd40, type: 2}
@@ -19970,6 +21102,7 @@ MonoBehaviour:
   - {fileID: 403129945}
   - {fileID: 478995499}
   - {fileID: 1834378553}
+  - {fileID: 1314184301}
   - {fileID: 1337213426}
   - {fileID: 1599768261}
   - {fileID: 1175935325}
@@ -19979,6 +21112,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 7fa6f25203bbe2343a9840cc019ab54c, type: 2}
   - {fileID: 2100000, guid: 69b4452dd019b7645b49c93966615c26, type: 2}
   - {fileID: 2100000, guid: e1f7cb35a0ba91245a1af3646e44ed88, type: 2}
+  - {fileID: 2100000, guid: c3cd9abb0f11b574c970181a92862e7c, type: 2}
   - {fileID: 2100000, guid: e62d386634021ba4bba8cfc60361c15c, type: 2}
   - {fileID: 2100000, guid: ae7089a8e07333c4bb5956fb4c067a7d, type: 2}
   - {fileID: 2100000, guid: af7645be303e7bb439ac9460edd9cd40, type: 2}
@@ -21706,7 +22840,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -21842,6 +22976,75 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1773808933}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1778547500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1778547501}
+  - component: {fileID: 1778547502}
+  - component: {fileID: 1778547503}
+  m_Layer: 0
+  m_Name: Cigarette slot 0-7
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1778547501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778547500}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.4, y: 0.28, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1778547502
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778547500}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35, y: 0.36, z: 0.3}
+  m_Center: {x: 0, y: 0.19500001, z: 0}
+--- !u!114 &1778547503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778547500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7f4d287efa88246be5f7f38d5704b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
+  capacity: {x: 0.35, y: 0.36, z: 0.3}
+  occupant: {fileID: 0}
+  allowedProductId: cig_davidon
 --- !u!1 &1783747142
 GameObject:
   m_ObjectHideFlags: 0
@@ -22732,7 +23935,7 @@ GameObject:
   - component: {fileID: 1834378553}
   - component: {fileID: 1834378554}
   m_Layer: 0
-  m_Name: "Brand Dock - Alf\xF6ld Arany"
+  m_Name: Brand Dock - Downhill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22806,7 +24009,7 @@ Transform:
   m_GameObject: {fileID: 1842570823}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.26, y: 1.54, z: 0}
+  m_LocalPosition: {x: -0.2, y: 1.54, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22987,7 +24190,7 @@ Transform:
   m_GameObject: {fileID: 1847251199}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.26, y: 0.6999999, z: 0}
+  m_LocalPosition: {x: -0.2, y: 0.6999999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -23410,6 +24613,75 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WarehouseBin
   warehouse: {fileID: 1629517056}
   label: {fileID: 122629042}
+--- !u!1 &1960065874
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1960065875}
+  - component: {fileID: 1960065876}
+  - component: {fileID: 1960065877}
+  m_Layer: 0
+  m_Name: Cigarette slot 0-6
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1960065875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960065874}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 0.28, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1331116674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1960065876
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960065874}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35, y: 0.36, z: 0.3}
+  m_Center: {x: 0, y: 0.19500001, z: 0}
+--- !u!114 &1960065877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960065874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e7f4d287efa88246be5f7f38d5704b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProductSlot
+  capacity: {x: 0.35, y: 0.36, z: 0.3}
+  occupant: {fileID: 0}
+  allowedProductId: cig_davidon
 --- !u!1 &1967893326
 GameObject:
   m_ObjectHideFlags: 0
@@ -23796,7 +25068,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -24445,7 +25717,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2037441645}
+  - {fileID: 535202442}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -24746,38 +26018,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.56, y: 0.022, z: 0.44}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!21 &2037441645
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: World font
-  m_Shader: {fileID: 4800000, guid: f81dc87b8fbcb72489e1952c708dcf64, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 10103, guid: 0000000000000000e000000000000000, type: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats: []
-    m_Colors: []
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &2047921434
 GameObject:
   m_ObjectHideFlags: 0

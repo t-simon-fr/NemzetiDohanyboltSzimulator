@@ -34,8 +34,8 @@ public static class CompactShopChecks
         try
         {
             game.ResetDemo();game.ClosePanel();Check(game.Ledger.Cash==6000&&game.Drawer.Total==6000,"Opening funds agree");
-            Check(Enumerable.Range(0,3).All(i=>game.StockCount(i)==8)&&Enumerable.Range(3,3).All(i=>game.StockCount(i)==0),"Full cigarette starter rack and locked convenience stock");
-            Check(!game.OrderSupply(3)&&!game.OrderSupply(-1),"Locked and invalid product rejected");
+            Check(Enumerable.Range(0,ShopCatalog.CigaretteCount).All(i=>game.StockCount(i)==8)&&Enumerable.Range(ShopCatalog.CigaretteCount,ShopCatalog.Count-ShopCatalog.CigaretteCount).All(i=>game.StockCount(i)==0),"Full cigarette starter rack and locked convenience stock");
+            Check(!game.OrderSupply(ShopCatalog.CigaretteCount)&&!game.OrderSupply(-1),"Locked and invalid product rejected");
             var counter=GameObject.Find("Service counter").transform;Vector3 counterPosition=counter.position;
             game.OpenSupplier();Check(game.Modal==ShopModal.None&&game.Devices.FocusKind==ShopDeviceKind.Monitor&&ShopInputGate.Blocked,"Monitor focus replaces supplier modal");
             game.Devices.OpenApp(ShopComputerApp.Orders);CheckVisibleControl(WorldControlKind.Order,0);
@@ -44,7 +44,7 @@ public static class CompactShopChecks
             {
                 Check(game.TryExpand()&&game.Layout.Expanded&&game.Ledger.Cash==4000&&game.Drawer.Total==4000,"Expansion unlocks space and costs cash");
                 Check(counter.position==counterPosition&&!game.TryExpand(),"Counter anchored and duplicate expansion rejected");
-                for(int type=3;type<6;type++)
+                for(int type=ShopCatalog.CigaretteCount;type<ShopCatalog.Count;type++)
                 {
                     Check(game.OrderSupply(type),"Order convenience stock after expansion");game.Tick(8.1f);
                     for(int j=0;j<3;j++)
@@ -64,18 +64,18 @@ public static class CompactShopChecks
                 {
                     if(!wrongChecked)
                     {
-                        var wrong=UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[(type+1)%3]&&!p.IsHeld);
+                        var wrong=UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[(type+1)%ShopCatalog.CigaretteCount]&&!p.IsHeld);
                         Offer(wrong);Check(game.Stage==ServiceStage.Order&&game.Ledger.Sales==0,"Wrong product remains recoverable");
                         Check(wrong.PickUp(hand),"Recover wrong product");wrong.ReturnToPickupPosition();
                         // Original position was the tray: explicitly return it to a matching empty shelf.
-                        Check(wrong.PickUp(hand),"Carry recovered product");Physics.SyncTransforms();Check(wrong.TryPlace(EmptyShelf((type+1)%3)),"Return wrong product to rack");wrongChecked=true;
+                        Check(wrong.PickUp(hand),"Carry recovered product");Physics.SyncTransforms();Check(wrong.TryPlace(EmptyShelf((type+1)%ShopCatalog.CigaretteCount)),"Return wrong product to rack");wrongChecked=true;
                     }
                     var item=UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[type]&&!p.IsHeld);Offer(item);
                     Check(game.Stage==ServiceStage.Payment&&game.Modal==ShopModal.None,"Prepared product waits for world cash register");
                 }
                 else if(customer.BasketItem!=null)
                 {
-                    selfServed++;Check(type>=3&&customer.BasketItem.IsHeld,"Customer independently collected convenience item");
+                    selfServed++;Check(type>=ShopCatalog.CigaretteCount&&customer.BasketItem.IsHeld,"Customer independently collected convenience item");
                 }
                 int before=game.Ledger.Cash,count=game.StockCount(type);
                 Check(!game.SubmitChange(customer.Tender-ShopCatalog.Prices[type]+5)&&game.Ledger.Cash==before,"Incorrect change cannot charge customer");
@@ -90,9 +90,9 @@ public static class CompactShopChecks
             for(int i=0;i<1500&&game.Phase!=ShopPhase.Summary;i++)game.Tick(.1f);
             Check(game.Phase==ShopPhase.Summary&&game.Missed==0,"All customers leave and day closes");
             Check(game.Drawer.Total==game.Ledger.Cash&&game.Ledger.Cash==6000+game.Ledger.Revenue-game.Ledger.Purchases-game.Ledger.Improvements-300,"End-of-day accounting includes investment separately");
-            Check(expanded?selfServed==4:game.Ledger.Revenue==18200&&game.Ledger.Profit==5300,"Self-service visitors / cigarette day economics");
-            int cash=game.Ledger.Cash,units=Enumerable.Range(0,6).Sum(game.StockCount);game.NextDay();
-            Check(game.Day==2&&game.Ledger.Cash==cash&&game.Drawer.Total==cash&&game.Layout.Expanded==expanded&&Enumerable.Range(0,6).Sum(game.StockCount)==units,"Next day retains drawer, stock and expansion");
+            Check(expanded?selfServed==4:game.Ledger.Revenue==19000&&game.Ledger.Profit==5400,"Self-service visitors / cigarette day economics");
+            int cash=game.Ledger.Cash,units=Enumerable.Range(0,ShopCatalog.Count).Sum(game.StockCount);game.NextDay();
+            Check(game.Day==2&&game.Ledger.Cash==cash&&game.Drawer.Total==cash&&game.Layout.Expanded==expanded&&Enumerable.Range(0,ShopCatalog.Count).Sum(game.StockCount)==units,"Next day retains drawer, stock and expansion");
             return new{passed,failed=0,expanded,selfServed,cash};
         }
         finally
@@ -101,7 +101,7 @@ public static class CompactShopChecks
             UnityEngine.Object.DestroyImmediate(hand.gameObject);game.ResetDemo();game.ManualTick=false;
         }
     }
-    private static ProductSlot EmptyShelf(int type)=>UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.name.StartsWith(type<3?"Cigarette slot":"Public slot")&&s.CanAccept(Probe(type)));
+    private static ProductSlot EmptyShelf(int type)=>UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.name.StartsWith(ShopCatalog.IsCigarette(type)?"Cigarette slot":"Public slot")&&s.CanAccept(Probe(type)));
     private static ShopProduct Probe(int type)=>UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[type]);
     private static void PlaceOnShelf(ShopProduct item,int type)
     {
@@ -113,7 +113,7 @@ public static class CompactShopChecks
     }
     private static void SelectChange(int due)
     {
-        for(int attempt=0;attempt<30;attempt++)
+        for(int attempt=0;attempt<(game.Drawer.Total+game.Drawer.PendingTender)/50+ShopCatalog.Denominations.Length;attempt++)
         {
             game.ClearChange();int rest=due;
             foreach(int v in ShopCatalog.Denominations)
@@ -141,11 +141,11 @@ public static class CompactShopChecks
         try
         {
             game.ResetDemo();game.ClosePanel();game.TryExpand();
-            Check(game.OrderSupply(3),"Prepare public stock for cancellation test");game.Tick(8.1f);
-            game.TryCreateSupply(3,out var item);PlaceOnShelf(item,3);
+            Check(game.OrderSupply(ShopCatalog.CigaretteCount),"Prepare public stock for cancellation test");game.Tick(8.1f);
+            game.TryCreateSupply(ShopCatalog.CigaretteCount,out var item);PlaceOnShelf(item,ShopCatalog.CigaretteCount);
             ProductSlot source=item.CurrentSlot;
             game.OpenShop();
-            for(int i=0;i<3000 && !(game.ActiveCustomer!=null&&game.ActiveCustomer.Product==3);i++)
+            for(int i=0;i<3000 && !(game.ActiveCustomer!=null&&game.ActiveCustomer.Product==ShopCatalog.CigaretteCount);i++)
             {
                 if(game.ActiveCustomer!=null)game.SkipCurrent();game.Tick(.1f);
             }
@@ -165,7 +165,7 @@ public static class CompactShopChecks
             game.ResetDemo();game.OrderSupply(0);game.OpenShop();game.RequestClose();game.Tick(.1f);
             Check(game.Phase==ShopPhase.Summary&&game.WarehouseCount(0)==3&&game.Ledger.Cash==1200&&game.Drawer.Total==1200,"Early close retains paid pending shipments and charges fee once");
             game.Tick(100);Check(game.Ledger.Cash==1200,"Closing fee cannot repeat");
-            game.ResetDemo();Check(!game.Layout.Expanded&&game.AvailableProducts==3&&game.Drawer.Total==6000,"Reset restores compact starter state");
+            game.ResetDemo();Check(!game.Layout.Expanded&&game.AvailableProducts==ShopCatalog.CigaretteCount&&game.Drawer.Total==6000,"Reset restores compact starter state");
             game.Ledger.TryImprove(6000);game.Drawer.Spend(6000);game.OpenShop();game.RequestClose();game.Tick(.1f);
             Check(game.Phase==ShopPhase.Summary&&game.Ledger.Cash==-300&&game.Drawer.Total==0,"Insolvency has debt rather than negative physical money");
             game.NextDay();Check(game.Day==1&&game.Phase==ShopPhase.Summary,"Insolvent next day is blocked safely");

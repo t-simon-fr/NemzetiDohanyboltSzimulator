@@ -52,7 +52,7 @@ public sealed class MvpShopController : MonoBehaviour
     public ShopCashDrawer Drawer { get; private set; }
     public ShopDevices Devices { get; private set; }
     public ShopLayout Layout { get; private set; }
-    public int AvailableProducts => Layout != null && Layout.Expanded ? ShopCatalog.Count : 3;
+    public int AvailableProducts => Layout != null && Layout.Expanded ? ShopCatalog.Count : ShopCatalog.CigaretteCount;
     public int SelectedPieces(int value) => changeCoins.Count(c=>c==value);
     public bool HasHeldProduct => player != null && player.HasHeldItem;
     public WarehouseArea Warehouse { get; private set; }
@@ -167,7 +167,7 @@ public sealed class MvpShopController : MonoBehaviour
         clone.SetActive(false);
         var legacy = clone.GetComponent<CustomerOrderController>(); if (legacy != null) legacy.enabled = false;
         MvpCustomerActor actor = clone.AddComponent<MvpCustomerActor>();
-        int type = Layout != null && Layout.Expanded && visit % 2 == 1 ? 3 + (visit % 3) : ShopCatalog.VisitProducts[visit];
+        int type = Layout != null && Layout.Expanded && visit % 2 == 1 ? ShopCatalog.CigaretteCount + (visit % (ShopCatalog.Count - ShopCatalog.CigaretteCount)) : ShopCatalog.VisitProducts[visit];
         actor.Initialize((visit + Day - 1) % 4, type, visit);
         clone.SetActive(true); queue.Add(actor);
     }
@@ -278,7 +278,7 @@ public sealed class MvpShopController : MonoBehaviour
         stock.Clear(); shipments.Clear(); Array.Clear(warehouse,0,warehouse.Length); Warehouse?.ResetStorage();
         ClosePanel(); if (Layout != null) { Layout.SetExpanded(false); Layout.SetExtraShelf(false); }
         SelectedSupply = 0; Day = 1; Ledger = new ShopLedger(6000); Drawer = new ShopCashDrawer();
-        for (int type = 0; type < 3; type++)
+        for (int type = 0; type < ShopCatalog.CigaretteCount; type++)
         {
             int seeded = 0;
             for (int i = 0; i < shelfSlots.Length && seeded < 8; i++)
@@ -292,8 +292,8 @@ public sealed class MvpShopController : MonoBehaviour
     private ShopProduct CreateProduct(int type)
     {
         GameObject item = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        item.name = "Product blockout"; item.transform.SetParent(stockRoot, false);
-        item.transform.localScale = type < 3 ? new Vector3(.16f,.26f,.08f) : new Vector3(.22f,.26f,.18f);
+        item.name = ShopCatalog.Names[type]; item.transform.SetParent(stockRoot, false);
+        item.transform.localScale = ShopCatalog.IsCigarette(type) ? new Vector3(.16f,.26f,.08f) : new Vector3(.22f,.26f,.18f);
         item.GetComponent<Renderer>().sharedMaterial = productMaterials[type];
         ShopProduct product = item.AddComponent<ShopProduct>(); product.ConfigureProduct(ShopCatalog.Ids[type], ShopCatalog.Names[type]);
         ProductVisuals.Add(item,type);

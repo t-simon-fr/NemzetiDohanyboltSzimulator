@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public static class ProductVisuals
 {
-    public static readonly Color[] Colors = {new Color(.68f,.12f,.12f),new Color(.12f,.28f,.6f),new Color(.68f,.49f,.15f),new Color(.2f,.6f,.8f),new Color(.2f,.6f,.3f),new Color(.72f,.5f,.15f)};
+    public static readonly Color[] Colors = {new Color(.87f,.81f,.67f),new Color(.72f,.04f,.07f),new Color(.28f,.035f,.075f),new Color(.035f,.035f,.04f),new Color(.2f,.6f,.8f),new Color(.2f,.6f,.3f),new Color(.72f,.5f,.15f)};
     public static TextMesh Text(Transform parent,string name,string value,Vector3 position,Quaternion rotation,float size,Color color)
     {
         var go=new GameObject(name);go.transform.SetParent(parent,false);go.transform.localPosition=position;go.transform.localRotation=rotation;
@@ -28,10 +28,26 @@ public static class ProductVisuals
     }
     public static void Add(GameObject item,int type)
     {
-        // Counter-scale packs, with fictional branding and a clear tobacco warning stripe.
+        // Keep interaction colliders on the product root; all packaging meshes are visual only.
+        if (ShopCatalog.IsCigarette(type))
+        {
+            string[] models = { "LuckyStroke", "Marlbroke", "Downhill", "Davidon" };
+            var prefab = Resources.Load<GameObject>("CigarettePacks/" + models[type]);
+            if (prefab != null)
+            {
+                var model = Object.Instantiate(prefab, item.transform, false);
+                model.transform.localPosition = Vector3.zero;
+                model.transform.localRotation = Quaternion.identity;
+                model.transform.localScale = Vector3.one;
+                var oldRenderer = item.GetComponent<Renderer>();
+                if (oldRenderer != null) oldRenderer.enabled = false;
+                return;
+            }
+            Debug.LogError("Missing cigarette packaging prefab: " + models[type]);
+        }
         Transform face=new GameObject("Package print").transform;face.SetParent(item.transform,false);
         face.localPosition=new Vector3(0,0,-.506f);face.localRotation=Quaternion.identity;
-        string label=type<3?ShopCatalog.Names[type].Replace(" ","\n")+"\n\n18+\nA dohányzás káros":ShopCatalog.ShortNames[type];
+        string label=ShopCatalog.IsCigarette(type)?ShopCatalog.Names[type].Replace(" ","\n")+"\n\n18+\nA dohányzás káros":ShopCatalog.ShortNames[type];
         Text(face,"Product label",label,Vector3.zero,Quaternion.identity,.1f,Color.white);
     }
 }

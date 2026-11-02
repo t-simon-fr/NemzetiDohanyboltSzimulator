@@ -5,12 +5,13 @@ using UnityEngine;
 public static class WarehouseChecks
 {
     private static int checks;
+    private static int Water => ShopCatalog.Index("water");
     private static MvpShopController game;
     private static PlayerInteractor player;
     private static void Require(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks++;}
     private static void PutOnShelf(int type)
     {
-        var slot=UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.CanAcceptStock(ShopCatalog.Ids[player.HeldCarton.ProductType])&&s.name.StartsWith(type<3?"Cigarette slot":"Public slot"));
+        var slot=UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.CanAcceptStock(ShopCatalog.Ids[player.HeldCarton.ProductType])&&s.name.StartsWith(ShopCatalog.IsCigarette(type)?"Cigarette slot":"Public slot"));
         var point=slot.HintCenter;Physics.SyncTransforms();player.RefreshTarget(new Ray(point-slot.transform.forward*1.1f,slot.transform.forward));
         Require(player.TargetSlot==slot&&player.TryPlaceHeld(),"Carry unit from brand carton onto actual fixed shop shelf");
     }
@@ -31,9 +32,9 @@ public static class WarehouseChecks
         var area=game.Warehouse;var bin=UnityEngine.Object.FindAnyObjectByType<WarehouseBin>();
         try
         {
-            Require(area!=null&&Enumerable.Range(0,6).Select(i=>area.Dock(i)).Distinct().Count()==6,"Six separate labelled brand docks");
-            Require(Enumerable.Range(0,6).All(i=>area.Carton(i)==null),"No goods or empty cartons are created before ordering");
-            area.Dock(3).GetComponent<ShopStation>().Use(player);Require(!player.HasHeldItem&&game.WarehouseCount(3)==0,"Locked brands cannot be unpacked before expansion");
+            Require(area!=null&&Enumerable.Range(0,ShopCatalog.Count).Select(i=>area.Dock(i)).Distinct().Count()==ShopCatalog.Count,"Seven separate labelled brand docks");
+            Require(Enumerable.Range(0,ShopCatalog.Count).All(i=>area.Carton(i)==null),"No goods or empty cartons are created before ordering");
+            area.Dock(Water).GetComponent<ShopStation>().Use(player);Require(!player.HasHeldItem&&game.WarehouseCount(Water)==0,"Locked brands cannot be unpacked before expansion");
             var carton=EmptyCarton(0);
             Require(player.TryHoldCarton(carton)&&player.HeldCarton==carton&&!player.HasHeldProduct&&player.HasHeldItem,"Empty carton can be carried with both hands free of products");
             Require(area.Carton(0)==null&&carton.Quantity==0,"Carried empty packaging no longer occupies delivery dock");
@@ -43,18 +44,18 @@ public static class WarehouseChecks
             Require(!bin.Use(player)&&area.DiscardedCartons==1,"Empty-hand interaction cannot duplicate disposal");
             game.OpenShop();game.RequestClose();game.Tick(.1f);game.NextDay();
             Require(game.Day==2&&area.DiscardedCartons==1&&area.Carton(0)==null,"Next day retains storage and removed packaging");
-            game.ResetDemo();game.ClosePanel();Require(area.DiscardedCartons==0&&Enumerable.Range(0,6).All(i=>area.Carton(i)==null),"New game resets physical storage and waste count");
+            game.ResetDemo();game.ClosePanel();Require(area.DiscardedCartons==0&&Enumerable.Range(0,ShopCatalog.Count).All(i=>area.Carton(i)==null),"New game resets physical storage and waste count");
             Require(game.TryExpand(),"Unlock convenience brands");
-            var old=EmptyCarton(3);Require(player.TryHoldCarton(old),"Pick empty water carton");
-            Require(game.OrderSupply(3),"Another shipment can be ordered while old packaging is carried");game.Tick(8.1f);
-            var replacement=area.Carton(3);Require(replacement!=null&&replacement!=old&&replacement.Quantity==3&&old.Quantity==0,"New delivery has a separate filled box and does not refill carried empty cardboard");
-            Require(bin.Use(player)&&game.WarehouseCount(3)==3&&replacement.gameObject.activeSelf,"Throwing old packaging cannot delete newly arrived stock");
+            var old=EmptyCarton(Water);Require(player.TryHoldCarton(old),"Pick empty water carton");
+            Require(game.OrderSupply(Water),"Another shipment can be ordered while old packaging is carried");game.Tick(8.1f);
+            var replacement=area.Carton(Water);Require(replacement!=null&&replacement!=old&&replacement.Quantity==3&&old.Quantity==0,"New delivery has a separate filled box and does not refill carried empty cardboard");
+            Require(bin.Use(player)&&game.WarehouseCount(Water)==3&&replacement.gameObject.activeSelf,"Throwing old packaging cannot delete newly arrived stock");
             Require(player.TryHoldCarton(replacement)&&!bin.Use(player)&&replacement.Quantity==3,"Filled carton is carryable but cannot be thrown away");player.ReturnCarton();
             var product=UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="water");Require(player.TryHold(product),"Bring shelf stock back to storage");
             area.Dock(0).GetComponent<ShopStation>().Use(player);Require(player.HasHeldProduct&&game.WarehouseCount(0)==0,"Wrong-brand box rejects return without losing product");
             Require(!bin.Use(player)&&player.HasHeldProduct,"Paper dumpster rejects saleable goods");
-            area.Dock(3).GetComponent<ShopStation>().Use(player);Require(!player.HasHeldItem&&game.WarehouseCount(3)==4&&replacement.Quantity==4,"Correct-brand dock receives returned product");
-            Require(game.StockCount(3)+game.WarehouseCount(3)==6,"Two paid water shipments conserve six units through unpacking, return and waste disposal");
+            area.Dock(Water).GetComponent<ShopStation>().Use(player);Require(!player.HasHeldItem&&game.WarehouseCount(Water)==4&&replacement.Quantity==4,"Correct-brand dock receives returned product");
+            Require(game.StockCount(Water)+game.WarehouseCount(Water)==6,"Two paid water shipments conserve six units through unpacking, return and waste disposal");
             return new{passed=checks,failed=0};
         }
         finally{game.ResetDemo();game.ManualTick=false;}
