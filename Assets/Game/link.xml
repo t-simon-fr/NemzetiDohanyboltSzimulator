@@ -1,0 +1,6 @@
+<linker>
+  <!-- Runtime CreatePrimitive(Capsule) needs this even when no scene uses it. -->
+  <assembly fullname="UnityEngine.PhysicsModule">
+    <type fullname="UnityEngine.CapsuleCollider" preserve="all" />
+  </assembly>
+</linker>
