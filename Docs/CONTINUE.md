@@ -1,4 +1,4 @@
-# Folytatás innen
+﻿# Folytatás innen
 
 Mentési pont: 2026. november 2.
 
@@ -11,12 +11,28 @@ Mentési pont: 2026. november 2.
 - Játékosi használat: `MVP_GUIDE.md`. Ellenőrzések: `MVP_CHECKS.md`.
 - Iránydokumentum: `Docs/GAME_VISION.md`.
 
-## A tegnapi jegyzetekből elkészült
+## Legutóbbi javítás – kézzel áthelyezett pult, kisebb eszközök, kasszafiók
+
+A felhasználó szerkesztőben, még nem mentett állapotban mozgatta a pultot és a pultlapot. Ezeket a módosításokat a frissítés előtt elmentettük; helyi biztonsági másolat: `Temp/CounterUpgrade/BeforeFixtures.unity`. A bolt nem lett újragenerálva.
+
+A pult pozíciója közelítőleg `(0.742, .550, -1.404)`, a pultlapé `(0.731, 1.130, -1.453)`; a pultlap 3,4 méteres szélessége is megmaradt. A felszerelés a pultlapból számolt magasságra került.
+
+A **Counter Assembly** csoportot kell mozgatni a teljes munkaállomás átrendezéséhez. A `CounterLayout` kiszolgálási pontja és a vásárlói sor ebből követi az új helyet/forgatást. A `ShopLayout` bejárati/kijárati/átjáró jelölőket használ; a polc megközelítése a termékhely irányából számolódik.
+
+A monitor 62 cm széles, fekvő képarányú, kétoszlopos rendelési képernyővel. A kassza 58 cm széles házat, ferde billentyűzetet, kis kijelzőt és nyugtanyomtatót kapott. A tizenkét pénzrekeszt tartalmazó fiók 44 cm-t csúszik ki 0,35 másodperc alatt; fizetéskor nyílik, kilépéskor csukódik. Zárt vagy még nyíló fiók pénzei nem fogják el a kattintást.
+
+A `CashRegisterDrawer` kezeli a mozgást. A ház ferde felületét egyszerű, döntött BoxCollider követi; a túl nagy dobozütköző eltakarhatná a billentyűket. A Player az Ignore Raycast rétegen van, hogy a fókuszált kasszára célzást ne takarja a saját CharacterController. Az eredeti, változatlan játékos-kezdőhely a pult mögé lett igazítva.
+
+A **Nemzeti Dohánybolt > Align Counter Equipment** helyben frissíti a berendezéseket a pultlaphoz, a bolt többi részének megtartásával. A meglévő kézi berendezés-igazításokat alaphelyzetbe rendezi. A **Build Compact Shop** továbbra is teljes újragenerálás.
+
+Az ellenőrzések aktuális eredménye a `MVP_CHECKS.md` fájlban van; az új `RegisterFixtureChecks.Run` a fiók köztes/nyitott/zárt állapotait, a méreteket és a mozgó/forgatott pultot ellenőrzi.
+
+## A korábbi jegyzetekből elkészült
 
 1. A pult bal oldalán játékbeli beszerzési monitor: hat terméktípus, készlet/raktár/úton levő áru, rendelés és bővítés.
 2. A fizetési modal helyett fizikai kassza: mind a tizenkét magyar címletérték, véges darabszám, darabonkénti kivétel, pénztálca, visszatétel, váltópénz és átadás. A grafika még próbamodell.
 3. Kisebb, 5 × 6,3 méteres kezdőbolt; Pannon Piros, Duna Kék és Alföld Arany cigarettából 8-8 doboz.
-4. Egy 2000 Ft-os, nyitás előtt megvehető, 4 × 6,3 méteres bővítés. A pult `(0, .55, -2.05)` pozíciója állandó. A pult mellett a játékos is elfér.
+4. Egy 2000 Ft-os, nyitás előtt megvehető, 4 × 6,3 méteres bővítés. A pultnak a jelenetben beállított helye bővítéskor állandó. A pult mellett a játékos is elfér.
 5. A bővítés új polcairól a vásárlók önállóan veszik fel a vizet, rágót vagy sört, majd ugyanahhoz a pulthoz mennek fizetni. A cigarettát az eladó adja ki.
 
 A monitor és kassza közelről használható, kamerafókusszal és kattintható térbeli kezelőszervekkel. Az eszközhasználat szünetelteti a vásárlókat. A nyitóképernyő, súgó és napi összesítés továbbra is külön képernyő.
@@ -42,7 +58,7 @@ Tartós játékmentés; kész bolti modellek és magyar pénzgrafika; több bőv
 A teljes ellenőrzési eredmény és a build állapota: `MVP_CHECKS.md`. A `Tools/Checks/CompactShopChecks.cs` tartalmazza a két teljes nap, a pénz, az összes eszközgomb, a megszakítások és a tényleges játékosi útvonal próbáit. A régi víz/rágó/sör MVP-hez kötött napteszteket ezek váltották fel.
 
 - A jelenetet a **Nemzeti Dohánybolt > Build Compact Shop** újraépíti. A régi Build Graybox menü is erre vezet; ne a korábbi nagytermes generátort állítsuk vissza.
-- Fő kód: `MvpShopController`, `ShopDevices`, `ShopCashDrawer`, `ShopLayout`, `MvpCustomerActor`. Generátor: `Editor/CompactShopSetup.cs`.
+- Fő kód: `MvpShopController`, `ShopDevices`, `ShopCashDrawer`, `ShopLayout`, `MvpCustomerActor`. Generátor: `Editor/CompactShopSetup.cs`; helyben frissítés: `Editor/CounterFixtureSetup.cs`.
 - A régi egyvásárlós `CustomerOrderController` a kompatibilitási forrásban maradt; a kompakt jelenetben nincs aktív példánya.
 - A Pipeline kapcsolat leírója: `Library/Pipeline/.unity-pipeline-port`. Hitelesítési adatot tartalmaz, ne írassuk ki. A `Tools/Invoke-Pipeline.ps1` kezeli anélkül, hogy megjelenítené.
 - Play módban ne mentsük a jelenetet: a futás során létrejött készlet és vásárlók nem szerkesztett jelenetadatok.

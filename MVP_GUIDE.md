@@ -1,4 +1,4 @@
-# Nemzeti Dohánybolt Szimulátor – játszható prototípus
+﻿# Nemzeti Dohánybolt Szimulátor – játszható prototípus
 
 Frissítve: 2026. november 2.
 
@@ -10,7 +10,7 @@ A jelenet már el van mentve. A **Nemzeti Dohánybolt > Build Compact Shop** men
 
 ## A kezdőbolt
 
-A kezdő helyiség 5 × 6,3 méter. A pult helye változatlan: `(0, 0.55, -2.05)`. A hátad mögötti polcon három kitalált cigarettamárkából nyolc-nyolc doboz van. A pénztár 6000 Ft-tal indul. A bal és jobb oldal az eladó nézőpontjából értendő.
+A kezdő helyiség 5 × 6,3 méter. A pult és a pultlap a kézzel beállított új helyén maradt; a bővítés ezt a helyet őrzi meg. A hátad mögötti polcon három kitalált cigarettamárkából nyolc-nyolc doboz van. A pénztár 6000 Ft-tal indul. A bal és jobb oldal az eladó nézőpontjából értendő.
 
 A pult bal oldalán a beszerzési monitor, jobb oldalán a pénztárgép áll. Középen a kék átadóhelyre kell tenni a vásárló által kért cigarettát. Az áru csak a sikeres fizetéskor fogy el a készletből.
 
@@ -35,11 +35,13 @@ A monitor és a kassza közelről, a játék világában használható. Használ
 
 Tedd a kért cigarettát a kék helyre, majd használd a pénztárgépet. Önkiszolgáló vásárlónál az áru már nála van. A kijelzőn látható a fizetendő összeg, a kapott pénz és a kivett visszajáró.
 
+A kassza házat, ferde billentyűzetet, kijelzőt és nyugtanyomtatót kapott. E/F használatakor a pénzrekeszes fiók 0,35 másodperc alatt kicsúszik az eladó felé; kilépéskor vagy sikeres fizetéskor visszacsukódik. A rekeszek teljesen nyitott fióknál kattinthatók.
+
 Kattints egy rekesz bankjegyére, érméjére vagy hátlapjára: egy darabot veszel ki. A rekesz darabszáma csökken, a pénz a mellette levő tálcán jelenik meg. Üres rekeszből nem lehet kivenni.
 
-- **UTOLSÓ VISSZA:** az utolsó kivett darab visszarakása.
-- **VISSZATÖLT:** az összes kivett pénz visszarakása.
-- **VÁLTÓPÉNZ:** egy nagyobb címlet felváltása kisebbekre, értékvesztés nélkül; a kiválasztott visszajárót előbb visszatölti.
+- **VISSZA:** az utolsó kivett darab visszarakása.
+- **TÖRLÉS:** az összes kivett pénz visszarakása.
+- **VÁLTÁS:** egy nagyobb címlet felváltása kisebbekre, értékvesztés nélkül; a kiválasztott visszajárót előbb visszatölti.
 - **ÁTADÁS:** a kiválasztott visszajáró ellenőrzése és a fizetés lezárása. Téves összegnél javíthatsz.
 
 Címletek: 20 000, 10 000, 5000, 2000, 1000, 500 Ft-os bankjegyek; 200, 100, 50, 20, 10, 5 Ft-os érmék. A címletek és darabszámok működnek, a pénzgrafika színezett próbamodell, nem kész bankjegy- és érmetextúra.
@@ -78,6 +80,18 @@ Nyolc látogató érkezik, legfeljebb hárman várnak egyszerre. O-val korábban
 A napi működés 300 Ft. A nyereség az árbevétel mínusz az eladott áru költsége és a működés. A kasszapénzből a beszerzés és a beruházás is levonódik. A már kifizetett, úton levő áru záráskor a raktárba kerül. Ha a működés sem fizethető ki, az összesítés tartozást mutat és új játékot kér.
 
 A következő nap megőrzi a kassza címleteit, a készletet és a bővítést a futó alkalmazáson belül. **Lemezes játékmentés még nincs**: bezáráskor a haladás elveszik. Az Új játék az eredeti kompakt boltot és kezdőkészletet állítja vissza.
+
+## Az elrendezés kézi módosítása
+
+Play módon kívül a Hierarchy **Counter Assembly** csoportját mozgasd vagy forgasd. A pult, pultlap, átadóhelyek, kisebb monitor, kassza és vásárlói megállási pont együtt követik. A kassza kb. 58 cm, a monitor kb. 62 cm széles.
+
+A **Counter Fixtures** alatt a berendezések külön csoportban vannak: **Cash Register Assembly**, **Order Monitor Assembly**, **Change tray**. A kassza vagy monitor áthelyezéséhez az egész hozzá tartozó csoportot mozgasd, így a kijelző, fiók, kezelőszervek és kameranézet együtt maradnak.
+
+A **Customer service point** a pultcsoporton belül a vásárló megállási helye; a sor ebből számolódik. Az **MVP Shop / Customer Routes** alatt a bejárat, kijárat és az önkiszolgáló átjáró pontjai is a Scene nézetben mozgathatók. Az útvonalpontok között továbbra is egyszerű egyenes szakaszokon mozognak a figurák: hagyj szabad helyet.
+
+Ha külön a pultlapot rendezted át, a **Nemzeti Dohánybolt > Align Counter Equipment** újra a pultlapra helyezi és alaphelyzetbe rendezi a felszerelést, a falak és polcok újragenerálása nélkül. Ez a felszerelés saját kézi igazításait felülírja. A **Build Compact Shop** továbbra is az egész jelenetet újraépíti.
+
+Ctrl+S-sel ments, majd Play-jel próbáld ki. A jelenet kézi változtatásai az önálló Windows-változatban új build után jelennek meg.
 
 ## Következő tartalmak
 

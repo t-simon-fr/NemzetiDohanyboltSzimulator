@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public sealed class ShopLayout : MonoBehaviour
 {
@@ -20,6 +20,16 @@ public sealed class ShopLayout : MonoBehaviour
             if(publicTypes[i]==type && publicSlots[i].Occupant!=null && !publicSlots[i].Occupant.IsHeld)return publicSlots[i].Occupant;
         return null;
     }
-    public Vector3 ShelfApproach(ShopProduct product)=>new Vector3(5.1f,0,product.CurrentSlot.transform.position.z);
-    public Vector3 AisleGate=>new Vector3(3.2f,0,-3.25f);
+    [SerializeField] private Transform entryOutside, entryInside, aisleGate, exitDoorway;
+    public Vector3 EntryOutside => entryOutside.position;
+    public Vector3 EntryInside => entryInside.position;
+    public Vector3 ExitDoorway => exitDoorway.position;
+    public void ConfigureRoutes(Transform outside, Transform inside, Transform gate, Transform exit)
+    { entryOutside=outside; entryInside=inside; aisleGate=gate; exitDoorway=exit; }
+    public Vector3 ShelfApproach(ShopProduct product)
+    {
+        Vector3 point=product.CurrentSlot.transform.position-product.CurrentSlot.transform.forward*.8f;
+        point.y=0;return point;
+    }
+    public Vector3 AisleGate=>aisleGate.position;
 }

@@ -78,7 +78,7 @@ public sealed class MvpShopHud : MonoBehaviour
     {
         Label("Műszaksegéd",true);
         Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a monitor közelében: beszerzés és bővítés\nE a kasszán / F: fizetés a pénztárgépen\nQ a szállítódoboznál: másik árutípus\nO: nyitás vagy korai zárás • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
-        GUILayout.Space(14);Label("A kasszában a rekeszekre kattintva egy bankjegyet vagy érmét veszel ki. A kivett darabok a tálcára kerülnek. Utolsó vissza: egy darab visszatétele. Visszatölt: az egész visszajáró visszarakása. Váltópénz: nagy címlet felváltása kisebbekre. Átadás: fizetés lezárása.");
+        GUILayout.Space(14);Label("A kasszában a rekeszekre kattintva egy bankjegyet vagy érmét veszel ki. A kivett darabok a tálcára kerülnek. Vissza: egy darab visszatétele. Törlés: az egész visszajáró visszarakása. Váltás: nagy címlet felváltása kisebbekre. Átadás: fizetés lezárása.");
         GUILayout.Space(14);Label("Bővíteni 2000 Ft-ért, nyitás előtt lehet. A monitor és a kassza használata közben a vásárlók várakozása szünetel. A készletet neked kell feltöltened az új polcokon is.");
         GUILayout.FlexibleSpace();if(Button("Vissza a boltba"))shop.ClosePanel();
     }

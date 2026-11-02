@@ -61,7 +61,12 @@ public sealed class MvpShopController : MonoBehaviour
         player = interactor; delivery = tray; customerTemplate = template; shelfSlots = slots; shelfTypes = types;
         productMaterials = materials; supplyPoint = crate; tillPoint = till;
     }
-    private void Awake() { Instance = this; Devices = GetComponent<ShopDevices>(); Layout = GetComponent<ShopLayout>(); }
+    public CounterLayout Counter { get; private set; }
+    public void ConfigureCounter(ProductSlot tray, Transform till)
+    {
+        delivery = tray; tillPoint = till;
+    }
+    private void Awake() { Instance = this; Counter = FindAnyObjectByType<CounterLayout>(); Devices = GetComponent<ShopDevices>(); Layout = GetComponent<ShopLayout>(); }
     private void OnEnable() { if (delivery != null) delivery.ProductPlaced += OnDelivery; }
     private void OnDisable()
     {
@@ -126,7 +131,7 @@ public sealed class MvpShopController : MonoBehaviour
         for (int i = 0; i < queue.Count; i++)
         {
             MvpCustomerActor customer = queue[i];
-            Vector3 target = i == 0 ? new Vector3(.13f,0,-2.95f) : new Vector3(-1f * i,0,-3.3f);
+            Vector3 target = Counter.QueuePoint(i);
             bool arrived = customer.Advance(dt, target);
             if (i == 0 && active == null && arrived)
             {

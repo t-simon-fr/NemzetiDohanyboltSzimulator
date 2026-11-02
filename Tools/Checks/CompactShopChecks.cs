@@ -128,10 +128,11 @@ public static class CompactShopChecks
     private static void CheckVisibleControl(WorldControlKind kind,int value)
     {
         var control=UnityEngine.Object.FindObjectsByType<ShopWorldControl>().First(c=>c.Kind==kind&&(kind!=WorldControlKind.Order||c.Value==value));
+        game.Devices.RegisterDrawer.Advance(1f);
         var camera=Camera.main;Vector3 point=camera.WorldToScreenPoint(control.transform.position);
         Check(point.z>0&&point.x>0&&point.x<camera.pixelWidth&&point.y>0&&point.y<camera.pixelHeight,"Device control fits focused camera");
         Physics.SyncTransforms();var ray=camera.ScreenPointToRay(point);
-        Check(Physics.Raycast(ray,out var hit,4f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore)&&hit.collider.GetComponent<ShopWorldControl>()!=null,"Device control can be reached by mouse ray");
+        Check(Physics.Raycast(ray,out var hit,4f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore)&&hit.collider.GetComponentInParent<ShopWorldControl>()!=null,"Device control can be reached by mouse ray");
     }
     public static object EdgeCases()
     {
@@ -177,7 +178,7 @@ public static class CompactShopChecks
         game=MvpShopController.Instance;passed=0;game.ResetDemo();game.ClosePanel();game.OpenSupplier();
         foreach(var c in UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Where(c=>c.Kind==WorldControlKind.Order||c.Kind==WorldControlKind.Expand||c.Kind==WorldControlKind.Exit))CheckRay(c);
         game.ClosePanel();game.OpenShop();game.ManualTick=true;hand=new GameObject("Temporary Device Hand").transform;hand.position=Vector3.one*1000;
-        for(int i=0;i<100;i++)game.Tick(.1f);Offer(UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="cig_red"));game.OpenCash();
+        for(int i=0;i<100;i++)game.Tick(.1f);Offer(UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="cig_red"));game.OpenCash();game.Devices.RegisterDrawer.Advance(1f);
         foreach(var c in UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Where(c=>c.Kind==WorldControlKind.Denomination||c.Kind==WorldControlKind.Pay||c.Kind==WorldControlKind.Exchange||c.Kind==WorldControlKind.Clear||c.Kind==WorldControlKind.Undo))CheckRay(c);
         UnityEngine.Object.DestroyImmediate(hand.gameObject);game.ResetDemo();game.ManualTick=false;return new{passed,failed=0};
     }
@@ -185,7 +186,7 @@ public static class CompactShopChecks
     {
         Vector3 screen=Camera.main.WorldToScreenPoint(c.transform.position);
         Check(screen.z>0&&screen.x>0&&screen.x<Camera.main.pixelWidth&&screen.y>0&&screen.y<Camera.main.pixelHeight,"Every device control stays on screen: "+c.name);
-        Physics.SyncTransforms();Check(Physics.Raycast(Camera.main.ScreenPointToRay(screen),out var hit,4f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore)&&hit.collider.GetComponent<ShopWorldControl>() is ShopWorldControl actual&&actual.Kind==c.Kind&&actual.Value==c.Value,"Mouse ray reaches correct device control: "+c.name);
+        Physics.SyncTransforms();Check(Physics.Raycast(Camera.main.ScreenPointToRay(screen),out var hit,4f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore)&&hit.collider.GetComponentInParent<ShopWorldControl>() is ShopWorldControl actual&&actual.Kind==c.Kind&&actual.Value==c.Value,"Mouse ray reaches correct device control: "+c.name);
     }
     public static object PlayerRoute()
     {

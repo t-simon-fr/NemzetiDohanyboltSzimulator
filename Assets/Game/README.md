@@ -1,4 +1,4 @@
-# Játékprototípus
+﻿# Játékprototípus
 
 A használati útmutató: [MVP_GUIDE.md](../../MVP_GUIDE.md). Játékirány: [Docs/GAME_VISION.md](../../Docs/GAME_VISION.md). Következő alkalom: [Docs/CONTINUE.md](../../Docs/CONTINUE.md).
 
@@ -6,6 +6,9 @@ A `Scenes/ShopPrototype.unity` a kompakt, cigarettával induló bolt. A bal olda
 
 ## Forráskód
 
+- `Editor/CounterFixtureSetup.cs`: meglévő, kézzel szerkesztett pult felszerelésének igazítása; a bolt többi része megmarad.
+- `Scripts/Mvp/CounterLayout.cs`: mozgatható pultcsoport és vásárlói megállási/sorhelyek.
+- `Scripts/Mvp/CashRegisterDrawer.cs`: pénzfiók nyitás-zárás és kattintás tiltása mozgás közben.
 - `Editor/CompactShopSetup.cs`: menthető teljes jelenet, kompakt bolt és bővítés, állandó pultpozíció.
 - `Scripts/Mvp/MvpShopController.cs`: műszak, vásárlói sor, készlet, fizetés és beszerzés.
 - `Scripts/Mvp/ShopDevices.cs`: játékbeli monitor, kasszafiók, kamera és pénztálca.

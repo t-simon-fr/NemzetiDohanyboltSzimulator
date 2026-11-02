@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public sealed class MvpCustomerActor : MonoBehaviour
 {
@@ -15,14 +15,14 @@ public sealed class MvpCustomerActor : MonoBehaviour
     private ShopLayout layout;
     private ShopProduct shelfItem;
     private Transform basket;
-    private static readonly Vector3 Inside = new Vector3(.13f,0,-3.65f);
-    private static readonly Vector3 Entry = new Vector3(.13f,0,-4.95f);
+
     public void Initialize(int person,int product,int visit)
     {
         Person=person;Product=product;
         int price=ShopCatalog.Prices[product];
         Tender=visit%3==1?price:price>2000?5000:price>500?1000:500;
-        transform.SetPositionAndRotation(Entry,Quaternion.identity);
+        layout=Object.FindAnyObjectByType<ShopLayout>();
+        transform.SetPositionAndRotation(layout.EntryOutside,Quaternion.identity);
         CharacterController body=GetComponent<CharacterController>();if(body!=null)body.enabled=false;
         var old=GetComponent<CustomerOrderController>();if(old!=null)old.enabled=false;
         foreach(Renderer renderer in GetComponentsInChildren<Renderer>(true))
@@ -44,10 +44,10 @@ public sealed class MvpCustomerActor : MonoBehaviour
         if(Gone)return true;
         if(Leaving)
         {
-            Vector3 target=exitStep==0?new Vector3(1.4f,0,-3.25f):exitStep==1?new Vector3(1.4f,0,-4f):Entry;
+            Vector3 target=exitStep==0?layout.EntryInside:exitStep==1?layout.ExitDoorway:layout.EntryOutside;
             if(Move(target,dt)){exitStep++;if(exitStep>=3)Gone=true;}return Gone;
         }
-        if(!Entered){if(Move(Inside,dt))Entered=true;return false;}
+        if(!Entered){if(Move(layout.EntryInside,dt))Entered=true;return false;}
         if(!ShoppingComplete)
         {
             if(shoppingStep==0)

@@ -91,7 +91,7 @@ public static class CompactShopSetup
         var monitorBody=Box(room,"Order Monitor",new Vector3(1.35f,1.94f,-2.19f),new Vector3(1.27f,1.16f,.09f),dark);Station(monitorBody,game,ShopStationKind.Monitor);
         Box(room,"Monitor stand",new Vector3(1.35f,1.3f,-2.2f),new Vector3(.12f,.3f,.14f),dark);
         var monitor=new GameObject("Order screen").transform;monitor.SetParent(room,false);monitor.position=new Vector3(1.35f,1.97f,-2.13f);
-        var devices=manager.AddComponent<ShopDevices>();devices.Configure(monitor,drawer,changeTray,display);
+        manager.AddComponent<ShopDevices>();
         var template=new GameObject("Customer Template");template.SetActive(false);
         var body=GameObject.CreatePrimitive(PrimitiveType.Capsule);body.name="Body";body.transform.SetParent(template.transform,false);body.transform.localPosition=new Vector3(0,.85f,0);body.transform.localScale=new Vector3(.42f,.55f,.42f);body.GetComponent<Renderer>().sharedMaterial=products[1];Object.DestroyImmediate(body.GetComponent<Collider>());
         var head=GameObject.CreatePrimitive(PrimitiveType.Sphere);head.name="Head";head.transform.SetParent(template.transform,false);head.transform.localPosition=new Vector3(0,1.55f,0);head.transform.localScale=Vector3.one*.32f;head.GetComponent<Renderer>().sharedMaterial=Mat("MAT_CompactSkin",new Color(.73f,.54f,.39f));Object.DestroyImmediate(head.GetComponent<Collider>());
@@ -101,7 +101,7 @@ public static class CompactShopSetup
         RenderSettings.ambientLight=new Color(.58f,.57f,.54f);
         var lamp=new GameObject("Interior light");lamp.transform.position=new Vector3(0,2.7f,-.7f);var point=lamp.AddComponent<Light>();point.type=LightType.Point;point.range=12;point.intensity=5;point.color=new Color(1,.9f,.72f);
         PlayerSettings.productName="Nemzeti Dohánybolt Szimulátor";PlayerSettings.defaultScreenWidth=1280;PlayerSettings.defaultScreenHeight=720;PlayerSettings.fullScreenMode=FullScreenMode.Windowed;PlayerSettings.resizableWindow=true;
-        const string path="Assets/Game/Scenes/ShopPrototype.unity";EditorSceneManager.SaveScene(scene,path);EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(path,true)};AssetDatabase.SaveAssets();
+        const string path="Assets/Game/Scenes/ShopPrototype.unity";EditorSceneManager.SaveScene(scene,path);CounterFixtureSetup.UpgradeCurrentScene();EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(path,true)};AssetDatabase.SaveAssets();
         Debug.Log("Compact shop saved: 24 cigarette slots, 18 expansion slots, physical monitor and register. Counter remains at (0, .55, -2.05).");
     }
     private static Material Mat(string name,Color color)
