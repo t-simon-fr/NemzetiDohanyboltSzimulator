@@ -2,6 +2,12 @@
 
 A kompakt bolt jelenete és a forráskód el van mentve. Unity 6000.6.7f1, URP. A szkriptfordítás sikeres, fordítási hiba nélkül.
 
+## Visszajáró-kijelzés javítása
+
+A korábbi VISSZA sor a kivett címletek összegét mutatta. Most külön VISSZAJÁRÓ sor mutatja a kapott pénz és az ár különbségét, és KIVÉVE sor a játékos által már kiválasztott pénzt. A futó jelenet tényleges TextMesh kijelzőjén ellenőrizve: 2200 Ft ár / 5000 Ft kapott pénz mellett 0 Ft és 500 Ft kivételekor is 2800 Ft marad a járó visszajáró. Mindkét állapot helyes. A négy sor elfér a kijelzőn; kamera-renderen is ellenőrizve.
+
+Az alábbi 402 állítás a legutóbbi teljes ellenőrzéssor eredménye. A kijelzés módosításához a fenti célzott próbák futottak; a fizetés és készlet logikája nem változott.
+
 ## Automatikus ellenőrzések
 
 | Ellenőrzés | Sikeres állítás |
@@ -41,6 +47,6 @@ A többi belépési pont a fenti táblázatban szerepel. A napi próbák végén
 
 A Game nézetből készült képeken ellenőriztük a monitort, a kasszát és a cigarettapolcot. A betűméretet, a mélységhelyes takarást és a pénztálca elrendezését korrigáltuk. A mostani képek helyben a `Temp/CounterUpgrade` könyvtárban vannak. A kisebb monitor és az új házzal, billentyűzettel, nyugtanyomtatóval és kihúzható pénzfiókkal rendelkező kassza is ellenőrizve lett.
 
-A friss **StandaloneWindows64 build sikeres**, nulla hibával és nulla figyelmeztetéssel. Időtartama 22,748 másodperc, mérete 105 040 941 bájt. A teljes futtatható mappa: `Builds/MVP`; indító: `NemzetiDohanyboltSzimulator.exe`.
+A friss **StandaloneWindows64 build sikeres**, nulla hibával és nulla figyelmeztetéssel. Időtartama 25,166 másodperc, mérete 105 041 453 bájt. A teljes futtatható mappa: `Builds/MVP`; indító: `NemzetiDohanyboltSzimulator.exe`.
 
-Az önálló Windows-alkalmazás grafika nélküli indulási próbájában a folyamat futva maradt, a naplóban nem volt futásidejű kivétel/hiba. A grafikai megjelenítést a Unity Game nézetében ellenőriztük. Képek: `Temp/CounterUpgrade/register-final.png`, `monitor-small.png`. A generált fájlok nem kerülnek Gitbe.
+A kasszaátépítés után végzett önálló Windows-indulási próbában a folyamat futva maradt, a naplóban nem volt futásidejű kivétel/hiba. A grafikai megjelenítést a Unity Game nézetében ellenőriztük. Képek: `Temp/CounterUpgrade/register-final.png`, `monitor-small.png`. A generált fájlok nem kerülnek Gitbe.

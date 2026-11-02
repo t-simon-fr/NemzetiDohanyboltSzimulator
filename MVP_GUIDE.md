@@ -33,7 +33,7 @@ A monitor és a kassza közelről, a játék világában használható. Használ
 
 ## Fizikai kassza
 
-Tedd a kért cigarettát a kék helyre, majd használd a pénztárgépet. Önkiszolgáló vásárlónál az áru már nála van. A kijelzőn látható a fizetendő összeg, a kapott pénz és a kivett visszajáró.
+Tedd a kért cigarettát a kék helyre, majd használd a pénztárgépet. Önkiszolgáló vásárlónál az áru már nála van. A kijelző külön mutatja a fizetendő összeget, a kapott pénzt, a kiszámított visszajárót és a már kivett pénz összegét. Például 2200 Ft-os árunál, 5000 Ft átadása után: VISSZAJÁRÓ 2800 Ft, KIVÉVE kezdetben 0 Ft.
 
 A kassza házat, ferde billentyűzetet, kijelzőt és nyugtanyomtatót kapott. E/F használatakor a pénzrekeszes fiók 0,35 másodperc alatt kicsúszik az eladó felé; kilépéskor vagy sikeres fizetéskor visszacsukódik. A rekeszek teljesen nyitott fióknál kattinthatók.
 

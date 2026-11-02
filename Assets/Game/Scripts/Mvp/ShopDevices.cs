@@ -71,7 +71,7 @@ public sealed class ShopDevices : MonoBehaviour
     }
     private void BuildDrawer()
     {
-        cashText = Label(tillDisplay,"KASSZA",Vector3.forward*.018f,.0145f);
+        cashText = Label(tillDisplay,"KASSZA",Vector3.forward*.018f,.0135f);
         cashText.color = new Color(.68f,1f,.60f);
         for (int i = 0; i < ShopCatalog.Denominations.Length; i++)
         {
@@ -164,7 +164,7 @@ public sealed class ShopDevices : MonoBehaviour
             cashStacks[i].SetActive(shop.Drawer.Count(v)>shop.SelectedPieces(v));
         }
         cashText.text=shop.Stage==ServiceStage.Payment&&shop.ActiveCustomer!=null
-            ? "FIZETENDŐ "+ShopCatalog.Money(ShopCatalog.Prices[shop.ActiveCustomer.Product])+"\nKAPOTT "+ShopCatalog.Money(shop.ActiveCustomer.Tender)+"\nVISSZA "+ShopCatalog.Money(shop.ChangeSelected)
+            ? "FIZETENDŐ "+ShopCatalog.Money(ShopCatalog.Prices[shop.ActiveCustomer.Product])+"\nKAPOTT "+ShopCatalog.Money(shop.ActiveCustomer.Tender)+"\nVISSZAJÁRÓ "+ShopCatalog.Money(shop.ActiveCustomer.Tender-ShopCatalog.Prices[shop.ActiveCustomer.Product])+"\nKIVÉVE "+ShopCatalog.Money(shop.ChangeSelected)
             : "KASSZA\n"+ShopCatalog.Money(shop.Ledger.Cash);
         string selection=string.Join(",",ShopCatalog.Denominations.Select(shop.SelectedPieces));
         if(lastSelection!=selection){lastSelection=selection;RefreshTray();}
