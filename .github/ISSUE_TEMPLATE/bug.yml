@@ -1,0 +1,23 @@
+name: Bug
+description: Reprodukálható játékhiba
+title: "[Bug] "
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reprodukció és környezet
+      description: Unity vagy Pages? Commit/build, lépések, tényleges és elvárt eredmény.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Elfogadási feltételek
+      value: "- [ ] A reprodukció már a várt eredményt adja\n- [ ] Kapcsolódó pénz / készlet / állapot helyes\n- [ ] Visszalépés és ismételt művelet biztonságos"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Készültség és bizonyítékok
+      value: "Implementálva: pending\nUnityben ellenőrizve: pending\nVizuálisan ellenőrizve: pending\nWebGL-ben ellenőrizve: pending\nPublikálva: pending\nMinden elért szakaszhoz commit és bizonyíték szükséges."

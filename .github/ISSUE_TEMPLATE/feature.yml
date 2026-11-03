@@ -1,0 +1,27 @@
+name: Feature
+description: Önálló, ellenőrizhető funkció
+title: "[Feature] "
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Játékosi eredmény
+      description: Mit tudjon megtenni a játékos? Kapcsold a gyűjtő issue-t, ha van.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Elfogadási feltételek
+      value: "- [ ] Megfigyelhető sikeres eset\n- [ ] Hibás vagy hiányos bemenet kezelése\n- [ ] Megszakítás / visszalépés és állapotmegőrzés"
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Függőségek, határok és kis munkacsomagok
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Készültség és bizonyítékok
+      value: "- [ ] Implementálva — commit:\n- [ ] Unityben ellenőrizve — profil / jelentés / sourceFingerprint:\n- [ ] Vizuálisan ellenőrizve — reviewer / képek / játékpróba:\n- [ ] WebGL-ben ellenőrizve — build / böngészős próba:\n- [ ] Publikálva — külön engedély / deploy / élő URL:\n\nNem szükséges szakasz: indoklás."

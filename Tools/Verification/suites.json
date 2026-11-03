@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "profiles": {
+    "smoke": [
+      "ledger",
+      "checkout-revision"
+    ],
+    "checkout": [
+      "ledger",
+      "checkout-revision",
+      "basket-day",
+      "recovery"
+    ]
+  },
+  "suites": {
+    "ledger": {
+      "file": "Tools/Checks/LedgerChecks.cs",
+      "entry": "LedgerChecks.Run",
+      "purpose": "Money invariants"
+    },
+    "checkout-revision": {
+      "file": "Tools/Checks/CheckoutRevisionChecks.cs",
+      "entry": "CheckoutRevisionChecks.Run",
+      "purpose": "Current single-balance card checkout, menu and dialogue"
+    },
+    "basket-day": {
+      "file": "Tools/Checks/NextFeatureChecks.cs",
+      "entry": "NextFeatureChecks.BasketDay",
+      "purpose": "Full multi-item shift"
+    },
+    "recovery": {
+      "file": "Tools/Checks/NextFeatureChecks.cs",
+      "entry": "NextFeatureChecks.RecoveryAndCancellation",
+      "purpose": "Unpaid goods recovery and cancellation"
+    }
+  },
+  "historicalExcluded": {
+    "CardAndSummaryChecks.Run": "Separate-bank expectations superseded by dee3417; retained as historical source, not a current pass."
+  }
+}
