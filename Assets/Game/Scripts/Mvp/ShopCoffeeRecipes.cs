@@ -10,6 +10,13 @@ public sealed partial class ShopActivities
     public bool OrderMilkSupplies(){if(!CoffeeOwned||shop.Phase==ShopPhase.Summary||MilkSupplies+pendingMilk+ReadyMilk+10>60||!shop.Ledger.TryBuy(150,10))return false;shop.SyncCashDrawer();pendingMilk+=10;milkDelivery=8;return true;}
     private void TickMilk(float dt){if(pendingMilk<=0)return;milkDelivery-=dt;if(milkDelivery<=0){SpawnIngredientPackage(pendingMilk,true);pendingMilk=0;}}
     private int selectedRecipe=ShopCatalog.Coffee;
+    public int SelectedRecipe=>selectedRecipe;
+    public void CycleRecipe()=>SelectRecipe(ShopCatalog.Coffee+(selectedRecipe-ShopCatalog.Coffee+1)%3);
+    private void DrawMachineRecipeHint()
+    {
+        if(ShopMenu.Active||ShopInputGate.Blocked||player==null||player.TargetFeature==null||player.TargetFeature.Kind!=ShopFeatureKind.CoffeeMachine)return;
+        GUI.Box(new Rect(Screen.width/2-260,Screen.height-160,520,85),"Kávé: "+ShopCatalog.ShortNames[selectedRecipe]+"\n1: rövid • 2: hosszú • 3: latte • Q: következő\nE / bal klikk: elkészítés vagy átvétel");
+    }
     public int MilkSupplies{get;private set;}
     private readonly List<GameObject> ingredientPackages=new List<GameObject>();
     public void SelectRecipe(int type){if(ShopCatalog.IsCoffee(type)&&brewRemaining==0)selectedRecipe=type;}

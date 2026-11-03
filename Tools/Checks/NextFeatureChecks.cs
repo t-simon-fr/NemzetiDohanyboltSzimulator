@@ -56,7 +56,7 @@ public static class NextFeatureChecks
                 }
                 if(g.Stage!=ServiceStage.Payment)continue;
                 int cash=g.Ledger.AvailableFunds,total=c.TotalPrice;if(c.OrderTypes.Length>1)multiple++;
-                if(g.CardPayment)Check(g.ConfirmCardPayment(),"Pay complete basket by card");
+                if(g.CardPayment){foreach(char digit in c.TotalPrice.ToString())g.EnterCardDigit(digit-'0');Check(g.ConfirmCardPayment(),"Pay complete basket by card");}
                 else if(g.CoinPayment)
                 {
                     var offer=g.Activities.CoinOffer;int rest=offer.Price;foreach(int i in Enumerable.Range(0,offer.Coins.Count).OrderByDescending(i=>offer.Coins[i]))if(offer.Coins[i]<=rest){g.ToggleCustomerCoin(i);rest-=offer.Coins[i];}Check(g.ConfirmCustomerCoins(),"Pay exact basket in coins");

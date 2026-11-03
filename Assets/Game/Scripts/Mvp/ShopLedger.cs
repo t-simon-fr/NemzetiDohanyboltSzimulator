@@ -27,7 +27,7 @@ public sealed class ShopLedger
 {
     public int BankBalance {get;private set;}
     public int CardRevenue {get;private set;}
-    public int AvailableFunds=>Cash+BankBalance;
+    public int AvailableFunds=>Cash;
     public int OpeningCash { get; private set; }
     public int Cash { get; private set; }
     public int Revenue { get; private set; }
@@ -40,12 +40,12 @@ public sealed class ShopLedger
     public int Sales { get; private set; }
     public bool Closed { get; private set; }
     public int Profit => Revenue - CostOfGoods - OperatingCosts - StockLoss;
-    public ShopLedger(int openingCash,int bankBalance=0) { OpeningCash = openingCash; Cash = openingCash; BankBalance=Math.Max(0,bankBalance); }
-    private void SpendFunds(int amount){int bank=Math.Min(BankBalance,amount);BankBalance-=bank;Cash-=amount-bank;}
+    public ShopLedger(int openingCash,int bankBalance=0) { OpeningCash = openingCash+Math.Max(0,bankBalance); Cash = OpeningCash; BankBalance=0; }
+    private void SpendFunds(int amount){Cash-=amount;}
     public bool TrySellCard(int price,int cost)
     {
         if(Closed||price<=0||cost<0)return false;
-        BankBalance+=price;CardRevenue+=price;Revenue+=price;CostOfGoods+=cost;Sales++;return true;
+        Cash+=price;CardRevenue+=price;Revenue+=price;CostOfGoods+=cost;Sales++;return true;
     }
     public bool TryBuy(int unitCost, int quantity)
     {

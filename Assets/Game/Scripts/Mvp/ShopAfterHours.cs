@@ -75,7 +75,7 @@ public sealed class ShopAfterHours:MonoBehaviour
         if(!shop.Ledger.TryBuyAfterHours(ShopCatalog.Costs[ShopCatalog.Contraband],BundleQuantity)){shop.Notify("Nincs elég pénzed az 5 csomagra.");return false;}
         shop.SyncCashDrawer();foreach(var slot in slots)shop.CreateNightProduct().AssignInitialSlot(slot);BoughtTonight=true;shop.Notify("5 csomag Dnyipro az udvari asztalon. Egyesével vedd fel, és töltsd fel a bolti polcot.");return true;
     }
-    void Update(){if(TradeOpen&&Application.isFocused&&Keyboard.current!=null){if(Keyboard.current.escapeKey.wasPressedThisFrame)CloseTrade();else if(Keyboard.current.enterKey.wasPressedThisFrame||Keyboard.current.numpadEnterKey.wasPressedThisFrame)BuyBundle();}}
+    void Update(){if(TradeOpen&&Application.isFocused&&Keyboard.current!=null){if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))CloseTrade();else if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Enter)||ShopBindings.Pressed(UnityEngine.InputSystem.Key.NumpadEnter))BuyBundle();}}
     void OnGUI()
     {
         if(!TradeOpen)return;var old=GUI.matrix;float scale=Mathf.Min(Screen.width/1280f,Screen.height/720f);GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1280*scale)*.5f,(Screen.height-720*scale)*.5f),Quaternion.identity,Vector3.one*scale);

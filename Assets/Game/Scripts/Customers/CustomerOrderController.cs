@@ -52,7 +52,7 @@ public sealed class CustomerOrderController : MonoBehaviour
     private void Update()
     {
         Tick(Time.deltaTime);
-        if (State == CustomerVisitState.Completed && Application.isFocused && Cursor.lockState == CursorLockMode.Locked && Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame) BeginVisit();
+        if (State == CustomerVisitState.Completed && Application.isFocused && Cursor.lockState == CursorLockMode.Locked && Keyboard.current != null && ShopBindings.Pressed(UnityEngine.InputSystem.Key.R)) BeginVisit();
     }
     public void Tick(float deltaTime)
     {

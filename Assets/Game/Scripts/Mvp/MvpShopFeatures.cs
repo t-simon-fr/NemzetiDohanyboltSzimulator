@@ -9,12 +9,18 @@ public sealed partial class MvpShopController
     public int CaughtToday { get; private set; }
     public int FleeingCount=>fleeing.Count;
     public bool CardPayment=>active!=null&&active.UsesCard;
+    public string CardAmount {get;private set;}="";
+    public void EnterCardDigit(int digit){if(Stage==ServiceStage.Payment&&CardPayment&&digit>=0&&digit<=9&&CardAmount.Length<8)CardAmount+=digit;}
+    public void ClearCardAmount()=>CardAmount="";
+    public void UndoCardDigit(){if(CardAmount.Length>0)CardAmount=CardAmount.Substring(0,CardAmount.Length-1);}
     public bool ConfirmCardPayment()
     {
-        if(Stage!=ServiceStage.Payment||!CardPayment||!PreparedIsValid()||!Ledger.TrySellCard(active.TotalPrice,active.TotalCost))return false;
-        Drawer.CancelTender();CompleteSale();Notify("Sikeres kártyás fizetés. Az összeg a bankszámlára érkezett.");return true;
+        if(Stage!=ServiceStage.Payment||!CardPayment||!PreparedIsValid())return false;
+        if(!int.TryParse(CardAmount,out int entered)||entered!=active.TotalPrice){Notify("Hibás összeg. Írd be a pontos fizetendő összeget.");return false;}
+        if(!Ledger.TrySellCard(active.TotalPrice,active.TotalCost))return false;
+        Drawer.CancelTender();SyncCashDrawer();ClearCardAmount();CompleteSale();Notify("Sikeres kártyás fizetés. A kasszaegyenleg frissült.");return true;
     }
-    public void SyncCashDrawer(){int spent=Drawer.Total-Mathf.Max(0,Ledger.Cash);if(spent>0)Drawer.Spend(spent);}
+    public void SyncCashDrawer(){int spent=Drawer.Total-Mathf.Max(0,Ledger.Cash);if(spent>0)Drawer.Spend(spent);else if(spent<0)Drawer.AddFunds(-spent);}
     public bool CoinPayment=>active!=null && active.UsesCoins;
     public ShopProduct CreateCoffee(int type=ShopCatalog.Coffee)=>CreateProduct(type);
     private void AdvanceFleeing(float dt)

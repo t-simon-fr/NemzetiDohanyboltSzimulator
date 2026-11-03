@@ -105,7 +105,7 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     void Update()
     {
         if(shop==null||shop.Ledger==null)return;RefreshLayout();
-        if(Application.isFocused&&(Application.isEditor||Debug.isDebugBuild)&&Keyboard.current!=null&&Keyboard.current.f1Key.wasPressedThisFrame)
+        if(Application.isFocused&&(Application.isEditor||Debug.isDebugBuild)&&Keyboard.current!=null&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.F1))
         HandleDeveloperKey(Key.F1);
     }
     public bool DeveloperVisible=>developer;

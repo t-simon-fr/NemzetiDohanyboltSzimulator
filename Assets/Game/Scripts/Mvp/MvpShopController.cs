@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public enum ShopPhase { Preparing, Open, Closing, Summary, AfterHours }
-public enum ShopModal { None, Welcome, Help, Supplier, Cash, Summary }
+public enum ShopModal { None, Welcome, Help, Supplier, Cash, Summary, Dialogue }
 public enum ServiceStage { None, Order, Payment, Thanks }
 
 public sealed partial class MvpShopController : MonoBehaviour
@@ -53,7 +53,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public string Message { get; private set; } = "";
     public bool SingleProductVisits {get;set;}
     private readonly List<ShopProduct> receivedOrder=new List<ShopProduct>();
-    public int[] MissingOrderTypes=>active==null?new int[0]:active.OrderTypes.Where(t=>!receivedOrder.Any(p=>p!=null&&!p.IsHeld&&p.CurrentSlot!=null&&(p.CurrentSlot.name.StartsWith("Order receipt")||p.CurrentSlot==Activities.BasketSlot)&&p.ProductId==ShopCatalog.Ids[t])).ToArray();
+    public int[] MissingOrderTypes=>active==null?new int[0]:active.OrderTypes.GroupBy(t=>t).SelectMany(g=>Enumerable.Repeat(g.Key,Mathf.Max(0,g.Count()-receivedOrder.Count(p=>p!=null&&!p.IsHeld&&p.CurrentSlot!=null&&p.ProductId==ShopCatalog.Ids[g.Key])))).ToArray();
     public bool ManualTick { get; set; }
     public ShopCashDrawer Drawer { get; private set; }
     public ShopDevices Devices { get; private set; }
@@ -115,11 +115,11 @@ public sealed partial class MvpShopController : MonoBehaviour
         Activities=gameObject.AddComponent<ShopActivities>();Activities.Configure(this,player);delivery.Configure(new Vector3(.4f,.4f,.4f));gameObject.AddComponent<ShopNextUpgrades>().Configure(this);
         Pricing=gameObject.AddComponent<ShopPricing>();Pricing.Configure(this);AfterHours=gameObject.AddComponent<ShopAfterHours>();AfterHours.Configure(this);
         Activities.BasketSlot.ProductPlaced+=OnDelivery;
-        ResetDemo();
+        ResetDemo();gameObject.AddComponent<ShopMenu>().Configure(this);
     }
     private void Update()
     {
-        if (ManualTick || Ledger == null) return;
+        if (ManualTick || Ledger == null || ShopMenu.Active) return;
         Keyboard keyboard = Keyboard.current;
         if (Application.isFocused && keyboard != null)
         {
@@ -127,21 +127,22 @@ public sealed partial class MvpShopController : MonoBehaviour
             {
                 if(Modal==ShopModal.Summary)
                 {
-                    if(keyboard.enterKey.wasPressedThisFrame||keyboard.numpadEnterKey.wasPressedThisFrame)NextDay();
-                    else if(keyboard.rKey.wasPressedThisFrame)ResetDemo();
-                    else if(keyboard.sKey.wasPressedThisFrame)StayAfterHours();
+                    if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Enter)||ShopBindings.Pressed(UnityEngine.InputSystem.Key.NumpadEnter))NextDay();
+                    else if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.R))ResetDemo();
+                    else if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.S))StayAfterHours();
                 }
-                else if (keyboard.escapeKey.wasPressedThisFrame) ClosePanel();
+                else if (!ShopMenu.Active&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape)) ClosePanel();
             }
             else if (Devices != null && Devices.Focused)
-            { if (keyboard.escapeKey.wasPressedThisFrame) ClosePanel(); }
+            { if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape)) ClosePanel(); }
             else if (Cursor.lockState == CursorLockMode.Locked)
             {
-                if (keyboard.bKey.wasPressedThisFrame) OpenSupplier();
-                else if (keyboard.hKey.wasPressedThisFrame) SetModal(ShopModal.Help);
-                else if (keyboard.fKey.wasPressedThisFrame) OpenCash();
-                else if (keyboard.oKey.wasPressedThisFrame) { if (Phase == ShopPhase.Preparing) OpenShop(); else RequestClose(); }
-                else if (keyboard.xKey.wasPressedThisFrame) SkipCurrent();
+                if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.B)) OpenSupplier();
+                else if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.H)) SetModal(ShopModal.Help);
+                else if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.F)) OpenCash();
+                else if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.O)) { if (Phase == ShopPhase.Preparing) OpenShop(); else RequestClose(); }
+                else if (ShopBindings.Pressed(Key.T)) SetModal(ShopModal.Dialogue);
+                else if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.X)) SkipCurrent();
             }
         }
         if (Application.isFocused && (Cursor.lockState == CursorLockMode.Locked || (Devices != null && Devices.Focused))) Tick(Time.deltaTime);
@@ -184,7 +185,7 @@ public sealed partial class MvpShopController : MonoBehaviour
             {
                 active = customer; Stage = ServiceStage.Order;
                 if(!customer.AcceptsPrices){PriceRefusals++;Missed++;Notify(ShopPeople.Names[customer.Person]+": Ennyiért inkább nem kérem. Túl drága! Állíts kedvezőbb árat az Árak alkalmazásban.");DismissActive();i--;continue;}
-                Dialogue = ShopPeople.Greetings[active.Person];
+                Dialogue = "Jó napot! "+active.OrderDescription+" lenne, kérem.";
                 if (active.BasketItem != null)
                 { if(Activities.PlaceBasket(active)){prepared=active.BasketItem;BeginPayment();} }
                 else if (delivery.Occupant != null) OnDelivery(delivery.Occupant);
@@ -236,14 +237,14 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         CollectOrderItem(prepared);foreach(var item in active.ExtraItems)CollectOrderItem(item);if(!PreparedIsValid())return;
         Stage = ServiceStage.Payment; changeCoins.Clear();
-        if(CardPayment){Drawer.CancelTender();Dialogue="Bankkártyával fizetnék.";Message="E vagy F a kasszánál: kártyás fizetés jóváhagyása.";return;}
+        if(CardPayment){ClearCardAmount();Drawer.CancelTender();Dialogue="Bankkártyával fizetnék.";Message="E vagy F a kasszánál: kártyás fizetés jóváhagyása.";return;}
         if(CoinPayment){Drawer.CancelTender();Activities.ShowCoins(active);Dialogue="Kiválasztaná belőle? Nekem ma nem megy a számolás.";Message="E vagy F a kasszánál: érmék kiválogatása a tenyérből.";return;}
         Drawer.OfferTender(active.Tender);
         Dialogue = "Tessék a pénz. A visszajárót azért megvárom.";
         Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";
     }
     private bool PreparedIsValid()=>active!=null&&receivedOrder.Count==active.OrderTypes.Length&&receivedOrder.All(p=>p!=null&&p.gameObject.activeSelf&&!p.IsHeld&&p.CurrentSlot!=null&&(p.CurrentSlot.name.StartsWith("Order receipt")||p.CurrentSlot==Activities.BasketSlot));
-    private Vector3 ReceiptPosition(int index)=>index==0?Activities.BasketSlot.transform.position:Layout.Expanded?new Vector3(2.85f,1.18f,-1.45f+index*.4f):new Vector3(.25f,1.18f,-2.05f+index*.4f);
+    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+new Vector3(index==2?-.26f:0,0,index==0?0:-.26f);
     private bool CollectOrderItem(ShopProduct product)
     {
         receivedOrder.RemoveAll(p=>p==null||p.IsHeld||p.CurrentSlot==null||(!p.CurrentSlot.name.StartsWith("Order receipt")&&p.CurrentSlot!=Activities.BasketSlot));
@@ -255,8 +256,8 @@ public sealed partial class MvpShopController : MonoBehaviour
             int freeIndex=Enumerable.Range(0,active.OrderTypes.Length).Where(i=>(i!=0||Activities.BasketSlot.Occupant==null)&&!receivedOrder.Any(p=>p.CurrentSlot!=null&&Vector3.Distance(p.CurrentSlot.transform.position,ReceiptPosition(i))<.02f)).DefaultIfEmpty(-1).First();
             if(freeIndex<0){Notify("Tedd szabaddá a kosár pulthelyeit.");return false;}
             if(freeIndex==0){if(!(product.IsHeld?product.TryPlace(Activities.BasketSlot):product.AssignInitialSlot(Activities.BasketSlot)))return false;if(!receivedOrder.Contains(product))receivedOrder.Add(product);return PreparedIsValid();}
-            var slot=new GameObject("Order receipt "+freeIndex).AddComponent<ProductSlot>();slot.transform.SetParent(delivery.transform.parent,false);slot.transform.position=ReceiptPosition(freeIndex);slot.Configure(new Vector3(.35f,.4f,.33f));
-            if(!(product.IsHeld?product.TryPlace(slot):product.AssignInitialSlot(slot))){Destroy(slot.gameObject);return false;}receivedOrder.Add(product);
+            var slot=new GameObject("Order receipt "+freeIndex).AddComponent<ProductSlot>();slot.transform.SetParent(delivery.transform.parent,false);slot.transform.position=ReceiptPosition(freeIndex);slot.Configure(new Vector3(.22f,.4f,.33f));
+            if(!(product.IsHeld?product.TryPlace(slot):product.AssignInitialSlot(slot))){slot.gameObject.SetActive(false);Destroy(slot.gameObject);return false;}slot.RestrictTo("__receipt_locked");receivedOrder.Add(product);
         }
         if(receivedOrder.Count<active.OrderTypes.Length){Stage=ServiceStage.Order;Notify("Kosár: "+receivedOrder.Count+" / "+active.OrderTypes.Length+" termék. Kérés: "+active.OrderDescription);return false;}
         return PreparedIsValid();
@@ -311,6 +312,17 @@ public sealed partial class MvpShopController : MonoBehaviour
         if (Phase != ShopPhase.Open) return;
         Security?.ReleaseEntrance();
         Phase = ShopPhase.Closing; Message = "Zárunk. A bent várakozókat még kiszolgálhatod; X-szel udvariasan elküldheted az aktuális vásárlót.";
+    }
+    public bool HasUnavailableRequest=>active!=null&&active.OrderTypes.GroupBy(t=>t).Any(g=>ShopCatalog.IsCoffee(g.Key)?(!Activities.CoffeeOwned||Activities.CoffeeSupplies<g.Count()||g.Key==ShopCatalog.Latte&&Activities.MilkSupplies<g.Count()):StockCount(g.Key)<g.Count());
+    public bool OfferAlternative()
+    {
+        if(active==null||Stage!=ServiceStage.Order||!HasUnavailableRequest)return false;
+        var missing=MissingOrderTypes;
+        if(missing.Length==0)return false;
+        int original=missing.FirstOrDefault(t=>ShopCatalog.IsCoffee(t)?(!Activities.CoffeeOwned||Activities.CoffeeSupplies==0||t==ShopCatalog.Latte&&Activities.MilkSupplies==0):StockCount(t)<active.OrderTypes.Count(x=>x==t));
+        int replacement=Enumerable.Range(0,AvailableProducts).Where(t=>t!=original&&ShopCatalog.IsCigarette(t)==ShopCatalog.IsCigarette(original)&&StockCount(t)>active.OrderTypes.Count(x=>x==t)&&ShopPricing.Accepts(t,Pricing.Price(t),Spawned-1,Day)).DefaultIfEmpty(-1).First();
+        if(replacement<0||active.Person==2){Notify("Köszönöm, akkor most inkább elmegyek.");SkipCurrent();return false;}
+        active.ReplaceRequested(original,replacement);Dialogue="Akkor "+ShopCatalog.ShortNames[replacement]+" jó lesz helyette, köszönöm.";Notify(Dialogue);ClosePanel();return true;
     }
     public void SkipCurrent()
     {
@@ -411,7 +423,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary) { Message = "Ez az áru a boltbővítés után rendelhető."; return false; }
         if (quantity < 1 || quantity > ShopCatalog.MaxOrderQuantity) { Message = "Egy rendelésben 1–12 terméket választhatsz."; return false; }
         if (warehouse[type] + PendingQuantity(type) + quantity > 24) { Message = "A dobozban már elég áru vár ebből a termékből."; return false; }
-        if (!Ledger.TryBuy(ShopCatalog.Costs[type],quantity)) { Message = "Nincs elég elkölthető pénz. Rendelés: "+ShopCatalog.Money(ShopCatalog.Costs[type]*quantity)+"; készpénz és bank együtt: "+ShopCatalog.Money(Ledger.AvailableFunds)+"."; return false; }
+        if (!Ledger.TryBuy(ShopCatalog.Costs[type],quantity)) { Message = "Nincs elég elkölthető pénz. Rendelés: "+ShopCatalog.Money(ShopCatalog.Costs[type]*quantity)+"; kasszaegyenleg: "+ShopCatalog.Money(Ledger.AvailableFunds)+"."; return false; }
         SyncCashDrawer();
         shipments.Add(new Shipment { Type = type, Quantity = quantity, Remaining = 8f }); SelectedSupply = type;
         Message = "Megrendelve " + quantity + " × " + ShopCatalog.Names[type] + ". A szállítás 8 másodperc.";

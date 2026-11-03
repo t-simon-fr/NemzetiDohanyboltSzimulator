@@ -11,6 +11,7 @@ public sealed class ShopCashDrawer
     private static int Value(int[] pieces)=>pieces.Select((n,i)=>n*ShopCatalog.Denominations[i]).Sum();
     public int Count(int value){int i=Array.IndexOf(ShopCatalog.Denominations,value);return i<0?0:counts[i]+offered[i];}
     public ShopCashDrawer(){int[] initial={0,0,0,1,1,2,4,6,6,10,8,4};Array.Copy(initial,counts,counts.Length);}
+    public void AddFunds(int amount){if(amount<0||amount%5!=0)throw new ArgumentOutOfRangeException(nameof(amount));Deposit(counts,amount);}
     public bool CanSelect(int value,int selected)=>Count(value)>selected;
     public void OfferTender(int tender){CancelTender();Deposit(offered,tender);}
     public void OfferTenderPieces(int[] pieces)

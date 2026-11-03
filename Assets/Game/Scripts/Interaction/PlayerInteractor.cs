@@ -111,20 +111,21 @@ public sealed class PlayerInteractor : MonoBehaviour
         { station=null;targetBin=null;target=null;targetSlot=null;canPlace=false;targetTool=null;featureTarget=null;UpdatePlacementHints(false);return; }
         RefreshTarget(viewCamera.ViewportPointToRay(new Vector3(.5f,.5f,0)));
         if (Keyboard.current == null) return;
-        if(Keyboard.current.gKey.wasPressedThisFrame){DropHeld();return;}
+        if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.G)){DropHeld();return;}
         if(heldTool!=null&&Mouse.current!=null)
         {
             if(heldTool.Kind==ShopToolKind.Bat&&Mouse.current.leftButton.wasPressedThisFrame)MvpShopController.Instance.Activities.SwingBat(viewCamera);
             if(heldTool.Kind==ShopToolKind.Mop&&Mouse.current.leftButton.isPressed&&featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill)featureTarget.Scrub(Time.deltaTime);
         }
-        if (station != null && !HasHeldProduct && Keyboard.current.qKey.wasPressedThisFrame) station.Cycle();
+        if (station != null && !HasHeldProduct && ShopBindings.Pressed(UnityEngine.InputSystem.Key.Q)) station.Cycle();
         if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&!HasHeldItem)
         {
-            if(Keyboard.current.digit1Key.wasPressedThisFrame)MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.Coffee);
-            if(Keyboard.current.digit2Key.wasPressedThisFrame)MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.LongCoffee);
-            if(Keyboard.current.digit3Key.wasPressedThisFrame)MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.Latte);
+            if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Q))MvpShopController.Instance.Activities.CycleRecipe();
+            if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Digit1))MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.Coffee);
+            if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Digit2))MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.LongCoffee);
+            if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Digit3))MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.Latte);
         }
-        if (!Keyboard.current.eKey.wasPressedThisFrame) return;
+        if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !(heldTool==null&&Mouse.current!=null&&Mouse.current.leftButton.wasPressedThisFrame)) return;
         if (station != null && station.IsPanicButton) { station.Use(this); return; }
         if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&(!HasHeldItem||heldTool!=null&&heldTool.Kind==ShopToolKind.CoffeeRefill)){MvpShopController.Instance.Activities.UseCoffeeMachine();return;}
         if(heldTool!=null)return;

@@ -54,7 +54,7 @@ public sealed partial class ShopDevices
     }
     private void PollDeviceKeyboard()
     {
-        if(!Focused||!Application.isFocused||Keyboard.current==null)return;
+        if(ShopMenu.Active||!Focused||!Application.isFocused||Keyboard.current==null)return;
         var keyboard=Keyboard.current;
         foreach(var key in keyboard.allKeys)if(key.wasPressedThisFrame)HandleDeviceKey(key.keyCode,keyboard.shiftKey.isPressed);
     }
@@ -65,7 +65,11 @@ public sealed partial class ShopDevices
         bool enter=key==DeviceKey.Enter||key==DeviceKey.NumpadEnter;
         if(FocusKind==ShopDeviceKind.Till&&shop.CardPayment)
         {
-            if(enter||key==DeviceKey.Space)shop.ConfirmCardPayment();
+            int number=key==DeviceKey.Digit0||key==DeviceKey.Numpad0?0:Digit(key);
+            if(number>=0)shop.EnterCardDigit(number);
+            else if(key==DeviceKey.Backspace)shop.UndoCardDigit();
+            else if(key==DeviceKey.Delete)shop.ClearCardAmount();
+            else if(enter)shop.ConfirmCardPayment();
             return true;
         }
         if(FocusKind==ShopDeviceKind.Till)

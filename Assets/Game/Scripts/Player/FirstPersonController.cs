@@ -52,7 +52,7 @@ public sealed class FirstPersonController : MonoBehaviour
             return;
         }
 
-        if (keyboard.escapeKey.wasPressedThisFrame)
+        if (!ShopMenu.Active&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))
         {
             SetCursorLocked(false);
         }
@@ -80,10 +80,10 @@ public sealed class FirstPersonController : MonoBehaviour
     private void UpdateMovement(Keyboard keyboard)
     {
         Vector2 input = Vector2.zero;
-        if (keyboard.aKey.isPressed) input.x -= 1f;
-        if (keyboard.dKey.isPressed) input.x += 1f;
-        if (keyboard.sKey.isPressed) input.y -= 1f;
-        if (keyboard.wKey.isPressed) input.y += 1f;
+        if (ShopBindings.Held(UnityEngine.InputSystem.Key.A)) input.x -= 1f;
+        if (ShopBindings.Held(UnityEngine.InputSystem.Key.D)) input.x += 1f;
+        if (ShopBindings.Held(UnityEngine.InputSystem.Key.S)) input.y -= 1f;
+        if (ShopBindings.Held(UnityEngine.InputSystem.Key.W)) input.y += 1f;
         input = Cursor.lockState == CursorLockMode.Locked ? Vector2.ClampMagnitude(input, 1f) : Vector2.zero;
 
         if (characterController.isGrounded && verticalVelocity < 0f)

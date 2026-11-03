@@ -198,7 +198,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     public void RefreshMonitor()
     {
         if(shop==null||shop.Ledger==null||monitorText==null)return;
-        monitorText.text="Kassza: "+ShopCatalog.Money(shop.Ledger.Cash)+" • Bank: "+ShopCatalog.Money(shop.Ledger.BankBalance);
+        monitorText.text="Kassza: "+ShopCatalog.Money(shop.Ledger.Cash);
         shopStatusText.text=shop.Day+". műszak • "+(shop.Layout.Expanded?"Bővített bolt":"Kezdőbolt");
         orderQuantityText.text="Mennyiség: "+orderQuantity+" db";
         furnishingStatus.text=(shop.Layout.Expanded?"Önkiszolgáló rész: megnyitva":"Önkiszolgáló rész: zárva")+"\n"+(shop.Layout.ExtraShelfOwned?"Kiegészítő polc: megvásárolva":"Kiegészítő polc: nincs");
@@ -332,7 +332,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     }
     private void Update()
     {
-        if(shop==null||shop.Ledger==null)return;
+        if(shop==null||shop.Ledger==null||ShopMenu.Active)return;
         RefreshMonitor();
         for(int i=0;i<moneyLabels.Count;i++)
         {
@@ -347,7 +347,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         PollDeviceKeyboard();
         if(shop.CardPayment&&Focused&&FocusKind==ShopDeviceKind.Till)return;
         if(!Focused||!Application.isFocused||Mouse.current==null||!Mouse.current.leftButton.wasPressedThisFrame)return;
-        if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame)return;
+        if(Keyboard.current!=null&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))return;
         Ray ray=view.ScreenPointToRay(Mouse.current.position.ReadValue());
         if(Physics.Raycast(ray,out RaycastHit hit,4f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore))
         {

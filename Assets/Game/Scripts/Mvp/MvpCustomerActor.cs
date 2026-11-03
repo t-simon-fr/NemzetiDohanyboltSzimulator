@@ -51,6 +51,10 @@ public sealed class MvpCustomerActor : MonoBehaviour
         gameObject.name="Vásárló - "+ShopPeople.Names[person];ShoppingComplete=!AcceptsPrices||!OrderTypes.Any(layout.IsPublicProduct);
         basket=new GameObject("Kosár").transform;basket.SetParent(transform,false);basket.localPosition=new Vector3(.3f,1.05f,.25f);
     }
+    public void ReplaceRequested(int original,int replacement)
+    {
+        int index=System.Array.IndexOf(OrderTypes,original);if(index<0)return;OrderTypes[index]=replacement;UnitPrices[index]=ShopCatalog.SalePrice(replacement);Product=OrderTypes[0];Tender=Mathf.CeilToInt(TotalPrice/5000f)*5000;WaitTime=0;
+    }
     public bool Advance(float dt,Vector3 queueTarget)
     {
         if(Gone)return true;

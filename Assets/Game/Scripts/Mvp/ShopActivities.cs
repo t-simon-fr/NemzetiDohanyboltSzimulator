@@ -46,8 +46,8 @@ public sealed partial class ShopActivities : MonoBehaviour
         coffee=Mat("Coffee",new Color(.12f,.055f,.018f));skin=Mat("Customer palm",new Color(.73f,.54f,.39f));coin=Mat("Customer coins",new Color(.77f,.64f,.29f));dirt=Mat("Floor stain",new Color(.18f,.13f,.055f));
         var spare=shop.DeliverySlot.transform.parent.Find("Counter Slot 1");BasketSlot=spare!=null?spare.GetComponent<ProductSlot>():new GameObject("Customer basket handover").AddComponent<ProductSlot>();BasketSlot.transform.SetParent(shop.DeliverySlot.transform.parent,false);
         BasketSlot.transform.localPosition=new Vector3(.47f,.012f,-.01f);BasketSlot.Configure(new Vector3(.35f,.4f,.33f));
-        Box(BasketSlot.transform,"Customer basket mat",new Vector3(0,-.006f,0),new Vector3(.35f,.006f,.33f),metal);
-        ProductVisuals.Text(BasketSlot.transform,"Basket handover label","ÖNKISZOLGÁLÓ ÁRU",new Vector3(0,.004f,.18f),Quaternion.Euler(90,180,0),.022f,Color.white);
+        Box(BasketSlot.transform,"Customer basket mat",new Vector3(-.13f,-.006f,-.13f),new Vector3(.58f,.006f,.58f),metal);
+        ProductVisuals.Text(BasketSlot.transform,"Basket handover label","VÁSÁRLÓ TERMÉKEI",new Vector3(0,.004f,.18f),Quaternion.Euler(90,180,0),.022f,Color.white);
         BuildCoffeeMachine();BuildTools();
         BuildCamera("Bejárat",new Vector3(-1.9f,2.65f,-4.12f),new Vector3(.3f,1.1f,-2.7f));
         BuildCamera("Önkiszolgáló",new Vector3(6.15f,2.65f,1.55f),new Vector3(3.6f,1,-2.5f));
@@ -210,10 +210,10 @@ public sealed partial class ShopActivities : MonoBehaviour
             var keys=Keyboard.current;
             if(keys!=null)
             {
-                if(keys.upArrowKey.wasPressedThisFrame||keys.wKey.wasPressedThisFrame)snake.Turn(Vector2Int.down);
-                if(keys.downArrowKey.wasPressedThisFrame||keys.sKey.wasPressedThisFrame)snake.Turn(Vector2Int.up);
-                if(keys.leftArrowKey.wasPressedThisFrame||keys.aKey.wasPressedThisFrame)snake.Turn(Vector2Int.left);
-                if(keys.rightArrowKey.wasPressedThisFrame||keys.dKey.wasPressedThisFrame)snake.Turn(Vector2Int.right);
+                if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.UpArrow)||ShopBindings.Pressed(UnityEngine.InputSystem.Key.W))snake.Turn(Vector2Int.down);
+                if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.DownArrow)||ShopBindings.Pressed(UnityEngine.InputSystem.Key.S))snake.Turn(Vector2Int.up);
+                if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.LeftArrow)||ShopBindings.Pressed(UnityEngine.InputSystem.Key.A))snake.Turn(Vector2Int.left);
+                if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.RightArrow)||ShopBindings.Pressed(UnityEngine.InputSystem.Key.D))snake.Turn(Vector2Int.right);
             }
             snakeTimer-=dt;
             if(snakeTimer<=0){snake.Step();snakeTimer=.17f;if(snake.Ended&&snake.Score>PlayerPrefs.GetInt("TobaccOS.SnakeRecord",0)){PlayerPrefs.SetInt("TobaccOS.SnakeRecord",snake.Score);PlayerPrefs.Save();}}
@@ -229,7 +229,8 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     private void OnGUI()
     {
-        if(shop==null||shop.Ledger==null)return;
+        if(shop==null||shop.Ledger==null||ShopMenu.Active)return;
+        DrawMachineRecipeHint();
         if(shop.Devices.FocusKind==ShopDeviceKind.Coins&&CoinOffer!=null)
         {
             Styles(Screen.width*.6f);var panel=new Rect(Screen.width*.18f,Screen.height-170,Screen.width*.64f,150);GUI.Box(panel,"");

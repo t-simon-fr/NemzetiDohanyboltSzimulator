@@ -10,7 +10,7 @@ public sealed class MvpShopHud : MonoBehaviour
     public void Configure(MvpShopController controller)=>shop=controller;
     private void OnGUI()
     {
-        if(shop==null||shop.Ledger==null)return;
+        if(shop==null||shop.Ledger==null||ShopMenu.Active)return;
         if(shop.AfterHours!=null&&shop.AfterHours.TradeOpen)return;
         if(title==null)
         {
@@ -40,6 +40,7 @@ public sealed class MvpShopHud : MonoBehaviour
             {
                 case ShopModal.Welcome:Welcome();break;
                 case ShopModal.Help:Help();break;
+                case ShopModal.Dialogue:CustomerDialogue();break;
                 case ShopModal.Summary:Summary();break;
             }
             GUILayout.EndArea();
@@ -54,16 +55,16 @@ public sealed class MvpShopHud : MonoBehaviour
         Panel(new Rect(12,12,295,156));GUILayout.BeginArea(new Rect(26,20,268,140));
         Label(shop.Day+". nap • "+(shop.Phase==ShopPhase.Preparing?"Felkészülés":shop.Phase==ShopPhase.Open?"Nyitva":shop.Phase==ShopPhase.AfterHours?"Zárás után":"Zárunk"),true);
         Label("Kassza: "+ShopCatalog.Money(shop.Ledger.Cash));
-        GUILayout.Label("Bank: "+ShopCatalog.Money(shop.Ledger.BankBalance),small);
+
         GUILayout.Label("Eladások: "+shop.Ledger.Sales+" • Sorban: "+shop.QueueCount+" • Érkezett: "+shop.Spawned+"/"+shop.TotalVisitors,small);
         GUILayout.Label(shop.Phase==ShopPhase.AfterHours?"O: elszámolás • Hátul: kereskedő":shop.Security!=null&&shop.Security.Locked?"BEJÁRAT RETESZELVE • E a vészgombon":"B Számítógép • H Súgó • O Nyitás/zárás",small);GUILayout.EndArea();
         if(shop.ActiveCustomer!=null)
         {
             var c=shop.ActiveCustomer;Panel(new Rect(844,12,424,216));GUILayout.BeginArea(new Rect(860,24,392,190));
-            Label(ShopPeople.Names[c.Person]+" • "+c.OrderDescription,true);
+            Label(ShopPeople.Names[c.Person],true);Label(shop.Stage==ServiceStage.Order?"Jó napot! "+c.OrderDescription+" lenne, kérem.":shop.Dialogue);
             GUILayout.Label("Ár: "+ShopCatalog.Money(c.TotalPrice),small);
             Label(shop.Stage==ServiceStage.Order?"Még szükséges: "+string.Join(", ",System.Array.ConvertAll(shop.MissingOrderTypes,t=>ShopCatalog.ShortNames[t])):shop.Dialogue);
-            GUILayout.Label(shop.Stage==ServiceStage.Order?"A kért árut a kék átadóhelyre tedd.":shop.Stage==ServiceStage.Payment?"E a kasszánál vagy F: visszajáró kiadása.":"A vásárló elköszön.",small);GUILayout.EndArea();
+            GUILayout.Label(shop.Stage==ServiceStage.Order?"A kért árut a kék átadóhelyre tedd. T: válasz a vevőnek.":shop.Stage==ServiceStage.Payment?"E a kasszánál vagy F: visszajáró kiadása.":"A vásárló elköszön.",small);GUILayout.EndArea();
         }
         if(!string.IsNullOrEmpty(shop.Message))
         {
@@ -103,7 +104,7 @@ public sealed class MvpShopHud : MonoBehaviour
         Label("Nyereség: "+ShopCatalog.Money(shop.Ledger.Profit),true);
         Label("Utánrendelés: "+ShopCatalog.Money(shop.Ledger.Purchases)+" • Beruházás: "+ShopCatalog.Money(shop.Ledger.Improvements));
         Label("Zárókassza: "+ShopCatalog.Money(shop.Drawer.Total),true);
-        Label("Bankszámla: "+ShopCatalog.Money(shop.Ledger.BankBalance)+" • Kártyás bevétel: "+ShopCatalog.Money(shop.Ledger.CardRevenue));
+        Label("Ebből kártyás bevétel: "+ShopCatalog.Money(shop.Ledger.CardRevenue));
         if(shop.Ledger.Cash<0)Label("Ki nem fizetett működési költség: "+ShopCatalog.Money(-shop.Ledger.Cash)+". A folytatáshoz indíts új játékot.");GUILayout.Space(12);
         for(int i=0;i<shop.AvailableProducts;i++)GUILayout.Label(ShopCatalog.Names[i]+": "+shop.StockCount(i)+" a boltban, "+shop.WarehouseCount(i)+" a dobozban",small);
         if(shop.StockCount(ShopCatalog.Contraband)>0)GUILayout.Label("Dnyipro: "+shop.StockCount(ShopCatalog.Contraband)+" csomag",small);
@@ -116,11 +117,19 @@ public sealed class MvpShopHud : MonoBehaviour
         if(SummaryButton("Kilépés"))Quit();GUILayout.EndArea();
     }
     private bool SummaryButton(string label)=>GUILayout.Button(label,button,GUILayout.Height(32));
+    private void CustomerDialogue()
+    {
+        Label("Beszélgetés",true);
+        if(shop.ActiveCustomer==null){Label("Most nincs vásárló a pultnál.");}
+        else{Label(shop.Dialogue);if(shop.Stage==ServiceStage.Order&&shop.HasUnavailableRequest&&Button("Sajnos nincs meg a kért áru. Megfelelne másik?"))shop.OfferAlternative();if(Button("Sajnos nem tudom kiszolgálni.")){shop.SkipCurrent();shop.ClosePanel();}}
+        if(Button("Vissza"))shop.ClosePanel();
+    }
     private void CardTerminal()
     {
         Panel(new Rect(340,190,600,330));GUILayout.BeginArea(new Rect(365,210,550,290));
         Label("BANKKÁRTYÁS FIZETÉS",true);Label("Fizetendő: "+ShopCatalog.Money(shop.ActiveCustomer.TotalPrice));
-        Label("A vásárló a terminálhoz érintette a kártyáját. Hagyd jóvá az összeget.");
+        Label("Beírt összeg: "+shop.CardAmount+" Ft");
+        Label("Számjegyek: összeg • Backspace: javítás • Del: törlés");Label(shop.Message);
         GUILayout.Space(12);if(Button("Fizetés jóváhagyása • Enter"))shop.ConfirmCardPayment();
         if(Button("Vissza • Esc"))shop.ClosePanel();GUILayout.EndArea();
     }
