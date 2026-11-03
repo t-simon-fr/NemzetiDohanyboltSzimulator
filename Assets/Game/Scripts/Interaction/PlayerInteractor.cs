@@ -15,6 +15,7 @@ public sealed class PlayerInteractor : MonoBehaviour
     private ShopHandTool heldTool,targetTool;
     private ShopFeatureTarget featureTarget;
     public ShopHandTool HeldTool=>heldTool;
+    public void ConsumeHeldTool(){if(heldTool==null)return;var tool=heldTool;heldTool=null;tool.gameObject.SetActive(false);Destroy(tool.gameObject);UpdatePlacementHints();}
     public ShopFeatureTarget TargetFeature=>featureTarget;
     private ShopProduct target;
     private ShopProduct heldProduct;
@@ -117,9 +118,15 @@ public sealed class PlayerInteractor : MonoBehaviour
             if(heldTool.Kind==ShopToolKind.Mop&&Mouse.current.leftButton.isPressed&&featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill)featureTarget.Scrub(Time.deltaTime);
         }
         if (station != null && !HasHeldProduct && Keyboard.current.qKey.wasPressedThisFrame) station.Cycle();
+        if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&!HasHeldItem)
+        {
+            if(Keyboard.current.digit1Key.wasPressedThisFrame)MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.Coffee);
+            if(Keyboard.current.digit2Key.wasPressedThisFrame)MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.LongCoffee);
+            if(Keyboard.current.digit3Key.wasPressedThisFrame)MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.Latte);
+        }
         if (!Keyboard.current.eKey.wasPressedThisFrame) return;
         if (station != null && station.IsPanicButton) { station.Use(this); return; }
-        if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&!HasHeldItem){MvpShopController.Instance.Activities.UseCoffeeMachine();return;}
+        if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&(!HasHeldItem||heldTool!=null&&heldTool.Kind==ShopToolKind.CoffeeRefill)){MvpShopController.Instance.Activities.UseCoffeeMachine();return;}
         if(heldTool!=null)return;
         if(!HasHeldItem&&targetTool!=null){TryHoldTool(targetTool);return;}
         if (heldCarton != null)

@@ -17,7 +17,7 @@ public static class WarehouseChecks
     }
     private static WarehouseCarton EmptyCarton(int type)
     {
-        Require(game.OrderSupply(type),"Order goods for brand carton");game.Tick(8.1f);
+        Require(game.OrderSupply(type),"Order goods for brand carton");ShopCheckFixtures.Tick(game,8.1f);
         var carton=game.Warehouse.Carton(type);Require(carton!=null&&carton.Quantity==3,"Shipment creates its branded physical carton");
         var units=UnityEngine.Object.FindObjectsByType<ShopProduct>().Where(p=>p.ProductId==ShopCatalog.Ids[type]&&!p.IsHeld).Take(3).ToArray();
         foreach(var item in units)item.RemoveFromWorld();
@@ -28,7 +28,7 @@ public static class WarehouseChecks
     }
     public static object InventoryAndTrash()
     {
-        checks=0;game=MvpShopController.Instance;player=UnityEngine.Object.FindAnyObjectByType<PlayerInteractor>();game.ManualTick=true;game.ResetDemo();game.ClosePanel();
+        checks=0;game=MvpShopController.Instance;player=UnityEngine.Object.FindAnyObjectByType<PlayerInteractor>();game.ManualTick=true;ShopCheckFixtures.Reset(game);game.ClosePanel();
         var area=game.Warehouse;var bin=UnityEngine.Object.FindAnyObjectByType<WarehouseBin>();
         try
         {
@@ -42,12 +42,12 @@ public static class WarehouseChecks
             area.Dock(0).GetComponent<ShopStation>().Use(player);Require(area.Carton(0)==carton&&!player.HasHeldItem,"Empty carton can be brought back into storage");
             Require(player.TryHoldCarton(carton)&&bin.Use(player)&&!player.HasHeldItem&&area.DiscardedCartons==1,"Rear paper dumpster accepts carried empty carton");
             Require(!bin.Use(player)&&area.DiscardedCartons==1,"Empty-hand interaction cannot duplicate disposal");
-            game.OpenShop();game.RequestClose();game.Tick(.1f);game.NextDay();
+            game.OpenShop();game.RequestClose();ShopCheckFixtures.Tick(game,.1f);game.NextDay();
             Require(game.Day==2&&area.DiscardedCartons==1&&area.Carton(0)==null,"Next day retains storage and removed packaging");
-            game.ResetDemo();game.ClosePanel();Require(area.DiscardedCartons==0&&Enumerable.Range(0,ShopCatalog.Count).All(i=>area.Carton(i)==null),"New game resets physical storage and waste count");
+            ShopCheckFixtures.Reset(game);game.ClosePanel();Require(area.DiscardedCartons==0&&Enumerable.Range(0,ShopCatalog.Count).All(i=>area.Carton(i)==null),"New game resets physical storage and waste count");
             Require(ShopCheckFixtures.Expand(game),"Unlock convenience brands");
             var old=EmptyCarton(Water);Require(player.TryHoldCarton(old),"Pick empty water carton");
-            Require(game.OrderSupply(Water),"Another shipment can be ordered while old packaging is carried");game.Tick(8.1f);
+            Require(game.OrderSupply(Water),"Another shipment can be ordered while old packaging is carried");ShopCheckFixtures.Tick(game,8.1f);
             var replacement=area.Carton(Water);Require(replacement!=null&&replacement!=old&&replacement.Quantity==3&&old.Quantity==0,"New delivery has a separate filled box and does not refill carried empty cardboard");
             Require(bin.Use(player)&&game.WarehouseCount(Water)==3&&replacement.gameObject.activeSelf,"Throwing old packaging cannot delete newly arrived stock");
             Require(player.TryHoldCarton(replacement)&&!bin.Use(player)&&replacement.Quantity==3,"Filled carton is carryable but cannot be thrown away");player.ReturnCarton();
@@ -58,11 +58,11 @@ public static class WarehouseChecks
             Require(game.StockCount(Water)+game.WarehouseCount(Water)==6,"Two paid water shipments conserve six units through unpacking, return and waste disposal");
             return new{passed=checks,failed=0};
         }
-        finally{game.ResetDemo();game.ManualTick=false;}
+        finally{ShopCheckFixtures.Reset(game);game.ManualTick=false;}
     }
     public static object WalkingRoute()
     {
-        checks=0;game=MvpShopController.Instance;player=UnityEngine.Object.FindAnyObjectByType<PlayerInteractor>();game.ManualTick=true;game.ResetDemo();game.ClosePanel();
+        checks=0;game=MvpShopController.Instance;player=UnityEngine.Object.FindAnyObjectByType<PlayerInteractor>();game.ManualTick=true;ShopCheckFixtures.Reset(game);game.ClosePanel();
         var movement=player.GetComponent<FirstPersonController>();var body=player.GetComponent<CharacterController>();var position=player.transform.position;var rotation=player.transform.rotation;
         movement.enabled=false;
         try
@@ -77,7 +77,7 @@ public static class WarehouseChecks
         }
         finally
         {
-            body.enabled=false;player.transform.SetPositionAndRotation(position,rotation);body.enabled=true;movement.enabled=true;game.ResetDemo();game.ManualTick=false;
+            body.enabled=false;player.transform.SetPositionAndRotation(position,rotation);body.enabled=true;movement.enabled=true;ShopCheckFixtures.Reset(game);game.ManualTick=false;
         }
     }
     private static void Walk(CharacterController body,Vector3 target)

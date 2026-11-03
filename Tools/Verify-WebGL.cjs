@@ -98,6 +98,17 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
         await key('Tab', 'Tab', 9); await key('Tab', 'Tab', 9); await key(' ', 'Space', 32); await capture('keyboard-memory');
       }
     }
+    if (process.argv.includes('--dayend')) {
+      const key = async (name, code, value) => {
+        await send('Input.dispatchKeyEvent', { type: 'keyDown', key: name, code, windowsVirtualKeyCode: value }); await sleep(120);
+        await send('Input.dispatchKeyEvent', { type: 'keyUp', key: name, code, windowsVirtualKeyCode: value }); await sleep(200);
+      };
+      await key('Escape', 'Escape', 27); await clickAt(.5, .5);
+      await key('o', 'KeyO', 79); await sleep(750); await key('o', 'KeyO', 79);
+      for(let i=0;i<24;i++){await key('x','KeyX',88);await sleep(500);}
+      await capture('dayend-summary');
+      await key('Enter','Enter',13);await sleep(750);await capture('next-day');
+    }
     fs.writeFileSync(path.join(output, label + '-console.json'), JSON.stringify(messages, null, 2));
     const errors = messages.filter(m => ['error', 'exception', 'dialog'].includes(m.type));
     console.log(JSON.stringify({ url, screenshots: saved, errors }, null, 2));

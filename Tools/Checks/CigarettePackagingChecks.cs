@@ -16,7 +16,7 @@ public static class CigarettePackagingChecks
         game.ManualTick = true;
         try
         {
-            game.ResetDemo(); game.ClosePanel();
+            ShopCheckFixtures.Reset(game); game.ClosePanel();
             check(ShopCatalog.Names.Take(4).SequenceEqual(new[] { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon" }), "Approved names in catalog");
             check(game.AvailableProducts == 4, "All four cigarette brands available before expansion");
             for (int type = 0; type < 4; type++)
@@ -38,7 +38,7 @@ public static class CigarettePackagingChecks
                 check(game.Warehouse.Dock(type).GetComponent<ShopStation>().ProductType == type, "Matching warehouse dock");
             }
             check(!game.OrderSupply(ShopCatalog.Index("water")), "Convenience goods remain locked");
-            check(game.OrderSupply(3), "Davidon can be ordered before expansion"); game.Tick(8.1f);
+            check(game.OrderSupply(3), "Davidon can be ordered before expansion"); ShopCheckFixtures.Tick(game,8.1f);
             var carton = game.Warehouse.Carton(3);
             check(carton != null && carton.Quantity == 3, "Separate Davidon shipment carton");
             check(carton.GetComponentsInChildren<MeshRenderer>().Any(r => r.sharedMaterials.Length == 2 && r.sharedMaterials[0].mainTexture != null), "Carton contains textured pack samples");
@@ -51,7 +51,7 @@ public static class CigarettePackagingChecks
             player.ReturnCarton();
             return new { passed, failed = 0, brands = 4, initialPacks = 32 };
         }
-        finally { player.CancelHeld(); game.ResetDemo(); game.ManualTick = false; UnityEngine.Object.Destroy(hand.gameObject); }
+        finally { player.CancelHeld(); ShopCheckFixtures.Reset(game); game.ManualTick = false; UnityEngine.Object.Destroy(hand.gameObject); }
     }
     public static object CaptureRack()
     {

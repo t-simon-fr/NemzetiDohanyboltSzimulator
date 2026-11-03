@@ -18,9 +18,9 @@ public static class DrinkPackagingChecks
             check(ProductVisuals.Size(6).y>ProductVisuals.Size(5).y&&ProductVisuals.Size(6).x>ProductVisuals.Size(5).x,"500 ml can is taller and wider than 330 ml cola");
             for(int type=4;type<ShopCatalog.Count;type++)
             {
-                game.ResetDemo();game.ClosePanel();check(!game.OrderSupply(type),"Drink locked until shop expansion");
+                ShopCheckFixtures.Reset(game);game.ClosePanel();check(!game.OrderSupply(type),"Drink locked until shop expansion");
                 check(ShopCheckFixtures.Expand(game),"Unlock public drink shelves");
-                check(game.OrderSupply(type),"Drink can be purchased");game.Tick(8.1f);
+                check(game.OrderSupply(type),"Drink can be purchased");ShopCheckFixtures.Tick(game,8.1f);
                 var carton=game.Warehouse.Carton(type);
                 check(carton!=null&&carton.Quantity==3,"Delivery has a brand-specific carton");
                 check(game.Warehouse.Dock(type).GetComponent<ShopStation>().ProductType==type,"Correct warehouse dock");
@@ -41,7 +41,7 @@ public static class DrinkPackagingChecks
             }
             return new{passed,failed=0,drinks=ShopCatalog.Count-4,energyVolumeMl=500};
         }
-        finally{player.CancelHeld();game.ResetDemo();game.ManualTick=false;UnityEngine.Object.Destroy(hand.gameObject);}
+        finally{player.CancelHeld();ShopCheckFixtures.Reset(game);game.ManualTick=false;UnityEngine.Object.Destroy(hand.gameObject);}
     }
     public static object CaptureShelf()
     {
@@ -51,10 +51,10 @@ public static class DrinkPackagingChecks
         game.ManualTick=true;
         try
         {
-            game.ResetDemo();game.ClosePanel();ShopCheckFixtures.Expand(game);
+            ShopCheckFixtures.Reset(game);game.ClosePanel();ShopCheckFixtures.Expand(game);
             for(int type=4;type<ShopCatalog.Count;type++)
             {
-                if(!game.OrderSupply(type))throw new Exception("Cannot order shelf preview stock");game.Tick(8.1f);
+                if(!game.OrderSupply(type))throw new Exception("Cannot order shelf preview stock");ShopCheckFixtures.Tick(game,8.1f);
                 var carton=game.Warehouse.Carton(type);player.TryHoldCarton(carton);
                 for(int i=0;i<3;i++)
                 {
@@ -69,6 +69,6 @@ public static class DrinkPackagingChecks
             camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;image.ReadPixels(new Rect(0,0,1500,1000),0,0);image.Apply();
             Directory.CreateDirectory("Builds/DrinkPreview");File.WriteAllBytes("Builds/DrinkPreview/shop-drinks.png",image.EncodeToPNG());return "Builds/DrinkPreview/shop-drinks.png";
         }
-        finally{camera.targetTexture=target;RenderTexture.active=active;camera.transform.SetPositionAndRotation(position,rotation);camera.fieldOfView=fov;UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(image);player.CancelHeld();game.ResetDemo();game.ManualTick=false;}
+        finally{camera.targetTexture=target;RenderTexture.active=active;camera.transform.SetPositionAndRotation(position,rotation);camera.fieldOfView=fov;UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(image);player.CancelHeld();ShopCheckFixtures.Reset(game);game.ManualTick=false;}
     }
 }

@@ -33,7 +33,7 @@ public static class CompactShopChecks
         passed=0;game.ManualTick=true;hand=new GameObject("Temporary Compact Check Hand").transform;hand.position=Vector3.one*1000;
         try
         {
-            game.ResetDemo();game.ClosePanel();Check(game.Ledger.Cash==6000&&game.Drawer.Total==6000,"Opening funds agree");
+            ShopCheckFixtures.Reset(game);game.ClosePanel();Check(game.Ledger.Cash==6000&&game.Drawer.Total==6000,"Opening funds agree");
             Check(Enumerable.Range(0,ShopCatalog.CigaretteCount).All(i=>game.StockCount(i)==8)&&Enumerable.Range(ShopCatalog.CigaretteCount,ShopCatalog.Count-ShopCatalog.CigaretteCount).All(i=>game.StockCount(i)==0),"Full cigarette starter rack and locked convenience stock");
             Check(!game.OrderSupply(ShopCatalog.CigaretteCount)&&!game.OrderSupply(-1),"Locked and invalid product rejected");
             var counter=GameObject.Find("Service counter").transform;Vector3 counterPosition=counter.position;
@@ -46,7 +46,7 @@ public static class CompactShopChecks
                 Check(counter.position==counterPosition&&!ShopCheckFixtures.Expand(game),"Counter anchored and duplicate expansion rejected");
                 for(int type=ShopCatalog.CigaretteCount;type<ShopCatalog.Count;type++)
                 {
-                    Check(game.OrderSupply(type),"Order convenience stock after expansion");game.Tick(8.1f);
+                    Check(game.OrderSupply(type),"Order convenience stock after expansion");ShopCheckFixtures.Tick(game,8.1f);
                     for(int j=0;j<3;j++)
                     {
                         Check(game.TryCreateSupply(type,out var item),"Unpack convenience stock");PlaceOnShelf(item,type);
@@ -59,7 +59,7 @@ public static class CompactShopChecks
             while(game.Ledger.Sales+game.CaughtToday<8&&guard++<15000)
             {
                 foreach(var thief in UnityEngine.Object.FindObjectsByType<MvpCustomerActor>().Where(c=>c.IsStealing).ToArray())game.StopThief(thief);
-                if(game.ActiveCustomer==null||game.Stage==ServiceStage.Thanks||game.Stage==ServiceStage.None){game.Tick(.1f);continue;}
+                if(game.ActiveCustomer==null||game.Stage==ServiceStage.Thanks||game.Stage==ServiceStage.None){ShopCheckFixtures.Tick(game,.1f);continue;}
                 var customer=game.ActiveCustomer;int type=customer.Product;
                 if(game.Stage==ServiceStage.Order)
                 {
@@ -96,7 +96,7 @@ public static class CompactShopChecks
                 Check(!game.SubmitChange(0)&&!game.Devices.Focused,"No duplicate payment and camera released");
             }
             Check(guard<15000&&game.Ledger.Sales==(expanded?7:8),"Complete eight-visitor day including stopped theft");
-            for(int i=0;i<1500&&game.Phase!=ShopPhase.Summary;i++)game.Tick(.1f);
+            for(int i=0;i<1500&&game.Phase!=ShopPhase.Summary;i++)ShopCheckFixtures.Tick(game,.1f);
             Check(game.Phase==ShopPhase.Summary&&game.Missed==0,"All customers leave and day closes");
             Check(game.Drawer.Total==game.Ledger.Cash&&game.Ledger.Cash==game.Ledger.OpeningCash+game.Ledger.Revenue-game.Ledger.Purchases-game.Ledger.Improvements-300,"End-of-day accounting includes investment separately");
             Check(expanded?selfServed==3:game.Ledger.Revenue==19000&&game.Ledger.Profit==5400,"Self-service visitors / cigarette day economics");
@@ -107,7 +107,7 @@ public static class CompactShopChecks
         finally
         {
             foreach(var p in UnityEngine.Object.FindObjectsByType<ShopProduct>().Where(p=>p.IsHeld))p.ReturnToPickupPosition();
-            UnityEngine.Object.DestroyImmediate(hand.gameObject);game.ResetDemo();game.ManualTick=false;
+            UnityEngine.Object.DestroyImmediate(hand.gameObject);ShopCheckFixtures.Reset(game);game.ManualTick=false;
         }
     }
     private static ProductSlot EmptyShelf(int type)=>UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.name.StartsWith(ShopCatalog.IsCigarette(type)?"Cigarette slot":"Public slot")&&s.PreferredProductId==ShopCatalog.Ids[type]&&s.CanAccept(Probe(type)));
@@ -149,14 +149,14 @@ public static class CompactShopChecks
         hand=new GameObject("Temporary Compact Edge Hand").transform;hand.position=Vector3.one*1000;
         try
         {
-            game.ResetDemo();game.ClosePanel();ShopCheckFixtures.Expand(game);
-            Check(game.OrderSupply(ShopCatalog.Index("cola")),"Prepare public stock for cancellation test");game.Tick(8.1f);
+            ShopCheckFixtures.Reset(game);game.ClosePanel();ShopCheckFixtures.Expand(game);
+            Check(game.OrderSupply(ShopCatalog.Index("cola")),"Prepare public stock for cancellation test");ShopCheckFixtures.Tick(game,8.1f);
             game.TryCreateSupply(ShopCatalog.Index("cola"),out var item);PlaceOnShelf(item,ShopCatalog.Index("cola"));
             ProductSlot source=item.CurrentSlot;
             game.OpenShop();
             for(int i=0;i<3000 && !(game.ActiveCustomer!=null&&game.ActiveCustomer.Product==ShopCatalog.Index("cola"));i++)
             {
-                if(game.ActiveCustomer!=null)game.SkipCurrent();game.Tick(.1f);
+                if(game.ActiveCustomer!=null)game.SkipCurrent();ShopCheckFixtures.Tick(game,.1f);
             }
             // The first cola guest offers coins; earlier guests are dismissed deliberately.
             Check(game.ActiveCustomer!=null&&game.ActiveCustomer.BasketItem==item,"Customer arrives carrying shelf item");
@@ -165,35 +165,35 @@ public static class CompactShopChecks
             Check(item.gameObject.activeSelf&&!item.IsHeld&&item.CurrentSlot==source&&source.Occupant==item,"Cancelled purchase returns item to reserved shelf");
             Check(game.Drawer.PendingTender==0&&game.Drawer.Total==cash&&game.Ledger.Cash==cash&&game.ChangeSelected==0,"Cancellation returns tender without charging either party");
             Check(!game.Devices.Focused&&!ShopInputGate.Blocked,"Cancellation releases device and player");
-            game.ResetDemo();game.OpenShop();
-            for(int i=0;i<100;i++)game.Tick(.1f);
+            ShopCheckFixtures.Reset(game);game.OpenShop();
+            for(int i=0;i<100;i++)ShopCheckFixtures.Tick(game,.1f);
             var pack=UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="cig_red");Offer(pack);
             Check(pack.PickUp(hand),"Player recovers unpaid prepared product");
-            game.Tick(.1f);Check(game.Stage==ServiceStage.Order&&game.Drawer.PendingTender==0,"Removing prepared product cancels pending cash");
+            ShopCheckFixtures.Tick(game,.1f);Check(game.Stage==ServiceStage.Order&&game.Drawer.PendingTender==0,"Removing prepared product cancels pending cash");
             pack.ReturnToPickupPosition();
-            game.ResetDemo();game.OrderSupply(0);game.OpenShop();game.RequestClose();game.Tick(.1f);
+            ShopCheckFixtures.Reset(game);game.OrderSupply(0);game.OpenShop();game.RequestClose();ShopCheckFixtures.Tick(game,.1f);
             Check(game.Phase==ShopPhase.Summary&&game.WarehouseCount(0)==3&&game.Ledger.Cash==1200&&game.Drawer.Total==1200,"Early close retains paid pending shipments and charges fee once");
-            game.Tick(100);Check(game.Ledger.Cash==1200,"Closing fee cannot repeat");
-            game.ResetDemo();Check(!game.Layout.Expanded&&game.AvailableProducts==ShopCatalog.CigaretteCount&&game.Drawer.Total==6000,"Reset restores compact starter state");
-            game.Ledger.TryImprove(6000);game.Drawer.Spend(6000);game.OpenShop();game.RequestClose();game.Tick(.1f);
+            ShopCheckFixtures.Tick(game,100);Check(game.Ledger.Cash==1200,"Closing fee cannot repeat");
+            ShopCheckFixtures.Reset(game);Check(!game.Layout.Expanded&&game.AvailableProducts==ShopCatalog.CigaretteCount&&game.Drawer.Total==6000,"Reset restores compact starter state");
+            game.Ledger.TryImprove(6000);game.Drawer.Spend(6000);game.OpenShop();game.RequestClose();ShopCheckFixtures.Tick(game,.1f);
             Check(game.Phase==ShopPhase.Summary&&game.Ledger.Cash==-300&&game.Drawer.Total==0,"Insolvency has debt rather than negative physical money");
             game.NextDay();Check(game.Day==1&&game.Phase==ShopPhase.Summary,"Insolvent next day is blocked safely");
             return new{passed,failed=0};
         }
-        finally{UnityEngine.Object.DestroyImmediate(hand.gameObject);game.ResetDemo();game.ManualTick=false;}
+        finally{UnityEngine.Object.DestroyImmediate(hand.gameObject);ShopCheckFixtures.Reset(game);game.ManualTick=false;}
     }
     public static object DeviceControls()
     {
-        game=MvpShopController.Instance;passed=0;game.ResetDemo();game.ClosePanel();game.OpenSupplier();
+        game=MvpShopController.Instance;passed=0;ShopCheckFixtures.Reset(game);game.ClosePanel();game.OpenSupplier();
         foreach(var app in new[]{ShopComputerApp.Desktop,ShopComputerApp.Orders,ShopComputerApp.Furnishing})
         {
             game.Devices.OpenApp(app);
             foreach(var c in UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Where(c=>c.transform.IsChildOf(GameObject.Find("Order screen").transform)))CheckRay(c);
         }
         game.ClosePanel();game.OpenShop();game.ManualTick=true;hand=new GameObject("Temporary Device Hand").transform;hand.position=Vector3.one*1000;
-        for(int i=0;i<100;i++)game.Tick(.1f);Offer(UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="cig_red"));game.OpenCash();game.Devices.RegisterDrawer.Advance(1f);
+        for(int i=0;i<100;i++)ShopCheckFixtures.Tick(game,.1f);Offer(UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="cig_red"));game.OpenCash();game.Devices.RegisterDrawer.Advance(1f);
         foreach(var c in UnityEngine.Object.FindObjectsByType<ShopWorldControl>().Where(c=>c.Kind==WorldControlKind.Denomination||c.Kind==WorldControlKind.Pay||c.Kind==WorldControlKind.Exchange||c.Kind==WorldControlKind.Clear||c.Kind==WorldControlKind.Undo))CheckRay(c);
-        UnityEngine.Object.DestroyImmediate(hand.gameObject);game.ResetDemo();game.ManualTick=false;return new{passed,failed=0};
+        UnityEngine.Object.DestroyImmediate(hand.gameObject);ShopCheckFixtures.Reset(game);game.ManualTick=false;return new{passed,failed=0};
     }
     private static void CheckRay(ShopWorldControl c)
     {
@@ -203,7 +203,7 @@ public static class CompactShopChecks
     }
     public static object PlayerRoute()
     {
-        game=MvpShopController.Instance;passed=0;game.ManualTick=true;game.ResetDemo();game.ClosePanel();
+        game=MvpShopController.Instance;passed=0;game.ManualTick=true;ShopCheckFixtures.Reset(game);game.ClosePanel();
         var player=UnityEngine.Object.FindAnyObjectByType<FirstPersonController>();var body=player.GetComponent<CharacterController>();
         Vector3 original=player.transform.position;Quaternion rotation=player.transform.rotation;
         player.enabled=false;
@@ -217,13 +217,13 @@ public static class CompactShopChecks
             Check(player.transform.position.y>-.05f,"Player can reach self-service shelf on real floor");
             Walk(body,new Vector3(5.1f,0,-3.25f));Walk(body,new Vector3(.13f,0,-3.25f));
             for(int i=0;i<80;i++)body.Move(new Vector3(0,-.025f,-.04f));
-            Check(player.transform.position.z> -4.3f && player.transform.position.y>-.05f,"Door boundary prevents leaving shop floor and getting stuck below map");
+            Check(player.transform.position.z< -4.5f && player.transform.position.y>-.05f,"Player exits onto the physical pavement without falling below the map");
             return new{passed,failed=0};
         }
         finally
         {
             body.enabled=false;player.transform.SetPositionAndRotation(original,rotation);body.enabled=true;
-            player.enabled=true;game.ResetDemo();game.ManualTick=false;
+            player.enabled=true;ShopCheckFixtures.Reset(game);game.ManualTick=false;
         }
     }
     private static void Walk(CharacterController body,Vector3 target)
@@ -235,16 +235,16 @@ public static class CompactShopChecks
         }
         Vector3 rest=target-body.transform.position;rest.y=0;Check(rest.magnitude<.09f,"Player route reached: "+target+" actual: "+body.transform.position);
     }
-    public static object PreviewMonitor(){game=MvpShopController.Instance;game.ResetDemo();game.ClosePanel();game.OpenSupplier();return game.Devices.FocusKind.ToString();}
-    public static object PreviewCounter(){game=MvpShopController.Instance;game.ResetDemo();game.ClosePanel();UnityEngine.Object.FindAnyObjectByType<FirstPersonController>().transform.rotation=Quaternion.Euler(0,180,0);return "counter";}
+    public static object PreviewMonitor(){game=MvpShopController.Instance;ShopCheckFixtures.Reset(game);game.ClosePanel();game.OpenSupplier();return game.Devices.FocusKind.ToString();}
+    public static object PreviewCounter(){game=MvpShopController.Instance;ShopCheckFixtures.Reset(game);game.ClosePanel();UnityEngine.Object.FindAnyObjectByType<FirstPersonController>().transform.rotation=Quaternion.Euler(0,180,0);return "counter";}
     public static object PreviewRack()
     {
-        game=MvpShopController.Instance;game.ResetDemo();game.ClosePanel();UnityEngine.Object.FindAnyObjectByType<FirstPersonController>().transform.rotation=Quaternion.identity;Camera.main.transform.localRotation=Quaternion.identity;return "rack";
+        game=MvpShopController.Instance;ShopCheckFixtures.Reset(game);game.ClosePanel();UnityEngine.Object.FindAnyObjectByType<FirstPersonController>().transform.rotation=Quaternion.identity;Camera.main.transform.localRotation=Quaternion.identity;return "rack";
     }
     public static object PreviewCash()
     {
-        game=MvpShopController.Instance;game.ResetDemo();game.OpenShop();game.ManualTick=true;hand=new GameObject("Temporary preview hand").transform;hand.position=Vector3.one*1000;
-        for(int i=0;i<100;i++)game.Tick(.1f);Offer(UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="cig_red"));
+        game=MvpShopController.Instance;ShopCheckFixtures.Reset(game);game.OpenShop();game.ManualTick=true;hand=new GameObject("Temporary preview hand").transform;hand.position=Vector3.one*1000;
+        for(int i=0;i<100;i++)ShopCheckFixtures.Tick(game,.1f);Offer(UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId=="cig_red"));
         UnityEngine.Object.DestroyImmediate(hand.gameObject);game.OpenCash();game.AddChange(2000);game.AddChange(500);game.AddChange(200);game.AddChange(100);return "cash";
     }
 }

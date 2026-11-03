@@ -33,7 +33,7 @@ public sealed class ProductSlot : MonoBehaviour
     public event System.Action<ShopProduct> ProductPlaced;
     public void NotifyProductPlaced(ShopProduct product) => ProductPlaced?.Invoke(product);
     public ShopProduct Occupant => occupant;
-    public bool AcceptsType(ShopProduct product) => product != null && (IsStockShelf || string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId);
+    public bool AcceptsType(ShopProduct product) => product != null && (IsStockShelf || string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId || allowedProductId=="coffee"&&ShopCatalog.IsCoffee(ShopCatalog.Index(product.ProductId)));
     public bool CanAccept(ShopProduct product) => isActiveAndEnabled && AcceptsType(product) && (occupant == null || occupant == product);
 
     public bool CanAcceptStock(string id) => isActiveAndEnabled && occupant==null && IsStockShelf && ShopCatalog.Index(id)>=0;

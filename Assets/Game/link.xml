@@ -2,5 +2,7 @@
   <!-- Runtime CreatePrimitive(Capsule) needs this even when no scene uses it. -->
   <assembly fullname="UnityEngine.PhysicsModule">
     <type fullname="UnityEngine.CapsuleCollider" preserve="all" />
+    <!-- Exterior shrubs and character detail create spheres at runtime. -->
+    <type fullname="UnityEngine.SphereCollider" preserve="all" />
   </assembly>
 </linker>

@@ -12,9 +12,9 @@ public static class FreeShelfPreview
         var target=camera.targetTexture;var active=RenderTexture.active;var rt=new RenderTexture(1500,1000,24);var image=new Texture2D(1500,1000,TextureFormat.RGB24,false);game.ManualTick=true;
         try
         {
-            game.ResetDemo();game.ClosePanel();ShopCheckFixtures.Fund(game,100000);game.TryExpand();game.BuyExtraShelf();
+            ShopCheckFixtures.Reset(game);game.ClosePanel();ShopCheckFixtures.Fund(game,100000);game.TryExpand();game.BuyExtraShelf();
             foreach(var item in Object.FindObjectsByType<ShopProduct>())item.RemoveFromWorld();
-            foreach(int type in new[]{0,4,5,6,7,8})game.OrderSupply(type,4);game.Tick(8.1f);
+            foreach(int type in new[]{0,4,5,6,7,8})game.OrderSupply(type,4);ShopCheckFixtures.Tick(game,8.1f);
             for(int row=0;row<5;row++)for(int col=0;col<6;col++)
             {
                 int type=new[]{0,8,7,4,6,5}[col];if(row>2)continue;
@@ -35,7 +35,7 @@ public static class FreeShelfPreview
             camera.transform.position=staff.TransformPoint(new Vector3(0,1.4f,-2.0f));camera.transform.LookAt(staff.TransformPoint(new Vector3(0,1.28f,0)));camera.fieldOfView=65;
             Save(camera,rt,image,"mixed-staff-shelf");return new {publicShelf="Builds/KeyboardAlcoholRelease/mixed-public-shelf.png",staffShelf="Builds/KeyboardAlcoholRelease/mixed-staff-shelf.png"};
         }
-        finally{camera.targetTexture=target;RenderTexture.active=active;camera.transform.SetPositionAndRotation(position,rotation);camera.fieldOfView=fov;Object.Destroy(rt);Object.Destroy(image);game.ResetDemo();game.ManualTick=false;}
+        finally{camera.targetTexture=target;RenderTexture.active=active;camera.transform.SetPositionAndRotation(position,rotation);camera.fieldOfView=fov;Object.Destroy(rt);Object.Destroy(image);ShopCheckFixtures.Reset(game);game.ManualTick=false;}
     }
     static void Save(Camera camera,RenderTexture rt,Texture2D image,string name){camera.Render();RenderTexture.active=rt;image.ReadPixels(new Rect(0,0,1500,1000),0,0);image.Apply();File.WriteAllBytes("Builds/KeyboardAlcoholRelease/"+name+".png",image.EncodeToPNG());}
 }

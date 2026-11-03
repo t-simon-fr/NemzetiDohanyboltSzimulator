@@ -4,6 +4,9 @@ public sealed class MvpShopHud : MonoBehaviour
 {
     [SerializeField] private MvpShopController shop;
     private GUIStyle title,text,small,button;
+    private Vector2 summaryScroll;
+    public static Rect SummaryDetailsRect=>new Rect(240,120,800,354);
+    public static Rect SummaryActionsRect=>new Rect(240,486,800,158);
     public void Configure(MvpShopController controller)=>shop=controller;
     private void OnGUI()
     {
@@ -22,13 +25,16 @@ public sealed class MvpShopHud : MonoBehaviour
         {
             if(shop.Devices!=null&&shop.Devices.Focused)
             {
+                if(shop.CardPayment){CardTerminal();return;}
                 if(shop.Devices.FocusKind==ShopDeviceKind.Monitor||shop.Devices.FocusKind==ShopDeviceKind.Coins)return;
                 Panel(new Rect(250,612,780,94));GUILayout.BeginArea(new Rect(266,622,748,78));
                 GUILayout.Label("Enter: fizetés • Backspace: utolsó darab vissza • Del: törlés • Esc: kilépés",small);
                 GUILayout.Label(shop.Message,small);GUILayout.EndArea();return;
             }
             if(shop.Modal==ShopModal.None){Game();return;}
-            Panel(new Rect(208,48,864,624));GUILayout.BeginArea(new Rect(240,72,800,572));
+            Panel(new Rect(208,48,864,624));
+            if(shop.Modal==ShopModal.Summary){Summary();return;}
+            GUILayout.BeginArea(new Rect(240,72,800,572));
             switch(shop.Modal)
             {
                 case ShopModal.Welcome:Welcome();break;
@@ -44,17 +50,18 @@ public sealed class MvpShopHud : MonoBehaviour
     private bool Button(string s)=>GUILayout.Button(s,button,GUILayout.Height(40));
     private void Game()
     {
-        Panel(new Rect(12,12,295,134));GUILayout.BeginArea(new Rect(26,20,268,118));
+        Panel(new Rect(12,12,295,156));GUILayout.BeginArea(new Rect(26,20,268,140));
         Label(shop.Day+". nap • "+(shop.Phase==ShopPhase.Preparing?"Felkészülés":shop.Phase==ShopPhase.Open?"Nyitva":"Zárunk"),true);
         Label("Kassza: "+ShopCatalog.Money(shop.Ledger.Cash));
+        GUILayout.Label("Bank: "+ShopCatalog.Money(shop.Ledger.BankBalance),small);
         GUILayout.Label("Eladások: "+shop.Ledger.Sales+" • Sorban: "+shop.QueueCount+" • Érkezett: "+shop.Spawned+"/"+shop.TotalVisitors,small);
         GUILayout.Label(shop.Security!=null&&shop.Security.Locked?"BEJÁRAT RETESZELVE • E a vészgombon":"B Számítógép • H Súgó • O Nyitás/zárás",small);GUILayout.EndArea();
         if(shop.ActiveCustomer!=null)
         {
             var c=shop.ActiveCustomer;Panel(new Rect(844,12,424,216));GUILayout.BeginArea(new Rect(860,24,392,190));
-            Label(ShopPeople.Names[c.Person]+" • "+ShopCatalog.Names[c.Product],true);
-            GUILayout.Label("Ár: "+ShopCatalog.Money(ShopCatalog.Prices[c.Product]),small);
-            Label(shop.Dialogue);
+            Label(ShopPeople.Names[c.Person]+" • "+c.OrderDescription,true);
+            GUILayout.Label("Ár: "+ShopCatalog.Money(c.TotalPrice),small);
+            Label(shop.Stage==ServiceStage.Order?"Még szükséges: "+string.Join(", ",System.Array.ConvertAll(shop.MissingOrderTypes,t=>ShopCatalog.ShortNames[t])):shop.Dialogue);
             GUILayout.Label(shop.Stage==ServiceStage.Order?"A kért árut a kék átadóhelyre tedd.":shop.Stage==ServiceStage.Payment?"E a kasszánál vagy F: visszajáró kiadása.":"A vásárló elköszön.",small);GUILayout.EndArea();
         }
         if(!string.IsNullOrEmpty(shop.Message))
@@ -85,7 +92,8 @@ public sealed class MvpShopHud : MonoBehaviour
     }
     private void Summary()
     {
-        Label(shop.Day+". nap • Zárás",true);
+        GUILayout.BeginArea(new Rect(240,72,800,42));Label(shop.Day+". nap • Zárás",true);GUILayout.EndArea();
+        GUILayout.BeginArea(SummaryDetailsRect);summaryScroll=GUILayout.BeginScrollView(summaryScroll);
         Label("Kiszolgált vásárlók: "+shop.Ledger.Sales+" / "+shop.Spawned+" • Elküldve: "+shop.Missed);
         GUILayout.Space(10);Label("Árbevétel: "+ShopCatalog.Money(shop.Ledger.Revenue));
         Label("Lopásból eredő készletveszteség: "+ShopCatalog.Money(shop.Ledger.StockLoss)+" • Megállítva: "+shop.CaughtToday);
@@ -94,10 +102,23 @@ public sealed class MvpShopHud : MonoBehaviour
         Label("Nyereség: "+ShopCatalog.Money(shop.Ledger.Profit),true);
         Label("Utánrendelés: "+ShopCatalog.Money(shop.Ledger.Purchases)+" • Beruházás: "+ShopCatalog.Money(shop.Ledger.Improvements));
         Label("Zárókassza: "+ShopCatalog.Money(shop.Drawer.Total),true);
+        Label("Bankszámla: "+ShopCatalog.Money(shop.Ledger.BankBalance)+" • Kártyás bevétel: "+ShopCatalog.Money(shop.Ledger.CardRevenue));
         if(shop.Ledger.Cash<0)Label("Ki nem fizetett működési költség: "+ShopCatalog.Money(-shop.Ledger.Cash)+". A folytatáshoz indíts új játékot.");GUILayout.Space(12);
         for(int i=0;i<shop.AvailableProducts;i++)GUILayout.Label(ShopCatalog.Names[i]+": "+shop.StockCount(i)+" a boltban, "+shop.WarehouseCount(i)+" a dobozban",small);
         GUILayout.Label("A készlet, a pénzek és a bővítés a futó játék következő napjára megmaradnak.",small);
-        GUILayout.FlexibleSpace();if(shop.Ledger.Cash>=0&&Button("Következő nap"))shop.NextDay();if(Button("Új játék"))shop.ResetDemo();if(Button("Kilépés"))Quit();
+        GUILayout.EndScrollView();GUILayout.EndArea();
+        GUILayout.BeginArea(SummaryActionsRect);
+        if(shop.Ledger.Cash>=0){if(Button("Következő nap • Enter"))shop.NextDay();}else GUILayout.Label("Elfogyott a pénz. Az Új játék gombbal újrakezdhetsz.",small);
+        if(Button("Új játék • R"))shop.ResetDemo();
+        if(Button("Kilépés"))Quit();GUILayout.EndArea();
+    }
+    private void CardTerminal()
+    {
+        Panel(new Rect(340,190,600,330));GUILayout.BeginArea(new Rect(365,210,550,290));
+        Label("BANKKÁRTYÁS FIZETÉS",true);Label("Fizetendő: "+ShopCatalog.Money(shop.ActiveCustomer.TotalPrice));
+        Label("A vásárló a terminálhoz érintette a kártyáját. Hagyd jóvá az összeget.");
+        GUILayout.Space(12);if(Button("Fizetés jóváhagyása • Enter"))shop.ConfirmCardPayment();
+        if(Button("Vissza • Esc"))shop.ClosePanel();GUILayout.EndArea();
     }
     private static void Quit()
     {

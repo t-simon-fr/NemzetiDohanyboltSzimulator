@@ -32,7 +32,7 @@ public static class PanicButtonChecks
         game.ManualTick=true;
         try
         {
-            game.ResetDemo();game.ClosePanel();
+            ShopCheckFixtures.Reset(game);game.ClosePanel();
             Check(security!=null&&!security.Owned&&!security.Locked,"New game starts without security upgrade");
             Check(!security.Button.gameObject.activeSelf&&!security.EntranceCollider.gameObject.activeInHierarchy,"Unpurchased fixtures do not appear or block the door");
             Check(!security.Toggle()&&!security.Locked,"Unpurchased lock cannot be activated through the API");
@@ -40,9 +40,9 @@ public static class PanicButtonChecks
             Check(!game.BuyPanicButton()&&game.Ledger.Cash==opening&&game.Drawer.Total==opening&&game.Ledger.Improvements==0,"Insufficient funds never charge either balance");
             Fund(game);game.OpenShop();
             Check(!game.BuyPanicButton()&&game.Ledger.Cash==opening+2000,"Purchase rejected during open hours");
-            game.RequestClose();game.Tick(.1f);Check(game.Phase==ShopPhase.Summary,"Empty shop closes normally");
+            game.RequestClose();ShopCheckFixtures.Tick(game,.1f);Check(game.Phase==ShopPhase.Summary,"Empty shop closes normally");
             Check(!game.BuyPanicButton(),"Purchase rejected in day summary");
-            game.ResetDemo();game.ClosePanel();Fund(game);
+            ShopCheckFixtures.Reset(game);game.ClosePanel();Fund(game);
             game.Devices.Focus(ShopDeviceKind.Monitor);game.Devices.OpenApp(ShopComputerApp.Furnishing);
             Check(Object.FindObjectsByType<TextMesh>().Any(t=>t.text=="VÉSZGOMB • "+ShopCatalog.Money(ShopSecurity.PurchasePrice)),"Upgrade has a visible price");
             int before=game.Ledger.Cash;ClickPurchase(game);
@@ -70,7 +70,7 @@ public static class PanicButtonChecks
             Check(security.ConstrainMovement(remoteA,remoteB)==remoteB,"Lock does not freeze unrelated movement");
             Physics.SyncTransforms();
             Check(Physics.RaycastAll(inside+Vector3.up,-entrance.forward,2).Any(h=>h.collider==security.EntranceCollider),"Doorway has real blocking geometry");
-            game.Tick(60);Check(game.Spawned==0&&game.Phase==ShopPhase.Open,"Locked entrance prevents new arrivals while business continues");
+            ShopCheckFixtures.Tick(game,60);Check(game.Spawned==0&&game.Phase==ShopPhase.Open,"Locked entrance prevents new arrivals while business continues");
             var leavingObject=new GameObject("Security check departing customer");actors.Add(leavingObject);
             var leaving=leavingObject.AddComponent<MvpCustomerActor>();leaving.Initialize(0,0,0);leaving.transform.position=game.Layout.EntryInside;leaving.Leave();
             for(int i=0;i<15;i++)leaving.Advance(1,Vector3.zero);
@@ -86,7 +86,7 @@ public static class PanicButtonChecks
             var product=Object.FindObjectsByType<ShopProduct>().First(p=>!p.IsHeld);
             Check(player.TryHold(product),"Hold product before operating button");station.Use(player);
             Check(security.Locked&&player.HeldProduct==product,"Panic button works while holding stock without consuming it");player.CancelHeld();
-            Fund(game);Check(game.OrderSupply(0,1),"Order a carton for held-item interaction check");game.Tick(8.1f);
+            Fund(game);Check(game.OrderSupply(0,1),"Order a carton for held-item interaction check");ShopCheckFixtures.Tick(game,8.1f);
             var carton=game.Warehouse.Carton(0);Check(player.TryHoldCarton(carton),"Hold carton before operating button");station.Use(player);
             Check(!security.Locked&&player.HeldCarton==carton&&carton.Quantity==1,"Panic button works while holding a filled carton");player.ReturnCarton();station.Use(player);
             var relative=game.Counter.transform.InverseTransformPoint(security.Button.position);
@@ -95,16 +95,16 @@ public static class PanicButtonChecks
             game.Counter.transform.SetPositionAndRotation(counterPosition,counterRotation);
             game.RequestClose();Check(!security.Locked&&!security.EntranceCollider.gameObject.activeInHierarchy,"Closing automatically releases entrance");
             Check(!security.Toggle(),"Lock cannot trap customers during closing");
-            game.Tick(.1f);game.NextDay();
+            ShopCheckFixtures.Tick(game,.1f);game.NextDay();
             Check(game.Day==2&&security.Owned&&!security.Locked&&security.Button.gameObject.activeInHierarchy,"Next day retains upgrade with entrance open");
-            game.ClosePanel();game.OpenShop();game.Tick(.01f);
+            game.ClosePanel();game.OpenShop();ShopCheckFixtures.Tick(game,.01f);
             var outsideCustomer=Object.FindObjectsByType<MvpCustomerActor>().Single(a=>!actors.Contains(a.gameObject));
-            Check(!outsideCustomer.Entered,"Real queued customer starts outside entrance");station.Use(player);game.Tick(200);
+            Check(!outsideCustomer.Entered,"Real queued customer starts outside entrance");station.Use(player);ShopCheckFixtures.Tick(game,200);
             Check(!outsideCustomer.Entered&&outsideCustomer.WaitTime==0,"A queued customer does not lose patience behind locked entrance");
             game.RequestClose();
-            for(int i=0;i<100&&game.Phase!=ShopPhase.Summary;i++){game.Tick(1);if(game.ActiveCustomer!=null)game.SkipCurrent();}
+            for(int i=0;i<100&&game.Phase!=ShopPhase.Summary;i++){ShopCheckFixtures.Tick(game,1);if(game.ActiveCustomer!=null)game.SkipCurrent();}
             Check(game.Phase==ShopPhase.Summary&&!security.Locked,"Closing releases an actual waiting customer and reaches summary");
-            game.ResetDemo();Check(!security.Owned&&!security.Locked&&!security.Button.gameObject.activeSelf,"New game removes purchased upgrade");
+            ShopCheckFixtures.Reset(game);Check(!security.Owned&&!security.Locked&&!security.Button.gameObject.activeSelf,"New game removes purchased upgrade");
             return new {passed,failed=0};
         }
         finally
@@ -112,7 +112,7 @@ public static class PanicButtonChecks
             foreach(var actor in actors)Object.Destroy(actor);
             game.Counter.transform.SetPositionAndRotation(counterPosition,counterRotation);
             game.Devices.Release();player.CancelHeld();camera.transform.localPosition=cameraPosition;camera.transform.localRotation=cameraRotation;
-            game.ResetDemo();movement.enabled=movementEnabled;game.ManualTick=false;
+            ShopCheckFixtures.Reset(game);movement.enabled=movementEnabled;game.ManualTick=false;
         }
     }
     public static object Capture(string mode)
@@ -122,7 +122,7 @@ public static class PanicButtonChecks
         game.ManualTick=true;
         try
         {
-            game.ResetDemo();game.ClosePanel();Fund(game);game.BuyPanicButton();camera.targetTexture=rt;
+            ShopCheckFixtures.Reset(game);game.ClosePanel();Fund(game);game.BuyPanicButton();camera.targetTexture=rt;
             if(mode=="shop"){game.Devices.Focus(ShopDeviceKind.Monitor);game.Devices.OpenApp(ShopComputerApp.Furnishing);}
             else if(mode=="button")
             {
@@ -140,7 +140,7 @@ public static class PanicButtonChecks
         {
             game.Devices.Release();camera.targetTexture=previous;RenderTexture.active=active;
             camera.transform.localPosition=originalPosition;camera.transform.localRotation=originalRotation;
-            Object.Destroy(rt);Object.Destroy(image);game.ResetDemo();game.ManualTick=false;
+            Object.Destroy(rt);Object.Destroy(image);ShopCheckFixtures.Reset(game);game.ManualTick=false;
         }
     }
 }

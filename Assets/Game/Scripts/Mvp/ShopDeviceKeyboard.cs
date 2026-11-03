@@ -63,6 +63,11 @@ public sealed partial class ShopDevices
     {
         if(!Focused||shop==null)return false;
         bool enter=key==DeviceKey.Enter||key==DeviceKey.NumpadEnter;
+        if(FocusKind==ShopDeviceKind.Till&&shop.CardPayment)
+        {
+            if(enter||key==DeviceKey.Space)shop.ConfirmCardPayment();
+            return true;
+        }
         if(FocusKind==ShopDeviceKind.Till)
         {
             if(enter){shop.SubmitChange(shop.ChangeSelected);return true;}

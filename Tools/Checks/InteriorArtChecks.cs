@@ -9,7 +9,7 @@ public static class InteriorArtChecks
     {
         var game=MvpShopController.Instance;if(!Application.isPlaying||game==null)throw new InvalidOperationException("Enter Play mode first.");
         int passed=0;Action<bool,string> check=(valid,label)=>{if(!valid)throw new InvalidOperationException(label);passed++;};
-        game.ManualTick=true;game.ResetDemo();game.ClosePanel();
+        game.ManualTick=true;ShopCheckFixtures.Reset(game);game.ClosePanel();
         try
         {
             foreach(string name in new[]{"Interior Art","Interior Counter Detail","Interior Countertop Props","Interior Rack Detail"})
@@ -43,7 +43,7 @@ public static class InteriorArtChecks
             finally{counter.SetPositionAndRotation(position,rotation);}
             return new{passed,failed=0};
         }
-        finally{game.ResetDemo();game.ManualTick=false;}
+        finally{ShopCheckFixtures.Reset(game);game.ManualTick=false;}
     }
     public static object Capture(string revision)
     {
@@ -54,7 +54,7 @@ public static class InteriorArtChecks
         game.ManualTick=true;
         try
         {
-            game.ResetDemo();game.ClosePanel();
+            ShopCheckFixtures.Reset(game);game.ClosePanel();
             var counter=game.Counter.transform;var rack=GameObject.Find("Cigarette rack").transform;
             camera.transform.position=counter.TransformPoint(new Vector3(-1.6f,1.2f,-2.55f));
             camera.transform.LookAt(rack.TransformPoint(new Vector3(.25f,1.05f,0)));camera.fieldOfView=58;
@@ -68,7 +68,7 @@ public static class InteriorArtChecks
         {
             game.Devices.Release();camera.targetTexture=previousTarget;RenderTexture.active=previousActive;
             camera.transform.SetPositionAndRotation(position,rotation);camera.fieldOfView=fov;
-            UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(image);game.ResetDemo();game.ManualTick=false;
+            UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(image);ShopCheckFixtures.Reset(game);game.ManualTick=false;
         }
     }
     static void Save(Camera camera,RenderTexture rt,Texture2D image,string name)

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ShopToolKind { Bat, Mop }
+public enum ShopToolKind { Bat, Mop, CoffeeRefill }
 public static class ShopLoosePhysics
 {
     public static void Freeze(GameObject item)
@@ -17,7 +17,7 @@ public sealed class ShopHandTool : MonoBehaviour
 {
     public ShopToolKind Kind { get; private set; }
     public bool IsHeld { get; private set; }
-    public string DisplayName=>Kind==ShopToolKind.Bat?"Baseballütő":"Felmosó";
+    public string DisplayName=>Kind==ShopToolKind.CoffeeRefill?"Kávéalapanyag • E a gépen: feltöltés":Kind==ShopToolKind.Bat?"Baseballütő":"Felmosó";
     private Transform originalParent;
     private Vector3 originalPosition;
     private Quaternion originalRotation;
@@ -52,7 +52,7 @@ public sealed class ShopFeatureTarget : MonoBehaviour
 {
     public ShopFeatureKind Kind;
     public float Cleaning { get; private set; }
-    public string Prompt=>Kind==ShopFeatureKind.CoffeeMachine?"E – Kávéfőző / elkészült kávé felvétele":"Felmosóval tartsd nyomva a bal egérgombot • "+Mathf.RoundToInt(Cleaning/1.5f*100)+"%";
+    public string Prompt=>Kind==ShopFeatureKind.CoffeeMachine?"1: rövid • 2: hosszú • 3: latte • E: főzés / felvétel / feltöltés":"Felmosóval tartsd nyomva a bal egérgombot • "+Mathf.RoundToInt(Cleaning/1.5f*100)+"%";
     public void Scrub(float dt)
     {
         if(Kind!=ShopFeatureKind.Spill)return;Cleaning+=Mathf.Clamp(dt,0,.1f);

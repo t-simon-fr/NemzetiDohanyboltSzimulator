@@ -6,14 +6,16 @@ public static class ShopCatalog
     // Packaged products that use shelves and warehouse docks. Coffee is prepared separately.
     public const int Count = 9;
     public const int Coffee = Count;
+    public const int LongCoffee=Count+1,Latte=Count+2;
+    public static bool IsCoffee(int type)=>type>=Coffee&&type<=Latte;
     public const int CigaretteCount = 4;
     public const int MaxOrderQuantity = 12;
     public static bool IsCigarette(int type) => type >= 0 && type < CigaretteCount;
-    public static readonly string[] Ids = { "cig_red", "cig_blue", "cig_gold", "cig_davidon", "water", "cola", "energy", "kevert", "beer", "coffee" };
-    public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy", "Kevert", "Kőfejtői", "Kávé" };
-    public static readonly string[] Names = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua 500 ml", "Loca Cola 330 ml", "Hamster Energy 500 ml", "Kevert 50 ml", "Kőfejtői 500 ml", "Presszókávé" };
-    public static readonly int[] Prices = { 2200, 2300, 2400, 2600, 350, 450, 650, 450, 550, 650 };
-    public static readonly int[] Costs = { 1500, 1600, 1700, 1850, 150, 180, 300, 220, 280, 200 };
+    public static readonly string[] Ids = { "cig_red", "cig_blue", "cig_gold", "cig_davidon", "water", "cola", "energy", "kevert", "beer", "coffee", "coffee_long", "latte" };
+    public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy", "Kevert", "Kőfejtői", "Rövid kávé", "Hosszú kávé", "Latte" };
+    public static readonly string[] Names = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua 500 ml", "Loca Cola 330 ml", "Hamster Energy 500 ml", "Kevert 50 ml", "Kőfejtői 500 ml", "Rövid kávé", "Hosszú kávé", "Latte" };
+    public static readonly int[] Prices = { 2200, 2300, 2400, 2600, 350, 450, 650, 450, 550, 650, 750, 1100 };
+    public static readonly int[] Costs = { 1500, 1600, 1700, 1850, 150, 180, 300, 220, 280, 200, 200, 350 };
     public static readonly int[] Denominations = { 20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5 };
     public static readonly int[] VisitProducts = { 0, 1, 2, 3, 1, 0, 2, 3 };
     public static int Index(string id) => Array.IndexOf(Ids, id);
@@ -22,6 +24,9 @@ public static class ShopCatalog
 
 public sealed class ShopLedger
 {
+    public int BankBalance {get;private set;}
+    public int CardRevenue {get;private set;}
+    public int AvailableFunds=>Cash+BankBalance;
     public int OpeningCash { get; private set; }
     public int Cash { get; private set; }
     public int Revenue { get; private set; }
@@ -34,17 +39,23 @@ public sealed class ShopLedger
     public int Sales { get; private set; }
     public bool Closed { get; private set; }
     public int Profit => Revenue - CostOfGoods - OperatingCosts - StockLoss;
-    public ShopLedger(int openingCash) { OpeningCash = openingCash; Cash = openingCash; }
+    public ShopLedger(int openingCash,int bankBalance=0) { OpeningCash = openingCash; Cash = openingCash; BankBalance=Math.Max(0,bankBalance); }
+    private void SpendFunds(int amount){int bank=Math.Min(BankBalance,amount);BankBalance-=bank;Cash-=amount-bank;}
+    public bool TrySellCard(int price,int cost)
+    {
+        if(Closed||price<=0||cost<0)return false;
+        BankBalance+=price;CardRevenue+=price;Revenue+=price;CostOfGoods+=cost;Sales++;return true;
+    }
     public bool TryBuy(int unitCost, int quantity)
     {
-        if (Closed || unitCost <= 0 || quantity <= 0 || quantity > 100 || (long)unitCost * quantity > Cash) return false;
+        if (Closed || unitCost <= 0 || quantity <= 0 || quantity > 100 || (long)unitCost * quantity > AvailableFunds) return false;
         int cost = unitCost * quantity;
-        Cash -= cost; Purchases += cost; return true;
+        SpendFunds(cost); Purchases += cost; return true;
     }
     public bool TryImprove(int amount)
     {
-        if(Closed || amount<=0 || amount>Cash)return false;
-        Cash-=amount;Improvements+=amount;return true;
+        if(Closed || amount<=0 || amount>AvailableFunds)return false;
+        SpendFunds(amount);Improvements+=amount;return true;
     }
     public bool TrySell(int price, int cost, int tender, int change)
     {
@@ -54,7 +65,7 @@ public sealed class ShopLedger
     public void Close(int operatingCost)
     {
         if (Closed) return;
-        OperatingCosts = Math.Max(0, operatingCost); Cash -= OperatingCosts; Closed = true;
+        OperatingCosts = Math.Max(0, operatingCost); SpendFunds(OperatingCosts); Closed = true;
     }
 }
 
@@ -65,7 +76,7 @@ public static class ShopInputGate
 
 public static class ShopPeople
 {
-    public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy", "Kevert", "Kőfejtői", "Kávé" };
+    public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy", "Kevert", "Kőfejtői", "Rövid kávé", "Hosszú kávé", "Latte" };
     public static readonly string[] Names = { "Józsi", "Marika", "Pisti", "Laci" };
     public static readonly Color[] Colors = { new Color(.22f,.35f,.29f), new Color(.60f,.23f,.35f), new Color(.18f,.33f,.65f), new Color(.63f,.42f,.13f) };
     public static readonly string[] Greetings = { "A szokásosat kérem. Most először vagyok itt, de nekem ez a szokásos.", "Csak egy percre ugrottam be. A történet hosszabb lesz.", "Sietek. Csak azt nem tudom még, hová.", "Munkába viszem. A munkát sajnos itt nem árulják." };

@@ -15,7 +15,13 @@ public sealed partial class ShopActivities
         float w=rect.width,h=rect.height;
         System.Action<string,string,Rect,System.Action,bool> add=(id,text,local,action,enabled)=>targets.Add(new ShopKeyboardTarget(id,text,new Rect(rect.x+local.x,rect.y+local.y,local.width,local.height),action,enabled));
         var app=shop.Devices.ComputerApp;
-        if(app==ShopComputerApp.Coffee&&CoffeeOwned)add("Coffee:Order","Alapanyag rendelése",new Rect(16,Mathf.Min(170,h-100),w-32,45),()=>OrderCoffeeSupplies(),true);
+        if(app==ShopComputerApp.Coffee&&CoffeeOwned)add("Coffee:Order","Alapanyag rendelése",new Rect(12,105,(w-30)/2,32),()=>OrderCoffeeSupplies(),true);
+        if(app==ShopComputerApp.Coffee&&CoffeeOwned)
+        {
+            add("Coffee:Milk","Tej rendelése",new Rect(w/2+3,105,(w-30)/2,32),()=>OrderMilkSupplies(),true);
+            for(int i=0;i<3;i++){int type=ShopCatalog.Coffee+i;add("Coffee:Recipe:"+type,ShopCatalog.ShortNames[type],new Rect(12+i*(w-24)/3,h-88,(w-30)/3,32),()=>SelectRecipe(type),brewRemaining==0);}
+        }
+        if(app==ShopComputerApp.Furnishing){var upgrades=shop.GetComponent<ShopNextUpgrades>();if(upgrades!=null)add("Upgrade:Fridge","Hűtő",new Rect(10,h-28,w-20,26),()=>upgrades.BuyFridge(),!upgrades.FridgeOwned&&shop.Layout.Expanded);}
         if(app==ShopComputerApp.Cameras)
         {
             add("Camera:0","Bejárat",new Rect(10,8,w*.42f,35),()=>{selectedCamera=0;RenderCamera(0);},true);

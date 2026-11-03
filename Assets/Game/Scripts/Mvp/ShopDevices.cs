@@ -198,7 +198,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     public void RefreshMonitor()
     {
         if(shop==null||shop.Ledger==null||monitorText==null)return;
-        monitorText.text="Kassza: "+ShopCatalog.Money(shop.Ledger.Cash);
+        monitorText.text="Kassza: "+ShopCatalog.Money(shop.Ledger.Cash)+" • Bank: "+ShopCatalog.Money(shop.Ledger.BankBalance);
         shopStatusText.text=shop.Day+". műszak • "+(shop.Layout.Expanded?"Bővített bolt":"Kezdőbolt");
         orderQuantityText.text="Mennyiség: "+orderQuantity+" db";
         furnishingStatus.text=(shop.Layout.Expanded?"Önkiszolgáló rész: megnyitva":"Önkiszolgáló rész: zárva")+"\n"+(shop.Layout.ExtraShelfOwned?"Kiegészítő polc: megvásárolva":"Kiegészítő polc: nincs");
@@ -210,7 +210,7 @@ public sealed partial class ShopDevices : MonoBehaviour
             if(type>=shop.AvailableProducts)continue;
             int cost=ShopCatalog.Costs[type]*orderQuantity;
             orderPrices[type].text=orderQuantity+" db • "+ShopCatalog.Money(cost);
-            orderPrices[type].color=cost<=shop.Ledger.Cash?new Color(.55f,.93f,.81f):new Color(1f,.66f,.51f);
+            orderPrices[type].color=cost<=shop.Ledger.AvailableFunds?new Color(.55f,.93f,.81f):new Color(1f,.66f,.51f);
             stockLabels[type].text="Polc "+shop.StockCount(type)+" • Raktár "+shop.WarehouseCount(type)+" • Úton "+shop.PendingQuantity(type);
         }
         catalogHelp.gameObject.SetActive(shop.AvailableProducts==ShopCatalog.CigaretteCount);
@@ -318,7 +318,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         }
         else
         {
-            registerDrawer.SetOpen(true);
+            registerDrawer.SetOpen(!shop.CardPayment);
             view.transform.position=tillAssembly.TransformPoint(new Vector3(0,.90f,.90f));
             view.transform.LookAt(tillAssembly.TransformPoint(new Vector3(0,.13f,.25f)),tillAssembly.up);
         }
@@ -340,11 +340,12 @@ public sealed partial class ShopDevices : MonoBehaviour
             cashStacks[i].SetActive(shop.Drawer.Count(v)>shop.SelectedPieces(v));
         }
         cashText.text=shop.Stage==ServiceStage.Payment&&shop.ActiveCustomer!=null
-            ? "FIZETENDŐ "+ShopCatalog.Money(ShopCatalog.Prices[shop.ActiveCustomer.Product])+"\nKAPOTT "+ShopCatalog.Money(shop.ActiveCustomer.Tender)+"\nVISSZAJÁRÓ "+ShopCatalog.Money(shop.ActiveCustomer.Tender-ShopCatalog.Prices[shop.ActiveCustomer.Product])+"\nKIVÉVE "+ShopCatalog.Money(shop.ChangeSelected)
+            ? (shop.CardPayment?"BANKKÁRTYA\nFIZETENDŐ "+ShopCatalog.Money(shop.ActiveCustomer.TotalPrice):"FIZETENDŐ "+ShopCatalog.Money(shop.ActiveCustomer.TotalPrice)+"\nKAPOTT "+ShopCatalog.Money(shop.ActiveCustomer.Tender)+"\nVISSZAJÁRÓ "+ShopCatalog.Money(shop.ActiveCustomer.Tender-shop.ActiveCustomer.TotalPrice)+"\nKIVÉVE "+ShopCatalog.Money(shop.ChangeSelected))
             : "KASSZA\n"+ShopCatalog.Money(shop.Ledger.Cash);
         string selection=string.Join(",",ShopCatalog.Denominations.Select(shop.SelectedPieces));
         if(lastSelection!=selection){lastSelection=selection;RefreshTray();}
         PollDeviceKeyboard();
+        if(shop.CardPayment&&Focused&&FocusKind==ShopDeviceKind.Till)return;
         if(!Focused||!Application.isFocused||Mouse.current==null||!Mouse.current.leftButton.wasPressedThisFrame)return;
         if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame)return;
         Ray ray=view.ScreenPointToRay(Mouse.current.position.ReadValue());

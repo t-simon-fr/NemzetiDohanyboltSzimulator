@@ -160,3 +160,5 @@ A boltbővítés után **Kevert 50 ml** (450 Ft) és **Kőfejtői 500 ml** (550 
 **Bármely terméket bármely szabad bolti polchelyre tehetsz**, kézből és kartonból is. A kezdőpolc, az önkiszolgáló és az extra polc összesen 71 helye használható; a megfőzött kávé is letehető rájuk. A foglalt vagy fizikailag akadályozott helyekre továbbra sem pakolhatsz.
 
 A nyilvános polcon lévő cigarettát is leveszik a vásárlók. A pult mögött tárolt italt te add át a vevőnek. Az árcímkék követik a tartalmat; vegyes polcnál nézz a termékre az eladási árért. A raktári dobozok saját márkájuk áruját fogadják vissza. A korábbi márkakötött bolti elrendezés csak a kezdőkészlet ajánlott rendje.
+
+Az új kávéreceptek, hűtő, többtermékes kosár, bankkártya és naplezárás kezelése: [NextFeatureRelease](Docs/NextFeatureRelease.md).

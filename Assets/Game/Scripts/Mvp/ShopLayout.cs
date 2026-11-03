@@ -17,7 +17,7 @@ public sealed class ShopLayout : MonoBehaviour
     { starterWall=wall;extension=room;publicSlots=slots;publicTypes=types;SetExpanded(false); }
     public void SetExpanded(bool expanded)
     {
-        Expanded=expanded;starterWall.SetActive(!expanded);extension.SetActive(expanded);
+        Expanded=expanded;GetComponent<ShopNextUpgrades>()?.RefreshLayout();starterWall.SetActive(!expanded);extension.SetActive(expanded);
         // Existing scenes keep the second divider beside the starter partition.
         var sideWall=starterWall.transform.parent.Find("Staff side wall");
         if(sideWall!=null)sideWall.gameObject.SetActive(!expanded);
@@ -48,6 +48,7 @@ public sealed class ShopLayout : MonoBehaviour
         var roots=UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
         var found=new System.Collections.Generic.List<T>();foreach(var root in roots)found.AddRange(root.GetComponentsInChildren<T>(true));return found.ToArray();
     }
+    public void RegisterPublicSlots(ProductSlot[] slots){publicSlots=System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(publicSlots,slots));}
     public bool IsPublicProduct(int type)=>Expanded && type>=0 && type<ShopCatalog.Count && (type>=ShopCatalog.CigaretteCount || FindPublicStock(type)!=null);
     public ShopProduct FindPublicStock(int type)
     {

@@ -13,7 +13,7 @@ public static class KeyboardAlcoholChecks
         passed=0;var game=MvpShopController.Instance;var d=game.Devices;game.ManualTick=true;
         try
         {
-            game.ResetDemo();game.ClosePanel();ShopCheckFixtures.Fund(game,100000);d.Focus(ShopDeviceKind.Monitor);
+            ShopCheckFixtures.Reset(game);game.ClosePanel();ShopCheckFixtures.Fund(game,100000);d.Focus(ShopDeviceKind.Monitor);
             Check(!d.HandleDeviceKey(Key.Digit9)&&d.ComputerApp==ShopComputerApp.Desktop,"Unavailable desktop shortcut does nothing");
             Check(d.HandleDeviceKey(Key.Digit1)&&d.ComputerApp==ShopComputerApp.Orders,"Desktop digit opens orders");
             Check(d.KeyboardTargets().Count(t=>t.Id.StartsWith("Order:"))==4,"Locked alcohol is absent from keyboard targets");
@@ -53,7 +53,7 @@ public static class KeyboardAlcoholChecks
             Check(!offer.Selected[0]&&offer.Selected[1],"Coin undo follows most recent selection, including reselection");offer.Clear();Check(offer.Total==0&&!offer.Undo(),"Coin clear resets undo history");
             return new {passed,failed=0};
         }
-        finally{d.Release();game.ResetDemo();game.ManualTick=false;}
+        finally{d.Release();ShopCheckFixtures.Reset(game);game.ManualTick=false;}
     }
     public static object PaymentsAndAlcohol()
     {
@@ -61,8 +61,8 @@ public static class KeyboardAlcoholChecks
         game.ManualTick=true;var sold=new int[ShopCatalog.Names.Length];int cashSales=0,coinSales=0;
         try
         {
-            game.ResetDemo();game.ClosePanel();ShopCheckFixtures.Fund(game,150000);Check(game.TryExpand(),"Expand for full catalog shift");
-            for(int type=4;type<ShopCatalog.Count;type++)Check(game.OrderSupply(type,6),"Buy six units of drink "+type);game.Tick(8.1f);
+            ShopCheckFixtures.Reset(game);game.ClosePanel();ShopCheckFixtures.Fund(game,150000);Check(game.TryExpand(),"Expand for full catalog shift");
+            for(int type=4;type<ShopCatalog.Count;type++)Check(game.OrderSupply(type,6),"Buy six units of drink "+type);ShopCheckFixtures.Tick(game,8.1f);
             for(int type=4;type<ShopCatalog.Count;type++)for(int n=0;n<6;n++)
             {
                 Check(game.TryCreateSupply(type,out var item),"Withdraw actual delivered unit");
@@ -74,7 +74,7 @@ public static class KeyboardAlcoholChecks
                 game.OpenShop();
                 for(int tick=0;tick<22000&&game.Phase!=ShopPhase.Summary;tick++)
                 {
-                    game.Tick(.1f);var customer=game.ActiveCustomer;if(customer==null||game.Stage==ServiceStage.Thanks)continue;
+                    ShopCheckFixtures.Tick(game,.1f);var customer=game.ActiveCustomer;if(customer==null||game.Stage==ServiceStage.Thanks)continue;
                     if(game.Stage==ServiceStage.Order&&customer.Product<4)
                     {
                         var item=Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[customer.Product]&&!p.IsHeld);
@@ -113,6 +113,6 @@ public static class KeyboardAlcoholChecks
             Check(coinSales>0&&cashSales>0,"Both coin and banknote payments exercised with Enter");
             return new {passed,failed=0,kevertSales=sold[7],beerSales=sold[8],cashSales,coinSales};
         }
-        finally{d.Release();game.ResetDemo();game.ManualTick=false;Object.Destroy(hand.gameObject);}
+        finally{d.Release();ShopCheckFixtures.Reset(game);game.ManualTick=false;Object.Destroy(hand.gameObject);}
     }
 }

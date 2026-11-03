@@ -8,18 +8,18 @@ public static class FeatureReleasePreview
 {
     public static object Setup(string mode)
     {
-        var game=MvpShopController.Instance;game.ManualTick=true;game.ResetDemo();game.ClosePanel();
+        var game=MvpShopController.Instance;game.ManualTick=true;ShopCheckFixtures.Reset(game);game.ClosePanel();
         var movement=Object.FindAnyObjectByType<FirstPersonController>();movement.enabled=false;
         ShopCheckFixtures.Fund(game,80000);game.TryExpand();game.Activities.BuyCoffeeMachine();game.BuyPanicButton();game.BuyExtraShelf();
         for(int type=4;type<ShopCatalog.Count;type++)
         {
-            game.OrderSupply(type);game.Tick(8.1f);
+            game.OrderSupply(type);ShopCheckFixtures.Tick(game,8.1f);
             for(int unit=0;unit<3;unit++)
             {
                 game.TryCreateSupply(type,out var product);var slot=Object.FindObjectsByType<ProductSlot>().First(s=>s.PreferredProductId==ShopCatalog.Ids[type]&&s.CanAcceptStock(ShopCatalog.Ids[type]));product.AssignInitialSlot(slot);
             }
         }
-        game.Activities.OrderCoffeeSupplies();game.Tick(8.1f);game.Activities.BrewCoffee();game.Tick(3.6f);
+        game.Activities.OrderCoffeeSupplies();ShopCheckFixtures.Tick(game,8.1f);game.Activities.BrewCoffee();ShopCheckFixtures.Tick(game,3.6f);
         var camera=Camera.main;
         if(mode=="machine"){camera.transform.position=new Vector3(1.38f,1.60f,-.15f);camera.transform.LookAt(game.Activities.CoffeeOutput.transform.position+Vector3.up*.24f);}
         else if(mode=="store"){camera.transform.position=new Vector3(-1.7f,1.65f,.9f);camera.transform.LookAt(new Vector3(3.2f,1.2f,-1.5f));}
@@ -33,7 +33,7 @@ public static class FeatureReleasePreview
             var hand=new GameObject("Preview service hand").transform;hand.position=Vector3.one*1000;game.OpenShop();
             for(int tick=0;tick<3000;tick++)
             {
-                game.Tick(.1f);var active=game.ActiveCustomer;if(active==null||game.Stage==ServiceStage.Thanks)continue;
+                ShopCheckFixtures.Tick(game,.1f);var active=game.ActiveCustomer;if(active==null||game.Stage==ServiceStage.Thanks)continue;
                 if(game.Stage==ServiceStage.Order&&active.Product<4)
                 {var product=Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[active.Product]&&!p.IsHeld);product.PickUp(hand);Physics.SyncTransforms();product.TryPlace(game.DeliverySlot);}
                 if(game.Stage!=ServiceStage.Payment)continue;
@@ -68,6 +68,6 @@ public static class FeatureReleasePreview
     {
         var game=MvpShopController.Instance;game.Devices.Release();Object.FindAnyObjectByType<PlayerInteractor>().CancelHeld();
         Camera.main.transform.localPosition=new Vector3(0,1.62f,0);Camera.main.transform.localRotation=Quaternion.identity;
-        game.ResetDemo();game.ManualTick=false;Object.FindAnyObjectByType<FirstPersonController>().enabled=true;return true;
+        ShopCheckFixtures.Reset(game);game.ManualTick=false;Object.FindAnyObjectByType<FirstPersonController>().enabled=true;return true;
     }
 }

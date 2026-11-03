@@ -1,6 +1,14 @@
 using UnityEngine;
 public static class ShopCheckFixtures
 {
+    public static void Tick(MvpShopController game,float dt)
+    {
+        game.Tick(dt);
+        if(game.Activities==null||!game.Activities.CoffeeOwned||game.Activities.ReadyCoffee==0)return;
+        var player=Object.FindAnyObjectByType<PlayerInteractor>();if(player.HasHeldItem)return;
+        foreach(var package in Object.FindObjectsByType<ShopIngredientPackage>())if(package.Coffee>0&&player.TryHoldTool(package.GetComponent<ShopHandTool>()))game.Activities.UseCoffeeMachine();
+    }
+    public static void Reset(MvpShopController game){game.ResetDemo();game.SingleProductVisits=true;}
     public static void Fund(MvpShopController game,int amount)
     {
         if(amount<=0)return;

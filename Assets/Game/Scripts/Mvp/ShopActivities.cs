@@ -70,7 +70,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         Shape(coffeeRoot,"Coffee bean hopper",new Vector3(0,1.37f,.05f),new Vector3(.22f,.07f,.22f),coffee,PrimitiveType.Cylinder);
         coffeeLabel=ProductVisuals.Text(coffeeRoot,"Coffee machine screen","",new Vector3(0,1.28f,-.144f),Quaternion.identity,.026f,Color.white);
         var target=coffeeRoot.gameObject.AddComponent<ShopFeatureTarget>();target.Kind=ShopFeatureKind.CoffeeMachine;
-        CoffeeOutput=new GameObject("Coffee output slot").AddComponent<ProductSlot>();CoffeeOutput.transform.SetParent(coffeeRoot,false);CoffeeOutput.transform.localPosition=new Vector3(0,.86f,-.16f);CoffeeOutput.Configure(new Vector3(.2f,.23f,.2f));CoffeeOutput.RestrictTo("coffee");
+        CoffeeOutput=new GameObject("Coffee output slot").AddComponent<ProductSlot>();CoffeeOutput.transform.SetParent(coffeeRoot,false);CoffeeOutput.transform.localPosition=new Vector3(0,.86f,-.16f);CoffeeOutput.Configure(new Vector3(.2f,.23f,.2f));CoffeeOutput.RestrictTo("coffee");CoffeeOutput.Configure(new Vector3(.2f,.32f,.2f));
         ProductVisuals.Text(coffeeRoot,"Coffee station sign","TRAFIK PRESSZÓ",new Vector3(0,.62f,-.281f),Quaternion.identity,.038f,Color.white);
     }
     private void BuildTools()
@@ -98,22 +98,24 @@ public sealed partial class ShopActivities : MonoBehaviour
     {
         if(CoffeeOwned||shop.Phase!=ShopPhase.Preparing){shop.Notify("Kávégépet nyitás előtt, egyszer vásárolhatsz.");return false;}
         if(!shop.Ledger.TryImprove(CoffeeMachinePrice)){shop.Notify("Nincs elég pénz a kávégépre.");return false;}
-        shop.Drawer.Spend(CoffeeMachinePrice);CoffeeOwned=true;coffeeRoot.gameObject.SetActive(true);shop.Notify("Kávégép felszerelve. A Kávé alkalmazásban rendelhetsz alapanyagot.");return true;
+        shop.SyncCashDrawer();CoffeeOwned=true;coffeeRoot.gameObject.SetActive(true);shop.Notify("Kávégép felszerelve. A Kávé alkalmazásban rendelhetsz alapanyagot.");return true;
     }
     public bool OrderCoffeeSupplies()
     {
         int quantity=10;
-        if(!CoffeeOwned||shop.Phase==ShopPhase.Summary||CoffeeSupplies+pendingCoffee+quantity>60){shop.Notify("Kávégép szükséges; legfeljebb 60 adag alapanyagot tárolhatsz.");return false;}
+        if(!CoffeeOwned||shop.Phase==ShopPhase.Summary||CoffeeSupplies+pendingCoffee+ReadyCoffee+quantity>60){shop.Notify("Kávégép szükséges; legfeljebb 60 adag alapanyagot tárolhatsz.");return false;}
         if(!shop.Ledger.TryBuy(ShopCatalog.Costs[ShopCatalog.Coffee],quantity)){shop.Notify("Nincs elég pénz a kávéalapanyagra.");return false;}
-        shop.Drawer.Spend(quantity*ShopCatalog.Costs[ShopCatalog.Coffee]);pendingCoffee+=quantity;coffeeDelivery=8;shop.Notify("Megrendelve 10 adag kávéalapanyag. Szállítás: 8 másodperc.");return true;
+        shop.SyncCashDrawer();pendingCoffee+=quantity;coffeeDelivery=8;shop.Notify("Megrendelve 10 adag kávéalapanyag. Szállítás: 8 másodperc.");return true;
     }
     public bool BrewCoffee()
     {
+        if(selectedRecipe==ShopCatalog.Latte&&MilkSupplies==0){shop.Notify("A lattéhoz tölts tejet a gépbe.");return false;}
         if(!CoffeeOwned||shop.Phase==ShopPhase.Summary||CoffeeSupplies==0||brewRemaining>0||CoffeeOutput.Occupant!=null){shop.Notify("Kávéfőzéshez szabad tálca és megérkezett alapanyag szükséges.");return false;}
-        CoffeeSupplies--;brewRemaining=3.5f;shop.Notify("Készül a kávé…");return true;
+        CoffeeSupplies--;if(selectedRecipe==ShopCatalog.Latte)MilkSupplies--;brewRemaining=3.5f;shop.Notify("Készül a kávé…");return true;
     }
     public void UseCoffeeMachine()
     {
+        if(RefillFromHand())return;
         if(CoffeeOutput.Occupant!=null){if(!player.TryHold(CoffeeOutput.Occupant))shop.Notify("Előbb tedd le a kezedben levő tárgyat.");}
         else BrewCoffee();
     }
@@ -123,14 +125,14 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     public void Tick(float dt)
     {
-        dt=Mathf.Max(0,dt);swingCooldown=Mathf.Max(0,swingCooldown-dt);
-        if(pendingCoffee>0){coffeeDelivery-=dt;if(coffeeDelivery<=0){CoffeeSupplies+=pendingCoffee;pendingCoffee=0;shop.Notify("Megérkezett a kávéalapanyag.");}}
+        TickMilk(Mathf.Max(0,dt));dt=Mathf.Max(0,dt);swingCooldown=Mathf.Max(0,swingCooldown-dt);
+        if(pendingCoffee>0){coffeeDelivery-=dt;if(coffeeDelivery<=0){SpawnIngredientPackage(pendingCoffee);pendingCoffee=0;shop.Notify("Megérkezett a kávéalapanyag.");}}
         if(brewRemaining>0)
         {
             brewRemaining=Mathf.Max(0,brewRemaining-dt);
-            if(brewRemaining==0){var cup=shop.CreateCoffee();if(!cup.AssignInitialSlot(CoffeeOutput)){cup.RemoveFromWorld();CoffeeSupplies++;shop.Notify("A főzőtálca foglalt, az alapanyag megmaradt.");}else shop.Notify("Elkészült a kávé. E a gépen: felvétel.");}
+            if(brewRemaining==0){var cup=shop.CreateCoffee(selectedRecipe);if(!cup.AssignInitialSlot(CoffeeOutput)){cup.RemoveFromWorld();CoffeeSupplies++;if(selectedRecipe==ShopCatalog.Latte)MilkSupplies++;shop.Notify("A főzőtálca foglalt, az alapanyag megmaradt.");}else shop.Notify("Elkészült a kávé. E a gépen: felvétel.");}
         }
-        coffeeLabel.text=brewRemaining>0?"FŐZÉS "+brewRemaining.ToString("0.0")+" mp":"ALAPANYAG: "+CoffeeSupplies;
+        coffeeLabel.text=brewRemaining>0?"FŐZÉS "+brewRemaining.ToString("0.0")+" mp":ShopCatalog.ShortNames[selectedRecipe]+"\n"+CoffeeSupplies+" kávé / "+MilkSupplies+" tej";
         if(shop.Modal==ShopModal.None&&shop.Phase==ShopPhase.Open)
         {dirtTimer-=dt;if(dirtTimer<=0){SpawnSpill();dirtTimer=55+(shop.Spawned%3)*9;}}
         if(shop.Devices.FocusKind==ShopDeviceKind.Monitor)
@@ -172,7 +174,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     public void ShowCoins(MvpCustomerActor customer)
     {
-        ClearHand();CoinOffer=new ShopCoinOffer(ShopCatalog.Prices[customer.Product],shop.Day*19+shop.Spawned);
+        ClearHand();CoinOffer=new ShopCoinOffer(customer.TotalPrice,shop.Day*19+shop.Spawned);
         hand=new GameObject("Customer coin palm").transform;hand.SetParent(customer.transform,false);hand.localPosition=new Vector3(-.22f,shop.DeliverySlot.transform.position.y-customer.transform.position.y+.14f,.32f);
         Shape(hand,"Open palm",new Vector3(0,-.025f,0),new Vector3(.42f,.045f,.23f),skin,PrimitiveType.Capsule);
         for(int i=0;i<4;i++)Shape(hand,"Finger",new Vector3((i-1.5f)*.075f,-.015f,.13f),new Vector3(.055f,.025f,.16f),skin,PrimitiveType.Capsule).transform.localRotation=Quaternion.Euler(90,0,0);
@@ -194,7 +196,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     public void ClearHand(){CoinOffer=null;if(hand!=null){hand.gameObject.SetActive(false);Destroy(hand.gameObject);hand=null;}}
     public void ResetFeatures()
     {
-        ClearHand();gameChoice=0;snake=null;memory=null;selectedCamera=0;CoffeeOwned=false;CoffeeSupplies=0;pendingCoffee=0;brewRemaining=0;coffeeDelivery=0;dirtTimer=48;coffeeRoot.gameObject.SetActive(false);
+        ResetIngredientPackages();ClearHand();gameChoice=0;snake=null;memory=null;selectedCamera=0;CoffeeOwned=false;CoffeeSupplies=0;pendingCoffee=0;brewRemaining=0;coffeeDelivery=0;dirtTimer=48;coffeeRoot.gameObject.SetActive(false);
         foreach(var spill in spills)if(spill!=null){spill.gameObject.SetActive(false);Destroy(spill.gameObject);}spills.Clear();
         ResetTool(bat,batHome);ResetTool(mop,mopHome);
     }
@@ -251,11 +253,13 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     private void DrawCoffee(float width,float height)
     {
-        GUI.Label(new Rect(16,8,width-32,40),"TRAFIK PRESSZÓ",heading);
-        if(!CoffeeOwned){GUI.Label(new Rect(16,60,width-32,100),"A kávégépet az Üzletfejlesztés alkalmazásban vásárolhatod meg.\nÁr: "+ShopCatalog.Money(CoffeeMachinePrice),label);return;}
-        GUI.Label(new Rect(16,55,width-32,100),"Alapanyag: "+CoffeeSupplies+" adag • Úton: "+pendingCoffee+" adag\nEladási ár: "+ShopCatalog.Money(ShopCatalog.Prices[ShopCatalog.Coffee])+" • Beszerzés: "+ShopCatalog.Money(ShopCatalog.Costs[ShopCatalog.Coffee])+" / adag\nA főzéshez használd a pult mögötti kávégépet.",label);
-        if(GUI.Button(new Rect(16,Mathf.Min(170,height-100),width-32,45),"10 adag alapanyag rendelése • "+ShopCatalog.Money(10*ShopCatalog.Costs[ShopCatalog.Coffee]),buttonStyle))OrderCoffeeSupplies();
-        GUI.Label(new Rect(16,height-50,width-32,45),shop.Message,label);
+        GUI.Label(new Rect(16,5,width-32,32),"TRAFIK PRESSZÓ",heading);
+        if(!CoffeeOwned){GUI.Label(new Rect(16,55,width-32,100),"Kávégép vásárolható az Üzletfejlesztésben: "+ShopCatalog.Money(CoffeeMachinePrice),label);return;}
+        GUI.Label(new Rect(16,40,width-32,60),"Betöltve: "+CoffeeSupplies+" kávé • "+MilkSupplies+" tej\nÚton: "+pendingCoffee+" kávé • "+pendingMilk+" tej",label);
+        if(GUI.Button(new Rect(12,105,(width-30)/2,32),"10 adag kávé • 2000 Ft",buttonStyle))OrderCoffeeSupplies();
+        if(GUI.Button(new Rect(width/2+3,105,(width-30)/2,32),"10 adag tej • 1500 Ft",buttonStyle))OrderMilkSupplies();
+        DrawRecipeControls(width,height);
+        GUI.Label(new Rect(16,height-45,width-32,42),shop.Message,label);
     }
     private void DrawCameras(float width,float height)
     {

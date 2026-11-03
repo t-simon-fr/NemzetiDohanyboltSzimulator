@@ -9,7 +9,7 @@ public static class RegisterFixtureChecks
     public static object Run()
     {
         checks=0;var game=MvpShopController.Instance;
-        game.ManualTick=true;game.ResetDemo();game.ClosePanel();
+        game.ManualTick=true;ShopCheckFixtures.Reset(game);game.ClosePanel();
         var devices=game.Devices;var mechanism=devices.RegisterDrawer;
         var assembly=game.Counter.transform;var top=GameObject.Find("Counter top").transform;
         var monitor=GameObject.Find("Order Monitor").transform;
@@ -53,7 +53,7 @@ public static class RegisterFixtureChecks
         finally
         {
             devices.Release();mechanism.SetOpen(false);mechanism.Advance(1f);
-            assembly.SetPositionAndRotation(rootPosition,rootRotation);game.ResetDemo();game.ManualTick=false;
+            assembly.SetPositionAndRotation(rootPosition,rootRotation);ShopCheckFixtures.Reset(game);game.ManualTick=false;
         }
     }
 }

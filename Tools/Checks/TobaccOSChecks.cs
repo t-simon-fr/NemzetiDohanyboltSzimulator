@@ -23,7 +23,7 @@ public static class TobaccOSChecks
         var game=MvpShopController.Instance;var devices=game.Devices;game.ManualTick=true;passed=0;
         try
         {
-            game.ResetDemo();game.ClosePanel();devices.Focus(ShopDeviceKind.Monitor);
+            ShopCheckFixtures.Reset(game);game.ClosePanel();devices.Focus(ShopDeviceKind.Monitor);
             Check(devices.ComputerApp==ShopComputerApp.Desktop,"Boot to desktop");
             Check(MonitorText().Any(t=>t.text=="TobaccOS"),"Exact operating-system name");
             Check(ActiveOrders().Length==0,"Desktop contains no hidden order click targets");
@@ -45,8 +45,8 @@ public static class TobaccOSChecks
             devices.ChangeOrderQuantity(-10);Check(devices.OrderQuantity==2,"Return to two units");
             Click(WorldControlKind.Order,0);
             Check(game.PendingQuantity(0)==2&&game.Ledger.Cash==3000&&game.Drawer.Total==3000,"Exact two-unit wholesale purchase");
-            game.Tick(7.9f);Check(game.WarehouseCount(0)==0&&game.PendingQuantity(0)==2,"No premature shipment");
-            game.Tick(.2f);devices.RefreshMonitor();Check(game.WarehouseCount(0)==2&&game.Warehouse.Carton(0).Quantity==2,"Selected quantity arrives in the correct carton");
+            ShopCheckFixtures.Tick(game,7.9f);Check(game.WarehouseCount(0)==0&&game.PendingQuantity(0)==2,"No premature shipment");
+            ShopCheckFixtures.Tick(game,.2f);devices.RefreshMonitor();Check(game.WarehouseCount(0)==2&&game.Warehouse.Carton(0).Quantity==2,"Selected quantity arrives in the correct carton");
             Check(MonitorText().Any(t=>t.text.StartsWith("Megérkezett:")),"Arrival feedback appears on monitor");
             Click(WorldControlKind.Desktop);Click(WorldControlKind.OpenApp,(int)ShopComputerApp.Furnishing);
             Check(ActiveOrders().Length==0,"Orders cannot intercept development clicks");
@@ -66,17 +66,17 @@ public static class TobaccOSChecks
                 foreach(var control in ActiveOrders()){var pixel=Camera.main.WorldToScreenPoint(control.transform.position);Check(pixel.x>0&&pixel.x<Camera.main.pixelWidth&&pixel.y>0&&pixel.y<Camera.main.pixelHeight,"Monitor framing fits aspect "+aspect);}
             }
             Camera.main.ResetAspect();
-            game.ResetDemo();game.ClosePanel();Check(ShopCheckFixtures.Expand(game),"Expand for warehouse capacity check");
+            ShopCheckFixtures.Reset(game);game.ClosePanel();Check(ShopCheckFixtures.Expand(game),"Expand for warehouse capacity check");
             Check(game.OrderSupply(4,12)&&game.OrderSupply(4,12),"Two maximum-quantity shipments accepted");
             Check(game.PendingQuantity(4)==24&&game.Ledger.Cash==400,"Pending stock and wholesale total agree");
             Check(!game.OrderSupply(4,1)&&game.PendingQuantity(4)==24&&game.Ledger.Cash==400,"Combined stock limit rejects extra units without charging");
-            game.Tick(8.1f);Check(game.WarehouseCount(4)==24&&game.Warehouse.Carton(4).Quantity==24,"Multiple shipments preserve selected quantities");
-            game.ResetDemo();game.ClosePanel();devices.Focus(ShopDeviceKind.Monitor);devices.OpenApp(ShopComputerApp.Orders);
+            ShopCheckFixtures.Tick(game,8.1f);Check(game.WarehouseCount(4)==24&&game.Warehouse.Carton(4).Quantity==24,"Multiple shipments preserve selected quantities");
+            ShopCheckFixtures.Reset(game);game.ClosePanel();devices.Focus(ShopDeviceKind.Monitor);devices.OpenApp(ShopComputerApp.Orders);
             Check(devices.OrderQuantity==3&&ActiveOrders().Length==4,"New game restores quantity and hides drinks again");
             Check(!MonitorText().Any(t=>t.text.Contains("ReturAqua")||t.text.Contains("Loca Cola")||t.text.Contains("Hamster Energy")),"No unlocked catalog text leaks after reset");
             return new{passed,failed=0};
         }
-        finally{Camera.main.ResetAspect();devices.Release();game.ResetDemo();game.ManualTick=false;}
+        finally{Camera.main.ResetAspect();devices.Release();ShopCheckFixtures.Reset(game);game.ManualTick=false;}
     }
     public static object Capture(string mode)
     {
@@ -84,11 +84,11 @@ public static class TobaccOSChecks
         var rt=new RenderTexture(1500,1000,24);var image=new Texture2D(1500,1000,TextureFormat.RGB24,false);game.ManualTick=true;
         try
         {
-            game.ResetDemo();game.ClosePanel();if(mode=="expanded")ShopCheckFixtures.Expand(game);camera.targetTexture=rt;
+            ShopCheckFixtures.Reset(game);game.ClosePanel();if(mode=="expanded")ShopCheckFixtures.Expand(game);camera.targetTexture=rt;
             game.Devices.Focus(ShopDeviceKind.Monitor);if(mode!="desktop")game.Devices.OpenApp(ShopComputerApp.Orders);
             camera.Render();RenderTexture.active=rt;image.ReadPixels(new Rect(0,0,1500,1000),0,0);image.Apply();Directory.CreateDirectory("Builds/TobaccOSPreview");
             File.WriteAllBytes("Builds/TobaccOSPreview/"+mode+".png",image.EncodeToPNG());return "Builds/TobaccOSPreview/"+mode+".png";
         }
-        finally{game.Devices.Release();camera.targetTexture=previous;RenderTexture.active=active;UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(image);game.ResetDemo();game.ManualTick=false;}
+        finally{game.Devices.Release();camera.targetTexture=previous;RenderTexture.active=active;UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(image);ShopCheckFixtures.Reset(game);game.ManualTick=false;}
     }
 }

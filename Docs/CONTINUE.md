@@ -128,3 +128,5 @@ A teljes ellenőrzési eredmény és a build állapota: `MVP_CHECKS.md`. A `Tool
 - Play módban ne mentsük a jelenetet: a futás során létrejött készlet és vásárlók nem szerkesztett jelenetadatok.
 - `Library`, `Temp`, `Logs` és `Builds` nem kerül Gitbe.
 - Az eredeti C:-s munkakönyvtár már nem létezik. Minden parancshoz a fenti D:-s munkakönyvtár kell; a sandboxon kívüli írást az eszköz engedélyezett emelt futtatása kezeli.
+
+2026-11-03: az új hét feature, bankkártya és a napvégi gombok javítása elkészült. Részletek: [NextFeatureRelease](NextFeatureRelease.md). Ellenőrzés: 3796 állítás / 29 csoport, Builds/NextFeatureRelease. A csempész és dinamikus árképzés külön jövőbeli feladat.
