@@ -62,14 +62,34 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
     };
     // The first welcome button is anchored above the last two buttons.
     await clickAt(.5, .72); await sleep(2500); await capture('');
-    if (process.argv.includes('--tobaccos')) {
-      await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'b', code: 'KeyB', windowsVirtualKeyCode: 66 }); await sleep(100);
-      await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'b', code: 'KeyB', windowsVirtualKeyCode: 66 }); await sleep(1500);
-      await capture('tobaccos-desktop');
-      await clickAt(.27, .49); await sleep(1000); await capture('tobaccos-starter');
-      await clickAt(.49, .30); await clickAt(.27, .38); await sleep(9200); await capture('tobaccos-arrival');
-      await clickAt(.27, .835); await clickAt(.73, .49); await clickAt(.5, .515);
-      await clickAt(.27, .835); await clickAt(.27, .49); await sleep(1000); await capture('tobaccos-expanded');
+    if (process.argv.includes('--tobaccos') || process.argv.includes('--features')) {
+      const key = async (name, code, value) => {
+        await send('Input.dispatchKeyEvent', { type: 'keyDown', key: name, code, windowsVirtualKeyCode: value });
+        await sleep(100);
+        await send('Input.dispatchKeyEvent', { type: 'keyUp', key: name, code, windowsVirtualKeyCode: value });
+      };
+      const aspect = bounds.width / bounds.height;
+      const logicalHeight = Math.max(1.18, 1.95 / aspect) * 1.04;
+      const logicalWidth = logicalHeight * aspect;
+      const monitorPoint = (x, y) => ({ x: .5 - x / logicalWidth, y: .5 - (y + .025) / logicalHeight });
+      const monitorClick = async (x, y) => { const p = monitorPoint(x, y); await clickAt(p.x, p.y); };
+      await key('b', 'KeyB', 66); await sleep(1500); await capture('tobaccos-desktop');
+      await monitorClick(.58, .11); await capture('tobaccos-starter');
+      await monitorClick(.02, .24); await monitorClick(.45, .13); await sleep(8500); await capture('tobaccos-arrival');
+      await monitorClick(.45, -.465); await monitorClick(0, .11); await capture('developments');
+      if (process.argv.includes('--features')) {
+        await monitorClick(.45, -.465); await monitorClick(-.58, .11); await capture('coffee');
+        await monitorClick(.45, -.465); await monitorClick(.36, -.14); await sleep(1000); await capture('cameras');
+        await monitorClick(.45, -.465); await monitorClick(-.36, -.14); await capture('games');
+        const topLeft = monitorPoint(.87, .27); const bottomRight = monitorPoint(-.87, -.35);
+        const appWidth = bottomRight.x - topLeft.x; const appHeight = bottomRight.y - topLeft.y;
+        await clickAt(topLeft.x + appWidth * .25, topLeft.y + 100 / bounds.height);
+        await key('ArrowUp', 'ArrowUp', 38); await sleep(600); await capture('snake');
+        await clickAt(bottomRight.x - 82.5 / bounds.width, topLeft.y + 20 / bounds.height);
+        await clickAt(topLeft.x + appWidth * .74, topLeft.y + 100 / bounds.height); await capture('memory');
+        await clickAt(topLeft.x + appWidth * .125, topLeft.y + appHeight * .125 + 32 / bounds.height);
+        await clickAt(topLeft.x + appWidth * .375, topLeft.y + appHeight * .125 + 32 / bounds.height); await capture('memory-pair');
+      }
     }
     fs.writeFileSync(path.join(output, label + '-console.json'), JSON.stringify(messages, null, 2));
     const errors = messages.filter(m => ['error', 'exception', 'dialog'].includes(m.type));

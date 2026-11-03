@@ -46,11 +46,11 @@ public static class RestockingChecks
             station.Use(player);Require(player.HeldCarton==carton&&carton.Quantity==2,"Part-filled carton can be picked up again");
             player.CancelHeld();Require(!player.HasHeldItem&&carton.IsDocked&&carton.Quantity==2,"Cancelling carry safely returns all remaining goods to storage");
             Require(!UnityEngine.Object.FindObjectsByType<LineRenderer>().Any(l=>l.name=="Placement guide"&&l.enabled),"No placement guides remain after putting carton away");
-            game.ResetDemo();game.ClosePanel();Require(game.TryExpand()&&game.OrderSupply(3),"Order convenience case after expansion");game.Tick(8.1f);
-            game.Warehouse.Dock(3).GetComponent<ShopStation>().Use(player);carton=player.HeldCarton;
+            game.ResetDemo();game.ClosePanel();Require(ShopCheckFixtures.Expand(game)&&game.OrderSupply(ShopCatalog.Index("water")),"Order convenience case after expansion");game.Tick(8.1f);
+            game.Warehouse.Dock(ShopCatalog.Index("water")).GetComponent<ShopStation>().Use(player);carton=player.HeldCarton;
             var water=UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.CanAcceptStock("water"));Physics.SyncTransforms();player.RefreshTarget(Aim(water));
             Require(player.TryPlaceHeld()&&water.Occupant.ProductId=="water"&&carton.Quantity==2,"Larger convenience item also unpacks one at a time");
-            Require(game.StockCount(3)+game.WarehouseCount(3)==3,"Convenience stock conserved during carton restocking");
+            Require(game.StockCount(ShopCatalog.Index("water"))+game.WarehouseCount(ShopCatalog.Index("water"))==3,"Convenience stock conserved during carton restocking");
             return new{passed=checks,failed=0};
         }
         finally{game.ResetDemo();game.ManualTick=false;}

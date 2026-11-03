@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ShopStationKind { Till, Supplies, Door, Monitor }
+public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton }
 public sealed class ShopStation : MonoBehaviour
 {
     [SerializeField] private ShopStationKind kind;
@@ -10,6 +10,7 @@ public sealed class ShopStation : MonoBehaviour
     public void Configure(MvpShopController controller,ShopStationKind stationKind){shop=controller;kind=stationKind;}
     public void ConfigureBrand(MvpShopController controller,int type){Configure(controller,ShopStationKind.Supplies);productType=type;}
     public bool IsSupplies=>kind==ShopStationKind.Supplies;
+    public bool IsPanicButton=>kind==ShopStationKind.PanicButton;
     public string Contents
     {
         get
@@ -32,6 +33,7 @@ public sealed class ShopStation : MonoBehaviour
     {
         get
         {
+            if(IsPanicButton)return shop.Security.Prompt;
             if(kind==ShopStationKind.Monitor)return "E / B – Számítógép: rendelések és berendezés";
             if(kind==ShopStationKind.Till)return "E – Kassza / fizetés";
             if(kind==ShopStationKind.Door)return "E – Nyitás / zárás";
@@ -44,7 +46,8 @@ public sealed class ShopStation : MonoBehaviour
     public void Use(PlayerInteractor player)
     {
         if(shop==null)return;
-        if(kind==ShopStationKind.Monitor)shop.OpenSupplier();
+        if(IsPanicButton)shop.Security.Toggle();
+        else if(kind==ShopStationKind.Monitor)shop.OpenSupplier();
         else if(kind==ShopStationKind.Till)shop.OpenCash();
         else if(kind==ShopStationKind.Door){if(shop.Phase==ShopPhase.Preparing)shop.OpenShop();else shop.RequestClose();}
         else if(player.HeldCarton!=null)

@@ -11,6 +11,20 @@ Mentési pont: 2026. november 3.
 - Játékosi használat: `MVP_GUIDE.md`. Ellenőrzések: `MVP_CHECKS.md`.
 - Iránydokumentum: `Docs/GAME_VISION.md`.
 
+## Teljes GitHub feature-csomag
+
+Az eredeti issue mind a kilenc kérése megvalósult, a vészgombbal és az egybenyitott üzlettel együtt. Aktuális funkciók, kezelés, árak és ellenőrzés: **Docs/FeatureRelease.md**. Fő új források: `ShopActivities`, `ShopMiniGames`, `ShopHandTool`, `MvpShopFeatures`; próbák: `FeatureReleaseChecks`. A legutóbbi teljes ellenőrzés **21 csoportban 1105 sikeres állítás**. A későbbi szakaszok korábbi mérési és fejlesztési pontokat dokumentálnak.
+
+A TobaccOS új alkalmazásai: Kávé, Kamerák, Játékok. Bővítés 24 000 Ft, extra polc 9000 Ft, kávégép 16 000 Ft; a vészgomb 7500 Ft. G-vel minden hordozható tárgy eldobható. A kamerák és minijátékok közben a bolt működik. A kávé a 7-es termékazonosító; a `ShopCatalog.Count` a hét polcos/raktári terméket jelenti, a kávéalapanyag külön rendszerben készül és rendelhető.
+
+## Egybenyitott üzlet bővítés után
+
+A megvásárolt önkiszolgáló bővítés az első válaszfal mellett a pult melletti hosszabb `Staff side wall` falszakaszt is elrejti, a hozzá tartozó burkolattal és ütközővel együtt. A bolt egy nagy helyiséggé válik. Napváltáskor nyitva marad a tér; új játéknál mindkét falszakasz visszaáll. A meglévő jelenetben és az újragenerált boltban ugyanaz a `ShopLayout.SetExpanded` működés érvényes.
+
+## Megvásárolható vészgomb
+
+A TobaccOS Üzletfejlesztés alkalmazásából nyitás előtt, egyszer, 7500 Ft-ért vehető meg. E a pult mögötti piros gombon lezárja vagy feloldja a bejárati redőnyt; kézben tartott termékkel és kartonnal is használható. A vásárlók mindkét irányban megállnak előtte, a bentiek kiszolgálása folytatható. Záráskor automatikusan feloldódik, a megvásárolt fejlesztés napváltáskor megmarad. A berendezés futáskor épül fel, a jelenet újragenerálása nélkül. Részletek és ellenőrzés: `Docs/PanicButton.md`, `Tools/Checks/PanicButtonChecks.cs`. Az összes további GitHub-feature megvalósítását a fenti FeatureRelease dokumentum rögzíti.
+
 ## TobaccOS – aktuális számítógép
 
 A számítógép új TobaccOS asztalt, képes **Árurendelés** és **Üzletfejlesztés** alkalmazást kapott. A termékekből 1–12 darab választható; az összeg a kiválasztott mennyiség beszerzési ára. Kezdőboltban kizárólag a négy cigarettamárka jelenik meg. A ReturAqua, Loca Cola és Hamster Energy neve, képe és kattintási célpontja csak a megvásárolt önkiszolgáló bővítés után látható. Az áru nyolc másodperc után a megfelelő raktári kartonba érkezik.

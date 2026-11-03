@@ -13,6 +13,11 @@ public sealed class ShopCashDrawer
     public ShopCashDrawer(){int[] initial={0,0,0,1,1,2,4,6,6,10,8,4};Array.Copy(initial,counts,counts.Length);}
     public bool CanSelect(int value,int selected)=>Count(value)>selected;
     public void OfferTender(int tender){CancelTender();Deposit(offered,tender);}
+    public void OfferTenderPieces(int[] pieces)
+    {
+        if(pieces==null||pieces.Length!=offered.Length||pieces.Any(n=>n<0))throw new ArgumentException("Invalid customer coins.");
+        CancelTender();Array.Copy(pieces,offered,offered.Length);
+    }
     public void CancelTender()=>Array.Clear(offered,0,offered.Length);
     public bool CanSettle(int tender,int[] selected)
     {

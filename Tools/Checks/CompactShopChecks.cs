@@ -42,8 +42,8 @@ public static class CompactShopChecks
             game.ClosePanel();Check(!game.Devices.Focused&&!ShopInputGate.Blocked,"Device releases input gate");
             if(expanded)
             {
-                Check(game.TryExpand()&&game.Layout.Expanded&&game.Ledger.Cash==4000&&game.Drawer.Total==4000,"Expansion unlocks space and costs cash");
-                Check(counter.position==counterPosition&&!game.TryExpand(),"Counter anchored and duplicate expansion rejected");
+                Check(ShopCheckFixtures.Expand(game)&&game.Layout.Expanded&&game.Ledger.Cash==4000&&game.Drawer.Total==4000,"Expansion unlocks space and costs cash");
+                Check(counter.position==counterPosition&&!ShopCheckFixtures.Expand(game),"Counter anchored and duplicate expansion rejected");
                 for(int type=ShopCatalog.CigaretteCount;type<ShopCatalog.Count;type++)
                 {
                     Check(game.OrderSupply(type),"Order convenience stock after expansion");game.Tick(8.1f);
@@ -54,10 +54,11 @@ public static class CompactShopChecks
                     Check(game.StockCount(type)==3&&game.WarehouseCount(type)==0,"Public shelf stocked by player");
                 }
             }
-            game.OpenShop();Check(!game.TryExpand(),"Expansion only possible before opening");
+            game.OpenShop();Check(!ShopCheckFixtures.Expand(game),"Expansion only possible before opening");
             bool wrongChecked=false;int selfServed=0,guard=0;
-            while(game.Ledger.Sales<8&&guard++<15000)
+            while(game.Ledger.Sales+game.CaughtToday<8&&guard++<15000)
             {
+                foreach(var thief in UnityEngine.Object.FindObjectsByType<MvpCustomerActor>().Where(c=>c.IsStealing).ToArray())game.StopThief(thief);
                 if(game.ActiveCustomer==null||game.Stage==ServiceStage.Thanks||game.Stage==ServiceStage.None){game.Tick(.1f);continue;}
                 var customer=game.ActiveCustomer;int type=customer.Product;
                 if(game.Stage==ServiceStage.Order)
@@ -75,22 +76,30 @@ public static class CompactShopChecks
                 }
                 else if(customer.BasketItem!=null)
                 {
-                    selfServed++;Check(type>=ShopCatalog.CigaretteCount&&customer.BasketItem.IsHeld,"Customer independently collected convenience item");
+                    selfServed++;Check(type>=ShopCatalog.CigaretteCount&&!customer.BasketItem.IsHeld&&customer.BasketItem.CurrentSlot==game.Activities.BasketSlot,"Customer put convenience item on counter");
                 }
                 int before=game.Ledger.Cash,count=game.StockCount(type);
                 Check(!game.SubmitChange(customer.Tender-ShopCatalog.Prices[type]+5)&&game.Ledger.Cash==before,"Incorrect change cannot charge customer");
-                game.OpenCash();Check(game.Devices.FocusKind==ShopDeviceKind.Till&&game.Modal==ShopModal.None,"Physical register focus");
-                CheckVisibleControl(WorldControlKind.Pay,0);
-                SelectChange(customer.Tender-ShopCatalog.Prices[type]);
-                Check(game.SubmitChange(game.ChangeSelected),"Physical pieces settle payment");
+                game.OpenCash();Check(game.Devices.FocusKind==(game.CoinPayment?ShopDeviceKind.Coins:ShopDeviceKind.Till)&&game.Modal==ShopModal.None,"Physical payment focus");
+                if(game.CoinPayment)
+                {
+                    var offer=game.Activities.CoinOffer;int rest=offer.Price;
+                    foreach(int index in Enumerable.Range(0,offer.Coins.Count).OrderByDescending(i=>offer.Coins[i]))if(offer.Coins[index]<=rest){game.ToggleCustomerCoin(index);rest-=offer.Coins[index];}
+                    Check(game.ConfirmCustomerCoins(),"Selected customer coins settle payment");
+                }
+                else
+                {
+                    CheckVisibleControl(WorldControlKind.Pay,0);SelectChange(customer.Tender-ShopCatalog.Prices[type]);
+                    Check(game.SubmitChange(game.ChangeSelected),"Physical pieces settle payment");
+                }
                 Check(game.StockCount(type)==count-1&&game.Ledger.Cash==before+ShopCatalog.Prices[type]&&game.Drawer.Total==game.Ledger.Cash,"Inventory, ledger and physical cash agree");
                 Check(!game.SubmitChange(0)&&!game.Devices.Focused,"No duplicate payment and camera released");
             }
-            Check(guard<15000&&game.Ledger.Sales==8,"Complete eight-customer day");
+            Check(guard<15000&&game.Ledger.Sales==(expanded?7:8),"Complete eight-visitor day including stopped theft");
             for(int i=0;i<1500&&game.Phase!=ShopPhase.Summary;i++)game.Tick(.1f);
             Check(game.Phase==ShopPhase.Summary&&game.Missed==0,"All customers leave and day closes");
-            Check(game.Drawer.Total==game.Ledger.Cash&&game.Ledger.Cash==6000+game.Ledger.Revenue-game.Ledger.Purchases-game.Ledger.Improvements-300,"End-of-day accounting includes investment separately");
-            Check(expanded?selfServed==4:game.Ledger.Revenue==19000&&game.Ledger.Profit==5400,"Self-service visitors / cigarette day economics");
+            Check(game.Drawer.Total==game.Ledger.Cash&&game.Ledger.Cash==game.Ledger.OpeningCash+game.Ledger.Revenue-game.Ledger.Purchases-game.Ledger.Improvements-300,"End-of-day accounting includes investment separately");
+            Check(expanded?selfServed==3:game.Ledger.Revenue==19000&&game.Ledger.Profit==5400,"Self-service visitors / cigarette day economics");
             int cash=game.Ledger.Cash,units=Enumerable.Range(0,ShopCatalog.Count).Sum(game.StockCount);game.NextDay();
             Check(game.Day==2&&game.Ledger.Cash==cash&&game.Drawer.Total==cash&&game.Layout.Expanded==expanded&&Enumerable.Range(0,ShopCatalog.Count).Sum(game.StockCount)==units,"Next day retains drawer, stock and expansion");
             return new{passed,failed=0,expanded,selfServed,cash};
@@ -140,18 +149,18 @@ public static class CompactShopChecks
         hand=new GameObject("Temporary Compact Edge Hand").transform;hand.position=Vector3.one*1000;
         try
         {
-            game.ResetDemo();game.ClosePanel();game.TryExpand();
-            Check(game.OrderSupply(ShopCatalog.CigaretteCount),"Prepare public stock for cancellation test");game.Tick(8.1f);
-            game.TryCreateSupply(ShopCatalog.CigaretteCount,out var item);PlaceOnShelf(item,ShopCatalog.CigaretteCount);
+            game.ResetDemo();game.ClosePanel();ShopCheckFixtures.Expand(game);
+            Check(game.OrderSupply(ShopCatalog.Index("cola")),"Prepare public stock for cancellation test");game.Tick(8.1f);
+            game.TryCreateSupply(ShopCatalog.Index("cola"),out var item);PlaceOnShelf(item,ShopCatalog.Index("cola"));
             ProductSlot source=item.CurrentSlot;
             game.OpenShop();
-            for(int i=0;i<3000 && !(game.ActiveCustomer!=null&&game.ActiveCustomer.Product==ShopCatalog.CigaretteCount);i++)
+            for(int i=0;i<3000 && !(game.ActiveCustomer!=null&&game.ActiveCustomer.Product==ShopCatalog.Index("cola"));i++)
             {
                 if(game.ActiveCustomer!=null)game.SkipCurrent();game.Tick(.1f);
             }
-            // Visit index 3 asks for water; earlier guests are dismissed deliberately.
+            // The first cola guest offers coins; earlier guests are dismissed deliberately.
             Check(game.ActiveCustomer!=null&&game.ActiveCustomer.BasketItem==item,"Customer arrives carrying shelf item");
-            int cash=game.Ledger.Cash;Check(game.Drawer.PendingTender>0,"Payment tender staged");
+            int cash=game.Ledger.Cash;Check(game.CoinPayment&&game.Activities.CoinOffer!=null,"Customer coin offer staged");
             game.OpenCash();game.AddChange(100);game.SkipCurrent();
             Check(item.gameObject.activeSelf&&!item.IsHeld&&item.CurrentSlot==source&&source.Occupant==item,"Cancelled purchase returns item to reserved shelf");
             Check(game.Drawer.PendingTender==0&&game.Drawer.Total==cash&&game.Ledger.Cash==cash&&game.ChangeSelected==0,"Cancellation returns tender without charging either party");
@@ -203,7 +212,7 @@ public static class CompactShopChecks
             Physics.SyncTransforms();
             Walk(body,new Vector3(-2.12f,0,-.7f));Walk(body,new Vector3(-2.12f,0,-3.25f));
             Check(player.transform.position.y>-.05f,"Player can walk around counter without falling");
-            Check(game.TryExpand(),"Unlock extension for physical route check");
+            Check(ShopCheckFixtures.Expand(game),"Unlock extension for physical route check");
             Walk(body,new Vector3(.13f,0,-3.25f));Walk(body,new Vector3(3.2f,0,-3.25f));Walk(body,new Vector3(5.1f,0,-3.25f));Walk(body,new Vector3(5.1f,0,-1.25f));
             Check(player.transform.position.y>-.05f,"Player can reach self-service shelf on real floor");
             Walk(body,new Vector3(5.1f,0,-3.25f));Walk(body,new Vector3(.13f,0,-3.25f));

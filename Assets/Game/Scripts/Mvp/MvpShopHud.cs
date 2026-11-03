@@ -22,7 +22,7 @@ public sealed class MvpShopHud : MonoBehaviour
         {
             if(shop.Devices!=null&&shop.Devices.Focused)
             {
-                if(shop.Devices.FocusKind==ShopDeviceKind.Monitor)return;
+                if(shop.Devices.FocusKind==ShopDeviceKind.Monitor||shop.Devices.FocusKind==ShopDeviceKind.Coins)return;
                 Panel(new Rect(250,612,780,94));GUILayout.BeginArea(new Rect(266,622,748,78));
                 GUILayout.Label("Kattints a kassza címleteire, majd az ÁTADÁS gombra.  Esc: vissza",small);
                 GUILayout.Label(shop.Message,small);GUILayout.EndArea();return;
@@ -48,7 +48,7 @@ public sealed class MvpShopHud : MonoBehaviour
         Label(shop.Day+". nap • "+(shop.Phase==ShopPhase.Preparing?"Felkészülés":shop.Phase==ShopPhase.Open?"Nyitva":"Zárunk"),true);
         Label("Kassza: "+ShopCatalog.Money(shop.Ledger.Cash));
         GUILayout.Label("Eladások: "+shop.Ledger.Sales+" • Sorban: "+shop.QueueCount+" • Érkezett: "+shop.Spawned+"/"+shop.TotalVisitors,small);
-        GUILayout.Label("B Számítógép • H Súgó • O Nyitás/zárás",small);GUILayout.EndArea();
+        GUILayout.Label(shop.Security!=null&&shop.Security.Locked?"BEJÁRAT RETESZELVE • E a vészgombon":"B Számítógép • H Súgó • O Nyitás/zárás",small);GUILayout.EndArea();
         if(shop.ActiveCustomer!=null)
         {
             var c=shop.ActiveCustomer;Panel(new Rect(844,12,424,216));GUILayout.BeginArea(new Rect(860,24,392,190));
@@ -80,7 +80,7 @@ public sealed class MvpShopHud : MonoBehaviour
         Label("Műszaksegéd",true);
         Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a pult közelében: számítógép, alkalmazások\nE a kasszán / F: fizetés a pénztárgépen\nRaktári polcnál E: teljes doboz felvétele / visszarakása\nDobozzal a kézben, zöld polchelynél E: egy termék kipakolása\nÜres kartonon E: felvétel • Papírgyűjtőn E: kidobás\nO: nyitás vagy korai zárás • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
         GUILayout.Space(14);Label("A kasszában a rekeszekre kattintva egy bankjegyet vagy érmét veszel ki. A kivett darabok a tálcára kerülnek. Vissza: egy darab visszatétele. Törlés: az egész visszajáró visszarakása. Váltás: nagy címlet felváltása kisebbekre. Átadás: fizetés lezárása.");
-        GUILayout.Space(14);Label("Az Üzletfejlesztés alkalmazásban nyitás előtt 2000 Ft-ért bővíthetsz, vagy 1200 Ft-ért kilenchelyes cigarettapolcot vehetsz. A monitor és a kassza használata közben a vásárlók várakozása szünetel. A készletet neked kell feltöltened az új polcokon is.");
+        GUILayout.Space(14);Label("Az Üzletfejlesztés alkalmazásban nyitás előtt 24 000 Ft-ért bővíthetsz, 9000 Ft-ért cigarettapolcot, 16 000 Ft-ért kávégépet vehetsz. A kamerák és játékok használata közben a bolt tovább működik. G: kézben tartott tárgy eldobása; felmosóval és ütővel bal egérgomb: használat. A készletet neked kell feltöltened az új polcokon is.");
         GUILayout.FlexibleSpace();if(Button("Vissza a boltba"))shop.ClosePanel();
     }
     private void Summary()
@@ -88,6 +88,7 @@ public sealed class MvpShopHud : MonoBehaviour
         Label(shop.Day+". nap • Zárás",true);
         Label("Kiszolgált vásárlók: "+shop.Ledger.Sales+" / "+shop.Spawned+" • Elküldve: "+shop.Missed);
         GUILayout.Space(10);Label("Árbevétel: "+ShopCatalog.Money(shop.Ledger.Revenue));
+        Label("Lopásból eredő készletveszteség: "+ShopCatalog.Money(shop.Ledger.StockLoss)+" • Megállítva: "+shop.CaughtToday);
         Label("Eladott áruk beszerzési értéke: "+ShopCatalog.Money(shop.Ledger.CostOfGoods));
         Label("Működési költség: "+ShopCatalog.Money(shop.Ledger.OperatingCosts));
         Label("Nyereség: "+ShopCatalog.Money(shop.Ledger.Profit),true);

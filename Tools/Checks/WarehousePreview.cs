@@ -12,7 +12,7 @@ public static class WarehousePreview
             int type=i;var product=Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[type]);
             player.TryHold(product);game.ReturnSupply(player,type);
         }
-        game.TryExpand();for(int i=ShopCatalog.CigaretteCount;i<ShopCatalog.Count;i++)game.OrderSupply(i);game.Tick(8.1f);
+        ShopCheckFixtures.Expand(game);for(int i=ShopCatalog.CigaretteCount;i<ShopCatalog.Count;i++)game.OrderSupply(i);game.Tick(8.1f);
         player.GetComponent<FirstPersonController>().enabled=false;ShopInputGate.Blocked=true;
         var camera=Camera.main;camera.fieldOfView=72;camera.transform.position=new Vector3(-2.85f,1.9f,1.65f);camera.transform.LookAt(new Vector3(-4.65f,1f,-.2f));
         return "Seven branded cartons in warehouse";

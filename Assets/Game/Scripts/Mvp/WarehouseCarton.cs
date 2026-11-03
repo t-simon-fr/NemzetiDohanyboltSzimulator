@@ -50,7 +50,7 @@ public sealed class WarehouseCarton : MonoBehaviour
     public bool PickUp(Transform hand)
     {
         if(IsHeld||hand==null)return false;
-        area.Release(this);IsDocked=false;IsHeld=true;
+        area.Release(this);IsDocked=false;IsHeld=true;ShopLoosePhysics.Freeze(gameObject);
         foreach(var c in colliders)if(c!=null)c.enabled=false;
         transform.SetParent(hand,true);transform.localPosition=new Vector3(-.20f,-.24f,.32f);transform.localRotation=Quaternion.identity;
         Refresh();return true;
@@ -58,13 +58,19 @@ public sealed class WarehouseCarton : MonoBehaviour
     public void ReturnToStorage(){if(IsHeld){IsHeld=false;area.PutBack(this);}}
     public void AttachToDock(Transform dock)
     {
-        IsHeld=false;IsDocked=true;transform.SetParent(dock,false);transform.localPosition=Vector3.up*.055f;transform.localRotation=Quaternion.identity;
+        ShopLoosePhysics.Freeze(gameObject);IsHeld=false;IsDocked=true;transform.SetParent(dock,false);transform.localPosition=Vector3.up*.055f;transform.localRotation=Quaternion.identity;
         foreach(var c in colliders)if(c!=null)c.enabled=true;Refresh();
     }
     public void DropLoose(Transform parent,Vector3 position)
     {
-        IsHeld=false;IsDocked=false;transform.SetParent(parent,true);transform.SetPositionAndRotation(position,parent.rotation);
+        ShopLoosePhysics.Freeze(gameObject);IsHeld=false;IsDocked=false;transform.SetParent(parent,true);transform.SetPositionAndRotation(position,parent.rotation);
         foreach(var c in colliders)if(c!=null)c.enabled=true;Refresh();
+    }
+    public void Drop(Vector3 position,Vector3 velocity)
+    {
+        if(!IsHeld)return;area.Release(this);IsHeld=false;IsDocked=false;
+        foreach(var collider in colliders)if(collider!=null)collider.enabled=true;
+        ShopLoosePhysics.Throw(gameObject,position,velocity);Refresh();
     }
     public void ThrowAway(){if(IsHeld&&Quantity==0)area.Dispose(this);}
 }

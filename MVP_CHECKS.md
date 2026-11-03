@@ -2,6 +2,18 @@
 
 A kompakt bolt jelenete és a forráskód el van mentve. Unity 6000.6.7f1, URP. A szkriptfordítás sikeres, fordítási hiba nélkül.
 
+## Teljes feature-csomag – 2026. november 3.
+
+**21 ellenőrzéscsoport, 1105 sikeres állítás**, 0 sikertelen. A teljes listát és a bizonyítékok helyét a [FeatureRelease.md](Docs/FeatureRelease.md) rögzíti. A futó jelenetből készült eredmények: `Builds/FeatureRelease/checks.json`. A mostani WebGL-build 0 hibával és 0 figyelmeztetéssel készült el, a helyi Chromium-próba 11 képpel és 0 böngészős hibával zárult; a kártyák tényleges kattintásra fordultak fel. Build: `Builds/FeatureRelease/build-status.json`, böngészőnapló: `Builds/Verification/local-console.json`. A két új, vegyes műszak külön ellenőrzi az ütővel megállított, illetve elmenekülő tolvajt; mindkettőben kávé, pultra tett önkiszolgáló áru, érmes és hagyományos fizetés is szerepel. A fizikai érmecélzás, felmosócélzás, kamerák, minijátékok, eldobott tárgyak, napváltás és kasszaegyezőség is sikeres. Az alábbi szakaszok korábbi mérési pontok.
+
+## Vészgomb – 2026. november 3.
+
+A megvásárolható vészgomb elkészült. **15 ellenőrzéscsoportban 675 sikeres állítás**, ebből 45 a `PanicButtonChecks.Run` célzott ellenőrzése: vásárlás és pénzügyi egyezőség, ismételt vétel tiltása, a fizikai gomb elérése, mindkét irányban megálló és feloldás után továbbhaladó vásárlók, kézben tartott áru és karton, lezárás alatt várakozó tényleges vevő, zárás és napváltás. A korábbi műszak-, eszköz-, feltöltési, raktári és TobaccOS-próbák is sikeresek. A régi feltöltési teszt víztermékét név szerint azonosítjuk a korábbi rögzített termékindex helyett.
+
+Összesített eredmény: `Builds/PanicButtonPreview/checks.json`. Vizuálisan ellenőrzött képek ugyanitt: `shop.png`, `button.png`, `locked.png`. Fordítási hiba, konzolhiba és figyelmeztetés: 0. A próbák a Unity Play módjában futottak, az alábbi Windows- és WebGL-build-adatok korábbi állapotokra vonatkoznak.
+
+Az alábbi ellenőrzési táblázat korábbi mérési pontot dokumentál.
+
 ## Visszajáró-kijelzés javítása
 
 A korábbi VISSZA sor a kivett címletek összegét mutatta. Most külön VISSZAJÁRÓ sor mutatja a kapott pénz és az ár különbségét, és KIVÉVE sor a játékos által már kiválasztott pénzt. A futó jelenet tényleges TextMesh kijelzőjén ellenőrizve: 2200 Ft ár / 5000 Ft kapott pénz mellett 0 Ft és 500 Ft kivételekor is 2800 Ft marad a járó visszajáró. Mindkét állapot helyes. A négy sor elfér a kijelzőn; kamera-renderen is ellenőrizve.

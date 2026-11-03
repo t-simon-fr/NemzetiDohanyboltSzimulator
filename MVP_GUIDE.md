@@ -54,7 +54,7 @@ A monitor teljes háza, képernyője, talpa és állványa E-vel használható. 
 Az asztalon két kattintható alkalmazás van:
 
 - **RENDELÉSEK:** hat márka, polckészlet, raktári összes darab és úton levő mennyiség. A háromdarabos csomag ára azonnal levonódik, nyolc másodperc alatt érkezik meg. A víz, rágó és sör boltbővítés után rendelhető.
-- **BERENDEZÉS:** 2000 Ft-os önkiszolgáló bővítés és 1200 Ft-os, kilenchelyes kiegészítő cigarettapolc vásárlása. Mindkettő egyszer, nyitás előtt vehető meg. A pult a helyén marad.
+- **BERENDEZÉS:** 24 000 Ft-os önkiszolgáló bővítés és 9000 Ft-os, kilenchelyes kiegészítő cigarettapolc vásárlása. Mindkettő egyszer, nyitás előtt vehető meg. A pult a helyén marad.
 
 Az **ASZTAL** gomb visszalép az alkalmazásból. **KILÉPÉS / Escape** visszavisz a boltba. A vásárlók várakozása eszközhasználat közben szünetel, a szállítmányok megérkezhetnek.
 
@@ -91,13 +91,13 @@ Az üres karton visszavihető a saját márkájának raktári helyére. Ha közb
 
 ## Boltbővítés és önkiszolgálás
 
-Nyitás előtt a monitor **BERENDEZÉS** alkalmazásának **ÖNKISZOLGÁLÓ BŐVÍTÉS** gombja 2000 Ft-ért megnyitja a pult körül elérhető új, 4 × 6,3 méteres területet. A pult, a kassza és a monitor a helyén marad. A változás jelenleg azonnali, építkezési animáció nélkül.
+Nyitás előtt a monitor **BERENDEZÉS** alkalmazásának **ÖNKISZOLGÁLÓ BŐVÍTÉS** gombja 24 000 Ft-ért megnyitja a pult körül elérhető új, 4 × 6,3 méteres területet. A pult, a kassza és a monitor a helyén marad. A változás jelenleg azonnali, építkezési animáció nélkül.
 
 Az új polcon három típusnak hat-hat helye van: víz, rágó, sör. A bővítés üres polcokat ad, az árut külön kell megrendelni és kézzel feltölteni. Ezután a nyolc látogatóból négy önkiszolgáló terméket keres: a polchoz megy, felvesz egyet, majd a változatlan helyű pénztárhoz jön. A cigarettát továbbra is az eladó adja ki.
 
 Ha nincs készlet a keresett önkiszolgáló termékből, a vásárló a pulthoz jön a kérésével. Feltöltés után kézzel is kiszolgálhatod, vagy X-szel elküldheted. Egyelőre egy bővítési fokozat van; több fokozat és a kiegyensúlyozott árak későbbi feladatok.
 
-A Berendezés alkalmazás külön 1200 Ft-os cigarettapolca a személyzeti rész jobb oldali falán jelenik meg, kilenc szabad hellyel, márkánként hárommal. Nem ad ingyenes termékeket. A feltöltött árut ugyanúgy felveheted a vásárló kiszolgálásához. A polc és a készlete napváltáskor megmarad, új játéknál visszaáll. A berendezés helye jelenleg rögzített; szabad játékbeli elhelyező mód még nincs.
+A Berendezés alkalmazás külön 9000 Ft-os cigarettapolca a személyzeti rész jobb oldali falán jelenik meg, kilenc szabad hellyel, márkánként hárommal. Nem ad ingyenes termékeket. A feltöltött árut ugyanúgy felveheted a vásárló kiszolgálásához. A polc és a készlete napváltáskor megmarad, új játéknál visszaáll. A berendezés helye jelenleg rögzített; szabad játékbeli elhelyező mód még nincs.
 
 ## Műszak és elszámolás
 
@@ -119,6 +119,28 @@ Ha külön a pultlapot rendezted át, a **Nemzeti Dohánybolt > Align Counter Eq
 
 Ctrl+S-sel ments, majd Play-jel próbáld ki. A jelenet kézi változtatásai az önálló Windows-változatban új build után jelennek meg.
 
-## Következő tartalmak
+## Vészgomb és bejárati retesz
 
-A figurák, termékek, pénzek és berendezések még próbamodellből állnak. Az ellenőr/személyi, készpénzes trükkök, hitelkérés, figyelemeltereléses lopás és a reggeli törzsvendégek további történetei későbbi fejlesztések. Az önkiszolgáló figurák rögzített útvonalpontokat követnek; fejlett tömegelkerülés még nincs.
+Nyitás előtt a TobaccOS **Üzletfejlesztés** alkalmazásában **7500 Ft-ért** megveheted a vészgombot. A vásárlás után a pult személyzet felőli oldalán jelenik meg egy piros gomb. **E-vel reteszeled, újabb E-vel feloldod a bejáratot.** Áruval vagy kartonnal a kezedben is használható.
+
+A zöld fény szabad, a piros reteszelt bejáratot jelez. Zárt redőnynél a vásárlók nem tudnak be- vagy kimenni; a bentieket továbbra is kiszolgálhatod. Záráskor a retesz automatikusan feloldódik. A megvásárolt fejlesztés a következő napra megmarad. Részletes leírás: [PanicButton.md](Docs/PanicButton.md).
+
+## Új bolti feladatok és alkalmazások
+
+A részletes funkciólista: [FeatureRelease.md](Docs/FeatureRelease.md).
+
+- **G:** termék, teli vagy üres doboz, ütő, felmosó eldobása. Az eldobott tárgy megmarad és E-vel újra felvehető.
+- **Felmosó:** E-vel felvehető a személyzeti részen. Nézz a koszfoltra, és tartsd nyomva a bal egérgombot kb. 1,5 másodpercig.
+- **Baseballütő:** a pult mögött E-vel felvehető. Fizetés nélkül menekülő tolvaj közelében bal egérgomb: megállítás; a visszaszerzett áru a padlóról felvehető. A vészgomb lezárja előtte a bejáratot. A kijutó tolvaj készletveszteséget okoz.
+- **Kávé:** az Üzletfejlesztésben 16 000 Ft-os kávégép vásárolható. A Kávé alkalmazásban 2000 Ft-ért tíz adag alapanyag rendelhető, nyolc másodperces szállítással. E a gépen: főzés, majd az elkészült pohár felvétele. A vevőnek a kék átadóhelyre tedd; ára 650 Ft.
+- **Kamerák:** TobaccOS → Kamerák, majd a nézet kiválasztása. A bolt közben tovább működik.
+- **Játékok:** Snake nyilakkal vagy WASD-vel, memóriajáték kattintással. Menü: játékválasztás; ASZTAL / Esc: visszatérés. A vásárlók közben érkeznek és várakoznak.
+- **Aprópénz:** a tenyérből fizető vevőnél F a fizetés nézetére vált. Kattints az érmékre, majd a pontos összegnél az Átveszem gombra. A kiválasztás visszavonható.
+- **Önkiszolgáló áru:** a vevő a külön szürke pulthelyre teszi. Tartsd szabadon ezt a helyet.
+
+A bolt bővítése a teljes középső falat eltünteti, így egybenyílik a helyiség. A kávégép, a vészgomb, a polc, az alapanyag és a földre tett tárgyak napváltáskor megmaradnak. A játék bezárására továbbra is a fent jelzett mentési korlát érvényes.
+
+## További tartalmak
+
+
+A figurák, termékek, pénzek és berendezések még próbamodellből állnak. Az ellenőr/személyi, összetettebb készpénzes trükkök, hitelkérés és a reggeli törzsvendégek további történetei későbbi fejlesztések. Az önkiszolgáló figurák rögzített útvonalpontokat követnek; fejlett tömegelkerülés még nincs.

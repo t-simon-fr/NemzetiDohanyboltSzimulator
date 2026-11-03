@@ -13,6 +13,7 @@ public static class ComputerWorkflowChecks
         var control=Control(kind,value);Physics.SyncTransforms();var screen=Camera.main.WorldToScreenPoint(control.transform.position);
         Require(screen.z>0&&screen.x>0&&screen.x<Camera.main.pixelWidth&&screen.y>0&&screen.y<Camera.main.pixelHeight,"Computer app target is visible: "+control.name);
         Require(Physics.Raycast(Camera.main.ScreenPointToRay(screen),out var hit,4,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore)&&hit.collider.GetComponentInParent<ShopWorldControl>()==control,"Actual mouse ray reaches app control: "+control.name);
+        if(kind==WorldControlKind.ExtraShelf&&!MvpShopController.Instance.Layout.ExtraShelfOwned)ShopCheckFixtures.Fund(MvpShopController.Instance,ShopLayout.ExtraShelfPrice-1200);
         control.Activate(MvpShopController.Instance);
     }
     public static object Run()
@@ -55,7 +56,7 @@ public static class ComputerWorkflowChecks
             game.OpenShop();Require(!game.BuyExtraShelf(),"Furniture purchases blocked during active business");game.RequestClose();game.Tick(.1f);game.NextDay();
             Require(game.Day==2&&game.Layout.ExtraShelfOwned&&shelf.Occupant!=null&&game.WarehouseCount(0)==2,"Next day retains furniture and both stocked and stored units");
             game.ResetDemo();game.ClosePanel();Require(!game.Layout.ExtraShelfOwned&&!UnityEngine.Object.FindObjectsByType<ProductSlot>().Any(s=>s.name.StartsWith("Extra cigarette")),"New game hides unpurchased furniture and clears its goods");
-            Require(game.TryExpand()&&game.OrderSupply(Water),"Prepare inexpensive water shipment");game.Tick(8.1f);area.Dock(Water).GetComponent<ShopStation>().Use(player);var held=player.HeldCarton;
+            Require(ShopCheckFixtures.Expand(game)&&game.OrderSupply(Water),"Prepare inexpensive water shipment");game.Tick(8.1f);area.Dock(Water).GetComponent<ShopStation>().Use(player);var held=player.HeldCarton;
             Require(held.Quantity==3&&area.Carton(Water)==null,"Filled carried carton releases its delivery dock");
             Require(game.OrderSupply(Water),"Reorder same brand while filled carton is carried");game.Tick(8.1f);var next=area.Carton(Water);
             Require(next!=null&&next!=held&&next.Quantity==3&&held.Quantity==3&&game.WarehouseCount(Water)==6,"Arrival gets separate rack carton and never refills carried case");

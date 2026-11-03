@@ -13,13 +13,13 @@ public static class DrinkPackagingChecks
         var hand=new GameObject("Drink check hand").transform;hand.position=Vector3.one*1000;game.ManualTick=true;
         try
         {
-            check(ShopCatalog.Ids.Skip(4).SequenceEqual(new[]{"water","cola","energy"}),"Approved drink IDs");
+            check(ShopCatalog.Ids.Skip(4).Take(ShopCatalog.Count-4).SequenceEqual(new[]{"water","cola","energy"}),"Approved drink IDs");
             check(ShopCatalog.Names[6]=="Hamster Energy 500 ml","Half-litre energy drink in catalog");
             check(ProductVisuals.Size(6).y>ProductVisuals.Size(5).y&&ProductVisuals.Size(6).x>ProductVisuals.Size(5).x,"500 ml can is taller and wider than 330 ml cola");
             for(int type=4;type<7;type++)
             {
                 game.ResetDemo();game.ClosePanel();check(!game.OrderSupply(type),"Drink locked until shop expansion");
-                check(game.TryExpand(),"Unlock public drink shelves");
+                check(ShopCheckFixtures.Expand(game),"Unlock public drink shelves");
                 check(game.OrderSupply(type),"Drink can be purchased");game.Tick(8.1f);
                 var carton=game.Warehouse.Carton(type);
                 check(carton!=null&&carton.Quantity==3,"Delivery has a brand-specific carton");
@@ -51,7 +51,7 @@ public static class DrinkPackagingChecks
         game.ManualTick=true;
         try
         {
-            game.ResetDemo();game.ClosePanel();game.TryExpand();
+            game.ResetDemo();game.ClosePanel();ShopCheckFixtures.Expand(game);
             for(int type=4;type<7;type++)
             {
                 if(!game.OrderSupply(type))throw new Exception("Cannot order shelf preview stock");game.Tick(8.1f);

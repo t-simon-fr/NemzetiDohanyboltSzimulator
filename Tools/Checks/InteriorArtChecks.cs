@@ -37,7 +37,7 @@ public static class InteriorArtChecks
             check(GameObject.Find("Survivor plant")!=null&&GameObject.Find("Cashier coffee mug")!=null,"Counter props present");
             check(GameObject.Find("Opening hours")!=null,"Hours displayed by entrance");
             var partition=GameObject.Find("Expansion partition");var trim=partition.transform.Find("Interior Wall Trim");check(trim!=null&&trim.gameObject.activeInHierarchy,"Starter wall has matching trim");
-            check(game.TryExpand()&&!trim.gameObject.activeInHierarchy,"Expansion hides decorative wall trim with its partition");
+            check(ShopCheckFixtures.Expand(game)&&!trim.gameObject.activeInHierarchy,"Expansion hides decorative wall trim with its partition");
             var counter=game.Counter.transform;var prop=GameObject.Find("Cashier coffee mug").transform;var local=counter.InverseTransformPoint(prop.position);var position=counter.position;var rotation=counter.rotation;
             try{counter.position+=new Vector3(.12f,0,.08f);counter.rotation=Quaternion.Euler(0,12,0)*rotation;check(Vector3.Distance(prop.position,counter.TransformPoint(local))<.001f,"Counter decorations follow movement and rotation");}
             finally{counter.SetPositionAndRotation(position,rotation);}

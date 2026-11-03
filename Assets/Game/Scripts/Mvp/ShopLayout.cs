@@ -2,8 +2,8 @@ using UnityEngine;
 
 public sealed class ShopLayout : MonoBehaviour
 {
-    public const int ExpansionPrice=2000;
-    public const int ExtraShelfPrice=1200;
+    public const int ExpansionPrice=24000;
+    public const int ExtraShelfPrice=9000;
     [SerializeField] private GameObject extraShelf;
     public bool ExtraShelfOwned { get; private set; }
     public void ConfigureExtraShelf(GameObject shelf){extraShelf=shelf;SetExtraShelf(false);}
@@ -16,7 +16,12 @@ public sealed class ShopLayout : MonoBehaviour
     public void Configure(GameObject wall,GameObject room,ProductSlot[] slots,int[] types)
     { starterWall=wall;extension=room;publicSlots=slots;publicTypes=types;SetExpanded(false); }
     public void SetExpanded(bool expanded)
-    { Expanded=expanded;starterWall.SetActive(!expanded);extension.SetActive(expanded); }
+    {
+        Expanded=expanded;starterWall.SetActive(!expanded);extension.SetActive(expanded);
+        // Existing scenes keep the second divider beside the starter partition.
+        var sideWall=starterWall.transform.parent.Find("Staff side wall");
+        if(sideWall!=null)sideWall.gameObject.SetActive(!expanded);
+    }
     public bool IsPublicProduct(int type)=>Expanded && type>=ShopCatalog.CigaretteCount && type<ShopCatalog.Count;
     public ShopProduct FindPublicStock(int type)
     {

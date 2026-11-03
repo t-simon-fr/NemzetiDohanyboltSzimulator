@@ -15,6 +15,7 @@ public static class TobaccOSChecks
         var camera=Camera.main;var screen=camera.WorldToScreenPoint(control.transform.position);
         Check(screen.z>0&&screen.x>0&&screen.x<camera.pixelWidth&&screen.y>0&&screen.y<camera.pixelHeight,"Visible TobaccOS control: "+kind+" / "+value);
         Check(Physics.Raycast(camera.ScreenPointToRay(screen),out var hit,4,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore)&&hit.collider.GetComponentInParent<ShopWorldControl>()==control,"Unobstructed TobaccOS control: "+kind+" / "+value);
+        if(kind==WorldControlKind.Expand&&!MvpShopController.Instance.Layout.Expanded)ShopCheckFixtures.Fund(MvpShopController.Instance,ShopLayout.ExpansionPrice-2000);
         control.Activate(MvpShopController.Instance);
     }
     public static object Run()
@@ -65,7 +66,7 @@ public static class TobaccOSChecks
                 foreach(var control in ActiveOrders()){var pixel=Camera.main.WorldToScreenPoint(control.transform.position);Check(pixel.x>0&&pixel.x<Camera.main.pixelWidth&&pixel.y>0&&pixel.y<Camera.main.pixelHeight,"Monitor framing fits aspect "+aspect);}
             }
             Camera.main.ResetAspect();
-            game.ResetDemo();game.ClosePanel();Check(game.TryExpand(),"Expand for warehouse capacity check");
+            game.ResetDemo();game.ClosePanel();Check(ShopCheckFixtures.Expand(game),"Expand for warehouse capacity check");
             Check(game.OrderSupply(4,12)&&game.OrderSupply(4,12),"Two maximum-quantity shipments accepted");
             Check(game.PendingQuantity(4)==24&&game.Ledger.Cash==400,"Pending stock and wholesale total agree");
             Check(!game.OrderSupply(4,1)&&game.PendingQuantity(4)==24&&game.Ledger.Cash==400,"Combined stock limit rejects extra units without charging");
@@ -83,7 +84,7 @@ public static class TobaccOSChecks
         var rt=new RenderTexture(1500,1000,24);var image=new Texture2D(1500,1000,TextureFormat.RGB24,false);game.ManualTick=true;
         try
         {
-            game.ResetDemo();game.ClosePanel();if(mode=="expanded")game.TryExpand();camera.targetTexture=rt;
+            game.ResetDemo();game.ClosePanel();if(mode=="expanded")ShopCheckFixtures.Expand(game);camera.targetTexture=rt;
             game.Devices.Focus(ShopDeviceKind.Monitor);if(mode!="desktop")game.Devices.OpenApp(ShopComputerApp.Orders);
             camera.Render();RenderTexture.active=rt;image.ReadPixels(new Rect(0,0,1500,1000),0,0);image.Apply();Directory.CreateDirectory("Builds/TobaccOSPreview");
             File.WriteAllBytes("Builds/TobaccOSPreview/"+mode+".png",image.EncodeToPNG());return "Builds/TobaccOSPreview/"+mode+".png";

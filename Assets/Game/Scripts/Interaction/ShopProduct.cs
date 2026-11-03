@@ -54,6 +54,7 @@ public sealed class ShopProduct : MonoBehaviour
         GetShape(out Vector3 halfSize, out Vector3 centerOffset);
         Pose pose = slot.GetPose(halfSize, centerOffset);
         transform.SetPositionAndRotation(pose.position, pose.rotation);
+        ShopLoosePhysics.Freeze(gameObject);
         return true;
     }
 
@@ -115,6 +116,12 @@ public sealed class ShopProduct : MonoBehaviour
         return true;
     }
 
+    public void Drop(Vector3 position,Vector3 velocity)
+    {
+        if(!IsHeld)return;
+        if(currentSlot!=null)currentSlot.Release(this);currentSlot=null;
+        RestorePhysics();ShopLoosePhysics.Throw(gameObject,position,velocity);
+    }
     public void ReturnToPickupPosition()
     {
         if (!IsHeld) return;

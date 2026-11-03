@@ -12,6 +12,10 @@ public sealed class PlayerInteractor : MonoBehaviour
     private ShopStation station;
     private WarehouseBin targetBin;
     private WarehouseCarton heldCarton;
+    private ShopHandTool heldTool,targetTool;
+    private ShopFeatureTarget featureTarget;
+    public ShopHandTool HeldTool=>heldTool;
+    public ShopFeatureTarget TargetFeature=>featureTarget;
     private ShopProduct target;
     private ShopProduct heldProduct;
     private ProductSlot targetSlot;
@@ -22,7 +26,7 @@ public sealed class PlayerInteractor : MonoBehaviour
     public void Configure(Camera cameraReference) => viewCamera = cameraReference;
     private ProductSlot[] placementSlots;
     public bool HasHeldProduct => heldProduct != null;
-    public bool HasHeldItem => heldProduct != null || heldCarton != null;
+    public bool HasHeldItem => heldProduct != null || heldCarton != null || heldTool != null;
     public WarehouseCarton HeldCarton => heldCarton;
     public bool TryHoldCarton(WarehouseCarton carton)
     {
@@ -50,10 +54,23 @@ public sealed class PlayerInteractor : MonoBehaviour
         placementSlots=FindObjectsByType<ProductSlot>(FindObjectsInactive.Include);
         UpdatePlacementHints(); return true;
     }
+    public bool TryHoldTool(ShopHandTool tool)
+    {if(HasHeldItem||tool==null||!tool.PickUp(holdPoint))return false;heldTool=tool;UpdatePlacementHints();return true;}
+    public bool DropHeld()
+    {
+        if(!HasHeldItem)return false;
+        Vector3 position=viewCamera.transform.position+viewCamera.transform.forward*.8f;
+        if(Physics.SphereCast(viewCamera.transform.position,.18f,viewCamera.transform.forward,out var hit,.8f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore))position=hit.point-viewCamera.transform.forward*.23f;
+        Vector3 velocity=viewCamera.transform.forward*1.5f+Vector3.up*.35f;
+        if(heldProduct!=null){heldProduct.Drop(position,velocity);heldProduct=null;}
+        else if(heldCarton!=null){heldCarton.Drop(position,velocity);heldCarton=null;}
+        else {heldTool.Drop(position,velocity);heldTool=null;}
+        UpdatePlacementHints();return true;
+    }
     public void CancelHeld()
     {
         if (heldProduct != null) heldProduct.ReturnToPickupPosition();
-        heldProduct = null; ReturnCarton(); UpdatePlacementHints();
+        heldProduct = null; ReturnCarton();if(heldTool!=null)heldTool.ReturnToPickupPosition();heldTool=null; UpdatePlacementHints();
     }
     public bool RemoveHeld(ShopProduct expected)
     {
@@ -90,11 +107,21 @@ public sealed class PlayerInteractor : MonoBehaviour
     private void Update()
     {
         if (ShopInputGate.Blocked || viewCamera == null || Cursor.lockState != CursorLockMode.Locked || !Application.isFocused)
-        { station=null;targetBin=null;target=null;targetSlot=null;canPlace=false;UpdatePlacementHints(false);return; }
+        { station=null;targetBin=null;target=null;targetSlot=null;canPlace=false;targetTool=null;featureTarget=null;UpdatePlacementHints(false);return; }
         RefreshTarget(viewCamera.ViewportPointToRay(new Vector3(.5f,.5f,0)));
         if (Keyboard.current == null) return;
+        if(Keyboard.current.gKey.wasPressedThisFrame){DropHeld();return;}
+        if(heldTool!=null&&Mouse.current!=null)
+        {
+            if(heldTool.Kind==ShopToolKind.Bat&&Mouse.current.leftButton.wasPressedThisFrame)MvpShopController.Instance.Activities.SwingBat(viewCamera);
+            if(heldTool.Kind==ShopToolKind.Mop&&Mouse.current.leftButton.isPressed&&featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill)featureTarget.Scrub(Time.deltaTime);
+        }
         if (station != null && !HasHeldProduct && Keyboard.current.qKey.wasPressedThisFrame) station.Cycle();
         if (!Keyboard.current.eKey.wasPressedThisFrame) return;
+        if (station != null && station.IsPanicButton) { station.Use(this); return; }
+        if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&!HasHeldItem){MvpShopController.Instance.Activities.UseCoffeeMachine();return;}
+        if(heldTool!=null)return;
+        if(!HasHeldItem&&targetTool!=null){TryHoldTool(targetTool);return;}
         if (heldCarton != null)
         {
             if(targetBin!=null)targetBin.Use(this);
@@ -114,22 +141,25 @@ public sealed class PlayerInteractor : MonoBehaviour
     // Shared by keyboard interaction and the scene-level targeting checks.
     public void RefreshTarget(Ray ray)
     {
-        station=null;targetBin=null;target=null;targetSlot=null;canPlace=false;
+        station=null;targetBin=null;target=null;targetSlot=null;canPlace=false;targetTool=null;featureTarget=null;
         foreach (var hit in Physics.RaycastAll(ray,reach,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Collide).OrderBy(h=>h.distance))
         {
             var slot=hit.collider.GetComponent<ProductSlot>();
             if (hit.collider.isTrigger)
             {
-                if (HasHeldItem && slot != null)
+                if ((heldProduct!=null||heldCarton!=null) && slot != null)
                 { targetSlot=slot;canPlace=heldCarton!=null?heldCarton.CanPlace(slot):heldProduct.TryGetPlacement(slot,out _);break; }
                 continue;
             }
             station=hit.collider.GetComponentInParent<ShopStation>();
             targetBin=hit.collider.GetComponentInParent<WarehouseBin>();
+            featureTarget=hit.collider.GetComponentInParent<ShopFeatureTarget>();
+            targetTool=hit.collider.GetComponentInParent<ShopHandTool>();
+            if(heldTool!=null)break;
             var product=hit.collider.GetComponentInParent<ShopProduct>();
             if (HasHeldItem)
             {
-                if (!LookingAtSupplies && targetBin==null)
+                if (!LookingAtSupplies && targetBin==null && (station==null || !station.IsPanicButton))
                 {
                     targetSlot=product != null ? product.CurrentSlot : NearestSlotOnSurface(hit,ray.origin);
                     canPlace=heldCarton!=null?heldCarton.CanPlace(targetSlot):heldProduct.TryGetPlacement(targetSlot,out _);
@@ -160,7 +190,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         {
             if (slot==null) continue;
             bool selected=slot==targetSlot;
-            bool show=visible && HasHeldItem && slot.isActiveAndEnabled &&
+            bool show=visible && (heldProduct!=null||heldCarton!=null) && slot.isActiveAndEnabled &&
                 (selected || (heldCarton!=null ? heldCarton.Quantity>0&&slot.CanAcceptStock(ShopCatalog.Ids[heldCarton.ProductType]) : slot.CanAccept(heldProduct)));
             slot.ShowPlacementHint(show,selected,!selected||canPlace);
         }
@@ -169,7 +199,7 @@ public sealed class PlayerInteractor : MonoBehaviour
     private void OnDisable()
     {
         if (heldProduct != null) heldProduct.ReturnToPickupPosition();
-        heldProduct = null; ReturnCarton();
+        heldProduct = null; ReturnCarton();if(heldTool!=null)heldTool.ReturnToPickupPosition();heldTool=null;
         target = null;
         targetSlot = null; UpdatePlacementHints(false);
     }
@@ -191,7 +221,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         bool cursorLocked = Cursor.lockState == CursorLockMode.Locked;
         Color previousColor = GUI.color;
         Color activeColor = new Color(0.4f, 1f, 0.6f);
-        GUI.color = (target != null || station != null || targetBin != null || canPlace) ? activeColor : Color.white;
+        GUI.color = (target != null || station != null || targetBin != null || targetTool!=null || featureTarget!=null || canPlace) ? activeColor : Color.white;
         if (cursorLocked)
         {
             float x = Screen.width * 0.5f;
@@ -214,6 +244,10 @@ public sealed class PlayerInteractor : MonoBehaviour
             targetSlot != null && !targetSlot.CanAccept(heldProduct) ? "Ez a termékhely foglalt" :
             targetSlot != null ? "Az áru nem fér el ezen a helyen" : "Nézz egy kijelölt, üres polc- vagy pulthelyre";
         string prompt = !cursorLocked ? "Kattints a játékba a folytatáshoz" :
+            station != null && station.IsPanicButton ? station.Prompt :
+            heldTool!=null ? (featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill?featureTarget.Prompt:heldTool.DisplayName+" • Bal egérgomb: használat • G: eldobás") :
+            !HasHeldItem&&targetTool!=null ? "E – Felvétel: "+targetTool.DisplayName :
+            !HasHeldItem&&featureTarget!=null ? featureTarget.Prompt :
             heldCarton != null ? (targetBin != null ? (heldCarton.Quantity==0?targetBin.Prompt:"A papírgyűjtőbe csak üres karton kerülhet") : LookingAtSupplies ? "E – Doboz visszarakása a saját raktári polcára" : heldCarton.Quantity==0 ? "Üres doboz: vidd vissza vagy dobd a hátsó papírgyűjtőbe" : canPlace ? "E – Egy termék kipakolása a kijelölt polchelyre" : targetSlot!=null ? "Ez a hely foglalt, vagy más márkához tartozik" : "Nézz egy zölddel jelölt üres polchelyre") :
             heldProduct != null ? (targetBin != null ? "A kukába csak üres kartondoboz kerülhet" : LookingAtSupplies ? "E – Kézben tartott áru visszarakása a dobozba" : placementPrompt) :
             targetBin != null ? targetBin.Prompt : station != null ? station.Prompt : target != null ? "E – Felvétel: " + target.DisplayName : "Nézz egy termékre vagy egy interakciós pontra";
@@ -223,7 +257,8 @@ public sealed class PlayerInteractor : MonoBehaviour
         GUI.DrawTexture(panel, Texture2D.whiteTexture);
         GUI.color = previousColor;
         GUI.Label(new Rect(panel.x + 10, panel.y + 5, panel.width - 20, 48), prompt, promptStyle);
-        string hint = heldCarton != null ? "Kézben: "+ShopCatalog.Names[heldCarton.ProductType]+" doboz • "+heldCarton.Quantity+" db  |  Egy E = egy termék" : heldProduct != null ? "Kézben: " + heldProduct.DisplayName + "  •  A termék automatikusan igazodik a helyéhez" : "WASD – Mozgás  •  Egér – Körülnézés  •  Escape – Kurzor";
+        string hint = heldTool!=null ? "Kézben: "+heldTool.DisplayName+" • G – Eldobás" : heldCarton != null ? "Kézben: "+ShopCatalog.Names[heldCarton.ProductType]+" doboz • "+heldCarton.Quantity+" db  |  Egy E = egy termék" : heldProduct != null ? "Kézben: " + heldProduct.DisplayName + "  •  A termék automatikusan igazodik a helyéhez" : "WASD – Mozgás  •  Egér – Körülnézés  •  Escape – Kurzor";
+        if(heldProduct!=null||heldCarton!=null)hint+=" • G – Eldobás";
         GUI.Label(new Rect(panel.x + 10, panel.y + 54, panel.width - 20, 32), hint, hintStyle);
         if (LookingAtSupplies)
         {

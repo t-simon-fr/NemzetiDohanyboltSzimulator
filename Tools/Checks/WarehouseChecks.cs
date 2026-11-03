@@ -45,7 +45,7 @@ public static class WarehouseChecks
             game.OpenShop();game.RequestClose();game.Tick(.1f);game.NextDay();
             Require(game.Day==2&&area.DiscardedCartons==1&&area.Carton(0)==null,"Next day retains storage and removed packaging");
             game.ResetDemo();game.ClosePanel();Require(area.DiscardedCartons==0&&Enumerable.Range(0,ShopCatalog.Count).All(i=>area.Carton(i)==null),"New game resets physical storage and waste count");
-            Require(game.TryExpand(),"Unlock convenience brands");
+            Require(ShopCheckFixtures.Expand(game),"Unlock convenience brands");
             var old=EmptyCarton(Water);Require(player.TryHoldCarton(old),"Pick empty water carton");
             Require(game.OrderSupply(Water),"Another shipment can be ordered while old packaging is carried");game.Tick(8.1f);
             var replacement=area.Carton(Water);Require(replacement!=null&&replacement!=old&&replacement.Quantity==3&&old.Quantity==0,"New delivery has a separate filled box and does not refill carried empty cardboard");

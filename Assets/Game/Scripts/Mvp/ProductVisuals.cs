@@ -5,6 +5,7 @@ public static class ProductVisuals
     public static readonly Color[] Colors = {new Color(.87f,.81f,.67f),new Color(.72f,.04f,.07f),new Color(.28f,.035f,.075f),new Color(.035f,.035f,.04f),new Color(.2f,.6f,.8f),new Color(.72f,.025f,.04f),new Color(.025f,.03f,.025f)};
     public static Vector3 Size(int type)
     {
+        if(type==ShopCatalog.Coffee)return new Vector3(.14f,.16f,.14f);
         if (ShopCatalog.IsCigarette(type)) return new Vector3(.16f,.26f,.08f);
         if (type == ShopCatalog.Index("water")) return new Vector3(.15f,.35f,.15f);
         if (type == ShopCatalog.Index("cola")) return new Vector3(.14f,.24f,.14f);
@@ -36,11 +37,22 @@ public static class ProductVisuals
     private static readonly string[] ModelPaths = { "CigarettePacks/LuckyStroke", "CigarettePacks/Marlbroke", "CigarettePacks/Downhill", "CigarettePacks/Davidon", "Drinks/ReturAqua", "Drinks/LocaCola", "Drinks/HamsterEnergy" };
     public static GameObject LoadModel(int type)
     {
+        if(type==ShopCatalog.Coffee)return null;
         if (type < 0 || type >= ModelPaths.Length) throw new System.ArgumentOutOfRangeException(nameof(type));
         return Resources.Load<GameObject>(ModelPaths[type]);
     }
     public static void Add(GameObject item,int type)
     {
+        if(type==ShopCatalog.Coffee)
+        {
+            item.GetComponent<Renderer>().enabled=false;
+            var body=GameObject.CreatePrimitive(PrimitiveType.Cylinder);body.name="Coffee cup";body.transform.SetParent(item.transform,false);body.transform.localScale=new Vector3(.84f,.48f,.84f);
+            var cup=new Material(Shader.Find("Universal Render Pipeline/Lit")){color=new Color(.9f,.87f,.78f)};body.GetComponent<Renderer>().sharedMaterial=cup;
+            var liquid=GameObject.CreatePrimitive(PrimitiveType.Cylinder);liquid.name="Fresh coffee";liquid.transform.SetParent(item.transform,false);liquid.transform.localPosition=Vector3.up*.485f;liquid.transform.localScale=new Vector3(.73f,.008f,.73f);
+            var brown=new Material(Shader.Find("Universal Render Pipeline/Lit")){color=new Color(.10f,.04f,.01f)};liquid.GetComponent<Renderer>().sharedMaterial=brown;
+            foreach(var collider in new[]{body.GetComponent<Collider>(),liquid.GetComponent<Collider>()}){collider.enabled=false;Object.Destroy(collider);}
+            var cleanup=item.AddComponent<ShopProductMaterials>();cleanup.Materials=new[]{cup,brown};return;
+        }
         // Product roots retain their interaction collider; prefabs contain only visual meshes.
         var prefab = LoadModel(type);
         if (prefab != null)

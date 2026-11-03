@@ -26,3 +26,7 @@ Furniture ordering, a furniture catalog, placement/rotation/moving, appearance o
 - Browser verification: `node Tools/Verify-WebGL.cjs --tobaccos`; deployed verification: `node Tools/Verify-WebGL.cjs <public-url> --tobaccos`. These capture the desktop, starter catalog, arrival and expanded catalog and report browser runtime errors. Inspect the captures as well as the process result.
 - Web output: `Builds/WebGL`. Publish compiled output only to the public `NemzetiDohanyboltSzimulator-WebGL` repository's `gh-pages` branch. Unity source stays in the private repository.
 - Public game: https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/
+
+## November 3 feature release
+
+The desktop now includes **Coffee**, **Cameras**, and **Games**, alongside Orders and Shop Development. See `Docs/FeatureRelease.md` for the complete behavior and current economy. Coffee supplies are ordered separately from packaged warehouse products. The CCTV and arcade apps keep the shop simulation running. Snake and the eight-pair memory game store local records through PlayerPrefs. The coffee machine, panic button and other improvements are purchased before opening. Current browser smoke check: `node Tools/Verify-WebGL.cjs --features` (optionally with the public URL).

@@ -32,7 +32,7 @@ public static class CompactShopSetup
         Box(room,"Ceiling",new Vector3(0,3.05f,-1.25f),new Vector3(5,.1f,6.3f),wall);
         var boundary=new GameObject("Player Door Boundary");boundary.transform.SetParent(room,false);boundary.transform.localPosition=new Vector3(0,1.2f,-4.48f);boundary.AddComponent<BoxCollider>().size=new Vector3(1.6f,2.4f,.12f);
         var starterWall=Box(room,"Expansion partition",new Vector3(2.5f,1.5f,-3.2f),new Vector3(.15f,3,2.4f),wall);
-        // This permanent section keeps the staff area separated from the new public aisle.
+        // Both divider sections are removed when the self-service expansion is purchased.
         Box(room,"Staff side wall",new Vector3(2.5f,1.5f,0),new Vector3(.15f,3,3.8f),wall);
         Box(room,"Service counter",new Vector3(0,.55f,-2.05f),new Vector3(3.4f,1.1f,.75f),wood);
         Box(room,"Counter top",new Vector3(0,1.13f,-2.05f),new Vector3(3.6f,.08f,.85f),trim);
