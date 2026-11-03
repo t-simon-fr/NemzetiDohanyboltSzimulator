@@ -313,13 +313,23 @@ public sealed partial class MvpShopController : MonoBehaviour
         Security?.ReleaseEntrance();
         Phase = ShopPhase.Closing; Message = "Zárunk. A bent várakozókat még kiszolgálhatod; X-szel udvariasan elküldheted az aktuális vásárlót.";
     }
-    public bool HasUnavailableRequest=>active!=null&&active.OrderTypes.GroupBy(t=>t).Any(g=>ShopCatalog.IsCoffee(g.Key)?(!Activities.CoffeeOwned||Activities.CoffeeSupplies<g.Count()||g.Key==ShopCatalog.Latte&&Activities.MilkSupplies<g.Count()):StockCount(g.Key)<g.Count());
+    private bool IsRequestedTypeUnavailable(int type)
+    {
+        if (active == null) return false;
+        int needed = active.OrderTypes.Count(t => t == type) - StockCount(type);
+        if (needed <= 0) return false;
+        if (!ShopCatalog.IsCoffee(type)) return true;
+        return !Activities.CoffeeOwned || Activities.CoffeeSupplies < needed ||
+            type == ShopCatalog.Latte && Activities.MilkSupplies < needed;
+    }
+    public bool HasUnavailableRequest => active != null && active.OrderTypes.Any(IsRequestedTypeUnavailable);
     public bool OfferAlternative()
     {
         if(active==null||Stage!=ServiceStage.Order||!HasUnavailableRequest)return false;
         var missing=MissingOrderTypes;
         if(missing.Length==0)return false;
-        int original=missing.FirstOrDefault(t=>ShopCatalog.IsCoffee(t)?(!Activities.CoffeeOwned||Activities.CoffeeSupplies==0||t==ShopCatalog.Latte&&Activities.MilkSupplies==0):StockCount(t)<active.OrderTypes.Count(x=>x==t));
+        int original = missing.Where(IsRequestedTypeUnavailable).DefaultIfEmpty(-1).First();
+        if (original < 0) return false;
         int replacement=Enumerable.Range(0,AvailableProducts).Where(t=>t!=original&&ShopCatalog.IsCigarette(t)==ShopCatalog.IsCigarette(original)&&StockCount(t)>active.OrderTypes.Count(x=>x==t)&&ShopPricing.Accepts(t,Pricing.Price(t),Spawned-1,Day)).DefaultIfEmpty(-1).First();
         if(replacement<0||active.Person==2){Notify("Köszönöm, akkor most inkább elmegyek.");SkipCurrent();return false;}
         active.ReplaceRequested(original,replacement);Dialogue="Akkor "+ShopCatalog.ShortNames[replacement]+" jó lesz helyette, köszönöm.";Notify(Dialogue);ClosePanel();return true;

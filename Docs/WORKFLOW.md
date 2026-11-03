@@ -48,4 +48,4 @@ Az alábbi mezők külön bizonyítékok, nem automatikusan egymást követő pi
 
 Látható funkció issue-ját az elfogadási feltételek, Unity-próba és vizuális próba után zárjuk. Ha WebGL-t érint vagy ez a célplatform, a helyi böngészős próbát is várjuk meg. A publikálás külön kiadási döntés; nem szükséges minden funkcióhoz. A forrás módosítása érvényteleníti a változtatással érintett korábbi bizonyítékot.
 
-A jelenlegi `Tools/Verify-WebGL.cjs` a korábbi UI-ra írt, történeti böngészős forgatókönyv: az új főmenühöz előbb frissíteni kell. A workflow bevezetése nem futtat vagy publikál új WebGL-buildet. Ezt soha ne jelöld automatikusan teljesítettnek.
+A korábbi `Tools/Verify-WebGL.cjs` történeti forgatókönyv. Az aktuális helyi elfogadási player és valódi böngészőbemeneti próba: `ShopAcceptanceBuild.Queue`, majd `node Tools/Verify-Acceptance.cjs`. Indítási feltételek, tesztfixture-hatókör és bizonyítékok: [Docs/Acceptance/README.md](Acceptance/README.md). Ez a folyamat nem publikál Pagesre.

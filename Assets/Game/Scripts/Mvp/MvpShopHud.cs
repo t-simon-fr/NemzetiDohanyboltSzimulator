@@ -63,7 +63,7 @@ public sealed class MvpShopHud : MonoBehaviour
             var c=shop.ActiveCustomer;Panel(new Rect(844,12,424,216));GUILayout.BeginArea(new Rect(860,24,392,190));
             Label(ShopPeople.Names[c.Person],true);Label(shop.Stage==ServiceStage.Order?"Jó napot! "+c.OrderDescription+" lenne, kérem.":shop.Dialogue);
             GUILayout.Label("Ár: "+ShopCatalog.Money(c.TotalPrice),small);
-            Label(shop.Stage==ServiceStage.Order?"Még szükséges: "+string.Join(", ",System.Array.ConvertAll(shop.MissingOrderTypes,t=>ShopCatalog.ShortNames[t])):shop.Dialogue);
+            if(shop.Stage==ServiceStage.Order)Label("Még szükséges: "+string.Join(", ",System.Array.ConvertAll(shop.MissingOrderTypes,t=>ShopCatalog.ShortNames[t])));
             GUILayout.Label(shop.Stage==ServiceStage.Order?"A kért árut a kék átadóhelyre tedd. T: válasz a vevőnek.":shop.Stage==ServiceStage.Payment?"E a kasszánál vagy F: visszajáró kiadása.":"A vásárló elköszön.",small);GUILayout.EndArea();
         }
         if(!string.IsNullOrEmpty(shop.Message))

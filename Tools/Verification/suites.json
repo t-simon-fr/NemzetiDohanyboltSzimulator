@@ -9,7 +9,10 @@
       "ledger",
       "checkout-revision",
       "basket-day",
-      "recovery"
+      "recovery",
+      "acceptance-logic",
+      "coffee-world",
+      "binding-acceptance"
     ]
   },
   "suites": {
@@ -32,6 +35,21 @@
       "file": "Tools/Checks/NextFeatureChecks.cs",
       "entry": "NextFeatureChecks.RecoveryAndCancellation",
       "purpose": "Unpaid goods recovery and cancellation"
+    },
+    "acceptance-logic": {
+      "file": "Tools/Checks/AcceptanceLogicChecks.cs",
+      "entry": "AcceptanceLogicChecks.Run",
+      "purpose": "Repeated SKUs and prepared-coffee shortage regression"
+    },
+    "coffee-world": {
+      "file": "Tools/Checks/NextFeatureChecks.cs",
+      "entry": "NextFeatureChecks.WorldAndCoffee",
+      "purpose": "Paid coffee/milk deliveries, manual refill and three physical recipes"
+    },
+    "binding-acceptance": {
+      "file": "Tools/Checks/BindingAcceptanceChecks.cs",
+      "entry": "BindingAcceptanceChecks.Run",
+      "purpose": "Conflicting action-key swap, reserved-key rejection and full defaults restoration"
     }
   },
   "historicalExcluded": {
