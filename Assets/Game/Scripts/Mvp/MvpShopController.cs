@@ -99,6 +99,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     private void OnDisable()
     {
         if (delivery != null) delivery.ProductPlaced -= OnDelivery;
+        if(Activities!=null&&Activities.BasketSlot!=null)Activities.BasketSlot.ProductPlaced-=OnDelivery;
         Security?.ReleaseEntrance();
         ShopInputGate.Blocked = false; Cursor.lockState = CursorLockMode.None; Cursor.visible = true;
         if (Instance == this) Instance = null;
@@ -113,6 +114,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Security.Configure(this);
         Activities=gameObject.AddComponent<ShopActivities>();Activities.Configure(this,player);delivery.Configure(new Vector3(.4f,.4f,.4f));gameObject.AddComponent<ShopNextUpgrades>().Configure(this);
         Pricing=gameObject.AddComponent<ShopPricing>();Pricing.Configure(this);AfterHours=gameObject.AddComponent<ShopAfterHours>();AfterHours.Configure(this);
+        Activities.BasketSlot.ProductPlaced+=OnDelivery;
         ResetDemo();
     }
     private void Update()
@@ -223,7 +225,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     private void OnDelivery(ShopProduct product)
     {
-        if (active == null || Stage != ServiceStage.Order || product == null || product.IsHeld || product.CurrentSlot != delivery) return;
+        if (active == null || Stage != ServiceStage.Order || product == null || product.IsHeld || (product.CurrentSlot != delivery&&product.CurrentSlot!=Activities.BasketSlot)) return;
         if (!active.OrderTypes.Contains(ShopCatalog.Index(product.ProductId)))
         {
             Dialogue = ShopPeople.Wrong[active.Person]; Message = "Vedd vissza a téves árut, és tedd félre egy másik pulthelyre."; return;
@@ -249,8 +251,10 @@ public sealed partial class MvpShopController : MonoBehaviour
         {
             int type=ShopCatalog.Index(product.ProductId);
             if(active.OrderTypes.Count(t=>t==type)<=receivedOrder.Count(p=>p.ProductId==product.ProductId)){Notify("Ez a termék már a kosárban van.");return false;}
-            if(product==active.BasketItem&&product.CurrentSlot==Activities.BasketSlot){receivedOrder.Add(product);return receivedOrder.Count==active.OrderTypes.Length;}
-            int freeIndex=Enumerable.Range(0,active.OrderTypes.Length).First(i=>!receivedOrder.Any(p=>p.CurrentSlot!=null&&Vector3.Distance(p.CurrentSlot.transform.position,ReceiptPosition(i))<.02f));
+            if(product.CurrentSlot==Activities.BasketSlot){receivedOrder.Add(product);return receivedOrder.Count==active.OrderTypes.Length;}
+            int freeIndex=Enumerable.Range(0,active.OrderTypes.Length).Where(i=>(i!=0||Activities.BasketSlot.Occupant==null)&&!receivedOrder.Any(p=>p.CurrentSlot!=null&&Vector3.Distance(p.CurrentSlot.transform.position,ReceiptPosition(i))<.02f)).DefaultIfEmpty(-1).First();
+            if(freeIndex<0){Notify("Tedd szabaddá a kosár pulthelyeit.");return false;}
+            if(freeIndex==0){if(!(product.IsHeld?product.TryPlace(Activities.BasketSlot):product.AssignInitialSlot(Activities.BasketSlot)))return false;if(!receivedOrder.Contains(product))receivedOrder.Add(product);return PreparedIsValid();}
             var slot=new GameObject("Order receipt "+freeIndex).AddComponent<ProductSlot>();slot.transform.SetParent(delivery.transform.parent,false);slot.transform.position=ReceiptPosition(freeIndex);slot.Configure(new Vector3(.35f,.4f,.33f));
             if(!(product.IsHeld?product.TryPlace(slot):product.AssignInitialSlot(slot))){Destroy(slot.gameObject);return false;}receivedOrder.Add(product);
         }
@@ -320,9 +324,9 @@ public sealed partial class MvpShopController : MonoBehaviour
         active.ReturnBasket();
         foreach(var item in receivedOrder)
         {
-            if(item==null||item.IsHeld||item.CurrentSlot==null||!item.CurrentSlot.name.StartsWith("Order receipt"))continue;
+            if(item==null||item.IsHeld||item.CurrentSlot==null||(!item.CurrentSlot.name.StartsWith("Order receipt")&&item.CurrentSlot!=Activities.BasketSlot))continue;
             var old=item.CurrentSlot;var free=FindObjectsByType<ProductSlot>().FirstOrDefault(s=>s.IsStockShelf&&s.CanAcceptStock(item.ProductId)&&s.Fits(item.transform.lossyScale));
-            if(free!=null){item.AssignInitialSlot(free);Destroy(old.gameObject);}else{old.transform.position=Layout.EntryInside+Vector3.right*(receivedOrder.IndexOf(item)*.35f);item.AssignInitialSlot(old);}
+            if(free!=null){item.AssignInitialSlot(free);if(old!=Activities.BasketSlot)Destroy(old.gameObject);}else if(old!=Activities.BasketSlot){old.transform.position=Layout.EntryInside+Vector3.right*(receivedOrder.IndexOf(item)*.35f);item.AssignInitialSlot(old);}
         }
         CleanupReceipts();receivedOrder.Clear();Activities.ClearHand(); Drawer.CancelTender(); changeCoins.Clear(); queue.Remove(active); active.Leave(); departing.Add(active); active = null; prepared = null; Stage = ServiceStage.None;
     }
@@ -403,10 +407,11 @@ public sealed partial class MvpShopController : MonoBehaviour
     public bool OrderSupply(int type) => OrderSupply(type,3);
     public bool OrderSupply(int type,int quantity)
     {
+        if(Ledger.Closed){Message="A mai elszámolás már lezárult. Árurendeléshez kezdd el a következő napot.";return false;}
         if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary) { Message = "Ez az áru a boltbővítés után rendelhető."; return false; }
         if (quantity < 1 || quantity > ShopCatalog.MaxOrderQuantity) { Message = "Egy rendelésben 1–12 terméket választhatsz."; return false; }
         if (warehouse[type] + PendingQuantity(type) + quantity > 24) { Message = "A dobozban már elég áru vár ebből a termékből."; return false; }
-        if (!Ledger.TryBuy(ShopCatalog.Costs[type],quantity)) { Message = "A kasszában nincs elég pénz erre a rendelésre."; return false; }
+        if (!Ledger.TryBuy(ShopCatalog.Costs[type],quantity)) { Message = "Nincs elég elkölthető pénz. Rendelés: "+ShopCatalog.Money(ShopCatalog.Costs[type]*quantity)+"; készpénz és bank együtt: "+ShopCatalog.Money(Ledger.AvailableFunds)+"."; return false; }
         SyncCashDrawer();
         shipments.Add(new Shipment { Type = type, Quantity = quantity, Remaining = 8f }); SelectedSupply = type;
         Message = "Megrendelve " + quantity + " × " + ShopCatalog.Names[type] + ". A szállítás 8 másodperc.";

@@ -79,8 +79,8 @@ public sealed class ShopSecurity : MonoBehaviour
     {
         if (Owned) { shop.Notify("A vészgombot már megvásároltad."); return false; }
         if (shop.Phase!=ShopPhase.Preparing) { shop.Notify("Vészgombot nyitás előtt vásárolhatsz."); return false; }
-        if (shop.Drawer.Total<PurchasePrice || !shop.Ledger.TryImprove(PurchasePrice))
-        { shop.Notify("Nincs elég pénz a vészgombra: "+ShopCatalog.Money(PurchasePrice)+"."); return false; }
+        if (!shop.Ledger.TryImprove(PurchasePrice))
+        { shop.Notify("Nincs elég elkölthető pénz a vészgombra: "+ShopCatalog.Money(PurchasePrice)+"."); return false; }
         shop.SyncCashDrawer();
         Owned = true; Refresh();
         shop.Notify("Vészgomb felszerelve a pult mögött. E: bejárat reteszelése vagy feloldása.");
