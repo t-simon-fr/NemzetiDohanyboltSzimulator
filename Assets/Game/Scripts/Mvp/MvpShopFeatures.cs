@@ -30,6 +30,11 @@ public sealed partial class MvpShopController
         if(Stage!=ServiceStage.Payment||!CoinPayment||Activities.CoinOffer==null)return;
         Activities.CoinOffer.Toggle(index);Activities.RefreshHandCoins();
     }
+    public void UndoCustomerCoin()
+    {
+        if(Stage!=ServiceStage.Payment||!CoinPayment||Activities.CoinOffer==null)return;
+        Activities.CoinOffer.Undo();Activities.RefreshHandCoins();
+    }
     public bool ConfirmCustomerCoins()
     {
         if(Stage!=ServiceStage.Payment||!CoinPayment||!PreparedIsValid()||Activities.CoinOffer==null)return false;

@@ -11,12 +11,12 @@ public static class FeatureReleasePreview
         var game=MvpShopController.Instance;game.ManualTick=true;game.ResetDemo();game.ClosePanel();
         var movement=Object.FindAnyObjectByType<FirstPersonController>();movement.enabled=false;
         ShopCheckFixtures.Fund(game,80000);game.TryExpand();game.Activities.BuyCoffeeMachine();game.BuyPanicButton();game.BuyExtraShelf();
-        for(int type=4;type<7;type++)
+        for(int type=4;type<ShopCatalog.Count;type++)
         {
             game.OrderSupply(type);game.Tick(8.1f);
             for(int unit=0;unit<3;unit++)
             {
-                game.TryCreateSupply(type,out var product);var slot=Object.FindObjectsByType<ProductSlot>().First(s=>s.CanAcceptStock(ShopCatalog.Ids[type]));product.AssignInitialSlot(slot);
+                game.TryCreateSupply(type,out var product);var slot=Object.FindObjectsByType<ProductSlot>().First(s=>s.PreferredProductId==ShopCatalog.Ids[type]&&s.CanAcceptStock(ShopCatalog.Ids[type]));product.AssignInitialSlot(slot);
             }
         }
         game.Activities.OrderCoffeeSupplies();game.Tick(8.1f);game.Activities.BrewCoffee();game.Tick(3.6f);

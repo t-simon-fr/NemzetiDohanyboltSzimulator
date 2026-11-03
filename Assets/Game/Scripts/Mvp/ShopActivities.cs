@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public sealed class ShopActivities : MonoBehaviour
+public sealed partial class ShopActivities : MonoBehaviour
 {
     public const int CoffeeMachinePrice=16000;
     private MvpShopController shop;
@@ -194,7 +194,7 @@ public sealed class ShopActivities : MonoBehaviour
     public void ClearHand(){CoinOffer=null;if(hand!=null){hand.gameObject.SetActive(false);Destroy(hand.gameObject);hand=null;}}
     public void ResetFeatures()
     {
-        ClearHand();CoffeeOwned=false;CoffeeSupplies=0;pendingCoffee=0;brewRemaining=0;coffeeDelivery=0;dirtTimer=48;coffeeRoot.gameObject.SetActive(false);
+        ClearHand();gameChoice=0;snake=null;memory=null;selectedCamera=0;CoffeeOwned=false;CoffeeSupplies=0;pendingCoffee=0;brewRemaining=0;coffeeDelivery=0;dirtTimer=48;coffeeRoot.gameObject.SetActive(false);
         foreach(var spill in spills)if(spill!=null){spill.gameObject.SetActive(false);Destroy(spill.gameObject);}spills.Clear();
         ResetTool(bat,batHome);ResetTool(mop,mopHome);
     }
@@ -232,7 +232,7 @@ public sealed class ShopActivities : MonoBehaviour
         {
             Styles(Screen.width*.6f);var panel=new Rect(Screen.width*.18f,Screen.height-170,Screen.width*.64f,150);GUI.Box(panel,"");
             GUI.Label(new Rect(panel.x+12,panel.y+8,panel.width-24,35),"Fizetendő: "+ShopCatalog.Money(CoinOffer.Price)+" • Kiválasztva: "+ShopCatalog.Money(CoinOffer.Total),heading);
-            GUI.Label(new Rect(panel.x+12,panel.y+45,panel.width-24,30),"Kattints a tenyér érméire. A felemelt érméket választottad ki.",label);
+            GUI.Label(new Rect(panel.x+12,panel.y+45,panel.width-24,30),"Tab / nyilak: érme • Space: kiválasztás • Enter: átvétel • Backspace: vissza",label);
             if(GUI.Button(new Rect(panel.x+12,panel.y+86,panel.width*.3f,45),"Újrakezdem",buttonStyle)){CoinOffer.Clear();RefreshHandCoins();}
             if(GUI.Button(new Rect(panel.x+panel.width*.35f,panel.y+86,panel.width*.62f,45),"Átveszem az összeget",buttonStyle))shop.ConfirmCustomerCoins();
             return;
@@ -296,8 +296,7 @@ public sealed class ShopActivities : MonoBehaviour
                 GUI.enabled=!memory.Matched[i]&&memory.Second<0;
                 if(GUI.Button(new Rect(12+(i%4)*(cardWidth+4),43+(i/4)*(cardHeight+4),cardWidth,cardHeight),memory.Visible(i)?(memory.Cards[i]+1).ToString():"?",buttonStyle))
                 {
-                    memory.Choose(i);
-                    if(memory.Won){int previous=PlayerPrefs.GetInt("TobaccOS.MemoryRecord",0);if(previous==0||memory.Moves<previous){PlayerPrefs.SetInt("TobaccOS.MemoryRecord",memory.Moves);PlayerPrefs.Save();}}
+                    ChooseMemoryCard(i);
                 }
             }
             GUI.enabled=true;

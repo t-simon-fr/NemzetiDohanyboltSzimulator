@@ -7,6 +7,9 @@ public sealed class ProductSlot : MonoBehaviour
     [SerializeField] private Vector3 capacity = new Vector3(0.65f, 0.38f, 0.65f);
     [SerializeField] private ShopProduct occupant;
     [SerializeField] private string allowedProductId = "";
+    // Existing scenes retain their preferred layout without locking shelves to a brand.
+    public string PreferredProductId => allowedProductId;
+    public bool IsStockShelf => ShopCatalog.Index(allowedProductId)>=0 && allowedProductId!="coffee";
     public void RestrictTo(string id) => allowedProductId = id;
     private LineRenderer placementHint;
     private static Material hintMaterial;
@@ -30,10 +33,10 @@ public sealed class ProductSlot : MonoBehaviour
     public event System.Action<ShopProduct> ProductPlaced;
     public void NotifyProductPlaced(ShopProduct product) => ProductPlaced?.Invoke(product);
     public ShopProduct Occupant => occupant;
-    public bool AcceptsType(ShopProduct product) => product != null && (string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId);
+    public bool AcceptsType(ShopProduct product) => product != null && (IsStockShelf || string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId);
     public bool CanAccept(ShopProduct product) => isActiveAndEnabled && AcceptsType(product) && (occupant == null || occupant == product);
 
-    public bool CanAcceptStock(string id) => isActiveAndEnabled && occupant==null && !string.IsNullOrEmpty(allowedProductId) && allowedProductId==id;
+    public bool CanAcceptStock(string id) => isActiveAndEnabled && occupant==null && IsStockShelf && ShopCatalog.Index(id)>=0;
     public bool CanStock(string id,Vector3 size,out Pose pose)
     {
         pose=GetPose(size*.5f,Vector3.zero);
@@ -66,7 +69,7 @@ public sealed class ProductSlot : MonoBehaviour
     public Pose GetPose(Vector3 halfSize, Vector3 colliderCenterOffset)
     {
         Quaternion rotation = transform.rotation;
-        Vector3 center = transform.position + Vector3.up * (halfSize.y + 0.015f);
+        Vector3 center = transform.position + Vector3.up * (halfSize.y + (IsStockShelf ? .005f : .015f));
         return new Pose(center - rotation * colliderCenterOffset, rotation);
     }
 

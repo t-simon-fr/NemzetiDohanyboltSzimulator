@@ -102,15 +102,15 @@ public static class InteriorArtSetup
         if(metal==null){metal=AssetDatabase.LoadAssetAtPath<Material>(Art+"/PowderCoatTeal.mat");ivory=AssetDatabase.LoadAssetAtPath<Material>(Art+"/WarmIvory.mat");wood=AssetDatabase.LoadAssetAtPath<Material>(Art+"/WalnutLaminate.mat");brass=AssetDatabase.LoadAssetAtPath<Material>(Art+"/AgedBrass.mat");paper=AssetDatabase.LoadAssetAtPath<Material>(Art+"/NoticePaper.mat");glow=AssetDatabase.LoadAssetAtPath<Material>(Art+"/FluorescentDiffuser.mat");}
         if(metal==null)return;var rack=Find("Cigarette rack");if(rack==null)return;
         var root=Owned(rack,"Interior Rack Detail",rack.position,rack.rotation);
-        var back=rack.Find("Rack back");back.localPosition=new Vector3(0,.99f,.16f);back.localScale=new Vector3(2.20f,1.8f,.08f);back.GetComponent<MeshRenderer>().sharedMaterial=metal;
+        var back=rack.Find("Rack back");back.localPosition=new Vector3(0,1.13f,.16f);back.localScale=new Vector3(2.20f,2.08f,.08f);back.GetComponent<MeshRenderer>().sharedMaterial=metal;
         for(int row=0;row<4;row++)
         {
-            float y=.23f+row*.35f;var shelf=rack.Find("Shelf "+row);shelf.localPosition=new Vector3(0,y,0);shelf.localScale=new Vector3(2.16f,.045f,.30f);shelf.GetComponent<MeshRenderer>().sharedMaterial=metal;
+            float y=.23f+row*.42f;var shelf=rack.Find("Shelf "+row);shelf.localPosition=new Vector3(0,y,0);shelf.localScale=new Vector3(2.16f,.045f,.30f);shelf.GetComponent<MeshRenderer>().sharedMaterial=metal;
             Box(root,"Shelf front ticket rail "+row,new Vector3(0,y+.001f,-.158f),new Vector3(2.16f,.044f,.014f),ivory);
             for(int col=0;col<8;col++)
             {
                 var cell=rack.Find("Cigarette slot "+row+"-"+col);if(cell==null)continue;
-                cell.localPosition=new Vector3((col-3.5f)*.25f,y+.0225f,0);cell.GetComponent<ProductSlot>().Configure(new Vector3(.23f,.31f,.26f));
+                cell.localPosition=new Vector3((col-3.5f)*.25f,y+.0225f,0);cell.GetComponent<ProductSlot>().Configure(new Vector3(.23f,.37f,.26f));
             }
             for(int brand=0;brand<4;brand++)
             {
@@ -118,24 +118,24 @@ public static class InteriorArtSetup
                 if(brand<3)Box(root,"Lane divider",new Vector3(x+.25f,y+.075f,.025f),new Vector3(.007f,.09f,.24f),ivory);
             }
         }
-        foreach(int side in new[]{-1,1})Box(root,"Cabinet walnut side",new Vector3(side*1.12f,.99f,.015f),new Vector3(.06f,1.82f,.36f),wood);
-        Box(root,"Brand header",new Vector3(0,1.79f,.03f),new Vector3(2.20f,.26f,.20f),metal);
-        Box(root,"Header edge",new Vector3(0,1.925f,.025f),new Vector3(2.24f,.012f,.23f),brass);
-        Box(root,"Shelf light diffuser",new Vector3(0,1.65f,-.035f),new Vector3(2.08f,.012f,.035f),glow);
+        foreach(int side in new[]{-1,1})Box(root,"Cabinet walnut side",new Vector3(side*1.12f,1.13f,.015f),new Vector3(.06f,2.10f,.36f),wood);
+        Box(root,"Brand header",new Vector3(0,2.07f,.03f),new Vector3(2.20f,.26f,.20f),metal);
+        Box(root,"Header edge",new Vector3(0,2.205f,.025f),new Vector3(2.24f,.012f,.23f),brass);
+        Box(root,"Shelf light diffuser",new Vector3(0,1.93f,-.035f),new Vector3(2.08f,.012f,.035f),glow);
         for(int brand=0;brand<4;brand++)
         {
             var old=rack.Find("Brand price "+brand);if(old!=null)UnityEngine.Object.DestroyImmediate(old.gameObject);
             float x=(brand-1.5f)*.50f;
-            Text(root,"Brand name "+brand,ShopCatalog.Names[brand],new Vector3(x,1.81f,-.077f),.037f,new Color(.91f,.88f,.78f));
+            Text(root,"Brand name "+brand,ShopCatalog.Names[brand],new Vector3(x,2.09f,-.077f),.037f,new Color(.91f,.88f,.78f));
             var color=Mat("BrandAccent"+brand,brand==3?new Color(.70f,.55f,.27f):ProductVisuals.Colors[brand],.18f);
-            Box(root,"Brand accent "+brand,new Vector3(x,1.715f,-.079f),new Vector3(.40f,.008f,.006f),color);
+            Box(root,"Brand accent "+brand,new Vector3(x,1.995f,-.079f),new Vector3(.40f,.008f,.006f),color);
         }
         Text(root,"Rack health notice","18+  •  A dohányzás káros az egészségre",new Vector3(0,.115f,-.10f),.027f,new Color(.88f,.86f,.80f));
         var oldSign=Find("Tobacco sign");if(oldSign!=null)oldSign.gameObject.SetActive(false);
-        Box(root,"Shop sign frame",new Vector3(0,2.18f,.045f),new Vector3(2.44f,.37f,.065f),brass);
-        Box(root,"Shop sign face",new Vector3(0,2.18f,.007f),new Vector3(2.39f,.32f,.016f),metal);
-        Text(root,"Shop title","NEMZETI DOHÁNYBOLT",new Vector3(0,2.215f,-.004f),.095f,new Color(.94f,.91f,.80f));
-        Text(root,"Shop subtitle","KIS BOLT. NAGY TÖRTÉNETEK.",new Vector3(0,2.105f,-.004f),.037f,new Color(.78f,.73f,.57f));
+        Box(root,"Shop sign frame",new Vector3(0,2.46f,.045f),new Vector3(2.44f,.37f,.065f),brass);
+        Box(root,"Shop sign face",new Vector3(0,2.46f,.007f),new Vector3(2.39f,.32f,.016f),metal);
+        Text(root,"Shop title","NEMZETI DOHÁNYBOLT",new Vector3(0,2.495f,-.004f),.095f,new Color(.94f,.91f,.80f));
+        Text(root,"Shop subtitle","KIS BOLT. NAGY TÖRTÉNETEK.",new Vector3(0,2.385f,-.004f),.037f,new Color(.78f,.73f,.57f));
         Box(root,"Staff notice paper",new Vector3(-1.68f,1.43f,.26f),new Vector3(.56f,.62f,.012f),paper);
         Text(root,"Staff notice","SZEMÉLYIT\nKÉRÜNK.\n\nA bajusz nem okmány.",new Vector3(-1.68f,1.43f,.25f),.043f,new Color(.14f,.16f,.15f));
     }

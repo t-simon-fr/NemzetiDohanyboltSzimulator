@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public enum ShopDeviceKind { None, Monitor, Till, Coins }
 public enum ShopComputerApp { Desktop, Orders, Furnishing, Coffee, Cameras, Games }
-public sealed class ShopDevices : MonoBehaviour
+public sealed partial class ShopDevices : MonoBehaviour
 {
     [SerializeField] private Transform monitor, drawer, changeTray, tillDisplay;
     [SerializeField] private Transform monitorAssembly, tillAssembly, keypad;
@@ -130,8 +130,8 @@ public sealed class ShopDevices : MonoBehaviour
         Label(orderPage,"SZÁLLÍTÁS: 8 MP",new Vector3(-.57f,.24f,.027f),.019f);
         for(int type=0;type<ShopCatalog.Count;type++) BuildProductCard(type);
         catalogHelp=new GameObject("Delivery help").transform;catalogHelp.SetParent(orderPage,false);
-        ScreenPanel(catalogHelp,"Delivery help background",new Vector3(0,-.225f,.01f),new Vector3(1.72f,.23f,.006f),screenBar);
-        Label(catalogHelp,"A rendelés a raktárba érkezik.\nA dobozból egyesével töltheted fel a polcokat.",new Vector3(0,-.225f,.024f),.025f);
+        ScreenPanel(catalogHelp,"Delivery help background",new Vector3(0,-.285f,.01f),new Vector3(1.72f,.12f,.006f),screenBar);
+        Label(catalogHelp,"A rendelés a raktárba érkezik.\nA dobozból egyesével töltheted fel a polcokat.",new Vector3(0,-.285f,.024f),.023f);
         Label(furnishingPage,"ÜZLETFEJLESZTÉS",new Vector3(0,.22f,.025f),.037f);
         furnishingStatus=Label(furnishingPage,"",new Vector3(0,.105f,.025f),.024f);
         MonitorButton(furnishingPage,"ÖNKISZOLGÁLÓ BŐVÍTÉS • "+ShopCatalog.Money(ShopLayout.ExpansionPrice),new Vector3(0,0,.02f),WorldControlKind.Expand,0,1.72f,.07f,screenAccent);
@@ -151,26 +151,26 @@ public sealed class ShopDevices : MonoBehaviour
     private void BuildProductCard(int type)
     {
         var root=new GameObject("Product card - "+ShopCatalog.Ids[type]);root.transform.SetParent(orderPage,false);
-        root.transform.localPosition=new Vector3(type%2==0?.45f:-.45f,.13f-(type/2)*.145f,.020f);
-        var body=Box(root.transform,"Order "+ShopCatalog.ShortNames[type],Vector3.zero,new Vector3(.84f,.13f,.016f),screenCard);Control(body,WorldControlKind.Order,type);
+        root.transform.localPosition=new Vector3(.58f-(type%3)*.58f,.12f-(type/3)*.185f,.020f);
+        var body=Box(root.transform,"Order "+ShopCatalog.ShortNames[type],Vector3.zero,new Vector3(.55f,.17f,.016f),screenCard);Control(body,WorldControlKind.Order,type);
         var prefab=ProductVisuals.LoadModel(type);
         if(prefab!=null)
         {
             var thumbnail=Instantiate(prefab,root.transform,false);thumbnail.name="Product preview";
-            thumbnail.transform.localPosition=new Vector3(.30f,.003f,.044f);thumbnail.transform.localRotation=Quaternion.Euler(0,180,0);
-            thumbnail.transform.localScale=ProductVisuals.Size(type)*(.095f/ProductVisuals.Size(type).y);
+            thumbnail.transform.localPosition=new Vector3(.21f,0,.044f);thumbnail.transform.localRotation=Quaternion.Euler(0,180,0);
+            thumbnail.transform.localScale=ProductVisuals.Size(type)*(.105f/ProductVisuals.Size(type).y);
             foreach(var collider in thumbnail.GetComponentsInChildren<Collider>()){collider.enabled=false;Destroy(collider);}
             foreach(var renderer in thumbnail.GetComponentsInChildren<Renderer>())renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
         }
-        Label(root.transform,ShopCatalog.Names[type],new Vector3(-.075f,.039f,.031f),.026f);
-        orderPrices.Add(Label(root.transform,"",new Vector3(-.075f,.002f,.031f),.023f));
-        stockLabels.Add(Label(root.transform,"",new Vector3(-.075f,-.041f,.031f),.021f));
+        Label(root.transform,ShopCatalog.Names[type],new Vector3(-.04f,.045f,.031f),.019f);
+        orderPrices.Add(Label(root.transform,"",new Vector3(-.04f,0,.031f),.020f));
+        stockLabels.Add(Label(root.transform,"",new Vector3(-.04f,-.047f,.031f),.019f));
         orderCards.Add(root);
         root.SetActive(type<shop.AvailableProducts);
     }
     public void OpenApp(ShopComputerApp app)
     {
-        ComputerApp=app;if(desktopPage==null)return;
+        ResetKeyboardFocus();ComputerApp=app;if(desktopPage==null)return;
         desktopPage.gameObject.SetActive(app==ShopComputerApp.Desktop);orderPage.gameObject.SetActive(app==ShopComputerApp.Orders);furnishingPage.gameObject.SetActive(app==ShopComputerApp.Furnishing);
         featurePage.gameObject.SetActive(app==ShopComputerApp.Coffee||app==ShopComputerApp.Cameras||app==ShopComputerApp.Games);
         buildingPage.gameObject.SetActive(app!=ShopComputerApp.Desktop);
@@ -301,7 +301,7 @@ public sealed class ShopDevices : MonoBehaviour
         if(view==null||shop==null||shop.HasHeldProduct)return;
         if(Focused)Release();
         cameraPosition=view.transform.localPosition;cameraRotation=view.transform.localRotation;
-        FocusKind=kind;ShopInputGate.Blocked=true;Cursor.lockState=CursorLockMode.None;Cursor.visible=true;
+        ResetKeyboardFocus();FocusKind=kind;ShopInputGate.Blocked=true;Cursor.lockState=CursorLockMode.None;Cursor.visible=true;
         if(kind==ShopDeviceKind.Monitor)
         {
             OpenApp(ShopComputerApp.Desktop);
@@ -344,6 +344,7 @@ public sealed class ShopDevices : MonoBehaviour
             : "KASSZA\n"+ShopCatalog.Money(shop.Ledger.Cash);
         string selection=string.Join(",",ShopCatalog.Denominations.Select(shop.SelectedPieces));
         if(lastSelection!=selection){lastSelection=selection;RefreshTray();}
+        PollDeviceKeyboard();
         if(!Focused||!Application.isFocused||Mouse.current==null||!Mouse.current.leftButton.wasPressedThisFrame)return;
         if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame)return;
         Ray ray=view.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -353,7 +354,7 @@ public sealed class ShopDevices : MonoBehaviour
             if(control==null)return;
             bool valid=FocusKind==ShopDeviceKind.Monitor?control.transform.IsChildOf(monitor):FocusKind==ShopDeviceKind.Coins?shop.Activities.CustomerHand!=null&&control.transform.IsChildOf(shop.Activities.CustomerHand):control.transform.IsChildOf(tillAssembly);
             if(control.Kind==WorldControlKind.Denomination&&!registerDrawer.IsOpen)valid=false;
-            if(valid)control.Activate(shop);
+            if(valid){keyboardOutline=false;control.Activate(shop);}
         }
     }
     private void RefreshTray()

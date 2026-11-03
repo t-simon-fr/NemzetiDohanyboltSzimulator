@@ -2,11 +2,12 @@ using UnityEngine;
 
 public static class ProductVisuals
 {
-    public static readonly Color[] Colors = {new Color(.87f,.81f,.67f),new Color(.72f,.04f,.07f),new Color(.28f,.035f,.075f),new Color(.035f,.035f,.04f),new Color(.2f,.6f,.8f),new Color(.72f,.025f,.04f),new Color(.025f,.03f,.025f)};
+    public static readonly Color[] Colors = {new Color(.87f,.81f,.67f),new Color(.72f,.04f,.07f),new Color(.28f,.035f,.075f),new Color(.035f,.035f,.04f),new Color(.2f,.6f,.8f),new Color(.72f,.025f,.04f),new Color(.025f,.03f,.025f),new Color(.75f,.24f,.025f),new Color(.12f,.32f,.12f)};
     public static Vector3 Size(int type)
     {
         if(type==ShopCatalog.Coffee)return new Vector3(.14f,.16f,.14f);
         if (ShopCatalog.IsCigarette(type)) return new Vector3(.16f,.26f,.08f);
+        if (type == ShopCatalog.Index("kevert")) return new Vector3(.085f,.20f,.085f);
         if (type == ShopCatalog.Index("water")) return new Vector3(.15f,.35f,.15f);
         if (type == ShopCatalog.Index("cola")) return new Vector3(.14f,.24f,.14f);
         return new Vector3(.15f,.32f,.15f);
@@ -34,7 +35,7 @@ public static class ProductVisuals
     {
         if(fontMaterial!=null && font==Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"))fontMaterial.mainTexture=font.material.mainTexture;
     }
-    private static readonly string[] ModelPaths = { "CigarettePacks/LuckyStroke", "CigarettePacks/Marlbroke", "CigarettePacks/Downhill", "CigarettePacks/Davidon", "Drinks/ReturAqua", "Drinks/LocaCola", "Drinks/HamsterEnergy" };
+    private static readonly string[] ModelPaths = { "CigarettePacks/LuckyStroke", "CigarettePacks/Marlbroke", "CigarettePacks/Downhill", "CigarettePacks/Davidon", "Drinks/ReturAqua", "Drinks/LocaCola", "Drinks/HamsterEnergy", "Drinks/Kevert", "Drinks/Kofejtoi" };
     public static GameObject LoadModel(int type)
     {
         if(type==ShopCatalog.Coffee)return null;

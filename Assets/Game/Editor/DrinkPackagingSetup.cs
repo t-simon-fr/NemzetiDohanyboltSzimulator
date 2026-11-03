@@ -25,7 +25,7 @@ public static class DrinkPackagingSetup
         {
             var data = new SerializedObject(slot); var id = data.FindProperty("allowedProductId");
             if (id.stringValue == "gum") id.stringValue = "cola";
-            if (id.stringValue == "beer") id.stringValue = "energy";
+            if (id.stringValue == "beer" && slot.name.StartsWith("Public slot 2-")) id.stringValue = "energy";
             data.ApplyModifiedPropertiesWithoutUndo();
         }
         foreach (var text in all.Select(t => t.GetComponent<TextMesh>()).Where(t => t != null))
@@ -34,7 +34,7 @@ public static class DrinkPackagingSetup
             if (text.name == "Árcímke")
             {
                 text.characterSize = .045f * .18f;
-                for (int type = 4; type < ShopCatalog.Count; type++)
+                for (int type = 4; type < 7; type++)
                     if (text.text.Contains(ShopCatalog.Names[type])) text.text = ShopCatalog.Names[type] + " • " + ShopCatalog.Money(ShopCatalog.Prices[type]);
             }
         }
@@ -42,11 +42,11 @@ public static class DrinkPackagingSetup
         foreach (var owner in new UnityEngine.Object[] { shop, shop.GetComponent<WarehouseArea>() })
         {
             var data = new SerializedObject(owner); var materials = data.FindProperty("productMaterials");
-            for (int type = 4; type < ShopCatalog.Count; type++) materials.GetArrayElementAtIndex(type).objectReferenceValue = fallback[type-4];
+            for (int type = 4; type < 7; type++) materials.GetArrayElementAtIndex(type).objectReferenceValue = fallback[type-4];
             data.ApplyModifiedPropertiesWithoutUndo();
         }
         var area = shop.GetComponent<WarehouseArea>();
-        for (int type = 4; type < ShopCatalog.Count; type++)
+        for (int type = 4; type < 7; type++)
         {
             var dock = area.Dock(type); dock.name = "Brand Dock - " + ShopCatalog.Names[type];
             var label = dock.Find("Brand dock label"); if (label != null) label.GetComponent<TextMesh>().text = ShopCatalog.Names[type];
@@ -101,7 +101,7 @@ public static class DrinkPackagingSetup
         if (mat == null) { mat = new Material(Shader.Find("Universal Render Pipeline/Lit")); AssetDatabase.CreateAsset(mat,path); }
         mat.color = color; mat.SetFloat("_Smoothness",smoothness); mat.SetFloat("_Metallic",metallic); EditorUtility.SetDirty(mat); return mat;
     }
-    static GameObject Part(GameObject root,string name,Mesh mesh,Material material)
+    public static GameObject Part(GameObject root,string name,Mesh mesh,Material material)
     {
         var go = new GameObject(name); go.transform.SetParent(root.transform,false);
         go.AddComponent<MeshFilter>().sharedMesh = mesh; go.AddComponent<MeshRenderer>().sharedMaterial = material; return go;
@@ -111,7 +111,7 @@ public static class DrinkPackagingSetup
         root.transform.localScale = ProductVisuals.Size(index+4);
         PrefabUtility.SaveAsPrefabAsset(root,Prefabs + "/" + Keys[index] + ".prefab"); UnityEngine.Object.DestroyImmediate(root);
     }
-    static Mesh Lathe(string name,Vector2[] profile,int segments,int labelRow = -1,bool faceted = false)
+    public static Mesh Lathe(string name,Vector2[] profile,int segments,int labelRow = -1,bool faceted = false)
     {
         var vertices = new List<Vector3>(); var normals = new List<Vector3>(); var uv = new List<Vector2>(); var triangles = new List<int>();
         float min = profile.Min(p=>p.y),height = Mathf.Max(.001f,profile.Max(p=>p.y)-min);

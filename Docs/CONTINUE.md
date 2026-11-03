@@ -11,11 +11,15 @@ Mentési pont: 2026. november 3.
 - Játékosi használat: `MVP_GUIDE.md`. Ellenőrzések: `MVP_CHECKS.md`.
 - Iránydokumentum: `Docs/GAME_VISION.md`.
 
+## Legfrissebb: billentyűzet, italok és szabad polcelhelyezés
+
+Az #1 issue három új feladata is elkészült. Kassza: Enter, Backspace, Delete, címletbillentyűk. Monitor: Tab / nyilak / Enter, Backspace, alkalmazás- és termékgyorsbillentyűk. Kevert 50 ml és Kőfejtői 500 ml saját modellel, öt italpolccal és kilenc raktári márkahellyel. Bármely termék és a kávé bármely szabad bolti polchelyen elhelyezhető; a magas palackokhoz igazított kezdőpolc, tartalomkövető árcímkék és a tényleges helyről vásárló NPC-k is elkészültek. **25 csoport, 3690 sikeres állítás**. Részletek: `Docs/KeyboardAlcoholRelease.md`; jelentés: `Builds/KeyboardAlcoholRelease/checks.json`.
+
 ## Teljes GitHub feature-csomag
 
-Az eredeti issue mind a kilenc kérése megvalósult, a vészgombbal és az egybenyitott üzlettel együtt. Aktuális funkciók, kezelés, árak és ellenőrzés: **Docs/FeatureRelease.md**. Fő új források: `ShopActivities`, `ShopMiniGames`, `ShopHandTool`, `MvpShopFeatures`; próbák: `FeatureReleaseChecks`. A legutóbbi teljes ellenőrzés **21 csoportban 1105 sikeres állítás**. A későbbi szakaszok korábbi mérési és fejlesztési pontokat dokumentálnak.
+Az eredeti issue mind a kilenc kérése megvalósult, a vészgombbal és az egybenyitott üzlettel együtt. Aktuális funkciók, kezelés, árak és ellenőrzés: **Docs/FeatureRelease.md**. Fő új források: `ShopActivities`, `ShopMiniGames`, `ShopHandTool`, `MvpShopFeatures`; próbák: `FeatureReleaseChecks`. Az előző teljes ellenőrzés **21 csoportban 1105 sikeres állítás** volt. A későbbi szakaszok korábbi mérési és fejlesztési pontokat dokumentálnak.
 
-A TobaccOS új alkalmazásai: Kávé, Kamerák, Játékok. Bővítés 24 000 Ft, extra polc 9000 Ft, kávégép 16 000 Ft; a vészgomb 7500 Ft. G-vel minden hordozható tárgy eldobható. A kamerák és minijátékok közben a bolt működik. A kávé a 7-es termékazonosító; a `ShopCatalog.Count` a hét polcos/raktári terméket jelenti, a kávéalapanyag külön rendszerben készül és rendelhető.
+A TobaccOS új alkalmazásai: Kávé, Kamerák, Játékok. Bővítés 24 000 Ft, extra polc 9000 Ft, kávégép 16 000 Ft; a vészgomb 7500 Ft. G-vel minden hordozható tárgy eldobható. A kamerák és minijátékok közben a bolt működik. A kávé a `ShopCatalog.Coffee` termékazonosító; a `ShopCatalog.Count` a kilenc polcos/raktári terméket jelenti, a kávéalapanyag külön rendszerben készül és rendelhető.
 
 ## Egybenyitott üzlet bővítés után
 

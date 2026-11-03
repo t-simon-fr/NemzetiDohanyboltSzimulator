@@ -110,11 +110,11 @@ public static class CompactShopChecks
             UnityEngine.Object.DestroyImmediate(hand.gameObject);game.ResetDemo();game.ManualTick=false;
         }
     }
-    private static ProductSlot EmptyShelf(int type)=>UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.name.StartsWith(ShopCatalog.IsCigarette(type)?"Cigarette slot":"Public slot")&&s.CanAccept(Probe(type)));
+    private static ProductSlot EmptyShelf(int type)=>UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.name.StartsWith(ShopCatalog.IsCigarette(type)?"Cigarette slot":"Public slot")&&s.PreferredProductId==ShopCatalog.Ids[type]&&s.CanAccept(Probe(type)));
     private static ShopProduct Probe(int type)=>UnityEngine.Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[type]);
     private static void PlaceOnShelf(ShopProduct item,int type)
     {
-        Check(item.PickUp(hand),"Carry supplied product");Physics.SyncTransforms();Check(item.TryPlace(EmptyShelf(type)),"Place on type-restricted fixed shelf");
+        Check(item.PickUp(hand),"Carry supplied product");Physics.SyncTransforms();Check(item.TryPlace(EmptyShelf(type)),"Place on preferred fixed shelf");
     }
     private static void Offer(ShopProduct item)
     {

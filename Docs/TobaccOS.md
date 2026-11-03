@@ -1,13 +1,13 @@
 # TobaccOS shop computer
 
-The counter computer runs TobaccOS, a dark teal desktop with two applications: **Árurendelés** (product ordering) and **Üzletfejlesztés** (the existing shop upgrades). Open it with E on the monitor or B near the counter; Escape or the screen exit button returns to the shop.
+The counter computer runs TobaccOS, a dark teal desktop with **Árurendelés** (orders), **Üzletfejlesztés** (upgrades), **Kávé**, **Kamerák** and **Játékok**. Open it with E on the monitor or B near the counter; Escape or the screen exit button returns to the shop.
 
 ## Product ordering
 
 - Select 1–12 units with minus/plus, then click a product card to place that order immediately. The initial selection is three units.
 - Each card shows the actual product model, product name and volume, the wholesale total for the selected quantity, and shelf/warehouse/in-transit quantities.
 - Before the self-service expansion is purchased, the catalog contains only Lucky Stroke, Marlbroke, Downhill and Davidon. Locked drink cards, names, thumbnails and interaction colliders are inactive; there are no locked-product placeholders.
-- Purchasing the existing 2000 Ft expansion reveals ReturAqua 500 ml, Loca Cola 330 ml and Hamster Energy 500 ml. The existing 1200 Ft nine-slot cigarette shelf remains in the development app.
+- Purchasing the 24 000 Ft expansion reveals ReturAqua 500 ml, Loca Cola 330 ml, Hamster Energy 500 ml, Kevert 50 ml and Kőfejtői 500 ml. The 9000 Ft nine-slot cigarette shelf, 16 000 Ft coffee machine and 7500 Ft panic button are available in the development app.
 - Orders charge the selected quantity at wholesale cost and arrive after eight simulation seconds in the corresponding brand's warehouse carton. The computer reports successful orders, failures and arrival.
 - The model rejects unavailable products, quantities outside 1–12, insufficient funds, and orders exceeding 24 stored plus pending units per product. Rejected orders do not charge cash or create shipments.
 - Starting a new game resets the quantity to three, returns to the desktop and hides expansion products again. The existing in-session next-day persistence is unchanged.
@@ -30,3 +30,8 @@ Furniture ordering, a furniture catalog, placement/rotation/moving, appearance o
 ## November 3 feature release
 
 The desktop now includes **Coffee**, **Cameras**, and **Games**, alongside Orders and Shop Development. See `Docs/FeatureRelease.md` for the complete behavior and current economy. Coffee supplies are ordered separately from packaged warehouse products. The CCTV and arcade apps keep the shop simulation running. Snake and the eight-pair memory game store local records through PlayerPrefs. The coffee machine, panic button and other improvements are purchased before opening. Current browser smoke check: `node Tools/Verify-WebGL.cjs --features` (optionally with the public URL).
+
+
+## Keyboard support
+
+Tab / Shift+Tab and arrow keys navigate visible controls; Enter / Space activate; Backspace returns from a game to its menu, from an app to the desktop, then to the shop. Desktop keys 1–5 open the five applications. Order keys 1–9 select a product without purchasing; Enter confirms; plus/minus adjusts quantity. Disabled and hidden controls cannot be activated. Snake retains its arrow keys. Coffee ordering, camera selection and all memory cards also expose keyboard targets. See `Docs/KeyboardAlcoholRelease.md` for controls and verified integration results.

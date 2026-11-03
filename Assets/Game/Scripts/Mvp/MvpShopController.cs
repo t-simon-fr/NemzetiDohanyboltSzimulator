@@ -181,7 +181,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         clone.SetActive(false);
         var legacy = clone.GetComponent<CustomerOrderController>(); if (legacy != null) legacy.enabled = false;
         MvpCustomerActor actor = clone.AddComponent<MvpCustomerActor>();
-        int type = Layout != null && Layout.Expanded && visit % 2 == 1 ? ShopCatalog.CigaretteCount + (visit % (ShopCatalog.Count - ShopCatalog.CigaretteCount)) : ShopCatalog.VisitProducts[visit];
+        int type = Layout != null && Layout.Expanded && visit % 2 == 1 ? ShopCatalog.CigaretteCount + ((visit + Day - 1) % (ShopCatalog.Count - ShopCatalog.CigaretteCount)) : ShopCatalog.VisitProducts[visit];
         if(Activities.CoffeeOwned&&visit%4==2)type=ShopCatalog.Coffee;
         actor.Initialize((visit + Day - 1) % 4, type, visit);
         clone.SetActive(true); queue.Add(actor);

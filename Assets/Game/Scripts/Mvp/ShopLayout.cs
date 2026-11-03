@@ -22,12 +22,38 @@ public sealed class ShopLayout : MonoBehaviour
         var sideWall=starterWall.transform.parent.Find("Staff side wall");
         if(sideWall!=null)sideWall.gameObject.SetActive(!expanded);
     }
-    public bool IsPublicProduct(int type)=>Expanded && type>=ShopCatalog.CigaretteCount && type<ShopCatalog.Count;
+    private void Start()
+    {
+        foreach(var label in GetComponentsInScene<TextMesh>())
+        {
+            if(label.name.StartsWith("Shelf price ")&&label.transform.parent!=null)
+            {
+                var parts=label.name.Substring("Shelf price ".Length).Split('-');
+                if(parts.Length==2&&int.TryParse(parts[0],out int rowIndex)&&int.TryParse(parts[1],out int lane))
+                {
+                    var rack=label.transform.parent.parent;
+                    var pair=new[]{rack.Find("Cigarette slot "+rowIndex+"-"+(lane*2))?.GetComponent<ProductSlot>(),rack.Find("Cigarette slot "+rowIndex+"-"+(lane*2+1))?.GetComponent<ProductSlot>()};
+                    if(pair[0]!=null&&pair[1]!=null)label.gameObject.AddComponent<ShopShelfPriceLabel>().Configure(label,pair,true);
+                }
+                continue;
+            }
+            if(label.name!="Árcímke"||label.transform.parent==null)continue;
+            var row=System.Array.FindAll(publicSlots,s=>s!=null&&s.transform.parent==label.transform.parent&&Mathf.Abs(s.transform.localPosition.y-label.transform.localPosition.y-.09f)<.02f);
+            if(row.Length==0)continue;
+            label.gameObject.AddComponent<ShopShelfPriceLabel>().Configure(label,row);
+        }
+    }
+    private static T[] GetComponentsInScene<T>() where T:Component
+    {
+        var roots=UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+        var found=new System.Collections.Generic.List<T>();foreach(var root in roots)found.AddRange(root.GetComponentsInChildren<T>(true));return found.ToArray();
+    }
+    public bool IsPublicProduct(int type)=>Expanded && type>=0 && type<ShopCatalog.Count && (type>=ShopCatalog.CigaretteCount || FindPublicStock(type)!=null);
     public ShopProduct FindPublicStock(int type)
     {
-        if(!IsPublicProduct(type))return null;
+        if(!Expanded||type<0||type>=ShopCatalog.Count)return null;
         for(int i=0;i<publicSlots.Length;i++)
-            if(publicTypes[i]==type && publicSlots[i].Occupant!=null && !publicSlots[i].Occupant.IsHeld)return publicSlots[i].Occupant;
+            if(publicSlots[i]!=null && publicSlots[i].isActiveAndEnabled && publicSlots[i].Occupant!=null && publicSlots[i].Occupant.ProductId==ShopCatalog.Ids[type] && !publicSlots[i].Occupant.IsHeld)return publicSlots[i].Occupant;
         return null;
     }
     [SerializeField] private Transform entryOutside, entryInside, aisleGate, exitDoorway;

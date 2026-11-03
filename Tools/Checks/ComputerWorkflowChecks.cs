@@ -24,7 +24,7 @@ public static class ComputerWorkflowChecks
         game.ManualTick=true;game.ResetDemo();game.ClosePanel();var devices=game.Devices;var area=game.Warehouse;
         try
         {
-            Require(Enumerable.Range(0,ShopCatalog.Count).All(i=>(area.Dock(i).Find("Warehouse shelf 0")!=null&&area.Dock(i).GetComponentsInChildren<Transform>().Count(t=>t.name=="Rack upright")==4)||(i==3&&area.Dock(2).Find("Warehouse shelf 0")!=null)),"All brand docks have a storage rack or a shared upper shelf");
+            Require(Enumerable.Range(0,ShopCatalog.Count).All(i=>(area.Dock(i).Find("Warehouse shelf 0")!=null&&area.Dock(i).GetComponentsInChildren<Transform>().Count(t=>t.name=="Rack upright")==4)||((i==3||i>=7)&&area.Dock(i==3?2:i-3).Find("Warehouse shelf 0")!=null)),"All brand docks have a storage rack or a shared upper shelf");
             Require(Enumerable.Range(0,ShopCatalog.Count).All(i=>!area.Dock(i).GetComponentsInChildren<Transform>().Any(t=>t.name=="Dock leg"||t.name=="Dock top")),"Old tables removed from current scene");
             foreach(string name in new[]{"Screen glass","Monitor stand","Monitor base"})
                 Require(GameObject.Find(name).GetComponentInParent<ShopStation>()!=null,"Whole monitor resolves a use station: "+name);

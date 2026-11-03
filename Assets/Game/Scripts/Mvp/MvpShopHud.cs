@@ -24,7 +24,7 @@ public sealed class MvpShopHud : MonoBehaviour
             {
                 if(shop.Devices.FocusKind==ShopDeviceKind.Monitor||shop.Devices.FocusKind==ShopDeviceKind.Coins)return;
                 Panel(new Rect(250,612,780,94));GUILayout.BeginArea(new Rect(266,622,748,78));
-                GUILayout.Label("Kattints a kassza címleteire, majd az ÁTADÁS gombra.  Esc: vissza",small);
+                GUILayout.Label("Enter: fizetés • Backspace: utolsó darab vissza • Del: törlés • Esc: kilépés",small);
                 GUILayout.Label(shop.Message,small);GUILayout.EndArea();return;
             }
             if(shop.Modal==ShopModal.None){Game();return;}
@@ -72,14 +72,14 @@ public sealed class MvpShopHud : MonoBehaviour
         Label("A pult mögötti polcon négy cigarettamárka várja a vásárlókat: Lucky Stroke, Marlbroke, Downhill és Davidon.");
         GUILayout.Space(14);Label("E-vel vedd fel a kért dobozt, és tedd a kék átadóhelyre. A pénztárgépből valódi magyar címletértékű bankjegyeket és érméket kattints ki a visszajáróhoz, majd nyomd meg az ÁTADÁS gombot.");
         GUILayout.Space(14);Label("B-vel nyisd meg a TobaccOS számítógépét. Az Árurendelésben válassz mennyiséget, majd kattints a termékre. Az áru a raktárba érkezik. E-vel vedd fel a márkadobozt, és a polcnál egyesével pakolj ki. Az üres karton a hátsó papírgyűjtőbe való.");
-        GUILayout.Space(14);Label("A boltbővítés után a ReturAqua, a Loca Cola és a Hamster Energy is rendelhető. Ezeket a vásárlók az önkiszolgáló polcról veszik le, majd a pultnál fizetnek.");
+        GUILayout.Space(14);Label("A boltbővítés után a ReturAqua, Loca Cola, Hamster Energy, Kevert és Kőfejtői is rendelhető. Ezeket a vásárlók az önkiszolgáló polcról veszik le, majd a pultnál fizetnek.");
         GUILayout.FlexibleSpace();if(Button("Körülnézek és felkészülök"))shop.ClosePanel();if(Button("Kinyitom a boltot"))shop.OpenShop();if(Button("Kilépés"))Quit();
     }
     private void Help()
     {
         Label("Műszaksegéd",true);
         Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a pult közelében: számítógép, alkalmazások\nE a kasszán / F: fizetés a pénztárgépen\nRaktári polcnál E: teljes doboz felvétele / visszarakása\nDobozzal a kézben, zöld polchelynél E: egy termék kipakolása\nÜres kartonon E: felvétel • Papírgyűjtőn E: kidobás\nO: nyitás vagy korai zárás • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
-        GUILayout.Space(14);Label("A kasszában a rekeszekre kattintva egy bankjegyet vagy érmét veszel ki. A kivett darabok a tálcára kerülnek. Vissza: egy darab visszatétele. Törlés: az egész visszajáró visszarakása. Váltás: nagy címlet felváltása kisebbekre. Átadás: fizetés lezárása.");
+        GUILayout.Space(14);Label("Kassza: 1–6 bankjegy, Shift+1–6 érme; Enter fizetés, Backspace vissza, Del törlés. Tab / nyilak: választás; Space: címlet vagy érme kiválasztása. Monitor: Tab / nyilak, Enter; Backspace vissza; Asztal 1–5 alkalmazás; rendelésnél 1–9 termék, + / − mennyiség. A Váltás gomb nagy címletet vált fel.");
         GUILayout.Space(14);Label("Az Üzletfejlesztés alkalmazásban nyitás előtt 24 000 Ft-ért bővíthetsz, 9000 Ft-ért cigarettapolcot, 16 000 Ft-ért kávégépet vehetsz. A kamerák és játékok használata közben a bolt tovább működik. G: kézben tartott tárgy eldobása; felmosóval és ütővel bal egérgomb: használat. A készletet neked kell feltöltened az új polcokon is.");
         GUILayout.FlexibleSpace();if(Button("Vissza a boltba"))shop.ClosePanel();
     }

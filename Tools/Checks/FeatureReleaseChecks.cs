@@ -122,15 +122,15 @@ public static class FeatureReleaseChecks
         {
             game.ResetDemo();game.ClosePanel();Fund(game);
             Check(game.TryExpand()&&game.Activities.BuyCoffeeMachine()&&game.BuyPanicButton()&&game.BuyExtraShelf(),"All paid developments coexist");
-            for(int type=4;type<7;type++)Check(game.OrderSupply(type),"Order self-service stock "+type);
+            for(int type=4;type<ShopCatalog.Count;type++)Check(game.OrderSupply(type),"Order self-service stock "+type);
             Check(game.Activities.OrderCoffeeSupplies(),"Order coffee ingredients");game.Tick(8.1f);
-            for(int type=4;type<7;type++)for(int i=0;i<3;i++)
+            for(int type=4;type<ShopCatalog.Count;type++)for(int i=0;i<3;i++)
             {
                 Check(game.TryCreateSupply(type,out var product),"Finite warehouse unit for shelf");
-                var slot=Object.FindObjectsByType<ProductSlot>().First(s=>s.CanAcceptStock(ShopCatalog.Ids[type]));
+                var slot=Object.FindObjectsByType<ProductSlot>().First(s=>s.PreferredProductId==ShopCatalog.Ids[type]&&s.CanAcceptStock(ShopCatalog.Ids[type]));
                 Check(product.AssignInitialSlot(slot),"Place received unit onto public shelf");
             }
-            game.OpenShop();int coinsPaid=0,coffeePaid=0,selfServed=0;bool caught=false;var served=new System.Collections.Generic.HashSet<MvpCustomerActor>();var sales=new int[8];int stolenType=-1;
+            game.OpenShop();int coinsPaid=0,coffeePaid=0,selfServed=0;bool caught=false;var served=new System.Collections.Generic.HashSet<MvpCustomerActor>();var sales=new int[ShopCatalog.Names.Length];int stolenType=-1;
             for(int tick=0;tick<20000&&game.Phase!=ShopPhase.Summary;tick++)
             {
                 game.Tick(.1f);
@@ -185,13 +185,13 @@ public static class FeatureReleaseChecks
             Check(game.Phase==ShopPhase.Summary&&game.Spawned==8&&game.Missed==0,"Complete mixed-feature eight-visitor shift");
             Check(game.Ledger.Sales==7&&coinsPaid>=2&&coffeePaid==2&&selfServed==3,"Shift includes coffee, coin payment and public shelf service");
             Check(stopThief?caught&&game.CaughtToday==1&&game.StolenToday==0:game.StolenToday==1&&game.Ledger.StockLoss==ShopCatalog.Costs[stolenType],"Theft has the expected caught or escaped result");
-            for(int type=0;type<7;type++)Check(game.StockCount(type)+game.WarehouseCount(type)==(type<4?8:3)-sales[type]-(!stopThief&&type==stolenType?1:0),"All units conserved for product "+type);
+            for(int type=0;type<ShopCatalog.Count;type++)Check(game.StockCount(type)+game.WarehouseCount(type)==(type<4?8:3)-sales[type]-(!stopThief&&type==stolenType?1:0),"All units conserved for product "+type);
             Check(game.Ledger.Cash==game.Ledger.OpeningCash+game.Ledger.Revenue-game.Ledger.Purchases-game.Ledger.Improvements-game.Ledger.OperatingCosts&&game.Drawer.Total==game.Ledger.Cash,"Whole-shift cash-flow invariant");
             Check(game.Ledger.Profit==game.Ledger.Revenue-game.Ledger.CostOfGoods-game.Ledger.StockLoss-game.Ledger.OperatingCosts,"Profit accounts for actual theft losses");
             Check(!game.Security.Locked,"Closing releases panic lock");
-            var quantities=Enumerable.Range(0,7).Select(game.StockCount).ToArray();game.NextDay();
+            var quantities=Enumerable.Range(0,ShopCatalog.Count).Select(game.StockCount).ToArray();game.NextDay();
             Check(game.Day==2&&game.Activities.CoffeeOwned&&game.Security.Owned&&game.Layout.Expanded&&game.Layout.ExtraShelfOwned,"All paid developments survive next day");
-            Check(Enumerable.Range(0,7).All(i=>game.StockCount(i)==quantities[i]),"Next day preserves all remaining units");
+            Check(Enumerable.Range(0,ShopCatalog.Count).All(i=>game.StockCount(i)==quantities[i]),"Next day preserves all remaining units");
             return new {passed,failed=0,stopThief,coinsPaid,coffeePaid,selfServed};
         }
         finally

@@ -46,8 +46,10 @@ public static class WarehouseSetup
         {
             var dock=new GameObject("Brand Dock - "+ShopCatalog.Names[i]).transform;dock.SetParent(root,false);
             if(i<ShopCatalog.CigaretteCount){dock.localPosition=new Vector3(-5.50f+i*.85f,.75f,-1.45f);dock.localRotation=Quaternion.Euler(0,180,0);}
+            else if(i>=7){dock.SetPositionAndRotation(docks[i-3].position+Vector3.up*.55f,docks[i-3].rotation);}
             else{dock.localPosition=new Vector3(-5.55f,.75f,-.35f+(i-ShopCatalog.CigaretteCount)*.9f);dock.localRotation=Quaternion.Euler(0,-90,0);}
-            BuildRack(dock,cardboard,dark,i);
+            if(i<7)BuildRack(dock,cardboard,dark,i);
+            else ProductVisuals.Text(dock,"Brand dock label",ShopCatalog.Names[i],new Vector3(0,-.055f,-.357f),Quaternion.identity,.042f,Color.black);
             dock.gameObject.AddComponent<ShopStation>().ConfigureBrand(shop,i);docks[i]=dock;
         }
         var loose=new GameObject("Loose empty cartons").transform;loose.SetParent(root,false);loose.position=new Vector3(-3.15f,0,1.25f);
@@ -88,6 +90,7 @@ public static class WarehouseSetup
         var metal=AssetDatabase.LoadAssetAtPath<Material>("Assets/Game/Materials/MAT_WarehouseMetal.mat");
         for(int i=0;i<ShopCatalog.Count;i++)
         {
+            if(i>=7)continue; // Alcohol cartons share the existing upper drink shelves.
             var dock=area.Dock(i);
             if(dock.Find("Warehouse shelf 0")!=null)
             {

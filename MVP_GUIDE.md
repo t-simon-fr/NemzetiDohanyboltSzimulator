@@ -10,7 +10,7 @@ A jelenet már el van mentve. A **Nemzeti Dohánybolt > Build Compact Shop** men
 
 ## A kezdőbolt
 
-A kezdő helyiség 5 × 6,3 méter. A pult és a pultlap a kézzel beállított új helyén maradt; a bővítés ezt a helyet őrzi meg. A hátad mögötti polcon három kitalált cigarettamárkából nyolc-nyolc doboz van. A pénztár 6000 Ft-tal indul. A bal és jobb oldal az eladó nézőpontjából értendő.
+A kezdő helyiség 5 × 6,3 méter. A pult és a pultlap a kézzel beállított új helyén maradt; a bővítés ezt a helyet őrzi meg. A hátad mögötti polcon négy kitalált cigarettamárkából nyolc-nyolc doboz van. A pénztár 6000 Ft-tal indul. A bal és jobb oldal az eladó nézőpontjából értendő.
 
 A pult bal oldalán a beszerzési monitor, jobb oldalán a pénztárgép áll. A kassza felőli falon a RAKTÁR felirat jelzi az új átjárót. Középen a kék átadóhelyre kell tenni a vásárló által kért cigarettát. Az áru csak a sikeres fizetéskor fogy el a készletből.
 
@@ -53,7 +53,7 @@ A monitor teljes háza, képernyője, talpa és állványa E-vel használható. 
 
 Az asztalon két kattintható alkalmazás van:
 
-- **RENDELÉSEK:** hat márka, polckészlet, raktári összes darab és úton levő mennyiség. A háromdarabos csomag ára azonnal levonódik, nyolc másodperc alatt érkezik meg. A víz, rágó és sör boltbővítés után rendelhető.
+- **ÁRURENDELÉS:** kilenc csomagolt termék, polckészlet, raktári összes darab és úton levő mennyiség. 1–12 darab választható; a beszerzési összeg azonnal levonódik, az áru nyolc másodperc alatt érkezik meg. Az öt ital boltbővítés után rendelhető.
 - **BERENDEZÉS:** 24 000 Ft-os önkiszolgáló bővítés és 9000 Ft-os, kilenchelyes kiegészítő cigarettapolc vásárlása. Mindkettő egyszer, nyitás előtt vehető meg. A pult a helyén marad.
 
 Az **ASZTAL** gomb visszalép az alkalmazásból. **KILÉPÉS / Escape** visszavisz a boltba. A vásárlók várakozása eszközhasználat közben szünetel, a szállítmányok megérkezhetnek.
@@ -61,9 +61,9 @@ Az **ASZTAL** gomb visszalép az alkalmazásból. **KILÉPÉS / Escape** visszav
 Az áru a **kassza felőli oldalfalon nyíló raktárba** érkezik. A raktár az alapbolt része. Asztalok helyett márkánként feliratozott, többszintes fémpolcok vannak benne. Az első rendelés hozza létre az adott márka kartonját.
 
 1. **E a raktári márkadobozon vagy a polcán:** a teljes kartont veszed fel, a benne levő mennyiséggel. Egyedi termék nem kerül a kezedbe.
-2. Vidd a dobozt a megfelelő bolti polchoz. A zöld keretek mutatják az üres, azonos márkához tartozó helyeket.
+2. Vidd a dobozt bármelyik bolti polchoz. A zöld keretek mutatják az üres, méretben megfelelő, szabad helyeket; a márka nem korlátozza az elhelyezést.
 3. **E egy kijelölt helyen:** pontosan egy termék kerül a fix helyére. A doboz a kezedben marad, a darabszáma eggyel csökken.
-4. Nézz a következő üres helyre, majd ismét E. A foglalt, más márkához tartozó vagy fizikailag eltorlaszolt hely nem fogyaszt árut.
+4. Nézz a következő üres helyre, majd ismét E. A foglalt, túl kicsi vagy fizikailag eltorlaszolt hely nem fogyaszt árut.
 5. A teli, félig teli és üres doboz is visszavihető: **E a saját raktári márkapolcán**. A rossz márka polca nem fogadja el.
 
 Ha dobozhordás közben ugyanabból a márkából új áru érkezik, külön dobozt kap a raktári polcon. A kezedben levő karton nem töltődik újra. Ha visszaviszed a régebbit, a szabad felső vagy alsó polcszintre kerül; ha ezek is foglaltak, a kartonok gyűjtőhelyére. A márkán belüli újabb rendelés a helyén maradó aktív szállítódobozhoz is hozzáadódhat. A raktári összesítés minden kartont, a kézben levőt is számolja; a típusonkénti korlát a függő rendeléssel együtt 24 darab.
@@ -93,11 +93,11 @@ Az üres karton visszavihető a saját márkájának raktári helyére. Ha közb
 
 Nyitás előtt a monitor **BERENDEZÉS** alkalmazásának **ÖNKISZOLGÁLÓ BŐVÍTÉS** gombja 24 000 Ft-ért megnyitja a pult körül elérhető új, 4 × 6,3 méteres területet. A pult, a kassza és a monitor a helyén marad. A változás jelenleg azonnali, építkezési animáció nélkül.
 
-Az új polcon három típusnak hat-hat helye van: víz, rágó, sör. A bővítés üres polcokat ad, az árut külön kell megrendelni és kézzel feltölteni. Ezután a nyolc látogatóból négy önkiszolgáló terméket keres: a polchoz megy, felvesz egyet, majd a változatlan helyű pénztárhoz jön. A cigarettát továbbra is az eladó adja ki.
+Az új polcon három típusnak hat-hat helye van: víz, rágó, sör. A bővítés üres polcokat ad, az árut külön kell megrendelni és kézzel feltölteni. Ezután a nyolc látogatóból négy önkiszolgáló terméket keres: a polchoz megy, felvesz egyet, majd a változatlan helyű pénztárhoz jön. A személyzeti polcon lévő árut az eladó adja ki; a nyilvános polcra tett cigarettát is leveszik a vásárlók.
 
 Ha nincs készlet a keresett önkiszolgáló termékből, a vásárló a pulthoz jön a kérésével. Feltöltés után kézzel is kiszolgálhatod, vagy X-szel elküldheted. Egyelőre egy bővítési fokozat van; több fokozat és a kiegyensúlyozott árak későbbi feladatok.
 
-A Berendezés alkalmazás külön 9000 Ft-os cigarettapolca a személyzeti rész jobb oldali falán jelenik meg, kilenc szabad hellyel, márkánként hárommal. Nem ad ingyenes termékeket. A feltöltött árut ugyanúgy felveheted a vásárló kiszolgálásához. A polc és a készlete napváltáskor megmarad, új játéknál visszaáll. A berendezés helye jelenleg rögzített; szabad játékbeli elhelyező mód még nincs.
+A Berendezés alkalmazás külön 9000 Ft-os cigarettapolca a személyzeti rész jobb oldali falán jelenik meg, kilenc szabadon használható hellyel. Nem ad ingyenes termékeket. A feltöltött árut ugyanúgy felveheted a vásárló kiszolgálásához. A polc és a készlete napváltáskor megmarad, új játéknál visszaáll. A berendezés helye jelenleg rögzített; szabad játékbeli elhelyező mód még nincs.
 
 ## Műszak és elszámolás
 
@@ -144,3 +144,19 @@ A bolt bővítése a teljes középső falat eltünteti, így egybenyílik a hel
 
 
 A figurák, termékek, pénzek és berendezések még próbamodellből állnak. Az ellenőr/személyi, összetettebb készpénzes trükkök, hitelkérés és a reggeli törzsvendégek további történetei későbbi fejlesztések. Az önkiszolgáló figurák rögzített útvonalpontokat követnek; fejlett tömegelkerülés még nincs.
+
+
+## Billentyűzet és új italok
+
+A kasszán **Enter** adja át a pontos visszajárót, **Backspace** visszateszi az utolsó darabot, **Delete** törli a kiválasztást. **1–6**: bankjegyek csökkenő értékben, **Shift+1–6**: érmék csökkenő értékben. A vásárló tenyerén **Tab / nyilak + Space** választ érmét, **Enter** veszi át a pontos összeget.
+
+A monitoron **Tab / Shift+Tab / nyilak** választanak, **Enter / Space** végrehajt, **Backspace** visszalép. Az asztalon **1–5** nyit alkalmazást; árurendelésnél **1–9** választ terméket, **+ / −** állítja a mennyiséget, majd **Enter** rendel. A kávé, kamerák és memóriajáték is kezelhetők billentyűzettel.
+
+A boltbővítés után **Kevert 50 ml** (450 Ft) és **Kőfejtői 500 ml** (550 Ft) is kapható. Rendeld meg, vedd át a raktári italállvány felső szintjén, majd töltsd fel velük bármelyik szabad bolti polchelyet. Részletek: [KeyboardAlcoholRelease.md](Docs/KeyboardAlcoholRelease.md).
+
+
+## Szabadon rendezhető polcok
+
+**Bármely terméket bármely szabad bolti polchelyre tehetsz**, kézből és kartonból is. A kezdőpolc, az önkiszolgáló és az extra polc összesen 71 helye használható; a megfőzött kávé is letehető rájuk. A foglalt vagy fizikailag akadályozott helyekre továbbra sem pakolhatsz.
+
+A nyilvános polcon lévő cigarettát is leveszik a vásárlók. A pult mögött tárolt italt te add át a vevőnek. Az árcímkék követik a tartalmat; vegyes polcnál nézz a termékre az eladási árért. A raktári dobozok saját márkájuk áruját fogadják vissza. A korábbi márkakötött bolti elrendezés csak a kezdőkészlet ajánlott rendje.

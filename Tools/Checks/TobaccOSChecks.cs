@@ -52,7 +52,7 @@ public static class TobaccOSChecks
             Check(ActiveOrders().Length==0,"Orders cannot intercept development clicks");
             Click(WorldControlKind.Expand);
             Click(WorldControlKind.Desktop);Click(WorldControlKind.OpenApp,(int)ShopComputerApp.Orders);
-            Check(ActiveOrders().Length==7,"Drinks appear after purchased expansion");
+            Check(ActiveOrders().Length==ShopCatalog.Count,"Drinks appear after purchased expansion");
             foreach(var control in ActiveOrders())
             {
                 var camera=Camera.main;var pixel=camera.WorldToScreenPoint(control.transform.position);Physics.SyncTransforms();

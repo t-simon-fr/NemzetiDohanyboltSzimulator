@@ -2,6 +2,10 @@
 
 A kompakt bolt jelenete és a forráskód el van mentve. Unity 6000.6.7f1, URP. A szkriptfordítás sikeres, fordítási hiba nélkül.
 
+## Billentyűzet, italok és szabad polcelhelyezés – 2026. november 3.
+
+**25 ellenőrzéscsoport, 3690 sikeres állítás**, 0 sikertelen. A teljes korábbi regressziós csomag mellett a monitor és memóriajáték billentyűzetes kezelése, három teljes műszak, mindkét új ital eladása és 21 Enterrel lezárt fizetés is sikeres. A kilenc csomagolt termék és a kávé mind a 71 polchelyen ténylegesen el lett helyezve; a vegyes polcokról vásárlás és visszavonás is ellenőrzött. A végleges WebGL-build 0 hibával és 0 figyelmeztetéssel készült el; a helyi Chromium-futás 15 képet és 0 böngészős hibát adott. A tényleges billentyűzetes kártyakijelölés, alkalmazásváltás és memóriafordítás képen is ellenőrizve. Jelentés: `Builds/KeyboardAlcoholRelease/checks.json`. Részletek: [KeyboardAlcoholRelease.md](Docs/KeyboardAlcoholRelease.md). Az alábbi eredmények korábbi mérési pontok.
+
 ## Teljes feature-csomag – 2026. november 3.
 
 **21 ellenőrzéscsoport, 1105 sikeres állítás**, 0 sikertelen. A teljes listát és a bizonyítékok helyét a [FeatureRelease.md](Docs/FeatureRelease.md) rögzíti. A futó jelenetből készült eredmények: `Builds/FeatureRelease/checks.json`. A mostani WebGL-build 0 hibával és 0 figyelmeztetéssel készült el, a helyi Chromium-próba 11 képpel és 0 böngészős hibával zárult; a kártyák tényleges kattintásra fordultak fel. Build: `Builds/FeatureRelease/build-status.json`, böngészőnapló: `Builds/Verification/local-console.json`. A két új, vegyes műszak külön ellenőrzi az ütővel megállított, illetve elmenekülő tolvajt; mindkettőben kávé, pultra tett önkiszolgáló áru, érmes és hagyományos fizetés is szerepel. A fizikai érmecélzás, felmosócélzás, kamerák, minijátékok, eldobott tárgyak, napváltás és kasszaegyezőség is sikeres. Az alábbi szakaszok korábbi mérési pontok.

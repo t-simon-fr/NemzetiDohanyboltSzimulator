@@ -66,6 +66,7 @@ public sealed class ShopCoinOffer
 {
     public readonly List<int> Coins=new List<int>();
     public readonly List<bool> Selected=new List<bool>();
+    private readonly List<int> selectionOrder=new List<int>();
     public int Price { get; }
     public int Total { get {int value=0;for(int i=0;i<Coins.Count;i++)if(Selected[i])value+=Coins[i];return value;} }
     public ShopCoinOffer(int price,int seed)
@@ -76,8 +77,9 @@ public sealed class ShopCoinOffer
         for(int i=Coins.Count-1;i>0;i--){int j=random.Next(i+1);int swap=Coins[i];Coins[i]=Coins[j];Coins[j]=swap;}
         foreach(int value in Coins)Selected.Add(false);
     }
-    public bool Toggle(int index){if(index<0||index>=Coins.Count)return false;Selected[index]=!Selected[index];return true;}
-    public void Clear(){for(int i=0;i<Selected.Count;i++)Selected[i]=false;}
+    public bool Toggle(int index){if(index<0||index>=Coins.Count)return false;Selected[index]=!Selected[index];selectionOrder.Remove(index);if(Selected[index])selectionOrder.Add(index);return true;}
+    public bool Undo(){if(selectionOrder.Count==0)return false;return Toggle(selectionOrder[selectionOrder.Count-1]);}
+    public void Clear(){for(int i=0;i<Selected.Count;i++)Selected[i]=false;selectionOrder.Clear();}
     public int[] Pieces()
     {
         var pieces=new int[ShopCatalog.Denominations.Length];

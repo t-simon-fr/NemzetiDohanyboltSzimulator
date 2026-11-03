@@ -11,7 +11,7 @@ public static class WarehouseChecks
     private static void Require(bool condition,string message){if(!condition)throw new InvalidOperationException(message);checks++;}
     private static void PutOnShelf(int type)
     {
-        var slot=UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.CanAcceptStock(ShopCatalog.Ids[player.HeldCarton.ProductType])&&s.name.StartsWith(ShopCatalog.IsCigarette(type)?"Cigarette slot":"Public slot"));
+        var slot=UnityEngine.Object.FindObjectsByType<ProductSlot>().First(s=>s.Occupant==null&&s.isActiveAndEnabled&&s.PreferredProductId==ShopCatalog.Ids[player.HeldCarton.ProductType]&&s.CanAcceptStock(ShopCatalog.Ids[player.HeldCarton.ProductType])&&s.name.StartsWith(ShopCatalog.IsCigarette(type)?"Cigarette slot":"Public slot"));
         var point=slot.HintCenter;Physics.SyncTransforms();player.RefreshTarget(new Ray(point-slot.transform.forward*1.1f,slot.transform.forward));
         Require(player.TargetSlot==slot&&player.TryPlaceHeld(),"Carry unit from brand carton onto actual fixed shop shelf");
     }

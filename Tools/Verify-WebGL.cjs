@@ -75,7 +75,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
       const monitorClick = async (x, y) => { const p = monitorPoint(x, y); await clickAt(p.x, p.y); };
       await key('b', 'KeyB', 66); await sleep(1500); await capture('tobaccos-desktop');
       await monitorClick(.58, .11); await capture('tobaccos-starter');
-      await monitorClick(.02, .24); await monitorClick(.45, .13); await sleep(8500); await capture('tobaccos-arrival');
+      await monitorClick(.02, .24); await monitorClick(.58, .12); await sleep(8500); await capture('tobaccos-arrival');
       await monitorClick(.45, -.465); await monitorClick(0, .11); await capture('developments');
       if (process.argv.includes('--features')) {
         await monitorClick(.45, -.465); await monitorClick(-.58, .11); await capture('coffee');
@@ -89,6 +89,13 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
         await clickAt(topLeft.x + appWidth * .74, topLeft.y + 100 / bounds.height); await capture('memory');
         await clickAt(topLeft.x + appWidth * .125, topLeft.y + appHeight * .125 + 32 / bounds.height);
         await clickAt(topLeft.x + appWidth * .375, topLeft.y + appHeight * .125 + 32 / bounds.height); await capture('memory-pair');
+        await key('Backspace', 'Backspace', 8); await sleep(250); await capture('keyboard-game-menu');
+        await key('Backspace', 'Backspace', 8); await key('1', 'Digit1', 49); await sleep(250);
+        await key('1', 'Digit1', 49); await key('Tab', 'Tab', 9); await capture('keyboard-order-focus');
+        await key('Backspace', 'Backspace', 8); await key('4', 'Digit4', 52); await sleep(250); await capture('keyboard-cameras');
+        await key('Backspace', 'Backspace', 8); await key('5', 'Digit5', 53); await key('Tab', 'Tab', 9);
+        await key('ArrowRight', 'ArrowRight', 39); await key('Enter', 'Enter', 13); await sleep(250);
+        await key('Tab', 'Tab', 9); await key('Tab', 'Tab', 9); await key(' ', 'Space', 32); await capture('keyboard-memory');
       }
     }
     fs.writeFileSync(path.join(output, label + '-console.json'), JSON.stringify(messages, null, 2));
