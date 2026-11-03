@@ -1,60 +1,75 @@
-# Karakterek és párbeszédstílusok
+# Saját karakterek és párbeszédstílusok
 
-Kapcsolódó feladat: #11. Állapot: tervezési referencia, még nincs bekötve a játék párbeszédrendszerébe.
+Kapcsolódó feladat: #11. Állapot: eredeti, kitalált karaktertervek; a játék párbeszédrendszerébe még nincsenek bekötve. Ez a változat felváltja a korábbi, valós személyekhez kötött karakterirányt.
 
-A profilok a felhasználó által adott leírások és fotóreferenciák alapján készültek. A játékbeli, ihletett figurák írói irányelvei; nem a valós emberek életrajzi vagy pszichológiai állításai. Az alábbi példamondatok újonnan írt játékdialógusok, nem eredeti idézetek. A megadott internetes háttértörténeteket nem ellenőriztük történeti forrásként.
+## Közös írói irány
 
-## Közös szabályok
+A karakterek legyenek viccesek, abszurdak, felismerhető szokásokkal és saját visszatérő poénokkal. Kitalált arcot, nevet, élettörténetet, szóhasználatot és gesztusokat kapnak. Valós személyek jellegzetes idézetei, hangutánzása vagy magánéleti konfliktusai nem dialógusalapok.
 
-- A kérés egy mondatban hangozzon el, és tartalmazza a termék nevét és mennyiségét. A karakterhang ne rejtse el a játékos feladatát.
-- A humor hétköznapi bolti helyzetből, túlmagyarázásból vagy félreértésből jöjjön. Ne használjunk diagnózist vagy személyes megalázást poénként.
-- Ne ismételjünk minden megszólalásban mémidézetet. Legyen külön köszönés, rendelés, hiánykezelés, helyettesítő elfogadása/elutasítása, fizetés és elköszönés.
-- A karakterhang és a pillanatnyi hangulat külön adat: ugyanaz a vendég lehet nyugodt, türelmetlen vagy elégedett. Ne legyen minden látogatás ugyanaz a jelenet.
-- Beszédstílus nem jelent hangklónozást; ez a terv szöveges dialógusra és gesztusokra vonatkozik.
+- A humor a figura belső logikájából következzen. A poén mögött legyen érthető szándék: Misi javítani akar, Nóra célba akar érni.
+- Rendeléskor egy mondatban legyen érthető minden termék és darabszám; a poén ne tegye megfejthetetlenné a feladatot.
+- A hangulat és a személyiség külön adat. Tudjanak örülni, megnyugodni és udvariasan távozni is.
+- Helyzetenként több változat szükséges, közvetlen ismétlés nélkül. A visszatérő poén kapjon új következményt, ne mindig ugyanaz a szöveg hangozzon el.
+- A példák saját, újonnan írt játékdialógusok; az említett terméknevek a játék kitalált márkái. Ez szöveges karakterterv, nem hangklón.
 
-## Szalacsi Sándor ihlette vendég
+## Misi — a házi feltaláló
 
-Azonosító: `szalacsi_inspired`. Képi referencia: [koncepció](../Concepts/Characters/szalacsi-inspired-character.png).
+Azonosító: `misi_inventor`. Kép: [Misi](../Concepts/Characters/misi-character.png).
 
-**Személyiség:** jóindulatú, tisztelettudó, segítőkész; magabiztosan magyaráz olyan bolti műszaki részleteket is, amelyekről pontatlan elképzelése van. Figyelem hatására kissé feszeng, de igyekszik segíteni.
+**Megjelenés:** alacsony, zömök, kerek arcú, 62 éves férfi; ritkuló fehér haj, fehér bajusz, kerek rézszínű szemüveg. Rozsdaszínű steppelt mellény, zöld kockás ing, olívazöld munkásnadrág, barna cipő; zsebében összecsukható mérce. Fejfedő nélkül.
 
-**Beszéd:** rövid indítás, aztán egy sajátos okfejtés; udvarias megszólítások, szünetek, önjavítás. Enyhe tájnyelvi íz használható, de a teljes szöveg fonetikus átírása helyett az érthetőség az első. A felhasználó által hozott „ojjektum”, „zokszigén”, „kéremkapcsojjaki” karakterreferencia; pontos átvételük külön írói döntés, nem kötelező mondatsablon.
+**Háttér és cél:** nyugdíjas kerékpárszerelő, aki otthon hasznosnak szánt, indokolatlanul bonyolult találmányokat épít. Állandó projektje az önműködő bevásárlószatyor: még nem jött vissza az első próbaútról. Új projektötleteket és beszélgetőtársat keres a trafikban.
 
-**Reakció:** hiánynál érdeklődik és keres rá egy magyarázatot; hasonló terméket többnyire elfogad. Fizetésnél szívesen kommentálja a kasszát vagy a terminált. Gesztusai visszafogottak: bólintás, fejvakarás, óvatos magyarázó kézmozdulat.
+**Abszurd alapszabály:** minden hétköznapi tárgyat másik gépként értelmez, és ebből teljesen következetes, képtelen javítási tervet vezet le. A hűtő fordított kenyérpirító; a kassza aprópénz-akvárium; az automata ajtó udvarias fal. Nem a tájnyelv, hanem ez a saját logika adja a hangját.
 
-| Helyzet | Újonnan írt példa |
+**Beszéd és gesztus:** nyugodt, pedáns, udvarias; „műszakilag”, „a próbaüzem alapján”, „ezt még bemérem”. Számol az ujján, szemüveget igazít, a semmiben méricskél. Gyakran kiigazítja a saját mérnöki magyarázatát, miközben a vásárlási kérését pontosan tudja.
+
+| Helyzet | Új dialóguspélda |
 |---|---|
-| Köszönés | Jó napot kívánok, csak érdeklődnék, hogy nyitva van-e már rendesen. |
-| Rendelés | Egy Lucky Stroke-ot kérek, mert abból egy doboz az most pont elegendő. |
-| Készlethiány | Elfogyott? Hát akkor ide már a szállítmánynak kell megérkeznie. |
-| Helyettesítő | Jó lesz a Marlbroke is, ha az ugyanarra a célra szolgál. |
-| Kártyás fizetés | Kártyával fizetnék, ha ez a szerkezet most kapcsolatban van a pénzzel. |
-| Elköszönés | Köszönöm szépen, akkor én most ezt elviszem magammal. |
+| Köszönés | Jó napot! A bejáratuk remek, kifelé is ugyanott van. |
+| Rendelés | Egy Loca Colát kérek, a buborékokkal a szatyor emelkedési képességét vizsgálom. |
+| Több termék | Két ReturAquát és egy rövid kávét kérek, ebből az egyik már majdnem központi fűtés. |
+| Készlethiány | Elfogyott? Akkor a polc most bemutatja, milyen lesz majd holnap. |
+| Helyettesítő | A hosszú kávé is jó, legalább nagyobb lesz benne a hatótávolság. |
+| Elutasítás | Azt most nem kérem, a szerkezetem csak kerek aljú dolgokkal hajlandó együttműködni. |
+| Fizetés | Kártyával fizetek, az aprót még otthon hangolom. |
+| Hűtő megfigyelése | Ez egy fordított kenyérpirító; ha nem figyelek, még feltalálom újra. |
+| Visszatérő poén | A szatyor még nem ért haza, de legalább önálló. |
+| Elköszönés | Köszönöm, ha a szatyor előbb ideér nálam, mondja neki, hogy várjon meg! |
 
-## Vámpír Ági ihlette vendég
+**Reakcióív:** kíváncsiság → rövid mérnöki magyarázat → praktikus döntés. Hiánynál új felhasználást talál a helyettesítőnek. A boltos udvariasságát és a jól működő berendezéseket értékeli.
 
-Azonosító: `agi_inspired`. Képi referencia: [koncepció](../Concepts/Characters/agi-inspired-character.png).
+## Nóra — a mindig siető futár
 
-**Személyiség:** határozott, lobbanékony és teátrális; gyorsan vág vissza, félbeszakít és túlméretezi az apró bolti kellemetlenséget. A figura tudjon megnyugodni, elégedett lenni és normálisan elköszönni is.
+Azonosító: `nora_courier`. Kép: [Nóra](../Concepts/Characters/nora-character.png).
 
-**Beszéd:** rövid, nyomatékos mondatok, retorikai kérdések, hangsúlyos visszakérdezés és túlzó, néha abszurd magyarázatok. Alapból köznyelvi, csípős megfogalmazás; az obszcén idézetek nem automatikus alapdialógusok. A felhasználó által említett eredeti jelenet gesztus- és ritmusreferencia, nem átemelendő személyes vádak vagy magánéleti történetek gyűjteménye.
+**Megjelenés:** 34 éves, sportos, széles vállú nő, szögletes áll, szeplők, szürkészöld szemek. Rövid, rézvörös, aszimmetrikus frizura, oldalt felnyírva; apró türkiz fülbevalók. Türkiz széldzseki mustársárga pólóval, sötétkék zsebes nadrág, világos sportcipő, kis lila keresztpántos táska.
 
-**Reakció:** készlethiánynál türelmetlenül kérdez vissza; konkrét, elérhető alternatívára reagál. Lehet elfogadás és látványos elutasítás is. A humor az árra, sorra, címkére vagy készletre vonatkozzon. Gesztus: csípőre tett kéz, nyitott tenyerű magyarázat, fejfordítás, hangsúlyos mutatás a termékre. A korábban leírt valós műsorbeli fizikai konfliktus nem válik automatikusan játékmechanikává.
+**Háttér és cél:** helyi csomagfutár, aki az egész várost útvonalak és kézbesítési kísérletek alapján ismeri. Üres csomagszekrényeket nevez el, és egy visszatérő, gazdátlan csomagot Béla néven visz magával. A trafik az egyetlen tervezett megállója, amely mindig váratlanul hosszú.
 
-| Helyzet | Újonnan írt példa |
+**Abszurd alapszabály:** minden hétköznapi esemény kézbesítés. A sor forgalomkorlátozás, a visszajáró átvételköteles küldemény, az elfelejtett bevásárlólista eltűnt címzett. A lehetetlen helyzetekre tárgyilagos logisztikai megoldást követel.
+
+**Beszéd és gesztus:** gyors, rövid, határozott, száraz humorral. „Személyes átvétel”, „második kísérlet”, „útvonal szerint”. Ránéz az órájára, láthatatlan csomagot szkennel, ujjal rövid útvonalat rajzol a levegőbe. A sietségét a maga túlzásai teszik nevetségessé; a boltos nem állandó céltábla.
+
+| Helyzet | Új dialóguspélda |
 |---|---|
-| Köszönés | Na, szia, most mondd meg, hogy legalább itt nincs sor! |
-| Rendelés | Két Marlbroke-ot kérek, kettőt, mert még visszajönni már nem fogok. |
-| Készlethiány | Hogy nincs, amikor a helye meg ott van a polcon? |
-| Helyettesítő elfogadása | Na jó, legyen a Lucky Stroke, csak aztán tényleg azt add ide. |
-| Helyettesítő elutasítása | Azt nem kérem, most mondtam el, hogy mit szeretnék! |
-| Fizetés | Kártyával fizetek, az összeget azért nézd meg még egyszer. |
-| Elköszönés | Na, köszönöm, így már rendben vagyunk! |
+| Köszönés | Szia, csak egy percem van, a másik kettőt már tegnap elhasználtam! |
+| Rendelés | Egy Hamster Energyt kérek, a lendületet a következő utcában veszem át. |
+| Több termék | Két Loca Colát és egy hosszú kávét kérek, ezt a három megállót még útvonalra tudom tenni. |
+| Készlethiány | Nincs? Akkor ezt most sikertelen átvételnek írjam, vagy a polc nem volt otthon? |
+| Helyettesítő | Jó lesz a ReturAqua, legalább ezt a címzett még nem rázta fel. |
+| Elutasítás | Azt nem kérem, arra külön kitérőt kellene terveznem a gyomromban. |
+| Fizetés | A visszajárót személyesen veszem át, a szomszédnak ne add oda. |
+| Sorban állás | A sor végét már megtaláltam, az elejéhez kellene egy irányítószám. |
+| Visszatérő poén | Béla ma sem talált gazdára, de már felismeri az útvonalat. |
+| Elköszönés | Köszönöm, ha keresnek, úton vagyok, csak még nem dőlt el, melyiken! |
+
+**Reakcióív:** sietség → túlzó logisztikai panasz → konkrét megoldás → rövid köszönet. Egyértelmű helyettesítőt gyorsan elfogad, bizonytalanságnál inkább távozik. Néha saját magát is kineveti.
 
 ## Későbbi implementáció elfogadási feltételei
 
-- A dialógus a stabil karakterazonosítóhoz kapcsolódjon, ne a véletlenszerű sorszámhoz.
-- Mindkét profilhoz legyen több változat a fő vásárlási helyzetekre, közvetlen ismétlés nélkül.
-- A rendelésben mindig helyes, aktuális terméknév és darabszám szerepeljen; többtermékes kosárnál minden kérés érthető legyen.
-- Az alternatíva, fizetési mód és hangulat a valós játékállapotot kövesse; a szöveg önmagában ne módosítsa a pénzt vagy készletet.
-- A gesztusok igazodjanak a modellhez, a kézben tartott tárgyhoz és a párbeszéd hosszához.
+- A modell, név, frizura, ruházat és háttértörténet az új saját tervet kövesse; a korábbi portrétanulmányok nem aktív modellreferenciák.
+- Stabil karakterazonosítóhoz kapcsolt, helyzetenként többváltozatos szöveg készüljön. Ne játssza le minden rendeléskor ugyanazt a visszatérő poént.
+- A termék, darabszám, fizetési mód és alternatíva az aktuális játékállapotot kövesse.
+- Misi technikai okfejtése és Nóra logisztikai szemlélete a szövegből név nélkül is megkülönböztethető legyen.
+- A humor és a gesztusok maradjanak érthetők a pultnál; a játékosnak legyen ideje elolvasni és reagálni.
