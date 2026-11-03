@@ -1,3 +1,5 @@
+> Aktuális workflow és készültség: [Docs/Workflow/STATUS.md](Workflow/STATUS.md). Az alábbi szakaszok történeti feljegyzések; a frissebb kiadási jegyzetek elsőbbséget élveznek.
+
 # Folytatás innen
 
 Mentési pont: 2026. november 3.
