@@ -15,7 +15,7 @@ public sealed class ShopShelfPriceLabel : MonoBehaviour
         var products=slots.Where(s=>s!=null&&s.Occupant!=null&&!s.Occupant.IsHeld).Select(s=>s.Occupant.ProductId).Distinct().ToArray();
         if(products.Length==0){label.text=compact?"ÜRES":"SZABAD POLC • BÁRMELY TERMÉK";return;}
         int type=products.Length==1?ShopCatalog.Index(products[0]):-1;
-        label.text=type>=0?(compact?"":ShopCatalog.Names[type]+" • ")+ShopCatalog.Money(ShopCatalog.Prices[type]):compact?"VEGYES":"VEGYES POLC • NÉZZ A TERMÉKRE AZ ÁRÉRT";
+        label.text=type>=0?(compact?"":ShopCatalog.Names[type]+" • ")+ShopCatalog.Money(ShopCatalog.SalePrice(type)):compact?"VEGYES":"VEGYES POLC • NÉZZ A TERMÉKRE AZ ÁRÉRT";
     }
     private void Update(){if(Time.unscaledTime<nextRefresh)return;nextRefresh=Time.unscaledTime+.25f;Refresh();}
 }

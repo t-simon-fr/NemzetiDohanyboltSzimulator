@@ -130,3 +130,5 @@ A teljes ellenőrzési eredmény és a build állapota: `MVP_CHECKS.md`. A `Tool
 - Az eredeti C:-s munkakönyvtár már nem létezik. Minden parancshoz a fenti D:-s munkakönyvtár kell; a sandboxon kívüli írást az eszköz engedélyezett emelt futtatása kezeli.
 
 2026-11-03: az új hét feature, bankkártya és a napvégi gombok javítása elkészült. Részletek: [NextFeatureRelease](NextFeatureRelease.md). Ellenőrzés: 3796 állítás / 29 csoport, Builds/NextFeatureRelease. A csempész és dinamikus árképzés külön jövőbeli feladat.
+
+2026-11-03: az esti maradás/csempész és az állítható ár/kereslet elkészült, 3854 ellenőrzés sikeres. [Kezelés és ellenőrzés](EveningPricingRelease.md). A felhasználó kérte, hogy ezt a változatot ne publikáljuk Pagesre; az éles kiadás 43f88b0 marad.

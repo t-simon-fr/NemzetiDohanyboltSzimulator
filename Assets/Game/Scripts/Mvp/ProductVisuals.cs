@@ -38,7 +38,7 @@ public static class ProductVisuals
     private static readonly string[] ModelPaths = { "CigarettePacks/LuckyStroke", "CigarettePacks/Marlbroke", "CigarettePacks/Downhill", "CigarettePacks/Davidon", "Drinks/ReturAqua", "Drinks/LocaCola", "Drinks/HamsterEnergy", "Drinks/Kevert", "Drinks/Kofejtoi" };
     public static GameObject LoadModel(int type)
     {
-        if(ShopCatalog.IsCoffee(type))return null;
+        if(ShopCatalog.IsCoffee(type)||type==ShopCatalog.Contraband)return null;
         if (type < 0 || type >= ModelPaths.Length) throw new System.ArgumentOutOfRangeException(nameof(type));
         return Resources.Load<GameObject>(ModelPaths[type]);
     }
@@ -53,6 +53,12 @@ public static class ProductVisuals
             var brown=new Material(Shader.Find("Universal Render Pipeline/Lit")){color=type==ShopCatalog.Latte?new Color(.80f,.66f,.46f):new Color(.10f,.04f,.01f)};liquid.GetComponent<Renderer>().sharedMaterial=brown;
             foreach(var collider in new[]{body.GetComponent<Collider>(),liquid.GetComponent<Collider>()}){collider.enabled=false;Object.Destroy(collider);}
             var cleanup=item.AddComponent<ShopProductMaterials>();cleanup.Materials=new[]{cup,brown};return;
+        }
+        if(type==ShopCatalog.Contraband)
+        {
+            var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){color=new Color(.06f,.16f,.30f)};item.GetComponent<Renderer>().sharedMaterial=m;
+            item.AddComponent<ShopProductMaterials>().Materials=new[]{m};
+            Text(item.transform,"Dnyipro label","DNYIPRO\nUKRAJNA\n20 SZÁL\n18+",new Vector3(0,0,-.506f),Quaternion.identity,.18f,new Color(1,.78f,.2f));return;
         }
         // Product roots retain their interaction collider; prefabs contain only visual meshes.
         var prefab = LoadModel(type);

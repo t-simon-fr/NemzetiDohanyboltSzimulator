@@ -162,3 +162,5 @@ A boltbővítés után **Kevert 50 ml** (450 Ft) és **Kőfejtői 500 ml** (550 
 A nyilvános polcon lévő cigarettát is leveszik a vásárlók. A pult mögött tárolt italt te add át a vevőnek. Az árcímkék követik a tartalmat; vegyes polcnál nézz a termékre az eladási árért. A raktári dobozok saját márkájuk áruját fogadják vissza. A korábbi márkakötött bolti elrendezés csak a kezdőkészlet ajánlott rendje.
 
 Az új kávéreceptek, hűtő, többtermékes kosár, bankkártya és naplezárás kezelése: [NextFeatureRelease](Docs/NextFeatureRelease.md).
+
+Esti maradás és csempész: nap végén S, a hátsó udvaron E, O vissza. Árkezelés: TobaccOS 6. Részletek: [EveningPricingRelease](Docs/EveningPricingRelease.md). Ez a változat helyi, Pages-közzététel nélkül.

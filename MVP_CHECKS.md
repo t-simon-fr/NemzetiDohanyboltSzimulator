@@ -76,3 +76,5 @@ A legújabb képek a `Temp/CartonWorkflow/` mappában: raktári fémpolcok márk
 Alkalmazásváltáskor a dinamikus betűkészlet statikus feliratai késleltetve újraépülnek; a Rendelések és Berendezés oldalon az ASZTAL, KILÉPÉS és TRAFIK OS feliratok a végső kameraképeken is láthatók. E javítás után a 41 alkalmazás- és 82 eszközellenőrzés újra sikerült.
 
 Új kiadás: 29 csoport / 3796 állítás. `Builds/NextFeatureRelease/checks.json`; `CardAndSummaryChecks.Run` ellenőrzi a kártyás fizetést és a napvégi továbblépést. Böngésző: `node Tools/Verify-WebGL.cjs --features --dayend`.
+
+Esti kereskedés és árképzés: 32 csoport / 3854 sikeres ellenőrzés, 0 sikertelen. Jelentés: `Builds/EveningPricingRelease/checks.json`; új forgatókönyvek: `EveningPricingChecks.Pricing`, `.Evening`, `.NightSale`.

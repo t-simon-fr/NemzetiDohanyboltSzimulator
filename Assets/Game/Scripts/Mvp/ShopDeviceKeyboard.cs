@@ -43,7 +43,7 @@ public sealed partial class ShopDevices
                 targets.Add(new ShopKeyboardTarget(id,label,Rect.MinMaxRect(min.x,min.y,max.x,max.y),()=>control.Activate(shop)));
             }
         }
-        if(FocusKind==ShopDeviceKind.Monitor)shop.Activities.AddKeyboardTargets(targets,AppRect);
+        if(FocusKind==ShopDeviceKind.Monitor){shop.Activities.AddKeyboardTargets(targets,AppRect);shop.Pricing?.AddKeyboardTargets(targets,AppRect);}
         if(FocusKind==ShopDeviceKind.Coins)
         {
             var panel=new Rect(Screen.width*.18f,Screen.height-170,Screen.width*.64f,150);
@@ -89,7 +89,9 @@ public sealed partial class ShopDevices
                 if(ComputerApp==ShopComputerApp.Desktop)shop.ClosePanel();else OpenApp(ShopComputerApp.Desktop);return true;
             }
             int digit=Digit(key);
-            if(ComputerApp==ShopComputerApp.Desktop&&digit>=1&&digit<=5){OpenApp((ShopComputerApp)digit);return true;}
+            if(ComputerApp==ShopComputerApp.Desktop&&digit>=1&&digit<=6){OpenApp((ShopComputerApp)digit);return true;}
+            if(ComputerApp==ShopComputerApp.Prices&&(key==DeviceKey.Equals||key==DeviceKey.NumpadPlus||key==DeviceKey.Minus||key==DeviceKey.NumpadMinus))
+            {shop.Pricing.AdjustSelected((key==DeviceKey.Minus||key==DeviceKey.NumpadMinus?-1:1)*(shift?5:100));return true;}
             if(ComputerApp==ShopComputerApp.Orders)
             {
                 if(key==DeviceKey.Minus||key==DeviceKey.NumpadMinus){ChangeOrderQuantity(-1);return true;}
@@ -138,7 +140,7 @@ public sealed partial class ShopDevices
             }
         }
         string hint=FocusKind==ShopDeviceKind.Till?"1–6: bankjegy • Shift+1–6: érme • Space: kivesz • Enter: fizetés • Backspace: vissza • Del: törlés":FocusKind==ShopDeviceKind.Coins?"Tab / nyilak: választás • Space: érme • Enter: átvétel • Backspace: vissza • Del: törlés":"Tab / nyilak: választás • Enter / Space: jóváhagyás • Backspace: vissza • Esc: kilépés";
-        if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Desktop)hint="1: árurendelés • 2: fejlesztés • 3: kávé • 4: kamerák • 5: játékok • "+hint;
+        if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Desktop)hint="1: árurendelés • 2: fejlesztés • 3: kávé • 4: kamerák • 5: játékok • 6: árak • "+hint;
         if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Orders)hint="1–9: termék • + / −: mennyiség • "+hint;
         var style=new GUIStyle(GUI.skin.box){fontSize=Mathf.Clamp(Screen.width/90,12,18),wordWrap=true,alignment=TextAnchor.MiddleCenter};
         GUI.Box(new Rect(12,FocusKind==ShopDeviceKind.Coins?12:Screen.height-47,Screen.width-24,39),hint,style);

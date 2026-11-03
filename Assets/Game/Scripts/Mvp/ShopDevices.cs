@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public enum ShopDeviceKind { None, Monitor, Till, Coins }
-public enum ShopComputerApp { Desktop, Orders, Furnishing, Coffee, Cameras, Games }
+public enum ShopComputerApp { Desktop, Orders, Furnishing, Coffee, Cameras, Games, Prices }
 public sealed partial class ShopDevices : MonoBehaviour
 {
     [SerializeField] private Transform monitor, drawer, changeTray, tillDisplay;
@@ -123,7 +123,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         DesktopIcon(desktopPage,"KAMERÁK",.36f,ShopComputerApp.Cameras,"CCTV",-.14f);
         DesktopIcon(desktopPage,"JÁTÉKOK",-.36f,ShopComputerApp.Games,"PLAY",-.14f);
         featurePage=Page("TobaccOS Activities");
-        Label(desktopPage,"TobaccOS • Munka és műszakszünet.",new Vector3(0,-.29f,.025f),.024f);
+        MonitorButton(desktopPage,"ÁRAK • 6",new Vector3(0,-.29f,.02f),WorldControlKind.OpenApp,(int)ShopComputerApp.Prices,1.15f,.07f,screenAccent);
         orderQuantityText=Label(orderPage,"",new Vector3(.46f,.24f,.027f),.024f);
         MonitorButton(orderPage,"-",new Vector3(.02f,.24f,.020f),WorldControlKind.ChangeOrderQuantity,-1,.14f,.06f,screenAccent);
         MonitorButton(orderPage,"+",new Vector3(-.16f,.24f,.020f),WorldControlKind.ChangeOrderQuantity,1,.14f,.06f,screenAccent);
@@ -172,9 +172,9 @@ public sealed partial class ShopDevices : MonoBehaviour
     {
         ResetKeyboardFocus();ComputerApp=app;if(desktopPage==null)return;
         desktopPage.gameObject.SetActive(app==ShopComputerApp.Desktop);orderPage.gameObject.SetActive(app==ShopComputerApp.Orders);furnishingPage.gameObject.SetActive(app==ShopComputerApp.Furnishing);
-        featurePage.gameObject.SetActive(app==ShopComputerApp.Coffee||app==ShopComputerApp.Cameras||app==ShopComputerApp.Games);
+        featurePage.gameObject.SetActive(app==ShopComputerApp.Coffee||app==ShopComputerApp.Cameras||app==ShopComputerApp.Games||app==ShopComputerApp.Prices);
         buildingPage.gameObject.SetActive(app!=ShopComputerApp.Desktop);
-        appTitle.text=app==ShopComputerApp.Desktop?"ASZTAL":app==ShopComputerApp.Orders?"TERMÉKRENDELÉS":app==ShopComputerApp.Furnishing?"ÜZLETFEJLESZTÉS":app==ShopComputerApp.Coffee?"KÁVÉ":app==ShopComputerApp.Cameras?"KAMERÁK":"JÁTÉKOK";
+        appTitle.text=app==ShopComputerApp.Desktop?"ASZTAL":app==ShopComputerApp.Orders?"TERMÉKRENDELÉS":app==ShopComputerApp.Furnishing?"ÜZLETFEJLESZTÉS":app==ShopComputerApp.Coffee?"KÁVÉ":app==ShopComputerApp.Cameras?"KAMERÁK":app==ShopComputerApp.Prices?"ÁRAK":"JÁTÉKOK";
         RefreshMonitor();refreshMonitorFrame=Time.frameCount+1;
     }
     public void ChangeOrderQuantity(int delta)
@@ -223,7 +223,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         }
         else
         {
-            string notice=ComputerApp==ShopComputerApp.Desktop?"TobaccOS • Kis bolt. Nagy történetek.":string.IsNullOrEmpty(furnishingFeedback)?"A fejlesztések a meglévő boltodat bővítik.":furnishingFeedback;
+            string notice=ComputerApp==ShopComputerApp.Prices?"Árváltozás csak az újonnan érkezőkre érvényes.":ComputerApp==ShopComputerApp.Desktop?"TobaccOS • Kis bolt. Nagy történetek.":string.IsNullOrEmpty(furnishingFeedback)?"A fejlesztések a meglévő boltodat bővítik.":furnishingFeedback;
             monitorNotice.text=notice.Length>105?notice.Substring(0,102)+"...":notice;
         }
     }

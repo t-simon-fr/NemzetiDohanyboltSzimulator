@@ -25,4 +25,4 @@ WebGL-ellenőrzés: `node Tools/Verify-WebGL.cjs --features --dayend`, majd ugya
 
 ## További feladatok
 
-Az issue később hozzáadott, még nem jóváhagyott feladatai (műszak utáni maradás/csempész, állítható eladási ár és kereslet) külön körben maradnak.
+A műszak utáni maradás/csempész és az állítható eladási ár/kereslet a következő, helyi kiadásban elkészült: [EveningPricingRelease](EveningPricingRelease.md). A felhasználó kérésére az nem került Pagesre.

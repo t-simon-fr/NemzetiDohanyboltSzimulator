@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton }
+public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton, Smuggler }
 public sealed class ShopStation : MonoBehaviour
 {
     [SerializeField] private ShopStationKind kind;
@@ -33,6 +33,7 @@ public sealed class ShopStation : MonoBehaviour
     {
         get
         {
+            if(kind==ShopStationKind.Smuggler)return "E – Beszélgetés a gyanús alakkal";
             if(IsPanicButton)return shop.Security.Prompt;
             if(kind==ShopStationKind.Monitor)return "E / B – Számítógép: rendelések és berendezés";
             if(kind==ShopStationKind.Till)return "E – Kassza / fizetés";
@@ -46,7 +47,8 @@ public sealed class ShopStation : MonoBehaviour
     public void Use(PlayerInteractor player)
     {
         if(shop==null)return;
-        if(IsPanicButton)shop.Security.Toggle();
+        if(kind==ShopStationKind.Smuggler)shop.AfterHours.OpenTrade();
+        else if(IsPanicButton)shop.Security.Toggle();
         else if(kind==ShopStationKind.Monitor)shop.OpenSupplier();
         else if(kind==ShopStationKind.Till)shop.OpenCash();
         else if(kind==ShopStationKind.Door){if(shop.Phase==ShopPhase.Preparing)shop.OpenShop();else shop.RequestClose();}

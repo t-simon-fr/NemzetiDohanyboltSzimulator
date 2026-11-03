@@ -11,6 +11,7 @@ public sealed class MvpShopHud : MonoBehaviour
     private void OnGUI()
     {
         if(shop==null||shop.Ledger==null)return;
+        if(shop.AfterHours!=null&&shop.AfterHours.TradeOpen)return;
         if(title==null)
         {
             title=new GUIStyle(GUI.skin.label){fontSize=24,fontStyle=FontStyle.Bold,wordWrap=true};
@@ -51,11 +52,11 @@ public sealed class MvpShopHud : MonoBehaviour
     private void Game()
     {
         Panel(new Rect(12,12,295,156));GUILayout.BeginArea(new Rect(26,20,268,140));
-        Label(shop.Day+". nap • "+(shop.Phase==ShopPhase.Preparing?"Felkészülés":shop.Phase==ShopPhase.Open?"Nyitva":"Zárunk"),true);
+        Label(shop.Day+". nap • "+(shop.Phase==ShopPhase.Preparing?"Felkészülés":shop.Phase==ShopPhase.Open?"Nyitva":shop.Phase==ShopPhase.AfterHours?"Zárás után":"Zárunk"),true);
         Label("Kassza: "+ShopCatalog.Money(shop.Ledger.Cash));
         GUILayout.Label("Bank: "+ShopCatalog.Money(shop.Ledger.BankBalance),small);
         GUILayout.Label("Eladások: "+shop.Ledger.Sales+" • Sorban: "+shop.QueueCount+" • Érkezett: "+shop.Spawned+"/"+shop.TotalVisitors,small);
-        GUILayout.Label(shop.Security!=null&&shop.Security.Locked?"BEJÁRAT RETESZELVE • E a vészgombon":"B Számítógép • H Súgó • O Nyitás/zárás",small);GUILayout.EndArea();
+        GUILayout.Label(shop.Phase==ShopPhase.AfterHours?"O: elszámolás • Hátul: kereskedő":shop.Security!=null&&shop.Security.Locked?"BEJÁRAT RETESZELVE • E a vészgombon":"B Számítógép • H Súgó • O Nyitás/zárás",small);GUILayout.EndArea();
         if(shop.ActiveCustomer!=null)
         {
             var c=shop.ActiveCustomer;Panel(new Rect(844,12,424,216));GUILayout.BeginArea(new Rect(860,24,392,190));
@@ -94,7 +95,7 @@ public sealed class MvpShopHud : MonoBehaviour
     {
         GUILayout.BeginArea(new Rect(240,72,800,42));Label(shop.Day+". nap • Zárás",true);GUILayout.EndArea();
         GUILayout.BeginArea(SummaryDetailsRect);summaryScroll=GUILayout.BeginScrollView(summaryScroll);
-        Label("Kiszolgált vásárlók: "+shop.Ledger.Sales+" / "+shop.Spawned+" • Elküldve: "+shop.Missed);
+        Label("Kiszolgált vásárlók: "+shop.Ledger.Sales+" / "+shop.Spawned+" • Elküldve: "+shop.Missed+" • Ár miatt: "+shop.PriceRefusals);
         GUILayout.Space(10);Label("Árbevétel: "+ShopCatalog.Money(shop.Ledger.Revenue));
         Label("Lopásból eredő készletveszteség: "+ShopCatalog.Money(shop.Ledger.StockLoss)+" • Megállítva: "+shop.CaughtToday);
         Label("Eladott áruk beszerzési értéke: "+ShopCatalog.Money(shop.Ledger.CostOfGoods));
@@ -105,13 +106,16 @@ public sealed class MvpShopHud : MonoBehaviour
         Label("Bankszámla: "+ShopCatalog.Money(shop.Ledger.BankBalance)+" • Kártyás bevétel: "+ShopCatalog.Money(shop.Ledger.CardRevenue));
         if(shop.Ledger.Cash<0)Label("Ki nem fizetett működési költség: "+ShopCatalog.Money(-shop.Ledger.Cash)+". A folytatáshoz indíts új játékot.");GUILayout.Space(12);
         for(int i=0;i<shop.AvailableProducts;i++)GUILayout.Label(ShopCatalog.Names[i]+": "+shop.StockCount(i)+" a boltban, "+shop.WarehouseCount(i)+" a dobozban",small);
+        if(shop.StockCount(ShopCatalog.Contraband)>0)GUILayout.Label("Dnyipro: "+shop.StockCount(ShopCatalog.Contraband)+" csomag",small);
         GUILayout.Label("A készlet, a pénzek és a bővítés a futó játék következő napjára megmaradnak.",small);
         GUILayout.EndScrollView();GUILayout.EndArea();
         GUILayout.BeginArea(SummaryActionsRect);
-        if(shop.Ledger.Cash>=0){if(Button("Következő nap • Enter"))shop.NextDay();}else GUILayout.Label("Elfogyott a pénz. Az Új játék gombbal újrakezdhetsz.",small);
-        if(Button("Új játék • R"))shop.ResetDemo();
-        if(Button("Kilépés"))Quit();GUILayout.EndArea();
+        if(shop.Ledger.Cash>=0){if(SummaryButton("Következő nap • Enter"))shop.NextDay();}else GUILayout.Label("Elfogyott a pénz. Az Új játék gombbal újrakezdhetsz.",small);
+        if(SummaryButton("Maradok a boltban • S"))shop.StayAfterHours();
+        if(SummaryButton("Új játék • R"))shop.ResetDemo();
+        if(SummaryButton("Kilépés"))Quit();GUILayout.EndArea();
     }
+    private bool SummaryButton(string label)=>GUILayout.Button(label,button,GUILayout.Height(32));
     private void CardTerminal()
     {
         Panel(new Rect(340,190,600,330));GUILayout.BeginArea(new Rect(365,210,550,290));

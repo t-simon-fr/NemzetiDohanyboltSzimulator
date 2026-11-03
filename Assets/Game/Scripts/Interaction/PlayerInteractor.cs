@@ -257,7 +257,7 @@ public sealed class PlayerInteractor : MonoBehaviour
             !HasHeldItem&&featureTarget!=null ? featureTarget.Prompt :
             heldCarton != null ? (targetBin != null ? (heldCarton.Quantity==0?targetBin.Prompt:"A papírgyűjtőbe csak üres karton kerülhet") : LookingAtSupplies ? "E – Doboz visszarakása a saját raktári polcára" : heldCarton.Quantity==0 ? "Üres doboz: vidd vissza vagy dobd a hátsó papírgyűjtőbe" : canPlace ? "E – Egy termék kipakolása a kijelölt polchelyre" : targetSlot!=null ? "Ez a hely foglalt, vagy más márkához tartozik" : "Nézz egy zölddel jelölt üres polchelyre") :
             heldProduct != null ? (targetBin != null ? "A kukába csak üres kartondoboz kerülhet" : LookingAtSupplies ? "E – Kézben tartott áru visszarakása a dobozba" : placementPrompt) :
-            targetBin != null ? targetBin.Prompt : station != null ? station.Prompt : target != null ? "E – Felvétel: " + target.DisplayName + (ShopCatalog.Index(target.ProductId)>=0?" • "+ShopCatalog.Money(ShopCatalog.Prices[ShopCatalog.Index(target.ProductId)]):"") : "Nézz egy termékre vagy egy interakciós pontra";
+            targetBin != null ? targetBin.Prompt : station != null ? station.Prompt : target != null ? "E – Felvétel: " + target.DisplayName + (ShopCatalog.Index(target.ProductId)>=0?" • "+ShopCatalog.Money(ShopCatalog.SalePrice(ShopCatalog.Index(target.ProductId))):"") : "Nézz egy termékre vagy egy interakciós pontra";
         float panelWidth = Mathf.Min(620f, Screen.width - 24f);
         Rect panel = new Rect((Screen.width - panelWidth) * 0.5f, Screen.height - 116, panelWidth, 96);
         GUI.color = new Color(0f, 0f, 0f, 0.78f);

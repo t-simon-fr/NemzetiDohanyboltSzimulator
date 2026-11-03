@@ -96,6 +96,10 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
         await key('Backspace', 'Backspace', 8); await key('5', 'Digit5', 53); await key('Tab', 'Tab', 9);
         await key('ArrowRight', 'ArrowRight', 39); await key('Enter', 'Enter', 13); await sleep(250);
         await key('Tab', 'Tab', 9); await key('Tab', 'Tab', 9); await key(' ', 'Space', 32); await capture('keyboard-memory');
+        if(process.argv.includes('--evening')){
+          await key('Backspace','Backspace',8);await key('Backspace','Backspace',8);await key('6','Digit6',54);await capture('pricing');
+          await key('=','Equal',187);await capture('pricing-changed');await key('-','Minus',189);
+        }
       }
     }
     if (process.argv.includes('--dayend')) {
@@ -107,6 +111,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
       await key('o', 'KeyO', 79); await sleep(750); await key('o', 'KeyO', 79);
       for(let i=0;i<24;i++){await key('x','KeyX',88);await sleep(500);}
       await capture('dayend-summary');
+      if(process.argv.includes('--evening')){await key('s','KeyS',83);await sleep(750);await capture('after-hours');await key('o','KeyO',79);await sleep(500);await capture('evening-return');}
       await key('Enter','Enter',13);await sleep(750);await capture('next-day');
     }
     fs.writeFileSync(path.join(output, label + '-console.json'), JSON.stringify(messages, null, 2));

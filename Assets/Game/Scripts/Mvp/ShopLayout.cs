@@ -49,10 +49,10 @@ public sealed class ShopLayout : MonoBehaviour
         var found=new System.Collections.Generic.List<T>();foreach(var root in roots)found.AddRange(root.GetComponentsInChildren<T>(true));return found.ToArray();
     }
     public void RegisterPublicSlots(ProductSlot[] slots){publicSlots=System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(publicSlots,slots));}
-    public bool IsPublicProduct(int type)=>Expanded && type>=0 && type<ShopCatalog.Count && (type>=ShopCatalog.CigaretteCount || FindPublicStock(type)!=null);
+    public bool IsPublicProduct(int type)=>Expanded && type>=0 && (type<ShopCatalog.Count||type==ShopCatalog.Contraband) && (type>=ShopCatalog.CigaretteCount || FindPublicStock(type)!=null);
     public ShopProduct FindPublicStock(int type)
     {
-        if(!Expanded||type<0||type>=ShopCatalog.Count)return null;
+        if(!Expanded||type<0||(type>=ShopCatalog.Count&&type!=ShopCatalog.Contraband))return null;
         for(int i=0;i<publicSlots.Length;i++)
             if(publicSlots[i]!=null && publicSlots[i].isActiveAndEnabled && publicSlots[i].Occupant!=null && publicSlots[i].Occupant.ProductId==ShopCatalog.Ids[type] && !publicSlots[i].Occupant.IsHeld)return publicSlots[i].Occupant;
         return null;

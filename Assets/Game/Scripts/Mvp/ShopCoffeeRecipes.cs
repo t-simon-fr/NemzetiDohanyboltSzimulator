@@ -31,6 +31,6 @@ public sealed partial class ShopActivities
     private void DrawRecipeControls(float w,float h)
     {
         if(!CoffeeOwned)return;
-        for(int i=0;i<3;i++){int type=ShopCatalog.Coffee+i;if(GUI.Button(new Rect(12+i*(w-24)/3,h-88,(w-30)/3,32),(selectedRecipe==type?"✓ ":"")+ShopCatalog.ShortNames[type]+" • "+ShopCatalog.Money(ShopCatalog.Prices[type])))SelectRecipe(type);}
+        for(int i=0;i<3;i++){int type=ShopCatalog.Coffee+i;if(GUI.Button(new Rect(12+i*(w-24)/3,h-88,(w-30)/3,32),(selectedRecipe==type?"✓ ":"")+ShopCatalog.ShortNames[type]+" • "+ShopCatalog.Money(ShopCatalog.SalePrice(type))))SelectRecipe(type);}
     }
 }

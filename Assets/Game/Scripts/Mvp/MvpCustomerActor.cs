@@ -7,7 +7,9 @@ public sealed class MvpCustomerActor : MonoBehaviour
     public int Person { get; private set; }
     public int Product { get; private set; }
     public int[] OrderTypes {get;private set;}
-    public int TotalPrice=>OrderTypes.Sum(t=>ShopCatalog.Prices[t]);
+    public int[] UnitPrices {get;private set;}
+    public bool AcceptsPrices {get;private set;}
+    public int TotalPrice=>UnitPrices.Sum();
     public int TotalCost=>OrderTypes.Sum(t=>ShopCatalog.Costs[t]);
     public string OrderDescription=>string.Join(" + ",OrderTypes.Select(t=>ShopCatalog.ShortNames[t]));
     public int Tender { get; private set; }
@@ -32,12 +34,12 @@ public sealed class MvpCustomerActor : MonoBehaviour
     private Transform basket;
     public void Initialize(int person,int product,int visit)
     {
-        Person=person;Product=product;var game=MvpShopController.Instance;int count=game.SingleProductVisits?1:1+visit%3;OrderTypes=Enumerable.Range(0,count).Select(i=>i==0?product:(product+i)%game.AvailableProducts).ToArray();int price=TotalPrice;
+        Person=person;Product=product;var game=MvpShopController.Instance;int count=game.SingleProductVisits?1:1+visit%3;OrderTypes=Enumerable.Range(0,count).Select(i=>i==0?product:(product+i)%game.AvailableProducts).ToArray();UnitPrices=OrderTypes.Select(ShopCatalog.SalePrice).ToArray();AcceptsPrices=OrderTypes.Select((t,i)=>ShopPricing.Accepts(t,UnitPrices[i],visit,game.Day)).All(x=>x);int price=TotalPrice;
         Tender=visit%3==1?price:price>2000?Mathf.CeilToInt(price/5000f)*5000:price>500?Mathf.CeilToInt(price/1000f)*1000:500;
         UsesCard=!game.SingleProductVisits&&visit%4==3;
         UsesCoins=!UsesCard&&price<=1000 && visit%4<=2;
         layout=Object.FindAnyObjectByType<ShopLayout>();security=layout.GetComponent<ShopSecurity>();
-        WillSteal=layout.IsPublicProduct(product) && (visit+MvpShopController.Instance.Day)%6==4;
+        WillSteal=AcceptsPrices&&layout.IsPublicProduct(product) && (visit+MvpShopController.Instance.Day)%6==4;
         transform.SetPositionAndRotation(layout.EntryOutside,Quaternion.identity);
         var body=GetComponent<CharacterController>();if(body!=null)body.enabled=false;
         var old=GetComponent<CustomerOrderController>();if(old!=null)old.enabled=false;
@@ -46,7 +48,7 @@ public sealed class MvpCustomerActor : MonoBehaviour
             if(renderer.name!="Body")continue;var block=new MaterialPropertyBlock();renderer.GetPropertyBlock(block);block.SetColor("_BaseColor",ShopPeople.Colors[person]);renderer.SetPropertyBlock(block);
         }
         var hitbox=gameObject.AddComponent<CapsuleCollider>();hitbox.height=1.8f;hitbox.radius=.24f;hitbox.center=Vector3.up*.9f;gameObject.AddComponent<ShopCharacterDetail>().Configure(person);
-        gameObject.name="Vásárló - "+ShopPeople.Names[person];ShoppingComplete=!OrderTypes.Any(layout.IsPublicProduct);
+        gameObject.name="Vásárló - "+ShopPeople.Names[person];ShoppingComplete=!AcceptsPrices||!OrderTypes.Any(layout.IsPublicProduct);
         basket=new GameObject("Kosár").transform;basket.SetParent(transform,false);basket.localPosition=new Vector3(.3f,1.05f,.25f);
     }
     public bool Advance(float dt,Vector3 queueTarget)
