@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "profile": "checkout",
+  "startedUtc": "2026-11-03T19:20:15.5057984Z",
+  "source": {
+    "commit": "dee3417932351619f0adf61acdb455432dfcfa53",
+    "sourceFingerprint": "f21ec34313e25653e3c82a7fe85e966ed3a061dad2c5bacf3548b983c77d0276",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "passed": 12,
+      "failed": 0,
+      "id": "ledger",
+      "entry": "LedgerChecks.Run"
+    },
+    {
+      "passed": 20,
+      "failed": 0,
+      "id": "checkout-revision",
+      "entry": "CheckoutRevisionChecks.Run"
+    },
+    {
+      "passed": 41,
+      "failed": 0,
+      "id": "basket-day",
+      "entry": "NextFeatureChecks.BasketDay"
+    },
+    {
+      "passed": 9,
+      "failed": 0,
+      "id": "recovery",
+      "entry": "NextFeatureChecks.RecoveryAndCancellation"
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "finishedUtc": "2026-11-03T19:20:18.5197744Z"
+}
