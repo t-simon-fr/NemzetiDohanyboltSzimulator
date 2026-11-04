@@ -1,0 +1,235 @@
+{
+  "source": "Magyar Nemzeti Bank (MNB)",
+  "retrieved": "2026-11-04",
+  "filesUnmodified": true,
+  "entries": [
+    {
+      "value": 20000,
+      "kind": "banknote",
+      "file": "Banknote_20000.jpg",
+      "url": "https://www.mnb.hu/i/popupu20000.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/bankjegyeink/megujitott-20-000-forintos-bankjegy",
+      "sha256": "fa288b67ee50a81aea2c37c173d02ef6a22710a697939402148727684feb436c",
+      "frontUv": [
+        0,
+        0.535,
+        1,
+        0.465
+      ],
+      "backUv": [
+        0,
+        0,
+        1,
+        0.465
+      ]
+    },
+    {
+      "value": 10000,
+      "kind": "banknote",
+      "file": "Banknote_10000.jpg",
+      "url": "https://www.mnb.hu/i/popupu10000.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/bankjegyeink/megujitott-10-000-forintos-bankjegy",
+      "sha256": "cda64a0ba5c68aba0b300c3be772c80992efc887d062d9d07b6fdd0aa2703828",
+      "frontUv": [
+        0,
+        0.535,
+        1,
+        0.465
+      ],
+      "backUv": [
+        0,
+        0,
+        1,
+        0.465
+      ]
+    },
+    {
+      "value": 5000,
+      "kind": "banknote",
+      "file": "Banknote_5000.jpg",
+      "url": "https://www.mnb.hu/i/popupu5000.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/bankjegyeink/megujitott-5000-forintos-bankjegy",
+      "sha256": "87a913ad141fc53f953b5c60fc75c9237f3289b2d146570676686c1104117333",
+      "frontUv": [
+        0,
+        0.535,
+        1,
+        0.465
+      ],
+      "backUv": [
+        0,
+        0,
+        1,
+        0.465
+      ]
+    },
+    {
+      "value": 2000,
+      "kind": "banknote",
+      "file": "Banknote_2000.jpg",
+      "url": "https://www.mnb.hu/i/popupu2000.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/bankjegyeink/megujitott-2000-forintos-bankjegy",
+      "sha256": "b9df1cc68f3f8e53ff3f39994faadf2445d382b2f22a3dd755816e17848cc9d3",
+      "frontUv": [
+        0,
+        0.535,
+        1,
+        0.465
+      ],
+      "backUv": [
+        0,
+        0,
+        1,
+        0.465
+      ]
+    },
+    {
+      "value": 1000,
+      "kind": "banknote",
+      "file": "Banknote_1000.jpg",
+      "url": "https://www.mnb.hu/i/popupu1000.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/bankjegyeink/megujitott-1-000-forintos-bankjegy",
+      "sha256": "bf66f5ac4cfbabaa25ce222c7ef57d05b4b075701b623a72d55f8339943c26c8",
+      "frontUv": [
+        0,
+        0.535,
+        1,
+        0.465
+      ],
+      "backUv": [
+        0,
+        0,
+        1,
+        0.465
+      ]
+    },
+    {
+      "value": 500,
+      "kind": "banknote",
+      "file": "Banknote_500.jpg",
+      "url": "https://www.mnb.hu/i/popupu500.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/bankjegyeink/megujitott-500-ft-os-bankjegy",
+      "sha256": "387606fd8c24aeb33031374ee7dbba832624d6d39dc92003f4e98f31c8c8d06c",
+      "frontUv": [
+        0,
+        0.535,
+        1,
+        0.465
+      ],
+      "backUv": [
+        0,
+        0,
+        1,
+        0.465
+      ]
+    },
+    {
+      "value": 200,
+      "kind": "coin",
+      "side": "Reverse",
+      "file": "Coin_200_Reverse.png",
+      "url": "https://www.mnb.hu/i/200-ft-rv-kicsi.exact125x125.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "5a86c39115e7bc9b254e21c71371a63f0d2739fc025ec98974e6878de9e5aba2"
+    },
+    {
+      "value": 200,
+      "kind": "coin",
+      "side": "Obverse",
+      "file": "Coin_200_Obverse.png",
+      "url": "https://www.mnb.hu/i/200-ft-av-kicsi.exact125x123.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "bc5112d882e1a0ceeda780dd3622c87a07b5f2ed0ab1a052f1dde18b13e05aad"
+    },
+    {
+      "value": 100,
+      "kind": "coin",
+      "side": "Reverse",
+      "file": "Coin_100_Reverse.png",
+      "url": "https://www.mnb.hu/i/100-ft-rv-2019-kicsi.png",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "dcf2f9d0feeed93779b3c64ca9643fbed158e3b34608d3fbc88fb921c7d849ee"
+    },
+    {
+      "value": 100,
+      "kind": "coin",
+      "side": "Obverse",
+      "file": "Coin_100_Obverse.png",
+      "url": "https://www.mnb.hu/i/100-ft-av-2019-kicsi.png",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "438892314feeac476974c1fbbebed6eda172e3111079169114c56d76adfeb643"
+    },
+    {
+      "value": 50,
+      "kind": "coin",
+      "side": "Reverse",
+      "file": "Coin_50_Reverse.png",
+      "url": "https://www.mnb.hu/i/50-ft-rv-1.exact125x123.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "8cf17674928ee254f06a6459f296f96775e02ac0e351a5c32e44a133efdf1d82"
+    },
+    {
+      "value": 50,
+      "kind": "coin",
+      "side": "Obverse",
+      "file": "Coin_50_Obverse.png",
+      "url": "https://www.mnb.hu/i/50-ft-av-1.exact125x123.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "f81831f3b5637531b41c571352d7b4b8d0fcce007f5df5144c685969af4df223"
+    },
+    {
+      "value": 20,
+      "kind": "coin",
+      "side": "Reverse",
+      "file": "Coin_20_Reverse.png",
+      "url": "https://www.mnb.hu/i/20-ft-rv-1.exact125x124.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "e3177de8b1ceecb9416bdecbb0ec806b26fa8af548086a212097be81c159d99b"
+    },
+    {
+      "value": 20,
+      "kind": "coin",
+      "side": "Obverse",
+      "file": "Coin_20_Obverse.png",
+      "url": "https://www.mnb.hu/i/20-ft-av-1.exact125x124.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "1cdcc0773dd436905eb5b3a862a6dee5c3fad981b8ad21e050dc5023980bd07b"
+    },
+    {
+      "value": 10,
+      "kind": "coin",
+      "side": "Reverse",
+      "file": "Coin_10_Reverse.png",
+      "url": "https://www.mnb.hu/i/10-ft-rv-1.exact125x123.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "20ece85e2ba1246b3bad56bd3578d779bb13c8e82b0843c994c97b258584be72"
+    },
+    {
+      "value": 10,
+      "kind": "coin",
+      "side": "Obverse",
+      "file": "Coin_10_Obverse.png",
+      "url": "https://www.mnb.hu/i/10-ft-av-1.exact125x123.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "70940ca570631adc5db3583f4959713d2742e10594fc17dd2ebbbb801953eecf"
+    },
+    {
+      "value": 5,
+      "kind": "coin",
+      "side": "Reverse",
+      "file": "Coin_5_Reverse.png",
+      "url": "https://www.mnb.hu/i/5-ft-rv-1.exact125x124.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "62e8876fd4561d4f866cebde3f1d37c797f5a81df792f7f4c61e199ff6b716f2"
+    },
+    {
+      "value": 5,
+      "kind": "coin",
+      "side": "Obverse",
+      "file": "Coin_5_Obverse.png",
+      "url": "https://www.mnb.hu/i/5-ft-av-1.exact125x124.orig",
+      "page": "https://www.mnb.hu/bankjegy-es-erme/ermeink",
+      "sha256": "af4af407e7a13ac6962ec192835bbd4b3c31e32e5cb09c37b388f44c1d5376d8"
+    }
+  ]
+}

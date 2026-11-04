@@ -47,7 +47,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     private readonly List<GameObject> cashStacks = new List<GameObject>();
     private string lastSelection = "";
     private int refreshMonitorFrame=-1;
-    private Material bodyMaterial, paperMaterial, coinMaterial;
+    private Material bodyMaterial;
     public ShopDeviceKind FocusKind { get; private set; }
     public bool Focused => FocusKind != ShopDeviceKind.None;
     public Vector3 MonitorPosition => monitor.position;
@@ -55,6 +55,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     public Transform TillAssembly => tillAssembly;
     public ShopCardTerminal Terminal { get; private set; }
     public ShopRegisterVisuals RegisterVisuals { get; private set; }
+    public ShopMoneyVisuals MoneyVisuals { get; private set; }
     public void Configure(Transform screen, Transform contents, Transform tray, Transform display,
         Transform monitorRoot, Transform tillRoot, Transform keyboard, CashRegisterDrawer mechanism)
     {
@@ -65,8 +66,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     {
         shop = GetComponent<MvpShopController>(); view = Camera.main;
         bodyMaterial = Material(new Color(.045f,.06f,.07f));
-        paperMaterial = Material(new Color(.65f,.73f,.6f));
-        coinMaterial = Material(new Color(.72f,.62f,.34f));
+        MoneyVisuals = gameObject.AddComponent<ShopMoneyVisuals>();
         RegisterVisuals = gameObject.AddComponent<ShopRegisterVisuals>();
         RegisterVisuals.Configure(tillAssembly, registerDrawer, keypad, tillDisplay);
         BuildMonitor(); BuildDrawer(); RegisterVisuals.BuildKeys(keypad);
@@ -279,32 +279,8 @@ public sealed partial class ShopDevices : MonoBehaviour
             moneyLabels.Add(RegisterVisuals.DenominationLabel(drawer, value, p.x));
         }
     }
-    private GameObject Money(Transform parent,int value,Vector3 p,float scale)
-    {
-        var root=new GameObject((value>=500?"Bankjegy ":"Érme ")+value);
-        root.transform.SetParent(parent,false);root.transform.localPosition=p;
-        root.transform.localScale=Vector3.one*scale;
-        GameObject mesh;
-        if(value>=500)mesh=Box(root.transform,"Pénz",Vector3.zero,new Vector3(.065f,.005f,.135f),paperMaterial);
-        else
-        {
-            mesh=GameObject.CreatePrimitive(PrimitiveType.Cylinder);mesh.name="Pénz";mesh.transform.SetParent(root.transform,false);
-            mesh.transform.localScale=new Vector3(.043f,.003f,.043f);mesh.GetComponent<Renderer>().sharedMaterial=coinMaterial;
-        }
-        var block=new MaterialPropertyBlock();block.SetColor("_BaseColor",MoneyColor(value));mesh.GetComponent<Renderer>().SetPropertyBlock(block);
-        ProductVisuals.Text(root.transform,"Pénzérték",value.ToString(),Vector3.up*.006f,Quaternion.Euler(90,180,0),.013f,Color.black);
-        return root;
-    }
-    private static Color MoneyColor(int value)
-    {
-        switch(value)
-        {
-            case 20000:return new Color(.64f,.76f,.66f);case 10000:return new Color(.65f,.69f,.83f);
-            case 5000:return new Color(.85f,.76f,.55f);case 2000:return new Color(.8f,.62f,.57f);
-            case 1000:return new Color(.65f,.77f,.83f);case 500:return new Color(.78f,.58f,.63f);
-            case 100:case 200:return new Color(.76f,.69f,.42f);default:return new Color(.75f,.75f,.7f);
-        }
-    }
+    private GameObject Money(Transform parent, int value, Vector3 position, float scale)
+        => MoneyVisuals.Create(parent, value, position, scale);
     public void Focus(ShopDeviceKind kind)
     {
         if (kind == ShopDeviceKind.Coffee && (shop == null || !shop.Activities.CoffeeOwned)) return;
@@ -392,5 +368,5 @@ public sealed partial class ShopDevices : MonoBehaviour
     }
     private void OnDisable()=>Release();
     private void OnDestroy()
-    { Font.textureRebuilt-=OnFontTextureRebuilt;if(bodyMaterial!=null)Destroy(bodyMaterial);if(paperMaterial!=null)Destroy(paperMaterial);if(coinMaterial!=null)Destroy(coinMaterial);foreach(var material in screenMaterials)if(material!=null)Destroy(material); }
+    { Font.textureRebuilt-=OnFontTextureRebuilt;if(bodyMaterial!=null)Destroy(bodyMaterial);foreach(var material in screenMaterials)if(material!=null)Destroy(material); }
 }

@@ -1,6 +1,6 @@
 # Elfogadási ellenőrzések
 
-Aktuális fejlesztés: [#33 saját kassza](2026-11-04-modern-register/REPORT.md). Előző csomag: [#31 polccímkék](2026-11-04-shelf-labels/REPORT.md). Előző csomag: [#23–#25 mozgás és fizikai eszközök](2026-11-04-device-controls/REPORT.md). Függőségek: [#22 egységes trafik UI](2026-11-04-ui/REPORT.md), [#20–#21 ajtótábla és pult alatti készlet](2026-11-04-door-storage/REPORT.md), [#15 alaprajz és átrendezés](2026-11-04-layout/REPORT.md). Előző csomagok: [#13 ajtó és műszak](2026-11-04/REPORT.md), [#2–#8](2026-11-03/REPORT.md).
+Aktuális fejlesztés: [#35 hivatalos forint](2026-11-04-forint/REPORT.md). Előző csomag: [#33 saját kassza](2026-11-04-modern-register/REPORT.md). Előző csomag: [#31 polccímkék](2026-11-04-shelf-labels/REPORT.md). Előző csomag: [#23–#25 mozgás és fizikai eszközök](2026-11-04-device-controls/REPORT.md). Függőségek: [#22 egységes trafik UI](2026-11-04-ui/REPORT.md), [#20–#21 ajtótábla és pult alatti készlet](2026-11-04-door-storage/REPORT.md), [#15 alaprajz és átrendezés](2026-11-04-layout/REPORT.md). Előző csomagok: [#13 ajtó és műszak](2026-11-04/REPORT.md), [#2–#8](2026-11-03/REPORT.md).
 
 ```powershell
 pwsh -File Tools/Verify-Project.ps1 -Profile checkout
@@ -24,6 +24,7 @@ node Tools/Verify-Acceptance.cjs --case=arrangement
 node Tools/Verify-Acceptance.cjs --case=door-storage
 node Tools/Verify-Acceptance.cjs --case=ui
 node Tools/Verify-Acceptance.cjs --case=cash-register
+node Tools/Verify-Acceptance.cjs --case=forint-coins
 node Tools/Verify-Acceptance.cjs --case=shelf-labels
 node Tools/Verify-Acceptance.cjs --case=movement
 node Tools/Verify-Acceptance.cjs --case=physical-terminal

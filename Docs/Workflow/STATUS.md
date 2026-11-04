@@ -3,7 +3,7 @@
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
 - #2–#8: implementáció, Unity-integrációs és helyi WebGL-bemeneti ellenőrzés kész. Részletek: [elfogadási jelentés](../Acceptance/2026-11-03/REPORT.md).
-- Aktuális checkout profil: **389 sikeres állítás**, 17 csoport. #33: 15 készpénzes + 17 kártyaterminál WebGL-ellenőrzés sikeres, 0 konzolhiba; 1280×720 és 1920×1080 képek átnézve. A korábbi csomagok eredményei a saját jelentéseikben szerepelnek.
+- Aktuális checkout profil: **448 sikeres állítás**, 18 csoport. #35: 15 készpénzes + 12 aprópénzes WebGL-ellenőrzés sikeres, 0 konzolhiba; [jelentés](../Acceptance/2026-11-04-forint/REPORT.md). #33: 15 készpénzes + 17 kártyaterminál WebGL-ellenőrzés sikeres, 0 konzolhiba; 1280×720 és 1920×1080 képek átnézve. A korábbi csomagok eredményei a saját jelentéseikben szerepelnek.
 - Javítva az elkészült kávé téves hiányjelzése és a HUD-on ismétlődő vevői mondat.
 - #11: Misi és Nóra saját karakterkoncepciója, abszurd személyisége és dialógusterve elkészült a `docs/11-character-concept` ágon. A 3D-modellek és játékbeli dialógus-integráció még nincs implementálva.
 - A kassza/kéz grafikai átdolgozását a felhasználó félretette. Az ajtó/tábla alapú napváltás kiadva (#13); a pult alatti csempészáru (#20) és az ajtóra tett kifelé olvasható tábla (#21) implementálva és ellenőrizve, kiadás nélkül.
@@ -68,3 +68,8 @@ Workflow: [WORKFLOW.md](../WORKFLOW.md). Böngészős előfeltételek: [Acceptan
 
 - Eredeti Blender-modell, külön mozgó pénzfiók, nagy döntött kijelző, működő parancsgombok és magyar SDF-feliratok. A kamera a modellhez és nyitott fiókhoz igazodik; kilépéskor és fizetéskor a hely/forgás/FOV visszaáll.
 - Unity: 389 sikeres állítás, ebből 47 új kasszaellenőrzés. Helyi WebGL: 15 készpénzes + 17 terminálpróba, 0 konzolhiba; vizuális és interakciós review passed mindkét felbontásban. [Jelentés, képek és modellforrás](../Acceptance/2026-11-04-modern-register/REPORT.md). Pagesre nem került ki.
+
+## #35 — Hivatalos magyar forint
+
+- Az MNB változatlan képei mind a 12 címlethez, kétoldalas bankjegyekkel és pénzdarabokkal; közös megjelenítés a fiókban, a visszajáró tálcáján és a vásárló kezében. Forrásmegjelölés a H műszaksegédben; eredeti források és SHA-256 dokumentálva.
+- Unity: 448 sikeres állítás, ebből 59 célzott forintpróba. Helyi WebGL: 15 készpénzes + 12 aprópénzes próba, 0 konzolhiba. Vizuális és tényleges interakciós review passed 1280×720 és 1920×1080 felbontáson. [Jelentés és képek](../Acceptance/2026-11-04-forint/REPORT.md). Pagesre nem került ki.

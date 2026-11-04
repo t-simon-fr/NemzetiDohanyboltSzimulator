@@ -22,7 +22,8 @@
       "physical-terminal",
       "coffee-display",
       "shelf-labels",
-      "modern-register"
+      "modern-register",
+      "forint-visuals"
     ]
   },
   "suites": {
@@ -110,6 +111,11 @@
       "file": "Tools/Checks/ModernRegisterChecks.cs",
       "entry": "ModernRegisterChecks.Run",
       "purpose": "Original model, SDF glyphs, framed controls, actual cash clicks, camera restore and exact single settlement"
+    },
+    "forint-visuals": {
+      "file": "Tools/Checks/ForintVisualChecks.cs",
+      "entry": "ForintVisualChecks.Run",
+      "purpose": "All twelve official HUF surfaces, shared resources, actual offered-coin rays and denomination conservation"
     }
   },
   "historicalExcluded": {

@@ -1,0 +1,78 @@
+{
+  "started": "2026-11-04T20:52:10.503Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Palm presents all six official coin denominations",
+      "passed": true
+    },
+    {
+      "label": "Every offered coin has an unobstructed on-screen target",
+      "passed": true
+    },
+    {
+      "label": "Empty palm approval cannot charge",
+      "passed": true
+    },
+    {
+      "label": "Actual coin face click selects its denomination",
+      "passed": true
+    },
+    {
+      "label": "Actual second coin click deselects",
+      "passed": true
+    },
+    {
+      "label": "Clear returns selected coins without charging",
+      "passed": true
+    },
+    {
+      "label": "Actual clicks on all six denominations select exact unpaid amount",
+      "passed": true
+    },
+    {
+      "label": "Large palm view keeps coins above controls",
+      "passed": true
+    },
+    {
+      "label": "Real coin approval settles once with conserved cash",
+      "passed": true
+    },
+    {
+      "label": "Accepted payment clears the physical palm and leaves close view",
+      "passed": true
+    },
+    {
+      "label": "Repeated approval cannot charge coin sale twice",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-forint-coins-ready.png",
+    "1280x720-forint-coins-selected.png",
+    "1920x1080-forint-coins-selected-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23178076,
+    "seconds": 328.4177496,
+    "error": "",
+    "completedUtc": "2026-11-04T20:48:44.297Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "3c72b30eacd6b3079ae869f33fb627ce0a3b840df21a2725990fbe25303c62d8",
+      "AcceptanceWebGL.framework.js.unityweb": "e7174646de6df229fa443fce80caa90e2bdaed92d53157afb6a1d7d0abedbd2a",
+      "AcceptanceWebGL.loader.js": "3989166ceeadba63583bf81ea7e11035bf85ee14dcb6e16a37e2d131b6c567ec",
+      "AcceptanceWebGL.wasm.unityweb": "a1fc1de56db6b7fda119e15f1af46a73f41aead17544cfb46165e2b02d161c68"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-04T20:52:37.296Z"
+}
