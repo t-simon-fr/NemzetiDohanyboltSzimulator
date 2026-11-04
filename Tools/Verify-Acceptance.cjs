@@ -158,7 +158,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.device === 'None' && s.cameraFov === normalFov, 'Completed cash sale restores normal camera');
       await enter(); s = await state();
       check(s.sales === 1 && s.balance === balance + price, 'Repeated Enter cannot charge completed cash sale twice');
-      await viewport(1280, 720); await probe('Prepare', 'cash'); await key('Escape', 'Escape', 27); s = await state();
+      await viewport(1280, 720); await probe('Prepare', 'cash'); await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); s = await state();
       check(s.device === 'None' && !s.menu && s.cameraFov === normalFov, 'Escape leaves register and restores original lens');
     }
 
