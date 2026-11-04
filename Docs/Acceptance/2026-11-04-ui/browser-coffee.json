@@ -1,0 +1,69 @@
+{
+  "sourceCommit": "8ddca88",
+  "sourceFingerprint": "f3ed4b6d5a29669c5c39dbcc3cf85d3dfcffd26748649ec65b64125a89df63e5",
+  "sourceReport": "Builds/Verification/acceptance-1793793758424/report.json",
+  "sourceReportSha256": "9B32285CD7E115879C67B25111A1D590FCDD8CE4CBF49FD4245CD7F4747A53CE",
+  "started": "2026-11-04T12:02:38.425Z",
+  "finished": "2026-11-04T12:03:02.77Z",
+  "result": "passed",
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 0,
+    "bytes": 21078989,
+    "seconds": 242.0159907,
+    "error": "",
+    "completedUtc": "2026-11-04T12:01:43.614Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "231e0e5cc451c44b0af2a9e611eca33689ff4f57ac62b23cf5c98d472fa4ef92",
+      "AcceptanceWebGL.framework.js.unityweb": "2f5cad55fa75b3136d5472bfdaf5d696b471189fe5ae4a6f60753e1de7b94982",
+      "AcceptanceWebGL.loader.js": "6495ec93720f308ebb14a3c0c2a1fbe6a8c89b6d9035c8cbfa5de01037cd9843",
+      "AcceptanceWebGL.wasm.unityweb": "3ae03881401dca4633a30ff789031979c38d757303358111c26594f1e782fbbb"
+    }
+  },
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Machine key selects latte",
+      "passed": true
+    },
+    {
+      "label": "Latte without milk preserves coffee",
+      "passed": true
+    },
+    {
+      "label": "Machine makes selected latte",
+      "passed": true
+    },
+    {
+      "label": "Machine makes long coffee",
+      "passed": true
+    },
+    {
+      "label": "Machine makes short coffee",
+      "passed": true
+    },
+    {
+      "label": "Monitor mouse button selects long coffee",
+      "passed": true
+    },
+    {
+      "label": "Monitor mouse button selects latte",
+      "passed": true
+    },
+    {
+      "label": "Monitor mouse button selects short coffee",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-coffee-no-milk.png",
+    "1280x720-coffee-latte.png",
+    "1280x720-coffee-monitor.png"
+  ]
+}
