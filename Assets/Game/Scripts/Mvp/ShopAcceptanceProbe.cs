@@ -285,7 +285,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     private sealed class State
     {
         public string stage, phase, modal, message, entered, held, cup, order, interactionKey, tool;
-        public bool menu, blocked, unavailable, entranceOpen, canEndDay;
+        public bool menu, blocked, unavailable, entranceOpen, canEndDay, applicationFocused, cursorLocked;
         public int balance, drawer, sales, missing, received, recipe, milk, coffee, day, missed, dirt;
         public float elapsed, timeScale;
         public Vector3 position;
@@ -330,6 +330,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             missing = g.MissingOrderTypes.Length, received = receipts.Length, recipe = g.Activities.SelectedRecipe,
             milk = g.Activities.MilkSupplies, coffee = g.Activities.CoffeeSupplies, day = g.Day, missed = g.Missed,
             elapsed = g.Elapsed, timeScale = Time.timeScale, position = Player.transform.position,
+            applicationFocused = Application.isFocused, cursorLocked = Cursor.lockState == CursorLockMode.Locked,
             receipts = receipts.Select(p => p.transform.position).ToArray()
         };
         state.arranging = g.Arrangement.Active;

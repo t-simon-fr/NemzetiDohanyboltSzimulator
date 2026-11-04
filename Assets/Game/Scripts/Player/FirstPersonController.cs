@@ -58,11 +58,7 @@ public sealed class FirstPersonController : MonoBehaviour
             return;
         }
 
-        if (!ShopMenu.Active&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))
-        {
-            SetCursorLocked(false);
-        }
-        else if (mouse != null && mouse.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
+        if (mouse != null && mouse.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
         {
             SetCursorLocked(true);
         }

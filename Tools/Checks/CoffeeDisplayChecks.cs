@@ -60,7 +60,13 @@ public static class CoffeeDisplayChecks
                 Physics.SyncTransforms(); display.Refresh();
             }
             check(activities.CoffeeSupplies == 2 && activities.MilkSupplies == 1 && shop.Ledger.Cash == balance, "Three recipes preserve exact stock and do not change money");
+            var menu = shop.GetComponent<ShopMenu>();
+            Cursor.lockState = CursorLockMode.None;
+            menu.Open(); menu.Resume();
+            check(!ShopInputGate.Blocked && Cursor.lockState == CursorLockMode.Locked && Time.timeScale == 1, "Resuming world restores player control after an unlocked cursor");
             shop.Devices.Focus(ShopDeviceKind.Coffee);
+            menu.Open(); menu.Resume();
+            check(ShopInputGate.Blocked && shop.Devices.FocusKind == ShopDeviceKind.Coffee && Cursor.lockState == CursorLockMode.None, "Resuming focused coffee screen preserves device input context");
             activities.SelectRecipe(ShopCatalog.Latte);
             typeof(ShopActivities).GetProperty("MilkSupplies").SetValue(activities, 0);
             display.Refresh();

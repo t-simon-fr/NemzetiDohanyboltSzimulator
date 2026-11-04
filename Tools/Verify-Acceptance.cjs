@@ -221,6 +221,8 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await sleep(600); s = await state();
       check(s.menu && s.brewRemaining === paused, 'Pause freezes real ongoing brew');
       await key('Escape', 'Escape', 27);
+      s = await state();
+      check(!s.menu && !s.blocked && s.timeScale === 1, 'Resuming pause restores active world context');
       for (let i = 0; i < 30 && (await state()).cup !== 'latte'; i++) await sleep(100);
       await probe('Action', 'aim-coffee-display'); await key('e', 'KeyE', 69); s = await state();
       check(s.cup === 'latte' && s.coffeeScreenStatus.startsWith('ELKÉSZÜLT'), 'Machine finishes after leaving view and reports actual ready latte');

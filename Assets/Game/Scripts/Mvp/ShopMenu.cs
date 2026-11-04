@@ -52,8 +52,8 @@ public sealed class ShopMenu : MonoBehaviour
         waiting = Key.None;
         Time.timeScale = previousScale;
         ShopInputGate.Blocked = oldGate;
-        Cursor.lockState = oldLock;
-        Cursor.visible = oldVisible;
+        Cursor.lockState = oldGate ? oldLock : CursorLockMode.Locked;
+        Cursor.visible = oldGate && oldVisible;
     }
     private void Update()
     {
