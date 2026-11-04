@@ -105,9 +105,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Aim(GameObject.Find("Open Close Sign").transform.position);
             Shop.ManualTick = false;
         }
-        else if (scenario == "card")
+        else if (scenario == "card" || scenario == "cash")
         {
-            Visit(3, 0);
+            Visit(scenario == "card" ? 3 : 0, 0);
             DeliverAll();
             Shop.Devices.Focus(ShopDeviceKind.Till);
         }
@@ -276,6 +276,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public bool settingsOpen, movementLearned;
         public bool grounded;
         public float verticalSpeed;
+        public Rect[] cardDigits;
+        public Rect cardUndo, cardClear;
+        public string cardDisplayAmount, cardDisplayStatus, device;
     }
 
     [Preserve]
@@ -332,8 +335,14 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.menuBinding = ShopUi.ScreenRect(menu.InteractionBindingRect);
         state.menuDefaults = ShopUi.ScreenRect(ShopMenu.DefaultsRect);
         state.menuBack = ShopUi.ScreenRect(ShopMenu.BackRect);
-        state.cardConfirm = ShopUi.ScreenRect(MvpShopHud.CardConfirmRect);
-        state.cardBack = ShopUi.ScreenRect(MvpShopHud.CardBackRect);
+        state.cardConfirm = g.Devices.Terminal.Bounds(View, WorldControlKind.CardConfirm);
+        state.cardBack = g.Devices.Terminal.Bounds(View, WorldControlKind.Exit);
+        state.cardUndo = g.Devices.Terminal.Bounds(View, WorldControlKind.CardUndo);
+        state.cardClear = g.Devices.Terminal.Bounds(View, WorldControlKind.CardClear);
+        state.cardDigits = Enumerable.Range(0, 10).Select(digit => g.Devices.Terminal.Bounds(View, WorldControlKind.CardDigit, digit)).ToArray();
+        state.cardDisplayAmount = g.Devices.Terminal.DisplayAmount;
+        state.cardDisplayStatus = g.Devices.Terminal.DisplayStatus;
+        state.device = g.Devices.FocusKind.ToString();
         state.settingsOpen = menu.SettingsOpen;
         state.movementLearned = hud.MovementLearned;
         state.orderLines = hud.OrderLines;

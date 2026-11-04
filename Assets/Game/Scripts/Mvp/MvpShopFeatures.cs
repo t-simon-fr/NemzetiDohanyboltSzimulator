@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CardTerminalStatus { Ready, Entry, Error, Approved }
+
 public sealed partial class MvpShopController
 {
     private readonly List<MvpCustomerActor> fleeing=new List<MvpCustomerActor>();
@@ -10,15 +12,40 @@ public sealed partial class MvpShopController
     public int FleeingCount=>fleeing.Count;
     public bool CardPayment=>active!=null&&active.UsesCard;
     public string CardAmount {get;private set;}="";
-    public void EnterCardDigit(int digit){if(Stage==ServiceStage.Payment&&CardPayment&&digit>=0&&digit<=9&&CardAmount.Length<8)CardAmount+=digit;}
-    public void ClearCardAmount()=>CardAmount="";
-    public void UndoCardDigit(){if(CardAmount.Length>0)CardAmount=CardAmount.Substring(0,CardAmount.Length-1);}
+    public CardTerminalStatus CardStatus { get; private set; }
+    public int LastApprovedCardAmount { get; private set; }
+    public void EnterCardDigit(int digit)
+    {
+        if (Stage != ServiceStage.Payment || !CardPayment || digit < 0 || digit > 9 || CardAmount.Length >= 8) return;
+        CardAmount += digit;
+        CardStatus = CardTerminalStatus.Entry;
+    }
+    public void ClearCardAmount()
+    {
+        CardAmount = "";
+        CardStatus = Stage == ServiceStage.Payment && CardPayment ? CardTerminalStatus.Entry : CardTerminalStatus.Ready;
+    }
+    public void ResetCardTerminal()
+    {
+        CardAmount = "";
+        LastApprovedCardAmount = 0;
+        CardStatus = CardTerminalStatus.Ready;
+    }
+    public void UndoCardDigit()
+    {
+        if (Stage != ServiceStage.Payment || !CardPayment) return;
+        if (CardAmount.Length > 0) CardAmount = CardAmount.Substring(0, CardAmount.Length - 1);
+        CardStatus = CardTerminalStatus.Entry;
+    }
     public bool ConfirmCardPayment()
     {
         if(Stage!=ServiceStage.Payment||!CardPayment||!PreparedIsValid())return false;
-        if(!int.TryParse(CardAmount,out int entered)||entered!=active.TotalPrice){Notify("Hibás összeg. Írd be a pontos fizetendő összeget.");return false;}
+        if(!int.TryParse(CardAmount,out int entered)||entered!=active.TotalPrice){CardStatus=CardTerminalStatus.Error;Notify("Hibás összeg. Írd be a pontos fizetendő összeget.");return false;}
         if(!Ledger.TrySellCard(active.TotalPrice,active.TotalCost))return false;
-        Drawer.CancelTender();SyncCashDrawer();ClearCardAmount();CompleteSale();Notify("Sikeres kártyás fizetés. A kasszaegyenleg frissült.");return true;
+        int paid = active.TotalPrice;
+        Drawer.CancelTender();SyncCashDrawer();ClearCardAmount();CompleteSale();
+        LastApprovedCardAmount = paid;CardStatus = CardTerminalStatus.Approved;
+        Notify("Sikeres kártyás fizetés. A kasszaegyenleg frissült.");return true;
     }
     public void SyncCashDrawer(){int spent=Drawer.Total-Mathf.Max(0,Ledger.Cash);if(spent>0)Drawer.Spend(spent);else if(spent<0)Drawer.AddFunds(-spent);}
     public bool CoinPayment=>active!=null && active.UsesCoins;
@@ -63,6 +90,7 @@ public sealed partial class MvpShopController
         receivedOrder.Clear();prepared=null;active.SellBasket();
         Activities.ClearHand();Stage=ServiceStage.Thanks;thanksTimer=2.5f;
         Dialogue=ShopPeople.Thanks[active.Person];Message="Sikeres fizetés. A kassza és a készlet frissült.";
-        SetModal(ShopModal.None);changeCoins.Clear();
+        if (Devices == null || Devices.FocusKind != ShopDeviceKind.Terminal) SetModal(ShopModal.None);
+        changeCoins.Clear();
     }
 }

@@ -9,8 +9,6 @@ public sealed class MvpShopHud : MonoBehaviour
     private readonly ShopUiState state = new ShopUiState();
     public static Rect SummaryDetailsRect => new Rect(278, 348, 724, 182);
     public static Rect SummaryActionsRect => new Rect(278, 552, 724, 112);
-    public static Rect CardConfirmRect => new Rect(384, 456, 512, 46);
-    public static Rect CardBackRect => new Rect(384, 510, 512, 38);
     public string CurrentNotice => state.Notice(Time.unscaledTime);
     public bool MovementLearned => state.MovementLearned;
     public ShopOrderLine[] OrderLines => ShopUiState.Order(shop);
@@ -32,7 +30,7 @@ public sealed class MvpShopHud : MonoBehaviour
             if (shop.Modal == ShopModal.Help) { Help(); return; }
             if (shop.Devices.Focused)
             {
-                if (shop.CardPayment) CardTerminal();
+                if (shop.Devices.FocusKind == ShopDeviceKind.Terminal) CardTerminal();
                 else if (shop.Devices.FocusKind == ShopDeviceKind.Till) CashFeedback();
                 return;
             }
@@ -115,16 +113,10 @@ public sealed class MvpShopHud : MonoBehaviour
     }
     private void CardTerminal()
     {
-        ShopUi.Panel(new Rect(356, 112, 568, 456));
-        ShopUi.Label(new Rect(384, 136, 512, 24), "TRAFIK  /  BANKKÁRTYÁS TERMINÁL", 16, true);
-        ShopUi.Label(new Rect(384, 182, 512, 34), "Fizetendő: " + ShopCatalog.Money(shop.ActiveCustomer.TotalPrice), 26, true);
-        ShopUi.Fill(new Rect(384, 234, 512, 80), ShopUi.Green);
-        ShopUi.Label(new Rect(400, 244, 480, 20), "BEÍRT ÖSSZEG", 13, true, true);
-        ShopUi.Label(new Rect(400, 269, 480, 38), (string.IsNullOrEmpty(shop.CardAmount) ? "0" : shop.CardAmount) + " Ft", 30, true, true);
-        ShopUi.Label(new Rect(384, 330, 512, 68), shop.Message, 17);
-        ShopUi.Label(new Rect(384, 404, 512, 36), "Számjegyek: összeg  /  Backspace: javítás  /  Del: törlés", 15);
-        if (ShopUi.Button(CardConfirmRect, "Fizetés jóváhagyása  /  Enter", true)) shop.ConfirmCardPayment();
-        if (ShopUi.Button(CardBackRect, "Vissza a boltba  /  Esc")) shop.ClosePanel();
+        ShopUi.Panel(new Rect(24, 24, 300, 296));
+        ShopUi.Label(new Rect(40, 40, 268, 32), "BANKKÁRTYATERMINÁL", 18, true);
+        ShopUi.Label(new Rect(40, 86, 268, 138), "Kattints a terminál számgombjaira, vagy gépeld be az összeget.\n\nJAV / Backspace: utolsó számjegy\nTÖR / Del: teljes törlés\nOK / Enter: jóváhagyás\nESC: vissza a boltba", 16);
+        ShopUi.Label(new Rect(40, 238, 268, 66), shop.Message, 16);
     }
     private void Summary()
     {

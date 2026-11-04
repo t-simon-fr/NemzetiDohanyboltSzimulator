@@ -18,7 +18,8 @@
       "arrangement",
       "door-storage",
       "ui-presentation",
-      "player-movement"
+      "player-movement",
+      "physical-terminal"
     ]
   },
   "suites": {
@@ -71,6 +72,11 @@
       "file": "Tools/Checks/ArrangementChecks.cs",
       "entry": "ArrangementChecks.Run",
       "purpose": "A* detours, invalid placement, atomic save/cancel, stocked item identity and next-day persistence"
+    },
+    "physical-terminal": {
+      "file": "Tools/Checks/PhysicalTerminalChecks.cs",
+      "entry": "PhysicalTerminalChecks.Run",
+      "purpose": "Projected physical key raycasts, shared entry/display, rejection, single approval, reset and cash compatibility"
     },
     "player-movement": {
       "file": "Tools/Checks/PlayerMovementChecks.cs",

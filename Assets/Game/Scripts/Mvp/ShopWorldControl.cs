@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum WorldControlKind { Order, Expand, Denomination, Undo, Clear, Pay, Exit, Exchange, OpenApp, Desktop, ExtraShelf, ChangeOrderQuantity, PanicButtonUpgrade, CoffeeMachineUpgrade, CustomerCoin, FridgeUpgrade, Arrange }
+public enum WorldControlKind { Order, Expand, Denomination, Undo, Clear, Pay, Exit, Exchange, OpenApp, Desktop, ExtraShelf, ChangeOrderQuantity, PanicButtonUpgrade, CoffeeMachineUpgrade, CustomerCoin, FridgeUpgrade, Arrange, CardDigit, CardUndo, CardClear, CardConfirm }
 public sealed class ShopWorldControl : MonoBehaviour
 {
     public WorldControlKind Kind;
@@ -9,6 +9,10 @@ public sealed class ShopWorldControl : MonoBehaviour
     {
         switch(Kind)
         {
+            case WorldControlKind.CardDigit:shop.EnterCardDigit(Value);break;
+            case WorldControlKind.CardUndo:shop.UndoCardDigit();break;
+            case WorldControlKind.CardClear:shop.ClearCardAmount();break;
+            case WorldControlKind.CardConfirm:shop.ConfirmCardPayment();break;
             case WorldControlKind.FridgeUpgrade:shop.Devices.PurchaseFridge();break;
             case WorldControlKind.Arrange:shop.Devices.BeginArrangement();break;
             case WorldControlKind.OpenApp:shop.Devices.OpenApp((ShopComputerApp)Value);break;

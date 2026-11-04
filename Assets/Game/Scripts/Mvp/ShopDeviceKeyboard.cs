@@ -24,12 +24,13 @@ public sealed partial class ShopDevices
     public List<ShopKeyboardTarget> KeyboardTargets()
     {
         var targets=new List<ShopKeyboardTarget>();if(!Focused||shop==null||view==null)return targets;
-        Transform root=FocusKind==ShopDeviceKind.Monitor?monitor:FocusKind==ShopDeviceKind.Coins?shop.Activities.CustomerHand:tillAssembly;
+        Transform root=FocusKind==ShopDeviceKind.Monitor?monitor:FocusKind==ShopDeviceKind.Coins?shop.Activities.CustomerHand:FocusKind==ShopDeviceKind.Terminal?Terminal.transform:tillAssembly;
         if(root!=null)
         {
             foreach(var control in root.GetComponentsInChildren<ShopWorldControl>())
             {
                 if(!control.isActiveAndEnabled)continue;
+                if(FocusKind==ShopDeviceKind.Till && control.transform.IsChildOf(Terminal.transform))continue;
                 if(control.Kind==WorldControlKind.Denomination&&(!registerDrawer.IsOpen||shop.Drawer.Count(control.Value)<=shop.SelectedPieces(control.Value)))continue;
                 string id=control.Kind+":"+control.Value;if(targets.Any(t=>t.Id==id))continue;
                 var collider=control.GetComponent<Collider>();if(collider==null||!collider.enabled)continue;
@@ -63,14 +64,13 @@ public sealed partial class ShopDevices
     {
         if(!Focused||shop==null)return false;
         bool enter=key==DeviceKey.Enter||key==DeviceKey.NumpadEnter;
-        if(FocusKind==ShopDeviceKind.Till&&shop.CardPayment)
+        if(FocusKind==ShopDeviceKind.Terminal || FocusKind==ShopDeviceKind.Till&&shop.CardPayment)
         {
             int number=key==DeviceKey.Digit0||key==DeviceKey.Numpad0?0:Digit(key);
-            if(number>=0)shop.EnterCardDigit(number);
-            else if(key==DeviceKey.Backspace)shop.UndoCardDigit();
-            else if(key==DeviceKey.Delete)shop.ClearCardAmount();
-            else if(enter)shop.ConfirmCardPayment();
-            return true;
+            if(number>=0){shop.EnterCardDigit(number);return true;}
+            if(key==DeviceKey.Backspace){shop.UndoCardDigit();return true;}
+            if(key==DeviceKey.Delete){shop.ClearCardAmount();return true;}
+            if(enter){shop.ConfirmCardPayment();return true;}
         }
         if(FocusKind==ShopDeviceKind.Till)
         {
@@ -143,7 +143,7 @@ public sealed partial class ShopDevices
                 GUI.DrawTexture(new Rect(r.x-3,r.y,3,r.height),Texture2D.whiteTexture);GUI.DrawTexture(new Rect(r.xMax,r.y,3,r.height),Texture2D.whiteTexture);GUI.color=old;
             }
         }
-        if (FocusKind == ShopDeviceKind.Till && shop.CardPayment) return;
+        if (FocusKind == ShopDeviceKind.Terminal) return;
         string hint=FocusKind==ShopDeviceKind.Till?"1–6: bankjegy • Shift+1–6: érme • Enter: fizetés • Backspace: javítás • Del: törlés • Esc: vissza":FocusKind==ShopDeviceKind.Coins?"Tab / nyilak: választás • Space: érme • Enter: átvétel • Backspace: vissza • Del: törlés":"Tab / nyilak: választás • Enter / Space: jóváhagyás • Backspace: vissza • Esc: kilépés";
         if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Desktop)hint="1: árurendelés • 2: fejlesztés • 3: kávé • 4: kamerák • 5: játékok • 6: árak • "+hint;
         if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Orders)hint="1–9: termék • + / −: mennyiség • "+hint;
