@@ -53,6 +53,7 @@ Workflow: [WORKFLOW.md](../WORKFLOW.md). Böngészős előfeltételek: [Acceptan
 ## #23–#25 – Mozgás és fizikai eszközök
 
 - Implementálva külön, egymásra épülő ágakon a #26 UI-PR fölött: `feature/23-player-movement` → `feature/24-physical-card-terminal` → `feature/25-coffee-machine-display`.
+- Reviewra feltöltve: [#27 mozgás](https://github.com/t-simon-fr/NemzetiDohanyboltSzimulator/pull/27), [#28 terminál](https://github.com/t-simon-fr/NemzetiDohanyboltSzimulator/pull/28), [#29 kávégép](https://github.com/t-simon-fr/NemzetiDohanyboltSzimulator/pull/29).
 - Konfigurálható Shift-sprint és Space-ugrás; valódi POS-számgombok és kijelző; a kávégépen három recept, főzés/hiány/kész ital állapot és tényleges csészeátvétel. Nincs kettős könyvelés, duplafőzés vagy kattintás átadása a világba.
 - Unity: 310 sikeres állítás. Natív Game view-k és sugaras vezérlési próbák kész; helyi WebGL: 113 teljes + 19 célzott sikeres ellenőrzés, 0 konzolhiba. Vizuális és interakciós próba: passed, 1280×720 és 1920×1080. A közben talált szünet/kurzorfókusz miatti megálló főzés javítva és újrapróbálva. [Jelentés](../Acceptance/2026-11-04-device-controls/REPORT.md).
 - Nincs mainre merge vagy Pages-publikálás.

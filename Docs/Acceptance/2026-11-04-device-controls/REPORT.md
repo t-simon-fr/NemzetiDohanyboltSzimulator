@@ -43,4 +43,6 @@ Az első integrált böngészős próba a szünetből visszatérve megálló fő
 
 Forráscommitok: `346f156` (#23), `bd6a73c` (#24), `0a3485e` + `865dde5` (#25). Az ágak egymásra épülnek a #26 UI-PR fölött; az egyes PR-ek csak a saját munkacsomagjuk különbségét mutatják. A közös WebGL-bizonyíték az utolsó ág integrált tartalmára vonatkozik.
 
+Review: [#27 mozgás](https://github.com/t-simon-fr/NemzetiDohanyboltSzimulator/pull/27), [#28 terminál](https://github.com/t-simon-fr/NemzetiDohanyboltSzimulator/pull/28), [#29 kávégép](https://github.com/t-simon-fr/NemzetiDohanyboltSzimulator/pull/29). Az issue-k a mainre kerülésig nyitva maradnak.
+
 Mainre merge és Pages-kiadás nem történt; a kérés a forrás és helyi ellenőrzés elkészítésére szólt.
