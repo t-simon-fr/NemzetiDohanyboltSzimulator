@@ -256,7 +256,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     private void AimWarehouseShelf()
     {
         var dock = Shop.Warehouse.Dock(0);
-        Aim(dock.position + Vector3.up * .15f, 1.05f, -dock.forward);
+        Aim(dock.position + Vector3.up * .15f, 1.45f, new Vector3(1.2f, 0, .8f).normalized);
     }
 
     private void AimCoffeeDisplay()

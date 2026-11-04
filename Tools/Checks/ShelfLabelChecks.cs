@@ -23,6 +23,11 @@ public static class ShelfLabelChecks
         {
             fixture.Prepare("shelf-labels");
             refresh();
+            var controller = player.GetComponent<FirstPersonController>();
+            for (int step = 0; step < 20; step++) controller.StepMovement(Vector2.zero, false, false, .02f);
+            check(player.transform.position.y > -.1f, "Warehouse fixture stands on the actual aisle floor");
+            var aim = Camera.main.ViewportPointToRay(new Vector3(.5f, .5f, 0));
+            check(Physics.Raycast(aim, out var hit, 2.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore) && hit.collider.GetComponentInParent<ShopStation>()?.IsSupplies == true, "Warehouse fixture targets its actual shelf without obstruction");
             var labels = Object.FindObjectsByType<ShopShelfPriceLabel>(FindObjectsInactive.Include);
             check(labels.All(label => label.GetComponent<TextMesh>().text == ""), "All empty retail and private shelf labels are blank");
             check(Enumerable.Range(0, ShopCatalog.Count).All(type => warehouseLabel(type) == ""), "All warehouse labels start blank");
