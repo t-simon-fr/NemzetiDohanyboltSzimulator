@@ -3,7 +3,7 @@
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
 - #2–#8: implementáció, Unity-integrációs és helyi WebGL-bemeneti ellenőrzés kész. Részletek: [elfogadási jelentés](../Acceptance/2026-11-03/REPORT.md).
-- Aktuális checkout profil: **342 sikeres állítás**, 16 csoport. #31: 11 sikeres célzott WebGL-ellenőrzés, 0 konzolhiba; 1280×720 és 1920×1080 képek átnézve. A korábbi csomagok eredményei a saját jelentéseikben szerepelnek.
+- Aktuális checkout profil: **389 sikeres állítás**, 17 csoport. #33: 15 készpénzes + 17 kártyaterminál WebGL-ellenőrzés sikeres, 0 konzolhiba; 1280×720 és 1920×1080 képek átnézve. A korábbi csomagok eredményei a saját jelentéseikben szerepelnek.
 - Javítva az elkészült kávé téves hiányjelzése és a HUD-on ismétlődő vevői mondat.
 - #11: Misi és Nóra saját karakterkoncepciója, abszurd személyisége és dialógusterve elkészült a `docs/11-character-concept` ágon. A 3D-modellek és játékbeli dialógus-integráció még nincs implementálva.
 - A kassza/kéz grafikai átdolgozását a felhasználó félretette. Az ajtó/tábla alapú napváltás kiadva (#13); a pult alatti csempészáru (#20) és az ajtóra tett kifelé olvasható tábla (#21) implementálva és ellenőrizve, kiadás nélkül.
@@ -63,3 +63,8 @@ Workflow: [WORKFLOW.md](../WORKFLOW.md). Böngészős előfeltételek: [Acceptan
 
 - A ránézésre felugró raktári készletlista eltávolítva; az üres polc címkéje és felvételi panelje üres. A bolti, raktári és pult alatti címke a tényleges tartalmat követi: érkezés, felvétel/visszarakás, feltöltés, más/vegyes áru, aktuális ár és kiürítés.
 - Unity: 342 sikeres állítás, ebből 32 célzott ellenőrzés. WebGL: 11 sikeres célzott próba, 0 konzolhiba; vizuális/interakciós eredmény passed mindkét felbontásban. [Jelentés és képek](../Acceptance/2026-11-04-shelf-labels/REPORT.md). Pagesre nem került ki.
+
+## #33 – Saját kasszamodell és közeli fizetési nézet
+
+- Eredeti Blender-modell, külön mozgó pénzfiók, nagy döntött kijelző, működő parancsgombok és magyar SDF-feliratok. A kamera a modellhez és nyitott fiókhoz igazodik; kilépéskor és fizetéskor a hely/forgás/FOV visszaáll.
+- Unity: 389 sikeres állítás, ebből 47 új kasszaellenőrzés. Helyi WebGL: 15 készpénzes + 17 terminálpróba, 0 konzolhiba; vizuális és interakciós review passed mindkét felbontásban. [Jelentés, képek és modellforrás](../Acceptance/2026-11-04-modern-register/REPORT.md). Pagesre nem került ki.

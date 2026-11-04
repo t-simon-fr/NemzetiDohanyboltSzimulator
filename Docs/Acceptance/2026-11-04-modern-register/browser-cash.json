@@ -1,0 +1,95 @@
+{
+  "sourceCommit": "a8ad2e061fb1ae4b2f98cb47088e2b7a0135196f",
+  "sourceFingerprint": "70f71096142772136148eeb365b2bc929f11ecd5324de2f0566e5e30b8c0a9f3",
+  "buildSourceCommit": "cde2c1d",
+  "buildSourceFingerprint": "2a79a129fa1660ad2f250664d871b7ccfb73ff0df6ba2e6f15bf7e16f5fa7ced",
+  "sourceReport": "Builds\\Verification\\acceptance-1793823463247\\report.json",
+  "sourceReportSha256": "d4d4fae1113f146efa5f18a94edaa9901a0271b93589ad259f40fe8f3e8ae66a",
+  "started": "2026-11-04T20:17:43.247Z",
+  "finished": "2026-11-04T20:18:11.99Z",
+  "result": "passed",
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 22233611,
+    "seconds": 582.4000999,
+    "error": "",
+    "completedUtc": "2026-11-04T18:17:22.546Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "8ee866643a8431d7c3a8295366eadec0d07198ced01e7b7f440b4df2e43fabd7",
+      "AcceptanceWebGL.framework.js.unityweb": "05dd096b5fe8a9f66ef3cc5f3a4cf79921ae41b602b27dcf03eb2f702e9412ef",
+      "AcceptanceWebGL.loader.js": "6a5797c2a1e8f46d4319017bd6a856936761645b6be201ab0f5834de038411e4",
+      "AcceptanceWebGL.wasm.unityweb": "eaf711a832e6a89ab39edbced615ffe14dbbb70fbc59fe8d37c5335550e85944"
+    }
+  },
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Cash checkout opens dedicated close lens",
+      "passed": true
+    },
+    {
+      "label": "Own register display shows real tender and required change",
+      "passed": true
+    },
+    {
+      "label": "Physical cash commands remain visible and clickable",
+      "passed": true
+    },
+    {
+      "label": "Physical pay rejects empty change without charging",
+      "passed": true
+    },
+    {
+      "label": "Physical note selection updates own screen without charging",
+      "passed": true
+    },
+    {
+      "label": "Physical undo updates screen",
+      "passed": true
+    },
+    {
+      "label": "Physical clear resets selected change",
+      "passed": true
+    },
+    {
+      "label": "Keyboard shares cash screen state",
+      "passed": true
+    },
+    {
+      "label": "Actual note and coin clicks produce exact unpaid change",
+      "passed": true
+    },
+    {
+      "label": "Large cash view retains all commands above help bar",
+      "passed": true
+    },
+    {
+      "label": "Physical cash approval settles exactly once",
+      "passed": true
+    },
+    {
+      "label": "Completed cash sale restores normal camera",
+      "passed": true
+    },
+    {
+      "label": "Repeated Enter cannot charge completed cash sale twice",
+      "passed": true
+    },
+    {
+      "label": "Escape leaves register and restores original lens",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-cash-register-ready.png",
+    "1280x720-cash-register-selected.png",
+    "1920x1080-cash-register-selected-large.png"
+  ]
+}
