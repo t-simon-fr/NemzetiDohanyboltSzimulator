@@ -11,6 +11,35 @@ public sealed class WarehouseArea : MonoBehaviour
     private readonly List<WarehouseCarton> cartons = new List<WarehouseCarton>();
     private WarehouseCarton[] current = new WarehouseCarton[ShopCatalog.Count];
     private MvpShopController shop;
+    private TextMesh[] shelfLabels;
+    private float nextLabelRefresh;
+
+    private void Start() => RefreshLabels();
+    private void Update()
+    {
+        if (Time.unscaledTime < nextLabelRefresh) return;
+        nextLabelRefresh = Time.unscaledTime + .25f;
+        RefreshLabels();
+    }
+
+    public void RefreshLabels()
+    {
+        if (docks == null) return;
+        if (shelfLabels == null)
+            shelfLabels = docks.Select(dock => dock != null ? dock.Find("Brand dock label")?.GetComponent<TextMesh>() : null).ToArray();
+        for (int i = 0; i < docks.Length; i++)
+        {
+            if (shelfLabels[i] == null) continue;
+            var dock = docks[i];
+            var types = cartons.Where(carton => carton != null && carton.gameObject.activeInHierarchy && !carton.IsHeld && carton.Quantity > 0)
+                .Where(carton =>
+                {
+                    Vector3 point = dock.InverseTransformPoint(carton.transform.position);
+                    return Mathf.Abs(point.x) < .35f && Mathf.Abs(point.z) < .25f && Mathf.Abs(point.y - .055f) < .12f;
+                }).Select(carton => carton.ProductType).Distinct();
+            shelfLabels[i].text = string.Join(" / ", types.Select(type => ShopCatalog.Names[type]));
+        }
+    }
     public int DiscardedCartons { get; private set; }
     public MvpShopController Shop => shop != null ? shop : (shop=GetComponent<MvpShopController>());
     public Transform Dock(int type) => docks[type];
@@ -81,5 +110,6 @@ public sealed class WarehouseArea : MonoBehaviour
     {
         foreach(var carton in cartons)if(carton!=null){carton.gameObject.SetActive(false);Destroy(carton.gameObject);}
         cartons.Clear();current=new WarehouseCarton[ShopCatalog.Count];DiscardedCartons=0;
+        RefreshLabels();
     }
 }

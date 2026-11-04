@@ -129,6 +129,34 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
     await clickRect((await state()).menuStart);
     check(!(await state()).menu, 'Main menu starts by mouse');
 
+    if (!selected || selected === 'shelf-labels') {
+      await probe('Prepare', 'shelf-labels'); let s = await state();
+      check(!s.warehouseShelfLabel && !s.retailShelfLabel && !s.supplyPrompt, 'Empty shelves have blank labels and no pickup prompt');
+      await capture('shelf-warehouse-empty');
+      const startCash = s.balance;
+      await probe('Action', 'order-shelf-delivery'); s = await state();
+      check(!s.warehouseShelfLabel, 'Pending delivery leaves empty shelf label blank');
+      for (let i = 0; i < 40 && !(await state()).warehouseShelfLabel; i++) await sleep(200);
+      s = await state(); const paidCash = s.balance;
+      check(s.warehouseShelfLabel === 'Lucky Stroke' && s.warehouseGoods === 2 && paidCash < startCash, 'Real arrival labels delivered goods and charges purchase once');
+      await capture('shelf-warehouse-delivered');
+      await key('e', 'KeyE', 69); s = await state();
+      check(s.cartonQuantity === 2 && !s.warehouseShelfLabel && s.warehouseGoods === 2, 'Actual E carries carton and clears vacated shelf label');
+      await probe('Action', 'aim-stock-shelf'); await key('e', 'KeyE', 69); s = await state();
+      check(s.retailShelfLabel.includes('Lucky Stroke') && s.retailShelfLabel.includes('Ft') && s.cartonQuantity === 1, 'Actual E stocks product and updates retail name and price');
+      check(s.warehouseGoods === 1 && s.retailGoods === 1 && s.balance === paidCash, 'Manual stocking preserves goods and money');
+      await probe('Action', 'aim-warehouse-shelf'); await key('e', 'KeyE', 69); s = await state();
+      check(s.cartonQuantity === -1 && s.warehouseShelfLabel === 'Lucky Stroke', 'Actual E returns remaining carton and restores warehouse label');
+      await viewport(1920, 1080); await capture('shelf-warehouse-returned-large');
+      await probe('Action', 'aim-stock-shelf'); await key('e', 'KeyE', 69); s = await state();
+      check(s.held === 'cig_red' && !s.retailShelfLabel, 'Taking last retail product clears label while source remains safely reserved');
+      await key('e', 'KeyE', 69); s = await state();
+      check(!s.held && s.retailShelfLabel.includes('Lucky Stroke'), 'Replacing product restores label through actual input');
+      await capture('shelf-retail-stocked-large');
+      await viewport(1280, 720); await capture('shelf-retail-stocked');
+      check(s.balance === paidCash && s.warehouseGoods + s.retailGoods === 2, 'Label and pickup operations preserve final money and total goods');
+    }
+
     if (!selected || selected === 'movement') {
       const forward = ['w', 'KeyW', 87], sprint = ['Shift', 'ShiftLeft', 16], jump = [' ', 'Space', 32];
       await probe('Prepare', 'movement'); await sleep(300); let start = await state();

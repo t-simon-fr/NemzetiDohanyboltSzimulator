@@ -20,7 +20,8 @@
       "ui-presentation",
       "player-movement",
       "physical-terminal",
-      "coffee-display"
+      "coffee-display",
+      "shelf-labels"
     ]
   },
   "suites": {
@@ -98,6 +99,11 @@
       "file": "Tools/Checks/DoorStorageChecks.cs",
       "entry": "DoorStorageChecks.Run",
       "purpose": "Outward door sign, moving attachment and private stock placement, checkout and next-day conservation"
+    },
+    "shelf-labels": {
+      "file": "Tools/Checks/ShelfLabelChecks.cs",
+      "entry": "ShelfLabelChecks.Run",
+      "purpose": "Physical shelf labels, deliveries, pickup/return, replacement/mixed stock, blank empty storage and money conservation"
     }
   },
   "historicalExcluded": {

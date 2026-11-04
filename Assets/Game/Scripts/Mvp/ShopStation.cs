@@ -12,24 +12,6 @@ public sealed class ShopStation : MonoBehaviour
     public bool IsSupplies=>kind==ShopStationKind.Supplies;
     public bool IsPanicButton=>kind==ShopStationKind.PanicButton;
     public bool IsCoffeeControl=>kind==ShopStationKind.CoffeeControl;
-    public string Contents
-    {
-        get
-        {
-            if(shop==null||!IsSupplies)return "";
-            var lines=new System.Text.StringBuilder("RAKTÁR\n");
-            var ownCarton=GetComponent<WarehouseCarton>();
-            for(int i=0;i<shop.AvailableProducts;i++)
-            {
-                if(productType>=0&&i!=productType)continue;
-                lines.Append(i==productType?"► ":"   ").Append(ShopCatalog.Names[i]).Append(": ").Append(ownCarton!=null ? ownCarton.Quantity : shop.WarehouseCount(i)).Append(" db");
-                if(shop.PendingQuantity(i)>0)lines.Append(" • úton: ").Append(shop.PendingQuantity(i));
-                lines.AppendLine();
-            }
-            if(GetComponent<WarehouseCarton>()!=null&&GetComponent<WarehouseCarton>().Quantity==0)lines.Append("Üres karton: E – felvétel\nHátul a papírgyűjtőbe viheted.");
-            return lines.ToString();
-        }
-    }
     public string Prompt
     {
         get
@@ -42,10 +24,10 @@ public sealed class ShopStation : MonoBehaviour
             if(kind==ShopStationKind.Till)return "E – Kassza / fizetés";
             if(kind==ShopStationKind.Exit)return shop.CanEndDay ? "E – Hazamegyek: nap lezárása" : "E – Bejárati ajtó";
             if(kind==ShopStationKind.Door)return shop.Phase==ShopPhase.Preparing ? "E – Tábla megfordítása: NYITVA" : shop.Phase==ShopPhase.Open ? "E – Tábla megfordítása: ZÁRVA" : "ZÁRVA • A napot az ajtónál fejezheted be";
-            var carton=GetComponent<WarehouseCarton>();
-            if(carton!=null&&carton.Quantity==0)return "Üres "+ShopCatalog.Names[productType]+" karton\nE – Felvétel és kivitel a papírgyűjtőhöz";
-            int type=productType>=0?productType:shop.SelectedSupply;
-            return ShopCatalog.Names[type]+" • "+(carton!=null?carton.Quantity:shop.WarehouseCount(type))+" db\nE – Doboz felvétele / visszarakása";
+            var carton = GetComponent<WarehouseCarton>();
+            if (carton == null && productType >= 0) carton = shop.Warehouse.Carton(productType);
+            if (carton == null) return "";
+            return carton.Quantity > 0 ? "E – Doboz felvétele" : "E – Üres kartondoboz felvétele";
         }
     }
     public void Use(PlayerInteractor player)
