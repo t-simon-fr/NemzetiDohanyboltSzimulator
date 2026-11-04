@@ -58,3 +58,8 @@ Workflow: [WORKFLOW.md](../WORKFLOW.md). Böngészős előfeltételek: [Acceptan
 - Konfigurálható Shift-sprint és Space-ugrás; valódi POS-számgombok és kijelző; a kávégépen három recept, főzés/hiány/kész ital állapot és tényleges csészeátvétel. Nincs kettős könyvelés, duplafőzés vagy kattintás átadása a világba.
 - Unity: 310 sikeres állítás. Natív Game view-k és sugaras vezérlési próbák kész; helyi WebGL: 113 teljes + 19 célzott sikeres ellenőrzés, 0 konzolhiba. Vizuális és interakciós próba: passed, 1280×720 és 1920×1080. A közben talált szünet/kurzorfókusz miatti megálló főzés javítva és újrapróbálva. [Jelentés](../Acceptance/2026-11-04-device-controls/REPORT.md).
 - Mainre mergelve. Pagesre még nincs kiadva.
+
+## #31 – Polccímkék készletablak nélkül
+
+- A ránézésre felugró raktári készletlista eltávolítva; az üres polc címkéje és felvételi panelje üres. A bolti, raktári és pult alatti címke a tényleges tartalmat követi: érkezés, felvétel/visszarakás, feltöltés, más/vegyes áru, aktuális ár és kiürítés.
+- Unity: 342 sikeres állítás, ebből 32 célzott ellenőrzés. WebGL: 11 sikeres célzott próba, 0 konzolhiba; vizuális/interakciós eredmény passed mindkét felbontásban. [Jelentés és képek](../Acceptance/2026-11-04-shelf-labels/REPORT.md). Pagesre nem került ki.

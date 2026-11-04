@@ -1,0 +1,79 @@
+{
+  "sourceCommit": "57d02923cf0174a7264bc71ad3887db386a54072",
+  "sourceFingerprint": "2a0e8578f6d26bab0beeccdd8ad171480f20f59d3c5cb05242fa3f25d9467d76",
+  "sourceReport": "Builds/Verification/acceptance-1793811876831/report.json",
+  "sourceReportSha256": "8fc286a2e107d5cffb9436de1940bc8b624b9df14d2a84799f6dd0f2006ac38e",
+  "started": "2026-11-04T17:04:36.834Z",
+  "finished": "2026-11-04T17:05:08.042Z",
+  "result": "passed",
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 0,
+    "bytes": 21096852,
+    "seconds": 250.42556829999998,
+    "error": "",
+    "completedUtc": "2026-11-04T17:03:54.191Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "1b58caa0750024c058afa2cdba29028a03966b72b17c2794e7141992c8c75d62",
+      "AcceptanceWebGL.framework.js.unityweb": "cfe278b88a1ab205e017c13d2fa5e410d1fcb81dd72eadeff631837929717211",
+      "AcceptanceWebGL.loader.js": "aa4e5f3753269ba1d81c9e3f897220e18d4bbd23ae81cf0112da6e0e2957940c",
+      "AcceptanceWebGL.wasm.unityweb": "005dc50a5f10ba2ed0873e1e9a3cb5da7d82e4284e4af893c19930b4d8db11ab"
+    }
+  },
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Empty shelves have blank labels and no pickup prompt",
+      "passed": true
+    },
+    {
+      "label": "Pending delivery leaves empty shelf label blank",
+      "passed": true
+    },
+    {
+      "label": "Real arrival labels delivered goods and charges purchase once",
+      "passed": true
+    },
+    {
+      "label": "Actual E carries carton and clears vacated shelf label",
+      "passed": true
+    },
+    {
+      "label": "Actual E stocks product and updates retail name and price",
+      "passed": true
+    },
+    {
+      "label": "Manual stocking preserves goods and money",
+      "passed": true
+    },
+    {
+      "label": "Actual E returns remaining carton and restores warehouse label",
+      "passed": true
+    },
+    {
+      "label": "Taking last retail product clears label while source remains safely reserved",
+      "passed": true
+    },
+    {
+      "label": "Replacing product restores label through actual input",
+      "passed": true
+    },
+    {
+      "label": "Label and pickup operations preserve final money and total goods",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-shelf-warehouse-empty.png",
+    "1280x720-shelf-warehouse-delivered.png",
+    "1920x1080-shelf-warehouse-returned-large.png",
+    "1920x1080-shelf-retail-stocked-large.png",
+    "1280x720-shelf-retail-stocked.png"
+  ]
+}
