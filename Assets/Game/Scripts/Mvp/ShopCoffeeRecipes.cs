@@ -43,6 +43,13 @@ public sealed partial class ShopActivities
     private void DrawRecipeControls(float w,float h)
     {
         if(!CoffeeOwned)return;
-        for(int i=0;i<3;i++){int type=ShopCatalog.Coffee+i;if(GUI.Button(new Rect(12+i*(w-24)/3,h-88,(w-30)/3,32),(selectedRecipe==type?"✓ ":"")+ShopCatalog.ShortNames[type]+" • "+ShopCatalog.Money(ShopCatalog.SalePrice(type))))SelectRecipe(type);}
+        for (int i = 0; i < 3; i++)
+        {
+            int type = ShopCatalog.Coffee + i;
+            bool selected = selectedRecipe == type;
+            string caption = (selected ? "Aktív: " : "") + ShopCatalog.ShortNames[type] + " • " + ShopCatalog.Money(ShopCatalog.SalePrice(type));
+            var style = ShopUi.ButtonStyle(Mathf.Clamp((int)(w / 65), 14, 18), selected);
+            if (GUI.Button(new Rect(12 + i * (w - 24) / 3, h - 88, (w - 30) / 3, 32), caption, style)) SelectRecipe(type);
+        }
     }
 }
