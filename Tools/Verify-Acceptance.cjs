@@ -150,9 +150,9 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await click(width * .23, height * 485 / 720); check((await state()).recipe === 9, 'Monitor mouse button selects short coffee');
     }
     if (!selected || selected === 'dialogue') {
-      await probe('Prepare', 'dialogue'); let s = await state(); check(s.unavailable && s.modal === 'Dialogue', 'Real shortage offers dialogue'); await capture('dialogue-shortage');
-      await click(width * .5, height * 175 / 720); s = await state(); check(s.modal === 'None' && s.order.includes('Marlbroke') && s.sales === 0, 'Mouse dialogue accepts available alternative without charging');
-      await probe('Prepare', 'refuse'); await capture('dialogue-multi-item'); await click(width * .5, height * 175 / 720); s = await state(); check(s.missed === 1 && !s.order && s.sales === 0, 'Customer refuses substitution and leaves without charge');
+      await probe('Prepare', 'dialogue'); let s = await state(); check(s.unavailable && s.modal === 'None', 'Real shortage offers inline dialogue without modal'); await capture('dialogue-shortage');
+      await key('t', 'KeyT', 84); s = await state(); check(s.modal === 'None' && s.order.includes('Marlbroke') && s.sales === 0, 'Inline reply accepts available alternative without charging');
+      await probe('Prepare', 'refuse'); await capture('dialogue-multi-item'); await key('t', 'KeyT', 84); s = await state(); check(s.missed === 1 && !s.order && s.sales === 0, 'Customer refuses substitution and leaves without charge');
     }
     if (!selected || selected === 'menu') {
       await probe('Prepare', 'pickup'); await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); let s = await state();
@@ -167,8 +167,51 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await click(width / 2, (height - 650) / 2 + 590); check((await state()).interactionKey === 'E', 'Settings restore defaults through GUI');
       await viewport(1920, 1080); await capture('settings-large');
     }
+    if (!selected || selected === 'entrance') {
+      await probe('Prepare', 'entrance');
+      let s = await state();
+      check(s.phase === 'Preparing' && s.modal === 'None' && s.elapsed === 0, 'Preparation has no welcome modal and clock is stopped');
+      await capture('entrance-closed');
+      await key('e', 'KeyE', 69);
+      await sleep(1500);
+      s = await state();
+      check(s.phase === 'Open' && s.elapsed > 0, 'E on sign opens shop and starts clock');
+      let opened = s.entranceOpen;
+      for (let i = 0; i < 40 && !opened; i++) { await sleep(200); opened = (await state()).entranceOpen; }
+      check(opened, 'Arriving NPC opens physical entrance');
+      await capture('entrance-npc-open');
+      await key('e', 'KeyE', 69);
+      s = await state();
+      check(s.phase === 'Closing' && s.modal === 'None', 'E on sign closes without summary');
+      const stopped = s.elapsed;
+      await probe('Action', 'aim-door');
+      await key('e', 'KeyE', 69);
+      check((await state()).phase === 'Closing', 'Door refuses end while customer is inside');
+      await probe('Action', 'drain-shop');
+      await sleep(2000);
+      s = await state();
+      check(s.phase === 'AfterHours' && s.canEndDay && s.modal === 'None' && s.elapsed === stopped && !s.entranceOpen, 'NPC leaves, door closes and player remains in closed shop');
+      await probe('Action', 'view-entrance');
+      await capture('entrance-after-hours');
+      await viewport(1920, 1080);
+      await capture('entrance-after-hours-large');
+      await viewport(1280, 720);
+      await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'w', code: 'KeyW', windowsVirtualKeyCode: 87 });
+      await sleep(1000);
+      await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'w', code: 'KeyW', windowsVirtualKeyCode: 87 });
+      s = await state();
+      check(s.position.z > -4.4 && s.phase === 'AfterHours', 'Player movement cannot cross entrance or silently end day');
+      await key('e', 'KeyE', 69);
+      s = await state();
+      check(s.phase === 'Summary', 'E at closed entrance ends day');
+      await capture('entrance-summary');
+      await enter();
+      s = await state();
+      check(s.day === 2 && s.phase === 'Preparing' && s.modal === 'None' && s.elapsed === 0, 'Next day has no welcome modal and awaits sign');
+      await capture('entrance-next-day');
+    }
     if (!selected || selected === 'summary') {
-      await probe('Prepare', 'summary'); let s = await state(); check(s.phase === 'Summary', 'Day-end summary reached'); await capture('summary');
+      await probe('Prepare', 'summary'); let s = await state(); check(s.phase === 'AfterHours' && s.modal === 'None', 'Closed shop stays playable'); await key('e', 'KeyE', 69); s = await state(); check(s.phase === 'Summary', 'Door interaction ends day'); await capture('summary');
       await enter(); s = await state(); check(s.day === 2 && s.phase === 'Preparing' && s.balance === s.drawer, 'Enter starts next day preserving drawer'); await capture('next-day');
     }
     report.result = 'passed';

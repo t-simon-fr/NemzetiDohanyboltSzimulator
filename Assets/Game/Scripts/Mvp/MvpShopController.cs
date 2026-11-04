@@ -59,6 +59,9 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ShopDevices Devices { get; private set; }
     public ShopLayout Layout { get; private set; }
     public ShopSecurity Security { get; private set; }
+    public ShopEntrance Entrance { get; private set; }
+    public bool CanEndDay => (Phase == ShopPhase.Closing || Phase == ShopPhase.AfterHours) &&
+        queue.Count == 0 && departing.Count == 0 && fleeing.Count == 0 && !HasHeldProduct;
     public bool BuyPanicButton() => Security != null && Security.TryPurchase();
     public int AvailableProducts => Layout != null && Layout.Expanded ? ShopCatalog.Count : ShopCatalog.CigaretteCount;
     public int SelectedPieces(int value) => changeCoins.Count(c=>c==value);
@@ -112,6 +115,8 @@ public sealed partial class MvpShopController : MonoBehaviour
         Security = GetComponent<ShopSecurity>();
         if (Security == null) Security = gameObject.AddComponent<ShopSecurity>();
         Security.Configure(this);
+        Entrance = gameObject.AddComponent<ShopEntrance>();
+        Entrance.Configure(this);
         Activities=gameObject.AddComponent<ShopActivities>();Activities.Configure(this,player);delivery.Configure(new Vector3(.4f,.4f,.4f));gameObject.AddComponent<ShopNextUpgrades>().Configure(this);
         Pricing=gameObject.AddComponent<ShopPricing>();Pricing.Configure(this);AfterHours=gameObject.AddComponent<ShopAfterHours>();AfterHours.Configure(this);
         Activities.BasketSlot.ProductPlaced+=OnDelivery;
@@ -129,7 +134,6 @@ public sealed partial class MvpShopController : MonoBehaviour
                 {
                     if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Enter)||ShopBindings.Pressed(UnityEngine.InputSystem.Key.NumpadEnter))NextDay();
                     else if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.R))ResetDemo();
-                    else if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.S))StayAfterHours();
                 }
                 else if (!ShopMenu.Active&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape)) ClosePanel();
             }
@@ -140,8 +144,7 @@ public sealed partial class MvpShopController : MonoBehaviour
                 if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.B)) OpenSupplier();
                 else if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.H)) SetModal(ShopModal.Help);
                 else if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.F)) OpenCash();
-                else if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.O)) { if (Phase == ShopPhase.Preparing) OpenShop(); else RequestClose(); }
-                else if (ShopBindings.Pressed(Key.T)) SetModal(ShopModal.Dialogue);
+                else if (ShopBindings.Pressed(Key.T)) OfferAlternative();
                 else if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.X)) SkipCurrent();
             }
         }
@@ -164,7 +167,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         bool liveMonitor=Devices!=null&&Devices.FocusKind==ShopDeviceKind.Monitor&&(Devices.ComputerApp==ShopComputerApp.Cameras||Devices.ComputerApp==ShopComputerApp.Games);
         if (Modal != ShopModal.None || (Devices != null && Devices.Focused && !liveMonitor) || Phase == ShopPhase.Preparing) return;
         AdvanceFleeing(dt);
-        Elapsed += dt;
+        if (Phase == ShopPhase.Open) Elapsed += dt;
         if (Phase == ShopPhase.Open && Spawned < TotalVisitors && (Security == null || !Security.Locked))
         {
             spawnTimer -= dt;
@@ -206,9 +209,8 @@ public sealed partial class MvpShopController : MonoBehaviour
             thanksTimer -= dt;
             if (thanksTimer <= 0f) DismissActive();
         }
-        if (Phase == ShopPhase.Open && Spawned >= TotalVisitors && queue.Count == 0 && fleeing.Count == 0)
-        { Phase = ShopPhase.Closing; Security?.ReleaseEntrance(); }
-        if (Phase == ShopPhase.Closing && queue.Count == 0 && departing.Count == 0 && fleeing.Count == 0) FinishDay();
+        // The sign closes the shop; only the player's exit action ends the day.
+        if (Phase == ShopPhase.Closing && CanEndDay) StayAfterHours();
     }
     private void SpawnCustomer(int forcedProduct=-1,bool forceThief=false)
     {
@@ -308,7 +310,6 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public void RequestClose()
     {
-        if(Phase==ShopPhase.AfterHours){ReturnToSummary();return;}
         if (Phase != ShopPhase.Open) return;
         Security?.ReleaseEntrance();
         Phase = ShopPhase.Closing; Message = "Zárunk. A bent várakozókat még kiszolgálhatod; X-szel udvariasan elküldheted az aktuális vásárlót.";
@@ -359,15 +360,27 @@ public sealed partial class MvpShopController : MonoBehaviour
         Warehouse?.SyncBoxes();
         shipments.Clear(); ClosePanel(); Ledger.Close(300); SyncCashDrawer(); Phase = ShopPhase.Summary; SetModal(ShopModal.Summary);
     }
+    public bool TryEndDay()
+    {
+        if (Phase == ShopPhase.Preparing || Phase == ShopPhase.Open)
+        { Notify("Előbb fordítsd ZÁRVA állásba a táblát."); return false; }
+        if (!CanEndDay)
+        { Notify("Várd meg, amíg minden vendég távozik, és tedd le a kezedben lévő tárgyat."); return false; }
+        if (player == null || Entrance == null ||
+            Vector3.Distance(player.transform.position, Entrance.Position) > 2.5f) return false;
+        AfterHours.EndEvening();
+        FinishDay();
+        return true;
+    }
     public bool StayAfterHours()
     {
-        if(Phase!=ShopPhase.Summary||HasHeldProduct)return false;
-        Phase=ShopPhase.AfterHours;SetModal(ShopModal.None);AfterHours.Enter();Notify("Zárás után maradtál. A raktáron át a hátsó udvarra is kimehetsz. O – vissza az elszámoláshoz.");return true;
+        if(Phase!=ShopPhase.Closing||!CanEndDay)return false;
+        Phase=ShopPhase.AfterHours;SetModal(ShopModal.None);AfterHours.Enter();Notify("Zárás után maradtál. A raktáron át a hátsó udvarra is kimehetsz. E a bejárati ajtónál – hazamegyek.");return true;
     }
     public void ReturnToSummary()
     {
         if(Phase!=ShopPhase.AfterHours)return;
-        AfterHours.EndEvening();Phase=ShopPhase.Summary;SetModal(ShopModal.Summary);
+        TryEndDay();
     }
     public ShopProduct CreateNightProduct()=>CreateProduct(ShopCatalog.Contraband);
     public void NextDay()
@@ -381,8 +394,8 @@ public sealed partial class MvpShopController : MonoBehaviour
         Security?.ReleaseEntrance();
         Phase = ShopPhase.Preparing; Stage = ServiceStage.None; Spawned = 0; Missed = 0; Elapsed = 0f;
         StolenToday=0;CaughtToday=0;PriceRefusals=0;
-        receivedOrder.Clear();active = null; prepared = null; changeCoins.Clear(); Message = "Nézd át a cigarettapolcot. A pult bal oldalán találod a rendelési monitort. O – Nyitás.";
-        SetModal(ShopModal.Welcome);
+        receivedOrder.Clear();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg a bejárat melletti ZÁRVA táblát. Az óra csak nyitáskor indul.";
+        SetModal(ShopModal.None);
     }
     public void ResetDemo()
     {
@@ -492,6 +505,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public void SetModal(ShopModal modal)
     {
+        if (modal == ShopModal.Welcome || modal == ShopModal.Dialogue) modal = ShopModal.None;
         if (modal == ShopModal.Cash) { OpenCash(); return; }
         if (modal == ShopModal.Supplier) { OpenSupplier(); return; }
         if (Devices != null) Devices.Release();

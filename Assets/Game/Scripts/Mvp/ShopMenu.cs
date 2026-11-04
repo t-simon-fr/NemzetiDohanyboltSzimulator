@@ -9,7 +9,7 @@ public static class ShopBindings
     public static bool Pressed(Key key)=>Keyboard.current!=null&&Keyboard.current[Resolve(key)].wasPressedThisFrame;
     public static bool Held(Key key)=>Keyboard.current!=null&&Keyboard.current[Resolve(key)].isPressed;
     public static bool Bind(Key original,Key value){if(value==Key.None||value==Key.Escape||value==Key.F1||value==Key.Enter||value==Key.NumpadEnter||value==Key.Backspace||value==Key.Delete||value==Key.Tab||value==Key.Space||(int)value>=(int)Key.Digit1&&(int)value<=(int)Key.Digit0)return false;foreach(var item in Actions)if(item.Key!=original&&Resolve(item.Key)==value){Key previous=Resolve(original);PlayerPrefs.SetString("Shop.Key."+item.Key,previous.ToString());break;}PlayerPrefs.SetString("Shop.Key."+original,value.ToString());PlayerPrefs.Save();return true;}
-    public static readonly KeyValuePair<Key,string>[] Actions={new(Key.W,"Előre"),new(Key.S,"Hátra"),new(Key.A,"Balra"),new(Key.D,"Jobbra"),new(Key.E,"Használat / felvétel / lerakás"),new(Key.G,"Eldobás"),new(Key.Q,"Váltás"),new(Key.B,"Számítógép"),new(Key.F,"Kassza"),new(Key.O,"Nyitás / zárás"),new(Key.X,"Vevő elküldése"),new(Key.T,"Párbeszéd"),new(Key.H,"Súgó")};
+    public static readonly KeyValuePair<Key,string>[] Actions={new(Key.W,"Előre"),new(Key.S,"Hátra"),new(Key.A,"Balra"),new(Key.D,"Jobbra"),new(Key.E,"Használat / felvétel / lerakás"),new(Key.G,"Eldobás"),new(Key.Q,"Váltás"),new(Key.B,"Számítógép"),new(Key.F,"Kassza"),new(Key.X,"Vevő elküldése"),new(Key.T,"Másik áru ajánlása"),new(Key.H,"Súgó")};
     public static void Reset(){foreach(var item in Actions)PlayerPrefs.DeleteKey("Shop.Key."+item.Key);PlayerPrefs.Save();}
 }
 

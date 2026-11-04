@@ -38,9 +38,7 @@ public sealed class MvpShopHud : MonoBehaviour
             GUILayout.BeginArea(new Rect(240,72,800,572));
             switch(shop.Modal)
             {
-                case ShopModal.Welcome:Welcome();break;
                 case ShopModal.Help:Help();break;
-                case ShopModal.Dialogue:CustomerDialogue();break;
                 case ShopModal.Summary:Summary();break;
             }
             GUILayout.EndArea();
@@ -57,14 +55,14 @@ public sealed class MvpShopHud : MonoBehaviour
         Label("Kassza: "+ShopCatalog.Money(shop.Ledger.Cash));
 
         GUILayout.Label("Eladások: "+shop.Ledger.Sales+" • Sorban: "+shop.QueueCount+" • Érkezett: "+shop.Spawned+"/"+shop.TotalVisitors,small);
-        GUILayout.Label(shop.Phase==ShopPhase.AfterHours?"O: elszámolás • Hátul: kereskedő":shop.Security!=null&&shop.Security.Locked?"BEJÁRAT RETESZELVE • E a vészgombon":"B Számítógép • H Súgó • O Nyitás/zárás",small);GUILayout.EndArea();
+        GUILayout.Label(shop.Phase==ShopPhase.Closing||shop.Phase==ShopPhase.AfterHours?"ZÁRVA • E az ajtónál: nap lezárása":shop.Security!=null&&shop.Security.Locked?"BEJÁRAT RETESZELVE • E a vészgombon":"B Számítógép • H Súgó • E a nyitvatartási táblán",small);GUILayout.EndArea();
         if(shop.ActiveCustomer!=null)
         {
             var c=shop.ActiveCustomer;Panel(new Rect(844,12,424,216));GUILayout.BeginArea(new Rect(860,24,392,190));
             Label(ShopPeople.Names[c.Person],true);Label(shop.Stage==ServiceStage.Order?"Jó napot! "+c.OrderDescription+" lenne, kérem.":shop.Dialogue);
             GUILayout.Label("Ár: "+ShopCatalog.Money(c.TotalPrice),small);
             if(shop.Stage==ServiceStage.Order)Label("Még szükséges: "+string.Join(", ",System.Array.ConvertAll(shop.MissingOrderTypes,t=>ShopCatalog.ShortNames[t])));
-            GUILayout.Label(shop.Stage==ServiceStage.Order?"A kért árut a kék átadóhelyre tedd. T: válasz a vevőnek.":shop.Stage==ServiceStage.Payment?"E a kasszánál vagy F: visszajáró kiadása.":"A vásárló elköszön.",small);GUILayout.EndArea();
+            GUILayout.Label(shop.Stage==ServiceStage.Order?(shop.HasUnavailableRequest?"T: Másik árut ajánlok • X: Nem tudom kiszolgálni":"A kért árut az átadóhelyre tedd. X: Nem tudom kiszolgálni"):shop.Stage==ServiceStage.Payment?"E a kasszánál vagy F: visszajáró kiadása.":"A vásárló elköszön.",small);GUILayout.EndArea();
         }
         if(!string.IsNullOrEmpty(shop.Message))
         {
@@ -74,20 +72,10 @@ public sealed class MvpShopHud : MonoBehaviour
             GUILayout.EndArea();
         }
     }
-    private void Welcome()
-    {
-        Label("Nemzeti Dohánybolt Szimulátor",true);Label(shop.Day+". műszak • Kis bolt, nagy történetek.");
-        GUILayout.Space(22);
-        Label("A pult mögötti polcon négy cigarettamárka várja a vásárlókat: Lucky Stroke, Marlbroke, Downhill és Davidon.");
-        GUILayout.Space(14);Label("E-vel vedd fel a kért dobozt, és tedd a kék átadóhelyre. A pénztárgépből valódi magyar címletértékű bankjegyeket és érméket kattints ki a visszajáróhoz, majd nyomd meg az ÁTADÁS gombot.");
-        GUILayout.Space(14);Label("B-vel nyisd meg a TobaccOS számítógépét. Az Árurendelésben válassz mennyiséget, majd kattints a termékre. Az áru a raktárba érkezik. E-vel vedd fel a márkadobozt, és a polcnál egyesével pakolj ki. Az üres karton a hátsó papírgyűjtőbe való.");
-        GUILayout.Space(14);Label("A boltbővítés után a ReturAqua, Loca Cola, Hamster Energy, Kevert és Kőfejtői is rendelhető. Ezeket a vásárlók az önkiszolgáló polcról veszik le, majd a pultnál fizetnek.");
-        GUILayout.FlexibleSpace();if(Button("Körülnézek és felkészülök"))shop.ClosePanel();if(Button("Kinyitom a boltot"))shop.OpenShop();if(Button("Kilépés"))Quit();
-    }
     private void Help()
     {
         Label("Műszaksegéd",true);
-        Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a pult közelében: számítógép, alkalmazások\nE a kasszán / F: fizetés a pénztárgépen\nRaktári polcnál E: teljes doboz felvétele / visszarakása\nDobozzal a kézben, zöld polchelynél E: egy termék kipakolása\nÜres kartonon E: felvétel • Papírgyűjtőn E: kidobás\nO: nyitás vagy korai zárás • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
+        Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a pult közelében: számítógép, alkalmazások\nE a kasszán / F: fizetés a pénztárgépen\nRaktári polcnál E: teljes doboz felvétele / visszarakása\nDobozzal a kézben, zöld polchelynél E: egy termék kipakolása\nÜres kartonon E: felvétel • Papírgyűjtőn E: kidobás\nE a táblán: nyitás / zárás • E az ajtónál: nap lezárása\nT: helyettesítő áru ajánlása • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
         GUILayout.Space(14);Label("Kassza: 1–6 bankjegy, Shift+1–6 érme; Enter fizetés, Backspace vissza, Del törlés. Tab / nyilak: választás; Space: címlet vagy érme kiválasztása. Monitor: Tab / nyilak, Enter; Backspace vissza; Asztal 1–5 alkalmazás; rendelésnél 1–9 termék, + / − mennyiség. A Váltás gomb nagy címletet vált fel.");
         GUILayout.Space(14);Label("Az Üzletfejlesztés alkalmazásban nyitás előtt 24 000 Ft-ért bővíthetsz, 9000 Ft-ért cigarettapolcot, 16 000 Ft-ért kávégépet vehetsz. A kamerák és játékok használata közben a bolt tovább működik. G: kézben tartott tárgy eldobása; felmosóval és ütővel bal egérgomb: használat. A készletet neked kell feltöltened az új polcokon is.");
         GUILayout.FlexibleSpace();if(Button("Vissza a boltba"))shop.ClosePanel();
@@ -112,18 +100,10 @@ public sealed class MvpShopHud : MonoBehaviour
         GUILayout.EndScrollView();GUILayout.EndArea();
         GUILayout.BeginArea(SummaryActionsRect);
         if(shop.Ledger.Cash>=0){if(SummaryButton("Következő nap • Enter"))shop.NextDay();}else GUILayout.Label("Elfogyott a pénz. Az Új játék gombbal újrakezdhetsz.",small);
-        if(SummaryButton("Maradok a boltban • S"))shop.StayAfterHours();
         if(SummaryButton("Új játék • R"))shop.ResetDemo();
         if(SummaryButton("Kilépés"))Quit();GUILayout.EndArea();
     }
     private bool SummaryButton(string label)=>GUILayout.Button(label,button,GUILayout.Height(32));
-    private void CustomerDialogue()
-    {
-        Label("Beszélgetés",true);
-        if(shop.ActiveCustomer==null){Label("Most nincs vásárló a pultnál.");}
-        else{Label(shop.Dialogue);if(shop.Stage==ServiceStage.Order&&shop.HasUnavailableRequest&&Button("Sajnos nincs meg a kért áru. Megfelelne másik?"))shop.OfferAlternative();if(Button("Sajnos nem tudom kiszolgálni.")){shop.SkipCurrent();shop.ClosePanel();}}
-        if(Button("Vissza"))shop.ClosePanel();
-    }
     private void CardTerminal()
     {
         Panel(new Rect(340,190,600,330));GUILayout.BeginArea(new Rect(365,210,550,290));

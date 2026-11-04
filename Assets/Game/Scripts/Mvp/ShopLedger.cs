@@ -53,10 +53,11 @@ public sealed class ShopLedger
         int cost = unitCost * quantity;
         SpendFunds(cost); Purchases += cost; return true;
     }
-    // Only the night vendor calls this; normal closed-day purchasing remains disabled.
+    // Only the night vendor calls this, guarded by the AfterHours phase.
+    // The ledger now remains open until the player leaves at the entrance.
     public bool TryBuyAfterHours(int cost,int quantity)
     {
-        if(!Closed||Cash<0||cost<=0||quantity<=0||quantity>5||(long)cost*quantity>AvailableFunds)return false;
+        if(Cash<0||cost<=0||quantity<=0||quantity>5||(long)cost*quantity>AvailableFunds)return false;
         int amount=cost*quantity;SpendFunds(amount);Purchases+=amount;return true;
     }
     public bool TryImprove(int amount)

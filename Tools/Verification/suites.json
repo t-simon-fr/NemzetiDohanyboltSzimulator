@@ -12,7 +12,8 @@
       "recovery",
       "acceptance-logic",
       "coffee-world",
-      "binding-acceptance"
+      "binding-acceptance",
+      "entrance-day"
     ]
   },
   "suites": {
@@ -50,6 +51,11 @@
       "file": "Tools/Checks/BindingAcceptanceChecks.cs",
       "entry": "BindingAcceptanceChecks.Run",
       "purpose": "Conflicting action-key swap, reserved-key rejection and full defaults restoration"
+    },
+    "entrance-day": {
+      "file": "Tools/Checks/EntranceDayChecks.cs",
+      "entry": "EntranceDayChecks.Run",
+      "purpose": "Sign-driven clock, explicit door exit, customer draining and single daily charge"
     }
   },
   "historicalExcluded": {
