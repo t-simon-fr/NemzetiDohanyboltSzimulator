@@ -52,7 +52,16 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "counter-storage")
+        if (scenario == "ui-order")
+        {
+            Visit(2, 0);
+            Set(Shop.ActiveCustomer, "OrderTypes", new[] { 0, 0, 1 });
+            Set(Shop.ActiveCustomer, "UnitPrices", new[] { 2200, 2200, 2300 });
+            Set(Shop, "Dialogue", ShopPeople.Order(Shop.ActiveCustomer.Person, Shop.ActiveCustomer.OrderTypes));
+            Shop.Notify("A rendelés megérkezett. Tedd a kért árut az átadóhelyre.");
+            Aim(Shop.DeliverySlot.transform.position + Vector3.up * .15f, 1.5f);
+        }
+        else if (scenario == "counter-storage")
         {
             foreach (var slot in Shop.CounterStorage.Slots) Shop.CreateNightProduct().AssignInitialSlot(slot);
             Aim(Shop.CounterStorage.Slots[2].transform.position + Vector3.up*.13f);
@@ -140,6 +149,14 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action == "deliver-ui-one")
+        {
+            var item = FindObjectsByType<ShopProduct>().First(p => p.ProductId == ShopCatalog.Ids[0] && p.CurrentSlot != null && p.CurrentSlot.IsStockShelf);
+            item.AssignInitialSlot(Shop.DeliverySlot);
+            Shop.DeliverySlot.NotifyProductPlaced(item);
+        }
+        if (action == "ui-long-dialogue")
+            Set(Shop, "Dialogue", "Kérek két Lucky Stroke-ot és egy Marlbroke-ot. A szomszéd szerint rövidebb az út, ha a másik irányból jövök. Kipróbáltam, most a másik szomszédnál lakom. De a rendelés biztos, azt felírtam.");
         if (action == "view-door-outside")
         {
             var body = Player.GetComponent<CharacterController>();
@@ -235,6 +252,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public string stockedItem;
         public int privateStock;
         public string outwardSign;
+        public string uiNotice, spoken;
+        public ShopOrderLine[] orderLines;
+        public Rect menuStart, menuSettings, menuBinding, menuDefaults, menuBack, cardConfirm, cardBack;
+        public bool settingsOpen, movementLearned;
     }
 
     [Preserve]
@@ -284,6 +305,20 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.privateStock = g.CounterStorage.Slots.Count(s => s.Occupant != null);
         state.outwardSign = g.Entrance.Sign.GetComponentsInChildren<TextMesh>()
             .FirstOrDefault(t => Vector3.Dot(-t.transform.forward,-g.Entrance.DoorLeaf.forward) > .99f)?.text ?? "";
+        var menu = g.GetComponent<ShopMenu>();
+        var hud = g.GetComponent<MvpShopHud>();
+        state.menuStart = ShopUi.ScreenRect(ShopMenu.StartRect);
+        state.menuSettings = ShopUi.ScreenRect(ShopMenu.SettingsRect);
+        state.menuBinding = ShopUi.ScreenRect(menu.InteractionBindingRect);
+        state.menuDefaults = ShopUi.ScreenRect(ShopMenu.DefaultsRect);
+        state.menuBack = ShopUi.ScreenRect(ShopMenu.BackRect);
+        state.cardConfirm = ShopUi.ScreenRect(MvpShopHud.CardConfirmRect);
+        state.cardBack = ShopUi.ScreenRect(MvpShopHud.CardBackRect);
+        state.settingsOpen = menu.SettingsOpen;
+        state.movementLearned = hud.MovementLearned;
+        state.orderLines = hud.OrderLines;
+        state.uiNotice = hud.CurrentNotice;
+        state.spoken = g.Dialogue;
         Debug.Log("ACCEPTANCE_STATE:" + JsonUtility.ToJson(state));
     }
 }

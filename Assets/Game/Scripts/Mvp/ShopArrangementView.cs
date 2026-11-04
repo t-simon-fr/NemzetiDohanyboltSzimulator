@@ -139,9 +139,9 @@ public sealed partial class ShopArrangement
         GUI.depth = -500;
         if (editorTitle == null)
         {
-            editorTitle = new GUIStyle(GUI.skin.label) { fontSize=22, fontStyle=FontStyle.Bold, wordWrap=true };
-            editorText = new GUIStyle(GUI.skin.label) { fontSize=16, wordWrap=true };
-            editorButton = new GUIStyle(GUI.skin.button) { fontSize=16, wordWrap=true };
+            editorTitle = ShopUi.Text(22,true,true);
+            editorText = ShopUi.Text(16,false,true);
+            editorButton = ShopUi.ButtonStyle(16);
             planLabel = new GUIStyle(editorText) { alignment=TextAnchor.MiddleCenter, fontStyle=FontStyle.Bold };
         }
         Rect area = ShopFloorPlan.PurchasedArea(shop.Layout.Expanded);
@@ -168,9 +168,9 @@ public sealed partial class ShopArrangement
             Outline(rect,Color.white);
             GUI.Label(rect,pair.Key.Id == "public-shelf" ? "Polc" : pair.Key.Title,planLabel);
         }
-        Fill(new Rect(Sidebar+12,12,Screen.width-Sidebar-24,42),new Color(.035f,.06f,.07f,.96f));
+        Fill(new Rect(Sidebar+12,12,Screen.width-Sidebar-24,42),ShopUi.Green);
         GUI.Label(new Rect(Sidebar+24,18,Screen.width-Sidebar-48,32),"ÜZLET ÁTRENDEZÉSE • Előnézet",editorTitle);
-        Fill(new Rect(0,0,Sidebar,Screen.height),new Color(.035f,.06f,.07f,1));
+        Fill(new Rect(0,0,Sidebar,Screen.height),ShopUi.Green);
         GUILayout.BeginArea(new Rect(16,16,Sidebar-32,Screen.height-32));
         GUILayout.Label("BERENDEZÉS",editorTitle);
         GUILayout.Label("A bolt szünetel. A pult, ajtók és a feltöltési útvonal fix.",editorText);

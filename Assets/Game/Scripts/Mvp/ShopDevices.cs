@@ -76,7 +76,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     private void Control(GameObject go, WorldControlKind kind, int value = 0)
     { var c = go.AddComponent<ShopWorldControl>(); c.Kind = kind; c.Value = value; }
     private TextMesh Label(Transform parent, string text, Vector3 position, float size = .035f)
-        => ProductVisuals.Text(parent, "Felirat", text, position, Quaternion.Euler(0,180,0), size, Color.white);
+        => ProductVisuals.Text(parent, "Felirat", text, position, Quaternion.Euler(0,180,0), size, ShopUi.Paper);
     private Transform Page(string name)
     {
         var page=new GameObject(name).transform;page.SetParent(monitor,false);return page;
@@ -105,10 +105,10 @@ public sealed partial class ShopDevices : MonoBehaviour
     }
     private void BuildMonitor()
     {
-        screenBackground=ScreenMaterial("TobaccOS background",new Color(.025f,.055f,.07f));
-        screenCard=ScreenMaterial("TobaccOS card",new Color(.075f,.14f,.16f));
-        screenAccent=ScreenMaterial("TobaccOS accent",new Color(.025f,.40f,.39f));
-        screenBar=ScreenMaterial("TobaccOS header",new Color(.035f,.10f,.12f));
+        screenBackground=ScreenMaterial("TobaccOS background",ShopUi.Green);
+        screenCard=ScreenMaterial("TobaccOS card",new Color(.22f,.33f,.27f));
+        screenAccent=ScreenMaterial("TobaccOS accent",ShopUi.Red);
+        screenBar=ScreenMaterial("TobaccOS header",new Color(.07f,.14f,.10f));
         ScreenPanel(monitor,"TobaccOS screen",new Vector3(0,0,.001f),new Vector3(1.80f,1.02f,.006f),screenBackground);
         ScreenPanel(monitor,"TobaccOS title bar",new Vector3(0,.445f,.010f),new Vector3(1.80f,.12f,.006f),screenBar);
         Label(monitor,"TobaccOS",new Vector3(.61f,.445f,.024f),.044f);

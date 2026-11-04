@@ -78,11 +78,11 @@ public sealed class ShopAfterHours:MonoBehaviour
     void Update(){if(TradeOpen&&Application.isFocused&&Keyboard.current!=null){if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))CloseTrade();else if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Enter)||ShopBindings.Pressed(UnityEngine.InputSystem.Key.NumpadEnter))BuyBundle();}}
     void OnGUI()
     {
-        if(!TradeOpen)return;var old=GUI.matrix;float scale=Mathf.Min(Screen.width/1280f,Screen.height/720f);GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1280*scale)*.5f,(Screen.height-720*scale)*.5f),Quaternion.identity,Vector3.one*scale);
-        GUI.Box(new Rect(300,150,680,420),"");GUILayout.BeginArea(new Rect(320,170,640,235));tradeScroll=GUILayout.BeginScrollView(tradeScroll);var style=new GUIStyle(GUI.skin.label){fontSize=21,wordWrap=true};
+        if(!TradeOpen||ShopMenu.Active)return;var old=GUI.matrix;float scale=Mathf.Min(Screen.width/1280f,Screen.height/720f);GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1280*scale)*.5f,(Screen.height-720*scale)*.5f),Quaternion.identity,Vector3.one*scale);
+        ShopUi.Panel(new Rect(300,150,680,420));GUILayout.BeginArea(new Rect(320,170,640,235));tradeScroll=GUILayout.BeginScrollView(tradeScroll);var style=ShopUi.Text(21);
         GUILayout.Label("GYANÚS ALAK",style);GUILayout.Space(12);GUILayout.Label("Jó estét. Ukrán Dnyipro van nálam. Öt csomag, egy üzlet. Holnap is erre járok.",style);
         GUILayout.Label("5 × 700 Ft = 3500 Ft • Egy csomagban 20 szál",style);GUILayout.Label("Pénzed: "+ShopCatalog.Money(shop.Ledger.AvailableFunds),style);GUILayout.Label(shop.Message,style);GUILayout.EndScrollView();GUILayout.EndArea();
-        GUILayout.BeginArea(new Rect(320,425,640,130));var button=new GUIStyle(GUI.skin.button){fontSize=20,wordWrap=true};
+        GUILayout.BeginArea(new Rect(320,425,640,130));var button=ShopUi.ButtonStyle(20);
         GUI.enabled=!BoughtTonight;if(GUILayout.Button(BoughtTonight?"Ma elfogyott":"Megveszem • 3500 Ft • Enter",button,GUILayout.Height(48)))BuyBundle();GUI.enabled=true;
         if(GUILayout.Button("Most ennyi • Esc",button,GUILayout.Height(48)))CloseTrade();GUILayout.EndArea();GUI.matrix=old;
     }

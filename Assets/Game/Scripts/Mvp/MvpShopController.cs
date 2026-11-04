@@ -50,7 +50,13 @@ public sealed partial class MvpShopController : MonoBehaviour
     public MvpCustomerActor ActiveCustomer => active;
     public ProductSlot DeliverySlot => delivery;
     public string Dialogue { get; private set; } = "";
-    public string Message { get; private set; } = "";
+    private string message = "";
+    public int MessageRevision { get; private set; }
+    public string Message
+    {
+        get => message;
+        private set { message = value; MessageRevision++; }
+    }
     public bool SingleProductVisits {get;set;}
     private readonly List<ShopProduct> receivedOrder=new List<ShopProduct>();
     public int[] MissingOrderTypes=>active==null?new int[0]:active.OrderTypes.GroupBy(t=>t).SelectMany(g=>Enumerable.Repeat(g.Key,Mathf.Max(0,g.Count()-receivedOrder.Count(p=>p!=null&&!p.IsHeld&&p.CurrentSlot!=null&&p.ProductId==ShopCatalog.Ids[g.Key])))).ToArray();
@@ -200,7 +206,7 @@ public sealed partial class MvpShopController : MonoBehaviour
             {
                 active = customer; Stage = ServiceStage.Order;
                 if(!customer.AcceptsPrices){PriceRefusals++;Missed++;Notify(ShopPeople.Names[customer.Person]+": Ennyiért inkább nem kérem. Túl drága! Állíts kedvezőbb árat az Árak alkalmazásban.");DismissActive();i--;continue;}
-                Dialogue = "Jó napot! "+active.OrderDescription+" lenne, kérem.";
+                Dialogue = ShopPeople.Order(active.Person, active.OrderTypes);
                 if (active.BasketItem != null)
                 { if(Activities.PlaceBasket(active)){prepared=active.BasketItem;BeginPayment();} }
                 else if (delivery.Occupant != null) OnDelivery(delivery.Occupant);
@@ -326,7 +332,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Security?.ReleaseEntrance();
         Phase = ShopPhase.Closing; Message = "Zárunk. A bent várakozókat még kiszolgálhatod; X-szel udvariasan elküldheted az aktuális vásárlót.";
     }
-    private bool IsRequestedTypeUnavailable(int type)
+    public bool IsRequestedTypeUnavailable(int type)
     {
         if (active == null) return false;
         int needed = active.OrderTypes.Count(t => t == type) - StockCount(type);

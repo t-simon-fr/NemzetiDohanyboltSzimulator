@@ -1,122 +1,193 @@
+using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public sealed class MvpShopHud : MonoBehaviour
 {
     [SerializeField] private MvpShopController shop;
-    private GUIStyle title,text,small,button;
-    private Vector2 summaryScroll;
-    public static Rect SummaryDetailsRect=>new Rect(240,120,800,354);
-    public static Rect SummaryActionsRect=>new Rect(240,486,800,158);
-    public void Configure(MvpShopController controller)=>shop=controller;
+    private Vector2 summaryScroll, orderScroll, helpScroll;
+    private readonly ShopUiState state = new ShopUiState();
+    public static Rect SummaryDetailsRect => new Rect(278, 348, 724, 182);
+    public static Rect SummaryActionsRect => new Rect(278, 552, 724, 112);
+    public static Rect CardConfirmRect => new Rect(384, 456, 512, 46);
+    public static Rect CardBackRect => new Rect(384, 510, 512, 38);
+    public string CurrentNotice => state.Notice(Time.unscaledTime);
+    public bool MovementLearned => state.MovementLearned;
+    public ShopOrderLine[] OrderLines => ShopUiState.Order(shop);
+    public void Configure(MvpShopController controller) => shop = controller;
+
+    private void Update()
+    {
+        if (shop == null || ShopMenu.Active) return;
+        state.Observe(shop.Message, shop.MessageRevision, Time.unscaledTime);
+        if (Keyboard.current != null && !ShopInputGate.Blocked &&
+            new[] { Key.W, Key.A, Key.S, Key.D }.Any(ShopBindings.Held)) state.MovementLearned = true;
+    }
     private void OnGUI()
     {
-        if(shop==null||shop.Ledger==null||ShopMenu.Active||shop.Arrangement != null && shop.Arrangement.Active)return;
-        if(shop.AfterHours!=null&&shop.AfterHours.TradeOpen)return;
-        if(title==null)
+        if (shop == null || shop.Ledger == null || ShopMenu.Active || shop.Arrangement.Active || shop.AfterHours.TradeOpen) return;
+        using (ShopUi.Frame())
         {
-            title=new GUIStyle(GUI.skin.label){fontSize=24,fontStyle=FontStyle.Bold,wordWrap=true};
-            text=new GUIStyle(GUI.skin.label){fontSize=18,wordWrap=true};small=new GUIStyle(text){fontSize=15};
-            button=new GUIStyle(GUI.skin.button){fontSize=18,wordWrap=true};
-            title.normal.textColor=text.normal.textColor=small.normal.textColor=Color.white;
-        }
-        var old=GUI.matrix;var color=GUI.color;
-        float scale=Mathf.Min(Screen.width/1280f,Screen.height/720f);
-        GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1280*scale)*.5f,(Screen.height-720*scale)*.5f),Quaternion.identity,Vector3.one*scale);
-        try
-        {
-            if(shop.Devices!=null&&shop.Devices.Focused)
+            if (shop.Modal == ShopModal.Summary) { Summary(); return; }
+            if (shop.Modal == ShopModal.Help) { Help(); return; }
+            if (shop.Devices.Focused)
             {
-                if(shop.CardPayment){CardTerminal();return;}
-                if(shop.Devices.FocusKind==ShopDeviceKind.Monitor||shop.Devices.FocusKind==ShopDeviceKind.Coins)return;
-                Panel(new Rect(250,612,780,94));GUILayout.BeginArea(new Rect(266,622,748,78));
-                GUILayout.Label("Enter: fizetés • Backspace: utolsó darab vissza • Del: törlés • Esc: kilépés",small);
-                GUILayout.Label(shop.Message,small);GUILayout.EndArea();return;
+                if (shop.CardPayment) CardTerminal();
+                else if (shop.Devices.FocusKind == ShopDeviceKind.Till) CashFeedback();
+                return;
             }
-            if(shop.Modal==ShopModal.None){Game();return;}
-            Panel(new Rect(208,48,864,624));
-            if(shop.Modal==ShopModal.Summary){Summary();return;}
-            GUILayout.BeginArea(new Rect(240,72,800,572));
-            switch(shop.Modal)
-            {
-                case ShopModal.Help:Help();break;
-                case ShopModal.Summary:Summary();break;
-            }
-            GUILayout.EndArea();
+            Game();
         }
-        finally{GUI.matrix=old;GUI.color=color;}
     }
-    private void Panel(Rect r){var c=GUI.color;GUI.color=new Color(.035f,.055f,.07f,.91f);GUI.DrawTexture(r,Texture2D.whiteTexture);GUI.color=c;}
-    private void Label(string s,bool heading=false)=>GUILayout.Label(s,heading?title:text);
-    private bool Button(string s)=>GUILayout.Button(s,button,GUILayout.Height(40));
     private void Game()
     {
-        Panel(new Rect(12,12,295,156));GUILayout.BeginArea(new Rect(26,20,268,140));
-        Label(shop.Day+". nap • "+(shop.Phase==ShopPhase.Preparing?"Felkészülés":shop.Phase==ShopPhase.Open?"Nyitva":shop.Phase==ShopPhase.AfterHours?"Zárás után":"Zárunk"),true);
-        Label("Kassza: "+ShopCatalog.Money(shop.Ledger.Cash));
-
-        GUILayout.Label("Eladások: "+shop.Ledger.Sales+" • Sorban: "+shop.QueueCount+" • Érkezett: "+shop.Spawned+"/"+shop.TotalVisitors,small);
-        GUILayout.Label(shop.Phase==ShopPhase.Closing||shop.Phase==ShopPhase.AfterHours?"ZÁRVA • E az ajtónál: nap lezárása":shop.Security!=null&&shop.Security.Locked?"BEJÁRAT RETESZELVE • E a vészgombon":"B Számítógép • H Súgó • E a nyitvatartási táblán",small);GUILayout.EndArea();
-        if(shop.ActiveCustomer!=null)
+        ShopUi.Panel(new Rect(24, 24, 330, 91), true);
+        string phase = shop.Phase == ShopPhase.Preparing ? "FELKÉSZÜLÉS" : shop.Phase == ShopPhase.Open ? "NYITVA" : shop.Phase == ShopPhase.AfterHours ? "ZÁRÁS UTÁN" : "ZÁRUNK";
+        ShopUi.Label(new Rect(40, 38, 298, 22), shop.Day + ". NAP  /  " + phase, 16, true, true);
+        ShopUi.Label(new Rect(40, 69, 194, 30), ShopCatalog.Money(shop.Ledger.Cash), 24, true, true);
+        ShopUi.Label(new Rect(245, 73, 95, 24), ShopUiState.Clock(shop.Elapsed), 18, false, true);
+        string task = shop.Security.Locked ? "A bejárat reteszelve. A vészgombbal oldhatod fel." :
+            shop.Phase == ShopPhase.Preparing ? "Nyitás az ajtó táblájának megfordításával." :
+            shop.Phase == ShopPhase.AfterHours ? "A napot az ajtó alsó részénél zárhatod le." :
+            shop.Phase == ShopPhase.Closing ? "Új vendég már nem jön. A bent lévőket még kiszolgálhatod." : "";
+        if (!string.IsNullOrEmpty(task))
         {
-            var c=shop.ActiveCustomer;Panel(new Rect(844,12,424,216));GUILayout.BeginArea(new Rect(860,24,392,190));
-            Label(ShopPeople.Names[c.Person],true);Label(shop.Stage==ServiceStage.Order?"Jó napot! "+c.OrderDescription+" lenne, kérem.":shop.Dialogue);
-            GUILayout.Label("Ár: "+ShopCatalog.Money(c.TotalPrice),small);
-            if(shop.Stage==ServiceStage.Order)Label("Még szükséges: "+string.Join(", ",System.Array.ConvertAll(shop.MissingOrderTypes,t=>ShopCatalog.ShortNames[t])));
-            GUILayout.Label(shop.Stage==ServiceStage.Order?(shop.HasUnavailableRequest?"T: Másik árut ajánlok • X: Nem tudom kiszolgálni":"A kért árut az átadóhelyre tedd. X: Nem tudom kiszolgálni"):shop.Stage==ServiceStage.Payment?"E a kasszánál vagy F: visszajáró kiadása.":"A vásárló elköszön.",small);GUILayout.EndArea();
+            float height = ShopUi.Text(16).CalcHeight(new GUIContent(task), 298) + 24;
+            ShopUi.Panel(new Rect(24, 127, 330, height));
+            ShopUi.Label(new Rect(40, 139, 298, height - 24), task, 16);
         }
-        if(!string.IsNullOrEmpty(shop.Message))
+        if (shop.ActiveCustomer != null) Customer();
+        string notice = CurrentNotice;
+        if (!string.IsNullOrEmpty(notice) && notice != shop.Dialogue)
         {
-            Panel(new Rect(844,240,424,120));GUILayout.BeginArea(new Rect(860,250,392,100));
-            GUILayout.Label(shop.Message,small);
-            if(shop.NextDelivery>0)GUILayout.Label("Szállítás: "+Mathf.CeilToInt(shop.NextDelivery)+" mp",small);
-            GUILayout.EndArea();
+            float h = ShopUi.Text(16).CalcHeight(new GUIContent(ShopUi.BoundText(notice)), 298) + 34;
+            ShopUi.Panel(new Rect(24, 242, 330, h));
+            ShopUi.Label(new Rect(40, 258, 298, h - 28), ShopUi.BoundText(notice), 16);
         }
+        if (shop.NextDelivery > 0)
+            ShopUi.Label(new Rect(40, 205, 312, 30), "Szállítás úton  /  " + Mathf.CeilToInt(shop.NextDelivery) + " mp", 16, true);
     }
-    private void Help()
+    private void Customer()
     {
-        Label("Műszaksegéd",true);
-        Label("WASD + egér: mozgás és körülnézés\nE: termék vagy állomás használata\nE a monitoron / B a pult közelében: számítógép, alkalmazások\nE a kasszán / F: fizetés a pénztárgépen\nRaktári polcnál E: teljes doboz felvétele / visszarakása\nDobozzal a kézben, zöld polchelynél E: egy termék kipakolása\nÜres kartonon E: felvétel • Papírgyűjtőn E: kidobás\nE a táblán: nyitás / zárás • E az ajtónál: nap lezárása\nT: helyettesítő áru ajánlása • X: aktuális vásárló elküldése\nH: súgó • Escape: vissza a boltba / kurzor elengedése");
-        GUILayout.Space(14);Label("Kassza: 1–6 bankjegy, Shift+1–6 érme; Enter fizetés, Backspace vissza, Del törlés. Tab / nyilak: választás; Space: címlet vagy érme kiválasztása. Monitor: Tab / nyilak, Enter; Backspace vissza; Asztal 1–5 alkalmazás; rendelésnél 1–9 termék, + / − mennyiség. A Váltás gomb nagy címletet vált fel.");
-        GUILayout.Space(14);Label("Az Üzletfejlesztés alkalmazásban nyitás előtt 24 000 Ft-ért bővíthetsz, 9000 Ft-ért cigarettapolcot, 16 000 Ft-ért kávégépet vehetsz. A kamerák és játékok használata közben a bolt tovább működik. G: kézben tartott tárgy eldobása; felmosóval és ütővel bal egérgomb: használat. A készletet neked kell feltöltened az új polcokon is.");
-        GUILayout.FlexibleSpace();if(Button("Vissza a boltba"))shop.ClosePanel();
+        const float x = 866, width = 390, inner = 358;
+        var customer = shop.ActiveCustomer;
+        float dialogueHeight = ShopUi.Text(18).CalcHeight(new GUIContent(shop.Dialogue), inner);
+        float listHeight = Mathf.Min(148, OrderLines.Sum(line => ShopUi.Text(16).CalcHeight(new GUIContent(line.Description), inner - 72) + 12));
+        float height = 170 + dialogueHeight + listHeight;
+        ShopUi.Panel(new Rect(x, 24, width, height));
+        ShopUi.Label(new Rect(x + 16, 39, 230, 30), ShopPeople.Names[customer.Person], 24, true);
+        GUI.Label(new Rect(x + 230, 44, 144, 24), shop.Stage == ServiceStage.Payment ? "FIZETÉS" : shop.Stage == ServiceStage.Thanks ? "ELKÖSZÖNÉS" : "RENDELÉS",
+            ShopUi.Text(13, true, false, TextAnchor.UpperRight));
+        float top = 80;
+        ShopUi.Label(new Rect(x + 16, top, inner, dialogueHeight + 4), shop.Dialogue);
+        top += dialogueHeight + 18;
+        ShopUi.Fill(new Rect(x + 16, top, inner, 1), ShopUi.Rule);
+        top += 12;
+        GUILayout.BeginArea(new Rect(x + 16, top, inner, listHeight));
+        orderScroll = GUILayout.BeginScrollView(orderScroll, GUIStyle.none, GUI.skin.verticalScrollbar);
+        foreach (var line in OrderLines)
+        {
+            string status = line.Delivered == line.Required ? "KÉSZ" : line.Unavailable ? "HIÁNY" : "";
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(line.Description, ShopUi.Text(16), GUILayout.Width(inner - 72));
+            GUILayout.Label(status, ShopUi.Text(12, true), GUILayout.Width(52));
+            GUILayout.EndHorizontal();
+        }
+        GUILayout.EndScrollView();
+        GUILayout.EndArea();
+        top += listHeight + 12;
+        ShopUi.Label(new Rect(x + 16, top, inner, 28), "Összesen  " + ShopCatalog.Money(customer.TotalPrice), 20, true);
+        string action = shop.Stage == ServiceStage.Order ?
+            (shop.HasUnavailableRequest ? "T: Másik árut ajánlok\nX: Nem tudom kiszolgálni" : "Tedd a kért árut az átadóhelyre.\nX: Nem tudom kiszolgálni") :
+            shop.Stage == ServiceStage.Payment ? (shop.CardPayment ? "Bankkártya  /  F: Terminál" : shop.CoinPayment ? "Aprópénz  /  F: Érmék átvétele" : "Készpénz  /  F: Kassza") : "A vásárló elköszön.";
+        ShopUi.Label(new Rect(x + 16, top + 34, inner, 52), ShopUi.BoundText(action), 15);
+    }
+    private void CashFeedback()
+    {
+        ShopUi.Panel(new Rect(24, 24, 350, 208));
+        ShopUi.Label(new Rect(40, 39, 318, 26), "KÉSZPÉNZES FIZETÉS", 19, true);
+        if (shop.ActiveCustomer != null)
+        {
+            ShopUi.Label(new Rect(40, 77, 318, 30), "Fizetendő  " + ShopCatalog.Money(shop.ActiveCustomer.TotalPrice), 20, true);
+            ShopUi.Label(new Rect(40, 113, 318, 28), "Kiválasztva  " + ShopCatalog.Money(shop.ChangeSelected), 18);
+        }
+        ShopUi.Label(new Rect(40, 153, 318, 68), shop.Message, 16);
+    }
+    private void CardTerminal()
+    {
+        ShopUi.Panel(new Rect(356, 112, 568, 456));
+        ShopUi.Label(new Rect(384, 136, 512, 24), "TRAFIK  /  BANKKÁRTYÁS TERMINÁL", 16, true);
+        ShopUi.Label(new Rect(384, 182, 512, 34), "Fizetendő: " + ShopCatalog.Money(shop.ActiveCustomer.TotalPrice), 26, true);
+        ShopUi.Fill(new Rect(384, 234, 512, 80), ShopUi.Green);
+        ShopUi.Label(new Rect(400, 244, 480, 20), "BEÍRT ÖSSZEG", 13, true, true);
+        ShopUi.Label(new Rect(400, 269, 480, 38), (string.IsNullOrEmpty(shop.CardAmount) ? "0" : shop.CardAmount) + " Ft", 30, true, true);
+        ShopUi.Label(new Rect(384, 330, 512, 68), shop.Message, 17);
+        ShopUi.Label(new Rect(384, 404, 512, 36), "Számjegyek: összeg  /  Backspace: javítás  /  Del: törlés", 15);
+        if (ShopUi.Button(CardConfirmRect, "Fizetés jóváhagyása  /  Enter", true)) shop.ConfirmCardPayment();
+        if (ShopUi.Button(CardBackRect, "Vissza a boltba  /  Esc")) shop.ClosePanel();
     }
     private void Summary()
     {
-        GUILayout.BeginArea(new Rect(240,72,800,42));Label(shop.Day+". nap • Zárás",true);GUILayout.EndArea();
-        GUILayout.BeginArea(SummaryDetailsRect);summaryScroll=GUILayout.BeginScrollView(summaryScroll);
-        Label("Kiszolgált vásárlók: "+shop.Ledger.Sales+" / "+shop.Spawned+" • Elküldve: "+shop.Missed+" • Ár miatt: "+shop.PriceRefusals);
-        GUILayout.Space(10);Label("Árbevétel: "+ShopCatalog.Money(shop.Ledger.Revenue));
-        Label("Lopásból eredő készletveszteség: "+ShopCatalog.Money(shop.Ledger.StockLoss)+" • Megállítva: "+shop.CaughtToday);
-        Label("Eladott áruk beszerzési értéke: "+ShopCatalog.Money(shop.Ledger.CostOfGoods));
-        Label("Működési költség: "+ShopCatalog.Money(shop.Ledger.OperatingCosts));
-        Label("Nyereség: "+ShopCatalog.Money(shop.Ledger.Profit),true);
-        Label("Utánrendelés: "+ShopCatalog.Money(shop.Ledger.Purchases)+" • Beruházás: "+ShopCatalog.Money(shop.Ledger.Improvements));
-        Label("Zárókassza: "+ShopCatalog.Money(shop.Drawer.Total),true);
-        Label("Ebből kártyás bevétel: "+ShopCatalog.Money(shop.Ledger.CardRevenue));
-        if(shop.Ledger.Cash<0)Label("Ki nem fizetett működési költség: "+ShopCatalog.Money(-shop.Ledger.Cash)+". A folytatáshoz indíts új játékot.");GUILayout.Space(12);
-        for(int i=0;i<shop.AvailableProducts;i++)GUILayout.Label(ShopCatalog.Names[i]+": "+shop.StockCount(i)+" a boltban, "+shop.WarehouseCount(i)+" a dobozban",small);
-        if(shop.StockCount(ShopCatalog.Contraband)>0)GUILayout.Label("Dnyipro: "+shop.StockCount(ShopCatalog.Contraband)+" csomag",small);
-        GUILayout.Label("A készlet, a pénzek és a bővítés a futó játék következő napjára megmaradnak.",small);
-        GUILayout.EndScrollView();GUILayout.EndArea();
-        GUILayout.BeginArea(SummaryActionsRect);
-        if(shop.Ledger.Cash>=0){if(SummaryButton("Következő nap • Enter"))shop.NextDay();}else GUILayout.Label("Elfogyott a pénz. Az Új játék gombbal újrakezdhetsz.",small);
-        if(SummaryButton("Új játék • R"))shop.ResetDemo();
-        if(SummaryButton("Kilépés"))Quit();GUILayout.EndArea();
+        ShopUi.Fill(new Rect(0, 0, 1280, 720), new Color(.06f, .10f, .08f, .86f));
+        ShopUi.Panel(new Rect(250, 32, 780, 656));
+        ShopUi.Label(new Rect(278, 52, 724, 22), "NEMZETI DOHÁNYBOLT  /  NAPI ELSZÁMOLÁS", 15, true);
+        ShopUi.Label(new Rect(278, 86, 724, 38), shop.Day + ". műszak lezárva", 30, true);
+        ShopUi.Fill(new Rect(278, 138, 724, 1), ShopUi.Rule);
+        ShopUi.Label(new Rect(278, 154, 350, 24), "NAPI NYERESÉG", 14, true);
+        ShopUi.Label(new Rect(654, 154, 348, 24), "ZÁRÓKASSZA", 14, true);
+        ShopUi.Label(new Rect(278, 182, 350, 40), ShopCatalog.Money(shop.Ledger.Profit), 30, true);
+        ShopUi.Label(new Rect(654, 182, 348, 40), ShopCatalog.Money(shop.Drawer.Total), 30, true);
+        ShopUi.Label(new Rect(278, 234, 724, 48), "Árbevétel: " + ShopCatalog.Money(shop.Ledger.Revenue) + "  /  Költség: " + ShopCatalog.Money(shop.Ledger.CostOfGoods + shop.Ledger.OperatingCosts), 18);
+        ShopUi.Label(new Rect(278, 285, 724, 42), "Kiszolgálva: " + shop.Ledger.Sales + " / " + shop.Spawned + "  •  Elküldve: " + shop.Missed + "  •  Ár miatt távozott: " + shop.PriceRefusals, 16);
+        ShopUi.Fill(new Rect(278, 335, 724, 1), ShopUi.Rule);
+        GUILayout.BeginArea(SummaryDetailsRect);
+        summaryScroll = GUILayout.BeginScrollView(summaryScroll);
+        GUILayout.Label("Működési költség: " + ShopCatalog.Money(shop.Ledger.OperatingCosts) + "  •  Kártyás bevétel: " + ShopCatalog.Money(shop.Ledger.CardRevenue), ShopUi.Text(16));
+        GUILayout.Label("Lopáskár: " + ShopCatalog.Money(shop.Ledger.StockLoss) + "  •  Megállított tolvaj: " + shop.CaughtToday, ShopUi.Text(16));
+        GUILayout.Label("Utánrendelés: " + ShopCatalog.Money(shop.Ledger.Purchases) + "  •  Beruházás: " + ShopCatalog.Money(shop.Ledger.Improvements), ShopUi.Text(16));
+        GUILayout.Space(12);
+        GUILayout.Label("KÉSZLET  /  BOLT + RAKTÁR", ShopUi.Text(14, true));
+        for (int i = 0; i < shop.AvailableProducts; i++)
+            GUILayout.Label(ShopCatalog.Names[i] + "  —  " + shop.StockCount(i) + " + " + shop.WarehouseCount(i) + " db", ShopUi.Text(16));
+        if (shop.StockCount(ShopCatalog.Contraband) > 0) GUILayout.Label("Dnyipro  —  " + shop.StockCount(ShopCatalog.Contraband) + " csomag", ShopUi.Text(16));
+        GUILayout.EndScrollView();
+        GUILayout.EndArea();
+        if (shop.Ledger.Cash >= 0)
+        {
+            if (ShopUi.Button(new Rect(278, 552, 724, 44), "Következő nap  /  Enter", true)) shop.NextDay();
+        }
+        else ShopUi.Label(new Rect(278, 552, 724, 44), "Elfogyott a kasszapénz. Az Új játék gombbal újrakezdhetsz.", 18, true);
+        if (ShopUi.Button(new Rect(278, 606, 350, 42), "Új játék  /  R")) shop.ResetDemo();
+        if (ShopUi.Button(new Rect(640, 606, 362, 42), "Kilépés")) Quit();
+        ShopUi.Label(new Rect(278, 660, 724, 20), "A pénz, készlet és elrendezés a következő napra megmarad.", 13);
     }
-    private bool SummaryButton(string label)=>GUILayout.Button(label,button,GUILayout.Height(32));
-    private void CardTerminal()
+    private void Help()
     {
-        Panel(new Rect(340,190,600,330));GUILayout.BeginArea(new Rect(365,210,550,290));
-        Label("BANKKÁRTYÁS FIZETÉS",true);Label("Fizetendő: "+ShopCatalog.Money(shop.ActiveCustomer.TotalPrice));
-        Label("Beírt összeg: "+shop.CardAmount+" Ft");
-        Label("Számjegyek: összeg • Backspace: javítás • Del: törlés");Label(shop.Message);
-        GUILayout.Space(12);if(Button("Fizetés jóváhagyása • Enter"))shop.ConfirmCardPayment();
-        if(Button("Vissza • Esc"))shop.ClosePanel();GUILayout.EndArea();
+        ShopUi.Panel(new Rect(250, 48, 780, 624));
+        ShopUi.Label(new Rect(278, 72, 724, 40), "Műszaksegéd", 30, true);
+        GUILayout.BeginArea(new Rect(278, 132, 724, 440));
+        helpScroll = GUILayout.BeginScrollView(helpScroll);
+        string[] sections = {
+            "A BOLTBAN\nW / A / S / D: mozgás  •  Egér: körülnézés\nE: használat, felvétel vagy lerakás  •  G: eldobás\nB: számítógép a pultnál  •  F: kassza  •  Esc: menü",
+            "KISZOLGÁLÁS\nA jobb oldali listán követheted az átadott darabszámokat. Tedd a kért árut az átadóhelyre. T: helyettesítés készlethiánynál. X: aktuális vevő elküldése.",
+            "FELTÖLTÉS\nE a raktári dobozon: felvétel. Dobozzal E a zöld helyen: egy termék kipakolása. Az üres kartont a hátsó papírgyűjtő fogadja. A pult alatti rekesz csak Dnyipro csomagoknak való.",
+            "KASSZA\n1–6: bankjegy  •  Shift + 1–6: érme\nEnter: fizetés  •  Backspace: javítás  •  Del: törlés\nKártyánál írd be a pontos fizetendő összeget. Tab / nyilak: választás, Space: kiválasztás.",
+            "MŰSZAK\nE az ajtó tábláján: nyitás vagy zárás. Az óra nyitáskor indul. Zárás után várd meg a vendégek távozását, majd üres kézzel E az ajtó alsó részén: nap lezárása.",
+            "TOBACCOS\nA monitoron rendelsz árut, vásárolsz fejlesztést és rendezed át az üzletet. Tab / nyilak és Enter is használható. Az átrendezés szünetelteti a boltot; a kamerák és játékok közben tovább folyik a műszak."
+        };
+        foreach (string section in sections)
+        {
+            GUILayout.Label(ShopUi.BoundText(section), ShopUi.Text(18));
+            GUILayout.Space(20);
+        }
+        GUILayout.EndScrollView();
+        GUILayout.EndArea();
+        if (ShopUi.Button(new Rect(278, 604, 724, 44), "Vissza a boltba  /  Esc", true)) shop.ClosePanel();
     }
     private static void Quit()
     {
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying=false;
+        UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif

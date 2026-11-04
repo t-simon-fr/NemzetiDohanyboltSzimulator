@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public static class ShopCatalog
@@ -84,6 +85,11 @@ public static class ShopInputGate
 
 public static class ShopPeople
 {
+    public static string Order(int person, int[] types)
+    {
+        string items = string.Join(", ", types.GroupBy(t => t).Select(g => g.Count() + " × " + ShopCatalog.ShortNames[g.Key]));
+        return "Kérek " + items + ". " + Greetings[person];
+    }
     public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy", "Kevert", "Kőfejtői", "Rövid kávé", "Hosszú kávé", "Latte", "Dnyipro" };
     public static readonly string[] Names = { "Józsi", "Marika", "Pisti", "Laci" };
     public static readonly Color[] Colors = { new Color(.22f,.35f,.29f), new Color(.60f,.23f,.35f), new Color(.18f,.33f,.65f), new Color(.63f,.42f,.13f) };

@@ -14,20 +14,137 @@ public static class ShopBindings
 }
 
 [DefaultExecutionOrder(-1000)]
-public sealed class ShopMenu:MonoBehaviour
+public sealed class ShopMenu : MonoBehaviour
 {
-    public static bool Active {get;private set;}
-    private MvpShopController shop;private bool settings,started;private float previousScale=1;private Key waiting;private Vector2 scroll;private bool oldGate;private CursorLockMode oldLock;private bool oldVisible;
-    public void Configure(MvpShopController value){shop=value;Open();}
-    public void Open(){if(Active)return;oldGate=ShopInputGate.Blocked;oldLock=Cursor.lockState;oldVisible=Cursor.visible;previousScale=Time.timeScale;Active=true;Time.timeScale=0;ShopInputGate.Blocked=true;Cursor.lockState=CursorLockMode.None;Cursor.visible=true;}
-    public void Resume(){Active=false;settings=false;waiting=Key.None;Time.timeScale=previousScale;ShopInputGate.Blocked=oldGate;Cursor.lockState=oldLock;Cursor.visible=oldVisible;}
-    private void Update(){if(!Application.isFocused || shop.Arrangement != null && shop.Arrangement.Active)return;if(Active){ShopInputGate.Blocked=true;Cursor.lockState=CursorLockMode.None;Cursor.visible=true;if(waiting!=Key.None&&Keyboard.current!=null){foreach(var key in Keyboard.current.allKeys)if(key.wasPressedThisFrame){if(key.keyCode==Key.Escape)waiting=Key.None;else if(ShopBindings.Bind(waiting,key.keyCode))waiting=Key.None;break;}return;}if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){if(settings)settings=false;else if(started)Resume();}}else if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame)Open();}
-    private void OnGUI(){if(!Active)return;GUI.depth=-1000;float w=Mathf.Min(600,Screen.width-24),h=Mathf.Min(650,Screen.height-24);GUILayout.BeginArea(new Rect((Screen.width-w)/2,(Screen.height-h)/2,w,h),GUI.skin.box);GUILayout.Label(settings?"BEÁLLÍTÁSOK – BILLENTYŰKIOSZTÁS":"NEMZETI DOHÁNYBOLT SZIMULÁTOR");if(settings){GUILayout.Label("Kattints egy műveletre, majd nyomd meg az új gombot. Az ütköző gombok felcserélődnek. A számok és a menükezelő gombok fenntartottak. Esc: megszakítás.");scroll=GUILayout.BeginScrollView(scroll);foreach(var item in ShopBindings.Actions)if(GUILayout.Button(item.Value+": "+(waiting==item.Key?"Nyomj meg egy gombot…":ShopBindings.Resolve(item.Key).ToString()),GUILayout.Height(32)))waiting=item.Key;GUILayout.EndScrollView();if(GUILayout.Button("Alapértékek",GUILayout.Height(35)))ShopBindings.Reset();if(GUILayout.Button("Vissza",GUILayout.Height(35))){settings=false;waiting=Key.None;}}else{if(GUILayout.Button(started?"Folytatás":"Játék indítása",GUILayout.Height(48))){started=true;Resume();}if(started&&GUILayout.Button("Új játék",GUILayout.Height(48))){Resume();shop.ResetDemo();}if(GUILayout.Button("Beállítások",GUILayout.Height(48)))settings=true;if(GUILayout.Button("Kilépés",GUILayout.Height(48))){
+    public static bool Active { get; private set; }
+    public static Rect StartRect => new Rect(364, 220, 552, 52);
+    public static Rect SettingsRect => new Rect(364, 344, 552, 52);
+    public static Rect DefaultsRect => new Rect(364, 562, 266, 44);
+    public static Rect BackRect => new Rect(642, 562, 274, 44);
+    public Rect InteractionBindingRect => new Rect(744, 158 + 4 * 40 - scroll.y, 148, 34);
+    public bool SettingsOpen => settings;
+    private MvpShopController shop;
+    private bool settings, started, oldGate, oldVisible;
+    private float previousScale = 1;
+    private Key waiting;
+    private Vector2 scroll;
+    private CursorLockMode oldLock;
+    private string feedback = "";
+
+    public void Configure(MvpShopController value) { shop = value; Open(); }
+    public void Open()
+    {
+        if (Active) return;
+        oldGate = ShopInputGate.Blocked;
+        oldLock = Cursor.lockState;
+        oldVisible = Cursor.visible;
+        previousScale = Time.timeScale;
+        Active = true;
+        Time.timeScale = 0;
+        ShopInputGate.Blocked = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    public void Resume()
+    {
+        Active = false;
+        settings = false;
+        waiting = Key.None;
+        Time.timeScale = previousScale;
+        ShopInputGate.Blocked = oldGate;
+        Cursor.lockState = oldLock;
+        Cursor.visible = oldVisible;
+    }
+    private void Update()
+    {
+        if (!Application.isFocused || shop.Arrangement != null && shop.Arrangement.Active) return;
+        if (!Active)
+        {
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) Open();
+            return;
+        }
+        ShopInputGate.Blocked = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        if (Keyboard.current == null) return;
+        if (waiting != Key.None)
+        {
+            foreach (var key in Keyboard.current.allKeys)
+            {
+                if (!key.wasPressedThisFrame) continue;
+                if (key.keyCode == Key.Escape) { waiting = Key.None; feedback = "Átkötés megszakítva."; }
+                else if (ShopBindings.Bind(waiting, key.keyCode))
+                {
+                    waiting = Key.None;
+                    feedback = "Billentyű mentve. Az ütköző műveletek gombjai felcserélődnek.";
+                }
+                else feedback = "Ez a gomb a menükhöz vagy a kasszához van fenntartva. Válassz másikat.";
+                break;
+            }
+            return;
+        }
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            if (settings) settings = false;
+            else if (started) Resume();
+        }
+    }
+    private void OnGUI()
+    {
+        if (!Active) return;
+        GUI.depth = -1000;
+        using (ShopUi.Frame())
+        {
+            ShopUi.Fill(new Rect(0, 0, 1280, 720), new Color(.04f, .09f, .06f, .83f));
+            ShopUi.Panel(new Rect(340, 44, 600, 632));
+            ShopUi.Label(new Rect(364, 66, 552, 24), "NEMZETI  /  DOHÁNYBOLT SZIMULÁTOR", 16, true);
+            ShopUi.Label(new Rect(364, 105, 552, 50), settings ? "Beállítások" : started ? "Műszakszünet" : "Jó reggelt, trafikos!", 32, true);
+            if (settings) DrawSettings();
+            else DrawMenu();
+        }
+    }
+    private void DrawMenu()
+    {
+        ShopUi.Label(new Rect(364, 164, 552, 38), started ? "A bolt vár. A vevők most egy pillanatra nem." : "Kis bolt. Nagy történetek. A kulcs nálad van.", 18);
+        if (ShopUi.Button(StartRect, started ? "Folytatás" : "Játék indítása", true)) { started = true; Resume(); }
+        bool enabled = GUI.enabled;
+        GUI.enabled = started;
+        if (ShopUi.Button(new Rect(364, 282, 552, 52), "Új játék")) { Resume(); shop.ResetDemo(); }
+        GUI.enabled = enabled;
+        if (ShopUi.Button(SettingsRect, "Beállítások")) { settings = true; scroll = Vector2.zero; feedback = ""; }
+        if (ShopUi.Button(new Rect(364, 406, 552, 52), "Kilépés"))
+        {
 #if UNITY_EDITOR
-UnityEditor.EditorApplication.isPlaying=false;
+            UnityEditor.EditorApplication.isPlaying = false;
 #else
-Application.Quit();
+            feedback = "A böngészős játékot a lap bezárásával hagyhatod el.";
+            Application.Quit();
 #endif
-}}GUILayout.EndArea();}
-    private void OnDestroy(){if(Active){Time.timeScale=previousScale;Active=false;ShopInputGate.Blocked=false;}}
+        }
+        ShopUi.Fill(new Rect(364, 500, 552, 1), ShopUi.Rule);
+        ShopUi.Label(new Rect(364, 522, 552, 62), "Nyiss ki a táblával. Szolgáld ki a vevőket.\nZárás után az ajtónál fejezd be a napot.", 18);
+        ShopUi.Label(new Rect(364, 622, 552, 40), feedback, 15);
+    }
+    private void DrawSettings()
+    {
+        Rect view = new Rect(364, 158, 552, 384);
+        scroll = GUI.BeginScrollView(view, scroll, new Rect(0, 0, 532, ShopBindings.Actions.Length * 40));
+        for (int i = 0; i < ShopBindings.Actions.Length; i++)
+        {
+            var item = ShopBindings.Actions[i];
+            ShopUi.Label(new Rect(0, i * 40 + 6, 366, 30), item.Value, 17);
+            if (ShopUi.Button(new Rect(380, i * 40, 148, 34), waiting == item.Key ? "Nyomj gombot…" : ShopUi.Key(item.Key))) waiting = item.Key;
+        }
+        GUI.EndScrollView();
+        if (ShopUi.Button(DefaultsRect, "Alapértékek")) { ShopBindings.Reset(); waiting = Key.None; feedback = "Alapértelmezett billentyűk visszaállítva."; }
+        if (ShopUi.Button(BackRect, "Vissza")) { settings = false; waiting = Key.None; }
+        ShopUi.Label(new Rect(364, 620, 552, 44), string.IsNullOrEmpty(feedback) ? "Kattints egy gombra, majd nyomd meg az új billentyűt. Esc: megszakítás." : feedback, 15);
+    }
+    private void OnDestroy()
+    {
+        if (!Active) return;
+        Time.timeScale = previousScale;
+        Active = false;
+        ShopInputGate.Blocked = false;
+    }
 }

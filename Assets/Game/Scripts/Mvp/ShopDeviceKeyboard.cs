@@ -132,7 +132,7 @@ public sealed partial class ShopDevices
     }
     private void OnGUI()
     {
-        if(!Focused)return;GUI.depth=-100;
+        if(!Focused || ShopMenu.Active)return;GUI.depth=-100;
         if(keyboardOutline&&keyboardTargetId!=null)
         {
             var target=KeyboardTargets().FirstOrDefault(t=>t.Id==keyboardTargetId);
@@ -143,10 +143,13 @@ public sealed partial class ShopDevices
                 GUI.DrawTexture(new Rect(r.x-3,r.y,3,r.height),Texture2D.whiteTexture);GUI.DrawTexture(new Rect(r.xMax,r.y,3,r.height),Texture2D.whiteTexture);GUI.color=old;
             }
         }
-        string hint=FocusKind==ShopDeviceKind.Till?"1–6: bankjegy • Shift+1–6: érme • Space: kivesz • Enter: fizetés • Backspace: vissza • Del: törlés":FocusKind==ShopDeviceKind.Coins?"Tab / nyilak: választás • Space: érme • Enter: átvétel • Backspace: vissza • Del: törlés":"Tab / nyilak: választás • Enter / Space: jóváhagyás • Backspace: vissza • Esc: kilépés";
+        if (FocusKind == ShopDeviceKind.Till && shop.CardPayment) return;
+        string hint=FocusKind==ShopDeviceKind.Till?"1–6: bankjegy • Shift+1–6: érme • Enter: fizetés • Backspace: javítás • Del: törlés • Esc: vissza":FocusKind==ShopDeviceKind.Coins?"Tab / nyilak: választás • Space: érme • Enter: átvétel • Backspace: vissza • Del: törlés":"Tab / nyilak: választás • Enter / Space: jóváhagyás • Backspace: vissza • Esc: kilépés";
         if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Desktop)hint="1: árurendelés • 2: fejlesztés • 3: kávé • 4: kamerák • 5: játékok • 6: árak • "+hint;
         if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Orders)hint="1–9: termék • + / −: mennyiség • "+hint;
-        var style=new GUIStyle(GUI.skin.box){fontSize=Mathf.Clamp(Screen.width/90,12,18),wordWrap=true,alignment=TextAnchor.MiddleCenter};
-        GUI.Box(new Rect(12,FocusKind==ShopDeviceKind.Coins?12:Screen.height-47,Screen.width-24,39),hint,style);
+        var style=ShopUi.Text(Mathf.Clamp(Screen.width/90,12,18),false,true,TextAnchor.MiddleCenter);
+        Rect bar = new Rect(12,FocusKind==ShopDeviceKind.Coins?12:Screen.height-58,Screen.width-24,46);
+        ShopUi.Panel(bar,true);
+        GUI.Label(new Rect(bar.x+12,bar.y+6,bar.width-24,bar.height-12),hint,style);
     }
 }

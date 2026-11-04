@@ -15,7 +15,12 @@ public sealed partial class ShopActivities
     private void DrawMachineRecipeHint()
     {
         if(ShopMenu.Active||ShopInputGate.Blocked||player==null||player.TargetFeature==null||player.TargetFeature.Kind!=ShopFeatureKind.CoffeeMachine)return;
-        GUI.Box(new Rect(Screen.width/2-260,Screen.height-160,520,85),"Kávé: "+ShopCatalog.ShortNames[selectedRecipe]+"\n1: rövid • 2: hosszú • 3: latte • Q: következő\nE / bal klikk: elkészítés vagy átvétel");
+        using (ShopUi.Frame())
+        {
+            ShopUi.Panel(new Rect(380, 474, 520, 104));
+            ShopUi.Label(new Rect(396, 490, 488, 28), "Kávé: " + ShopCatalog.ShortNames[selectedRecipe], 19, true);
+            ShopUi.Label(new Rect(396, 524, 488, 42), ShopUi.BoundText("1: rövid • 2: hosszú • 3: latte • Q: következő\nE / bal klikk: elkészítés vagy átvétel"), 15);
+        }
     }
     public int MilkSupplies{get;private set;}
     private readonly List<GameObject> ingredientPackages=new List<GameObject>();

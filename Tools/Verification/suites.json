@@ -16,7 +16,8 @@
       "entrance-day",
       "floor-plan",
       "arrangement",
-      "door-storage"
+      "door-storage",
+      "ui-presentation"
     ]
   },
   "suites": {
@@ -69,6 +70,11 @@
       "file": "Tools/Checks/ArrangementChecks.cs",
       "entry": "ArrangementChecks.Run",
       "purpose": "A* detours, invalid placement, atomic save/cancel, stocked item identity and next-day persistence"
+    },
+    "ui-presentation": {
+      "file": "Tools/Checks/UiPresentationChecks.cs",
+      "entry": "UiPresentationChecks.Run",
+      "purpose": "Grouped physical handover, repeated notification expiry, bound labels and fixed receipt actions"
     },
     "door-storage": {
       "file": "Tools/Checks/DoorStorageChecks.cs",
