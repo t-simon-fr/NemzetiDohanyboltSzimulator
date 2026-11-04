@@ -21,8 +21,6 @@ public sealed class PlayerInteractor : MonoBehaviour
     private ShopProduct heldProduct;
     private ProductSlot targetSlot;
     private bool canPlace;
-    private GUIStyle promptStyle;
-    private GUIStyle hintStyle;
 
     public void Configure(Camera cameraReference) => viewCamera = cameraReference;
     private ProductSlot[] placementSlots;
@@ -220,12 +218,6 @@ public sealed class PlayerInteractor : MonoBehaviour
     private void OnGUI()
     {
         if (ShopInputGate.Blocked || viewCamera == null || !Application.isPlaying) return;
-        if (promptStyle == null)
-        {
-            promptStyle = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 19, wordWrap = true };
-            promptStyle.normal.textColor = Color.white;
-            hintStyle = new GUIStyle(promptStyle) { fontSize = 14 };
-        }
         bool cursorLocked = Cursor.lockState == CursorLockMode.Locked;
         Color previousColor = GUI.color;
         Color activeColor = new Color(0.4f, 1f, 0.6f);
@@ -259,20 +251,28 @@ public sealed class PlayerInteractor : MonoBehaviour
             heldCarton != null ? (targetBin != null ? (heldCarton.Quantity==0?targetBin.Prompt:"A papírgyűjtőbe csak üres karton kerülhet") : LookingAtSupplies ? "E – Doboz visszarakása a saját raktári polcára" : heldCarton.Quantity==0 ? "Üres doboz: vidd vissza vagy dobd a hátsó papírgyűjtőbe" : canPlace ? "E – Egy termék kipakolása a kijelölt polchelyre" : targetSlot!=null ? "Ez a hely foglalt, vagy más márkához tartozik" : "Nézz egy zölddel jelölt üres polchelyre") :
             heldProduct != null ? (targetBin != null ? "A kukába csak üres kartondoboz kerülhet" : LookingAtSupplies ? "E – Kézben tartott áru visszarakása a dobozba" : placementPrompt) :
             targetBin != null ? targetBin.Prompt : station != null ? station.Prompt : target != null ? "E – Felvétel: " + target.DisplayName + (ShopCatalog.Index(target.ProductId)>=0?" • "+ShopCatalog.Money(ShopCatalog.SalePrice(ShopCatalog.Index(target.ProductId))):"") : "Nézz egy termékre vagy egy interakciós pontra";
-        float panelWidth = Mathf.Min(620f, Screen.width - 24f);
-        Rect panel = new Rect((Screen.width - panelWidth) * 0.5f, Screen.height - 116, panelWidth, 96);
-        GUI.color = new Color(0f, 0f, 0f, 0.78f);
-        GUI.DrawTexture(panel, Texture2D.whiteTexture);
-        GUI.color = previousColor;
-        GUI.Label(new Rect(panel.x + 10, panel.y + 5, panel.width - 20, 48), prompt, promptStyle);
-        string hint = heldTool!=null ? "Kézben: "+heldTool.DisplayName+" • G – Eldobás" : heldCarton != null ? "Kézben: "+ShopCatalog.Names[heldCarton.ProductType]+" doboz • "+heldCarton.Quantity+" db  |  Egy E = egy termék" : heldProduct != null ? "Kézben: " + heldProduct.DisplayName + "  •  A termék automatikusan igazodik a helyéhez" : "WASD – Mozgás  •  Egér – Körülnézés  •  Escape – Kurzor";
-        if(heldProduct!=null||heldCarton!=null)hint+=" • G – Eldobás";
-        GUI.Label(new Rect(panel.x + 10, panel.y + 54, panel.width - 20, 32), hint, hintStyle);
+        var hud = MvpShopController.Instance.GetComponent<MvpShopHud>();
+        string hint = HasHeldItem ? "G: Eldobás" : hud.MovementLearned ? "" : "W / A / S / D: Mozgás  •  Egér: Körülnézés  •  H: Súgó";
+        if (heldCarton != null) hint = heldCarton.Quantity + " db a dobozban  /  " + hint;
+        using (ShopUi.Frame())
+        {
+            string label = ShopUi.BoundText(prompt);
+            float textHeight = ShopUi.Text(17).CalcHeight(new GUIContent(label), 580);
+            float height = textHeight + 28 + (string.IsNullOrEmpty(hint) ? 0 : 28);
+            bool meaningful = HasHeldItem || target != null || station != null || targetBin != null || targetTool != null || featureTarget != null || !cursorLocked || !hud.MovementLearned;
+            if (meaningful)
+            {
+                Rect panel = new Rect(334, 696 - height, 612, height);
+                ShopUi.Panel(panel, true);
+                GUI.Label(new Rect(panel.x + 16, panel.y + 12, 580, textHeight), label, ShopUi.Text(17, false, true, TextAnchor.MiddleCenter));
+                if (!string.IsNullOrEmpty(hint)) GUI.Label(new Rect(panel.x + 16, panel.y + textHeight + 19, 580, 24), ShopUi.BoundText(hint), ShopUi.Text(14, false, true, TextAnchor.MiddleCenter));
+            }
+        }
         if (LookingAtSupplies)
         {
             Rect contents=new Rect(12,158,330,220);
-            GUI.color=new Color(0,0,0,.88f);GUI.DrawTexture(contents,Texture2D.whiteTexture);GUI.color=previousColor;
-            var stockStyle=new GUIStyle(hintStyle){alignment=TextAnchor.UpperLeft,fontSize=16};
+            ShopUi.Panel(contents);
+            var stockStyle=ShopUi.Text(16);
             GUI.Label(new Rect(contents.x+12,contents.y+10,contents.width-24,contents.height-20),station.Contents,stockStyle);
         }
     }

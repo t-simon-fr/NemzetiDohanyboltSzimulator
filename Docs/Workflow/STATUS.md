@@ -3,7 +3,7 @@
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
 - #2–#8: implementáció, Unity-integrációs és helyi WebGL-bemeneti ellenőrzés kész. Részletek: [elfogadási jelentés](../Acceptance/2026-11-03/REPORT.md).
-- Aktuális checkout profil: **214 sikeres állítás**, 11 csoport. Böngésző: **64 sikeres ellenőrzés**, 0 console error a végleges futásban.
+- Aktuális checkout profil: **234 sikeres állítás**, 12 csoport. UI-csomag: **73 sikeres teljes böngészős ellenőrzés**, majd az utolsó kávégomb-stílusváltozás külön **9 sikeres célzott ellenőrzése**, 0 konzolhiba. A források pontos hatóköre a #22 jelentésében.
 - Javítva az elkészült kávé téves hiányjelzése és a HUD-on ismétlődő vevői mondat.
 - #11: Misi és Nóra saját karakterkoncepciója, abszurd személyisége és dialógusterve elkészült a `docs/11-character-concept` ágon. A 3D-modellek és játékbeli dialógus-integráció még nincs implementálva.
 - A kassza/kéz grafikai átdolgozását a felhasználó félretette. Az ajtó/tábla alapú napváltás kiadva (#13); a pult alatti csempészáru (#20) és az ajtóra tett kifelé olvasható tábla (#21) implementálva és ellenőrizve, kiadás nélkül.
@@ -42,3 +42,10 @@ Workflow: [WORKFLOW.md](../WORKFLOW.md). Böngészős előfeltételek: [Acceptan
 - Öt személyzeti, kizárólag Dnyipro csomagot fogadó hely a pult valóban üreges közepén; kézi feltöltés, felvétel/visszarakás, normál kiszolgálás, másnapi megőrzés és új játék ellenőrizve.
 - Unity: 214 sikeres állítás, 11 suite. Teljes helyi WebGL: 64 sikeres ellenőrzés, 0 konzolhiba. Külön célzott próba: 7 sikeres ellenőrzés. Vizuális és interakciós eredmény: passed, az új elemek 1280×720 nézetben átnézve. [Jelentés és képek](../Acceptance/2026-11-04-door-storage/REPORT.md).
 - Nincs mainre merge vagy Pages-publikálás.
+
+## #22 – Egységes trafik UI
+
+- `feature/22-trafik-ui`, a nem mergelt #19 ágára építve. Közös törtfehér/sötétzöld/bordó stílus, kompakt műszaksáv, valós átadást követő vevőpanel, teljes megszólalás és releváns válaszok, lejáró értesítések, követett billentyűkiosztás.
+- Menük, terminál, TobaccOS, kávé, árak, esti kereskedő és átrendezés egységesítve. Nyugtaszerű elszámolás, fix Következő nap gomb.
+- Unity: 234 sikeres állítás. WebGL: 73 teljes + 9 célzott ellenőrzés, 0 konzolhiba. Vizuális/interakciós eredmény: passed, 1280×720 és 1920×1080. [Jelentés és képek](../Acceptance/2026-11-04-ui/REPORT.md).
+- Nincs mainre merge vagy Pages-kiadás. Az újabb felhasználói kérések külön issue-k: #23 sprint/ugrás, #24 fizikai terminál, #25 kávégép-kijelző; ezek következő, még nem implementált csomagok.

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "profile": "checkout",
+  "startedUtc": "2026-11-04T11:57:20.7037631Z",
+  "source": {
+    "commit": "5ec9629a28a27e480e9229c31599728031f757f6",
+    "sourceFingerprint": "f3ed4b6d5a29669c5c39dbcc3cf85d3dfcffd26748649ec65b64125a89df63e5",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "id": "ledger",
+      "passed": 12,
+      "entry": "LedgerChecks.Run",
+      "failed": 0
+    },
+    {
+      "id": "checkout-revision",
+      "passed": 20,
+      "entry": "CheckoutRevisionChecks.Run",
+      "failed": 0
+    },
+    {
+      "id": "basket-day",
+      "passed": 41,
+      "entry": "NextFeatureChecks.BasketDay",
+      "failed": 0
+    },
+    {
+      "id": "recovery",
+      "passed": 9,
+      "entry": "NextFeatureChecks.RecoveryAndCancellation",
+      "failed": 0
+    },
+    {
+      "id": "acceptance-logic",
+      "passed": 15,
+      "entry": "AcceptanceLogicChecks.Run",
+      "failed": 0
+    },
+    {
+      "id": "coffee-world",
+      "passed": 29,
+      "entry": "NextFeatureChecks.WorldAndCoffee",
+      "failed": 0
+    },
+    {
+      "id": "binding-acceptance",
+      "passed": 4,
+      "entry": "BindingAcceptanceChecks.Run",
+      "failed": 0
+    },
+    {
+      "id": "entrance-day",
+      "passed": 15,
+      "entry": "EntranceDayChecks.Run",
+      "failed": 0
+    },
+    {
+      "id": "floor-plan",
+      "passed": 16,
+      "entry": "FloorPlanChecks.Run",
+      "failed": 0
+    },
+    {
+      "id": "arrangement",
+      "passed": 31,
+      "entry": "ArrangementChecks.Run",
+      "failed": 0
+    },
+    {
+      "id": "door-storage",
+      "passed": 22,
+      "entry": "DoorStorageChecks.Run",
+      "failed": 0
+    },
+    {
+      "id": "ui-presentation",
+      "passed": 20,
+      "entry": "UiPresentationChecks.Run",
+      "failed": 0
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "finishedUtc": "2026-11-04T11:57:28.0807333Z"
+}

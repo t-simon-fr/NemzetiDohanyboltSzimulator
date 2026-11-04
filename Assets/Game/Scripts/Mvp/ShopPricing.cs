@@ -39,13 +39,13 @@ public sealed class ShopPricing:MonoBehaviour
     }
     void OnGUI()
     {
-        if(shop==null||shop.Devices.FocusKind!=ShopDeviceKind.Monitor||shop.Devices.ComputerApp!=ShopComputerApp.Prices)return;
-        var r=shop.Devices.AppRect;var style=new GUIStyle(GUI.skin.label){fontSize=Mathf.Clamp((int)(r.width/40),13,20),wordWrap=true,alignment=TextAnchor.MiddleCenter};
-        GUI.Box(r,"");int type=SelectedType;
+        if(shop==null||ShopMenu.Active||shop.Devices.FocusKind!=ShopDeviceKind.Monitor||shop.Devices.ComputerApp!=ShopComputerApp.Prices)return;
+        var r=shop.Devices.AppRect;var style=ShopUi.Text(Mathf.Clamp((int)(r.width/40),13,20),false,false,TextAnchor.MiddleCenter);
+        ShopUi.Panel(r);int type=SelectedType;
         GUI.Label(new Rect(r.x+82,r.y+6,r.width-184,32),ShopCatalog.Names[type],style);
         GUI.Label(new Rect(r.x+10,r.y+45,r.width-20,65),"Eladási ár: "+ShopCatalog.Money(prices[type])+"\nBeszerzés: "+ShopCatalog.Money(ShopCatalog.Costs[type])+" • Alapár: "+ShopCatalog.Money(ShopCatalog.Prices[type]),style);
         GUI.Label(new Rect(r.x+10,r.y+108,r.width-20,32),"Becsült ár-elfogadás: "+DemandPercent(type)+"%",style);
-        var targets=new List<ShopKeyboardTarget>();AddKeyboardTargets(targets,r);foreach(var t in targets)if(GUI.Button(t.Bounds,t.Label,new GUIStyle(GUI.skin.button){fontSize=Mathf.Clamp((int)(r.width/60),12,18)}))t.Activate();
+        var targets=new List<ShopKeyboardTarget>();AddKeyboardTargets(targets,r);foreach(var t in targets)if(GUI.Button(t.Bounds,t.Label,ShopUi.ButtonStyle(Mathf.Clamp((int)(r.width/60),12,18))))t.Activate();
         GUI.Label(new Rect(r.x+10,r.yMax-47,r.width-20,44),"+ / −: 100 Ft • Shift: 5 Ft. A már leadott rendelés ára rögzített.",style);
     }
 }

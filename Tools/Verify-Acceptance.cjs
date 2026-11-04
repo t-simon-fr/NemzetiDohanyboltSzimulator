@@ -98,6 +98,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 }); await sleep(90);
       await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 }); await sleep(300);
     };
+    const clickRect = rect => click(rect.x + rect.width / 2, rect.y + rect.height / 2);
     const key = async (name, code, number) => {
       await send('Input.dispatchKeyEvent', { type: 'keyDown', key: name, code, windowsVirtualKeyCode: number }); await sleep(100);
       await send('Input.dispatchKeyEvent', { type: 'keyUp', key: name, code, windowsVirtualKeyCode: number }); await sleep(200);
@@ -113,7 +114,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
     await send('Page.navigate', { url: 'http://127.0.0.1:8878/' }); await ready(); await sleep(8000); await viewport(1280, 720);
     await capture('main-menu');
     // Start is an actual IMGUI mouse click, not a fixture action.
-    await click(width / 2, (height - 650) / 2 + 54);
+    await clickRect((await state()).menuStart);
     check(!(await state()).menu, 'Main menu starts by mouse');
 
     if (!selected || selected === 'card') {
@@ -164,14 +165,45 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'pickup'); await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); let s = await state();
       check(s.menu && s.timeScale === 0 && s.blocked, 'Escape pauses world and input');
       const position = s.position, pausedElapsed = s.elapsed; await key('w', 'KeyW', 87); await sleep(500); s = await state(); check(Math.abs(position.z - s.position.z) < .01 && !s.held && s.elapsed === pausedElapsed, 'Pause blocks clock, movement and world interaction'); await capture('pause');
-      await click(width / 2, (height - 650) / 2 + 160); await capture('settings');
-      await click(width / 2, (height - 650) / 2 + 232); await key('r', 'KeyR', 82); check((await state()).interactionKey === 'R', 'Settings rebind interaction through actual GUI');
+      await clickRect((await state()).menuSettings); await capture('settings');
+      await clickRect((await state()).menuBinding); await key('r', 'KeyR', 82); check((await state()).interactionKey === 'R', 'Settings rebind interaction through actual GUI');
       await sleep(1500); await send('Page.reload'); await ready(); await sleep(8000); await viewport(1280, 720); check((await state()).interactionKey === 'R', 'Binding survives WebGL reload');
       await probe('Prepare', 'pickup'); await key('r', 'KeyR', 82); check((await state()).held === 'cig_red', 'Persisted remapped key operates real pickup');
       await probe('Prepare', 'menu');
-      await click(width / 2, (height - 650) / 2 + 106); await capture('settings-persisted');
-      await click(width / 2, (height - 650) / 2 + 590); check((await state()).interactionKey === 'E', 'Settings restore defaults through GUI');
+      await clickRect((await state()).menuSettings); await capture('settings-persisted');
+      await clickRect((await state()).menuDefaults); check((await state()).interactionKey === 'E', 'Settings restore defaults through GUI');
       await viewport(1920, 1080); await capture('settings-large');
+    }
+    if (!selected || selected === 'ui') {
+      await viewport(1280, 720);
+      await probe('Prepare', 'ui-order'); let s = await state();
+      const balance = s.balance, elapsed = s.elapsed;
+      check(s.orderLines.length === 2 && s.orderLines[0].Required === 2 && s.orderLines[0].Delivered === 0 && s.modal === 'None', 'Customer panel groups duplicate order without pausing');
+      await capture('ui-order');
+      await probe('Action', 'deliver-ui-one'); s = await state();
+      check(s.orderLines[0].Delivered === 1 && s.orderLines[0].Required === 2 && s.balance === balance, 'Customer panel tracks actual partial handover without charging');
+      await probe('Action', 'ui-long-dialogue'); await capture('ui-long-dialogue');
+      await sleep(6500); s = await state();
+      check(!s.uiNotice && s.orderLines[0].Delivered === 1 && s.spoken.includes('szomszéd'), 'Transient notice expires while dialogue and order remain');
+      check(s.elapsed === elapsed && s.balance === balance && s.modal === 'None', 'Presentation does not advance manual fixture or mutate money');
+      await viewport(1920, 1080); await capture('ui-long-dialogue-large');
+      await probe('Prepare', 'card'); await type('123');
+      await clickRect((await state()).cardConfirm); s = await state();
+      check(s.sales === 0 && s.message.includes('Hibás'), 'Restyled terminal mouse button rejects wrong amount');
+      await capture('ui-card-error-large');
+      await key('Delete', 'Delete', 46); await type('2200'); await clickRect((await state()).cardConfirm);
+      s = await state();
+      check(s.sales === 1 && s.orderLines.every(line => line.Delivered === line.Required), 'Restyled terminal settles once and keeps paid order complete');
+      await probe('Prepare', 'summary'); await key('e', 'KeyE', 69); await capture('ui-receipt-large');
+      await viewport(1280, 720); await capture('ui-receipt');
+      // Virtual summary coordinates map through the same 1280x720 canvas.
+      await click(640, 574); s = await state();
+      check(s.day === 2 && s.phase === 'Preparing' && s.modal === 'None', 'Fixed receipt action starts next day by mouse');
+      await key('w', 'KeyW', 87); check((await state()).movementLearned, 'Movement dismisses one-time navigation hint');
+      await viewport(1920, 1080); await probe('Prepare', 'menu'); await capture('ui-menu-large');
+      await clickRect((await state()).menuSettings); await capture('ui-settings-large');
+      await clickRect((await state()).menuBack); await clickRect((await state()).menuStart);
+      check(!(await state()).menu, 'Settings back and menu resume work by mouse at large viewport');
     }
     if (!selected || selected === 'arrangement') {
       await probe('Prepare', 'arrangement');

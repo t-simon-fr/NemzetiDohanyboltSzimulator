@@ -223,9 +223,8 @@ public sealed partial class ShopActivities : MonoBehaviour
     private void Styles(float width)
     {
         int size=Mathf.Clamp(Mathf.RoundToInt(width/46),13,22);
-        heading=new GUIStyle(GUI.skin.label){fontSize=size+3,fontStyle=FontStyle.Bold,wordWrap=true};
-        label=new GUIStyle(GUI.skin.label){fontSize=size,wordWrap=true};buttonStyle=new GUIStyle(GUI.skin.button){fontSize=size,wordWrap=true};
-        heading.normal.textColor=label.normal.textColor=Color.white;
+        heading=ShopUi.Text(size+3,true);
+        label=ShopUi.Text(size);buttonStyle=ShopUi.ButtonStyle(size);
     }
     private void OnGUI()
     {
@@ -233,7 +232,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         DrawMachineRecipeHint();
         if(shop.Devices.FocusKind==ShopDeviceKind.Coins&&CoinOffer!=null)
         {
-            Styles(Screen.width*.6f);var panel=new Rect(Screen.width*.18f,Screen.height-170,Screen.width*.64f,150);GUI.Box(panel,"");
+            Styles(Screen.width*.6f);var panel=new Rect(Screen.width*.18f,Screen.height-170,Screen.width*.64f,150);ShopUi.Panel(panel);
             GUI.Label(new Rect(panel.x+12,panel.y+8,panel.width-24,35),"Fizetendő: "+ShopCatalog.Money(CoinOffer.Price)+" • Kiválasztva: "+ShopCatalog.Money(CoinOffer.Total),heading);
             GUI.Label(new Rect(panel.x+12,panel.y+45,panel.width-24,30),"Tab / nyilak: érme • Space: kiválasztás • Enter: átvétel • Backspace: vissza",label);
             if(GUI.Button(new Rect(panel.x+12,panel.y+86,panel.width*.3f,45),"Újrakezdem",buttonStyle)){CoinOffer.Clear();RefreshHandCoins();}
@@ -243,7 +242,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         if(shop.Devices.FocusKind!=ShopDeviceKind.Monitor)return;
         var app=shop.Devices.ComputerApp;
         if(app!=ShopComputerApp.Coffee&&app!=ShopComputerApp.Cameras&&app!=ShopComputerApp.Games)return;
-        Rect rect=shop.Devices.AppRect;Styles(rect.width);GUI.BeginGroup(rect);GUI.Box(new Rect(0,0,rect.width,rect.height),"");
+        Rect rect=shop.Devices.AppRect;Styles(rect.width);GUI.BeginGroup(rect);ShopUi.Panel(new Rect(0,0,rect.width,rect.height));
         try
         {
             if(app==ShopComputerApp.Coffee)DrawCoffee(rect.width,rect.height);
