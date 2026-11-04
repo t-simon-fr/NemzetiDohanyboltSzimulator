@@ -259,7 +259,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         CollectOrderItem(prepared);foreach(var item in active.ExtraItems)CollectOrderItem(item);if(!PreparedIsValid())return;
         Stage = ServiceStage.Payment; changeCoins.Clear();
         if(CardPayment){ClearCardAmount();Drawer.CancelTender();Dialogue="Bankkártyával fizetnék.";Message="E vagy F a kasszánál: kártyás fizetés jóváhagyása.";return;}
-        if(CoinPayment){Drawer.CancelTender();Activities.ShowCoins(active);Dialogue="Kiválasztaná belőle? Nekem ma nem megy a számolás.";Message="E vagy F a kasszánál: érmék kiválogatása a tenyérből.";return;}
+        if(CoinPayment){Drawer.CancelTender();Activities.ShowCoins(active);Dialogue="Kiválasztaná belőle? Nekem ma nem megy a számolás.";Message="Nézz a vásárló tenyerére: E vagy bal kattintás az aprópénzhez. F a kasszánál is használható.";return;}
         Drawer.OfferTender(active.Tender);
         Dialogue = "Tessék a pénz. A visszajárót azért megvárom.";
         Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";

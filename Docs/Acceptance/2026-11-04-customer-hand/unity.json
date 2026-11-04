@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "profile": "checkout",
+  "startedUtc": "2026-11-04T21:16:14.9786255Z",
+  "source": {
+    "commit": "cf8c35e16c559140323fb287dde12f4dd61249ac",
+    "sourceFingerprint": "0f778f96a60ededb4f9b2cc9028733d1594f23b4e3f6d2ad2e1541bd640bb5b2",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "passed": 12,
+      "id": "ledger",
+      "entry": "LedgerChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 20,
+      "id": "checkout-revision",
+      "entry": "CheckoutRevisionChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 41,
+      "id": "basket-day",
+      "entry": "NextFeatureChecks.BasketDay",
+      "failed": 0
+    },
+    {
+      "passed": 9,
+      "id": "recovery",
+      "entry": "NextFeatureChecks.RecoveryAndCancellation",
+      "failed": 0
+    },
+    {
+      "passed": 15,
+      "id": "acceptance-logic",
+      "entry": "AcceptanceLogicChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 29,
+      "id": "coffee-world",
+      "entry": "NextFeatureChecks.WorldAndCoffee",
+      "failed": 0
+    },
+    {
+      "passed": 4,
+      "id": "binding-acceptance",
+      "entry": "BindingAcceptanceChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 15,
+      "id": "entrance-day",
+      "entry": "EntranceDayChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 16,
+      "id": "floor-plan",
+      "entry": "FloorPlanChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 31,
+      "id": "arrangement",
+      "entry": "ArrangementChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 22,
+      "id": "door-storage",
+      "entry": "DoorStorageChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 20,
+      "id": "ui-presentation",
+      "entry": "UiPresentationChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 12,
+      "id": "player-movement",
+      "entry": "PlayerMovementChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 29,
+      "id": "physical-terminal",
+      "entry": "PhysicalTerminalChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 35,
+      "id": "coffee-display",
+      "entry": "CoffeeDisplayChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 32,
+      "id": "shelf-labels",
+      "entry": "ShelfLabelChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 47,
+      "id": "modern-register",
+      "entry": "ModernRegisterChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 59,
+      "id": "forint-visuals",
+      "entry": "ForintVisualChecks.Run",
+      "failed": 0
+    },
+    {
+      "passed": 21,
+      "id": "customer-hand",
+      "entry": "CustomerHandChecks.Run",
+      "failed": 0
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "finishedUtc": "2026-11-04T21:16:25.5452709Z"
+}

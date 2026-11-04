@@ -112,7 +112,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Aim(GameObject.Find("Open Close Sign").transform.position);
             Shop.ManualTick = false;
         }
-        else if (scenario == "coins")
+        else if (scenario == "coins" || scenario == "hand-interaction")
         {
             Visit(0, 0);
             // Isolated fixture price exercises all six circulating coin denominations.
@@ -120,7 +120,8 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Set(Shop.ActiveCustomer, "UsesCoins", true);
             Set(Shop.ActiveCustomer, "Tender", 385);
             DeliverAll();
-            Shop.Devices.Focus(ShopDeviceKind.Coins);
+            AimCustomerHand();
+            if (scenario == "coins") Shop.Devices.Focus(ShopDeviceKind.Coins);
         }
         else if (scenario == "card" || scenario == "cash")
         {
@@ -198,6 +199,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Aim(slot.transform.position + Vector3.up * .09f, .85f, -slot.transform.forward);
         }
         if (action == "aim-coffee-display") AimCoffeeDisplay();
+        if (action == "aim-customer-hand") { Shop.ClosePanel(); AimCustomerHand(); }
         if (action == "empty-coffee-milk") { Set(Shop.Activities, "MilkSupplies", 0); Shop.Activities.CoffeeDisplay.Refresh(); }
         if (action == "empty-coffee-supplies") { Set(Shop.Activities, "CoffeeSupplies", 0); Shop.Activities.CoffeeDisplay.Refresh(); }
         if (action == "deliver-ui-one")
@@ -261,6 +263,25 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         if (action == "live-clock") { Shop.OpenShop(); Shop.ManualTick = false; }
         if (action == "resume") Shop.GetComponent<ShopMenu>().Resume();
         Snapshot("");
+    }
+
+    private void AimCustomerHand()
+    {
+        var hand = Shop.Activities.CustomerHand;
+        Vector3 target = hand.TransformPoint(new Vector3(.08f, .01f, .06f));
+        Aim(target, 1.10f, hand.forward);
+        // Let the real controller reach the floor before locking in the test aim.
+        // Otherwise its first gravity step shifts a thin world target off-center.
+        var controller = Player.GetComponent<FirstPersonController>();
+        controller.StepMovement(Vector2.zero, false, false, .3f);
+        Vector3 direction = target - View.transform.position;
+        Vector3 horizontal = Vector3.ProjectOnPlane(direction, Vector3.up);
+        Player.transform.rotation = Quaternion.LookRotation(horizontal);
+        float pitch = Mathf.Atan2(-direction.y, horizontal.magnitude) * Mathf.Rad2Deg;
+        View.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
+        typeof(FirstPersonController).GetField("pitch", Private).SetValue(controller, pitch);
+        Physics.SyncTransforms();
+        Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f,.5f,0)));
     }
 
     private void AimWarehouseShelf()
@@ -345,6 +366,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public int coinSelected;
         public Rect[] coinTargets;
         public Rect coinClear, coinPay;
+        public bool lookingAtHand, handUpright;
+        public float handSide;
+        public string handPrompt;
         public int cashPrice, cashTender;
         public float cameraFov;
         public string cashDue, cashReceived, cashChange, cashSelected;
@@ -437,6 +461,16 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.offeredCoins = coinOffer != null ? coinOffer.Coins.ToArray() : new int[0];
         state.selectedCoins = coinOffer != null ? coinOffer.Selected.ToArray() : new bool[0];
         state.coinSelected = coinOffer != null ? coinOffer.Total : 0;
+        var hand = g.Activities.CustomerHand;
+        if (hand != null)
+        {
+            Physics.SyncTransforms();
+            if (Physics.Raycast(View.ViewportPointToRay(new Vector3(.5f,.5f,0)), out var handHit, 2.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                state.lookingAtHand = handHit.collider.GetComponentInParent<ShopStation>() == hand.GetComponent<ShopStation>();
+            state.handPrompt = hand.GetComponent<ShopStation>().Prompt;
+            state.handUpright = Vector3.Dot(View.transform.up, Vector3.up) > .3f;
+            state.handSide = Vector3.Dot(Vector3.ProjectOnPlane(View.transform.position-hand.position,Vector3.up).normalized,hand.forward);
+        }
         var coinTargets = g.Devices.FocusKind == ShopDeviceKind.Coins ? g.Devices.KeyboardTargets() : new System.Collections.Generic.List<ShopKeyboardTarget>();
         state.coinTargets = Enumerable.Range(0, state.offeredCoins.Length).Select(i => coinTargets.FirstOrDefault(t => t.Id == "CustomerCoin:" + i)?.Bounds ?? Rect.zero).ToArray();
         state.coinClear = coinTargets.FirstOrDefault(t => t.Id == "Coins:Clear")?.Bounds ?? Rect.zero;

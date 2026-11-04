@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton, Smuggler, Exit, Terminal, CoffeeControl }
+public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton, Smuggler, Exit, Terminal, CoffeeControl, CustomerHand }
 public sealed class ShopStation : MonoBehaviour
 {
     [SerializeField] private ShopStationKind kind;
@@ -21,6 +21,7 @@ public sealed class ShopStation : MonoBehaviour
             if(kind==ShopStationKind.Monitor)return "E / B – Számítógép: rendelések és berendezés";
             if(kind==ShopStationKind.Terminal)return "E – Bankkártyaterminál";
             if(IsCoffeeControl)return "E – Kávégép kijelzője: italválasztás és főzés";
+            if(kind==ShopStationKind.CustomerHand)return "E / bal kattintás – Aprópénz kiválogatása";
             if(kind==ShopStationKind.Till)return "E – Kassza / fizetés";
             if(kind==ShopStationKind.Exit)return shop.CanEndDay ? "E – Hazamegyek: nap lezárása" : "E – Bejárati ajtó";
             if(kind==ShopStationKind.Door)return shop.Phase==ShopPhase.Preparing ? "E – Tábla megfordítása: NYITVA" : shop.Phase==ShopPhase.Open ? "E – Tábla megfordítása: ZÁRVA" : "ZÁRVA • A napot az ajtónál fejezheted be";
@@ -38,6 +39,13 @@ public sealed class ShopStation : MonoBehaviour
         else if(kind==ShopStationKind.Monitor)shop.OpenSupplier();
         else if(kind==ShopStationKind.Terminal)shop.Devices.Focus(ShopDeviceKind.Terminal);
         else if(IsCoffeeControl)shop.Devices.Focus(ShopDeviceKind.Coffee);
+        else if(kind==ShopStationKind.CustomerHand)
+        {
+            if (!isActiveAndEnabled || player.HasHeldItem || !shop.CoinPayment ||
+                shop.Stage != ServiceStage.Payment || shop.Activities.CustomerHand != transform) return;
+            ShopInputGate.ConsumeWorldAction();
+            shop.OpenCash();
+        }
         else if(kind==ShopStationKind.Till)shop.OpenCash();
         else if(kind==ShopStationKind.Exit)shop.TryEndDay();
         else if(kind==ShopStationKind.Door){if(shop.Phase==ShopPhase.Preparing)shop.OpenShop();else shop.RequestClose();}

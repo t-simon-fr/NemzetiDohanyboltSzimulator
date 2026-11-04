@@ -286,6 +286,8 @@ public sealed partial class ShopDevices : MonoBehaviour
         if (kind == ShopDeviceKind.Coffee && (shop == null || !shop.Activities.CoffeeOwned)) return;
         if (kind == ShopDeviceKind.Till && shop != null && shop.CardPayment) kind = ShopDeviceKind.Terminal;
         if(view==null||shop==null||shop.HasHeldProduct)return;
+        if (kind == ShopDeviceKind.Coins && (shop.Activities.CustomerHand == null ||
+            shop.Activities.CoinOffer == null || !shop.CoinPayment || shop.Stage != ServiceStage.Payment)) return;
         if(Focused)Release();
         cameraPosition=view.transform.localPosition;cameraRotation=view.transform.localRotation;cameraFieldOfView=view.fieldOfView;
         ResetKeyboardFocus();FocusKind=kind;ShopInputGate.Blocked=true;Cursor.lockState=CursorLockMode.None;Cursor.visible=true;
@@ -310,8 +312,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         }
         else if(kind==ShopDeviceKind.Coins)
         {
-            var hand=shop.Activities.CustomerHand;
-            view.transform.position=hand.position+Vector3.up*.63f+hand.forward*.22f;view.transform.LookAt(hand.position,hand.forward);
+            shop.Activities.FocusCustomerCoins(view);
         }
         else
         {
@@ -322,6 +323,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     public void Release()
     {
         if(!Focused)return;
+        if (FocusKind == ShopDeviceKind.Coins) shop.Activities.SetCustomerHandFocused(false);
         if(view!=null){view.transform.localPosition=cameraPosition;view.transform.localRotation=cameraRotation;view.fieldOfView=cameraFieldOfView;}
         if(registerDrawer!=null)registerDrawer.SetOpen(false);
         FocusKind=ShopDeviceKind.None;ShopInputGate.Blocked=false;
@@ -341,7 +343,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         string selection=string.Join(",",ShopCatalog.Denominations.Select(shop.SelectedPieces));
         if(lastSelection!=selection){lastSelection=selection;RefreshTray();}
         PollDeviceKeyboard();
-        if(!Focused||!Application.isFocused||Mouse.current==null||!Mouse.current.leftButton.wasPressedThisFrame)return;
+        if(ShopInputGate.WorldActionConsumed||!Focused||!Application.isFocused||Mouse.current==null||!Mouse.current.leftButton.wasPressedThisFrame)return;
         if(Keyboard.current!=null&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))return;
         Ray ray=view.ScreenPointToRay(Mouse.current.position.ReadValue());
         if(Physics.Raycast(ray,out RaycastHit hit,4f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore))

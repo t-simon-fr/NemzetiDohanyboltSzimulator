@@ -162,6 +162,30 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.device === 'None' && !s.menu && s.cameraFov === normalFov, 'Escape leaves register and restores original lens');
     }
 
+    if (!selected || selected === 'hand-interaction') {
+      await probe('Prepare', 'hand-interaction'); let s = await state();
+      const balance = s.balance, normalFov = s.cameraFov;
+      check(s.device === 'None' && s.lookingAtHand && s.handPrompt.includes('Aprópénz'), 'Normal view targets the actual offered palm with a useful prompt');
+      await capture('hand-world-prompt');
+      await key('e', 'KeyE', 69); s = await state();
+      check(s.device === 'Coins' && s.coinSelected === 0, 'E on the hand opens coin view without selecting money');
+      check(s.handUpright && s.handSide > .9 && s.cameraFov === 46, 'Close view stays upright on the player side of the customer hand');
+      await capture('hand-player-view');
+      await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); s = await state();
+      check(s.device === 'None' && s.cameraFov === normalFov && s.balance === balance, 'Escape restores ordinary player view without charging');
+      await probe('Action', 'aim-customer-hand'); s = await state();
+      await send('Input.dispatchMouseEvent', {type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1}); await sleep(90);
+      await send('Input.dispatchMouseEvent', {type:'mouseReleased',x:width/2,y:height/2,button:'left',clickCount:1}); await sleep(300); s = await state();
+      check(s.device === 'Coins' && s.coinSelected === 0 && s.sales === 0, 'Actual click on the hand opens once and cannot leak into coin selection');
+      const value = s.offeredCoins[0]; await clickRect(s.coinTargets[0]); s = await state();
+      check(s.coinSelected === value && s.balance === balance, 'Coin clicks still select in the corrected view');
+      await clickRect(s.coinClear); s = await state();
+      check(s.coinSelected === 0, 'Clear retains the corrected readable view');
+      await viewport(1920,1080); s = await state(); await capture('hand-player-view-large');
+      check(s.coinTargets.every(r => r.width > 20 && r.y > 65 && r.y+r.height < height-170), 'All coin targets stay above controls in large player view');
+      await viewport(1280,720);
+    }
+
     if (!selected || selected === 'forint-coins') {
       await probe('Prepare', 'coins'); let s = await state();
       const balance = s.balance, price = s.cashPrice;

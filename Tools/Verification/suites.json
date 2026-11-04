@@ -23,7 +23,8 @@
       "coffee-display",
       "shelf-labels",
       "modern-register",
-      "forint-visuals"
+      "forint-visuals",
+      "customer-hand"
     ]
   },
   "suites": {
@@ -116,6 +117,11 @@
       "file": "Tools/Checks/ForintVisualChecks.cs",
       "entry": "ForintVisualChecks.Run",
       "purpose": "All twelve official HUF surfaces, shared resources, actual offered-coin rays and denomination conservation"
+    },
+    "customer-hand": {
+      "file": "Tools/Checks/CustomerHandChecks.cs",
+      "entry": "CustomerHandChecks.Run",
+      "purpose": "Natural player-side hand camera, physical palm targeting, input consumption, every coin ray at approach angles, camera restore and stale/occupied guards"
     }
   },
   "historicalExcluded": {
