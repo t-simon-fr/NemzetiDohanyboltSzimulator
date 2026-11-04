@@ -60,6 +60,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ShopLayout Layout { get; private set; }
     public ShopSecurity Security { get; private set; }
     public ShopEntrance Entrance { get; private set; }
+    public ShopFloorPlan FloorPlan { get; private set; }
     public bool CanEndDay => (Phase == ShopPhase.Closing || Phase == ShopPhase.AfterHours) &&
         queue.Count == 0 && departing.Count == 0 && fleeing.Count == 0 && !HasHeldProduct;
     public bool BuyPanicButton() => Security != null && Security.TryPurchase();
@@ -112,6 +113,8 @@ public sealed partial class MvpShopController : MonoBehaviour
         stockRoot = new GameObject("MVP Stock").transform; stockRoot.SetParent(transform, false);
         actorRoot = new GameObject("MVP Customers").transform; actorRoot.SetParent(transform, false);
         stock.AddRange(FindObjectsByType<ShopProduct>().Where(p => p.gameObject.scene == gameObject.scene));
+        FloorPlan = gameObject.AddComponent<ShopFloorPlan>();
+        FloorPlan.Configure(this, player);
         Security = GetComponent<ShopSecurity>();
         if (Security == null) Security = gameObject.AddComponent<ShopSecurity>();
         Security.Configure(this);
@@ -246,7 +249,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";
     }
     private bool PreparedIsValid()=>active!=null&&receivedOrder.Count==active.OrderTypes.Length&&receivedOrder.All(p=>p!=null&&p.gameObject.activeSelf&&!p.IsHeld&&p.CurrentSlot!=null&&(p.CurrentSlot.name.StartsWith("Order receipt")||p.CurrentSlot==Activities.BasketSlot));
-    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+new Vector3(index==2?-.26f:0,0,index==0?0:-.26f);
+    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+Counter.transform.rotation*new Vector3(index==2?-.26f:0,0,index==0?0:-.26f);
     private bool CollectOrderItem(ShopProduct product)
     {
         receivedOrder.RemoveAll(p=>p==null||p.IsHeld||p.CurrentSlot==null||(!p.CurrentSlot.name.StartsWith("Order receipt")&&p.CurrentSlot!=Activities.BasketSlot));

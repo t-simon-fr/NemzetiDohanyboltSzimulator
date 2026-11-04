@@ -13,7 +13,8 @@
       "acceptance-logic",
       "coffee-world",
       "binding-acceptance",
-      "entrance-day"
+      "entrance-day",
+      "floor-plan"
     ]
   },
   "suites": {
@@ -56,6 +57,11 @@
       "file": "Tools/Checks/EntranceDayChecks.cs",
       "entry": "EntranceDayChecks.Run",
       "purpose": "Sign-driven clock, explicit door exit, customer draining and single daily charge"
+    },
+    "floor-plan": {
+      "file": "Tools/Checks/FloorPlanChecks.cs",
+      "entry": "FloorPlanChecks.Run",
+      "purpose": "Starter entrance and actual CharacterController/carton staff circulation, fixed expansion anchors"
     }
   },
   "historicalExcluded": {
