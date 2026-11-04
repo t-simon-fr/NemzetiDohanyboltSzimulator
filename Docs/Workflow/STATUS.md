@@ -3,7 +3,7 @@
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
 - #2–#8: implementáció, Unity-integrációs és helyi WebGL-bemeneti ellenőrzés kész. Részletek: [elfogadási jelentés](../Acceptance/2026-11-03/REPORT.md).
-- Aktuális checkout profil: **448 sikeres állítás**, 18 csoport. #35: 15 készpénzes + 12 aprópénzes WebGL-ellenőrzés sikeres, 0 konzolhiba; [jelentés](../Acceptance/2026-11-04-forint/REPORT.md). #33: 15 készpénzes + 17 kártyaterminál WebGL-ellenőrzés sikeres, 0 konzolhiba; 1280×720 és 1920×1080 képek átnézve. A korábbi csomagok eredményei a saját jelentéseikben szerepelnek.
+- Aktuális checkout profil: **469 sikeres állítás**, 19 csoport. #37: 9 kézinterakciós + 12 aprópénzes + 15 készpénzes WebGL-próba, 0 konzolhiba; [jelentés](../Acceptance/2026-11-04-customer-hand/REPORT.md). #35: 15 készpénzes + 12 aprópénzes WebGL-ellenőrzés sikeres, 0 konzolhiba; [jelentés](../Acceptance/2026-11-04-forint/REPORT.md). #33: 15 készpénzes + 17 kártyaterminál WebGL-ellenőrzés sikeres, 0 konzolhiba; 1280×720 és 1920×1080 képek átnézve. A korábbi csomagok eredményei a saját jelentéseikben szerepelnek.
 - Javítva az elkészült kávé téves hiányjelzése és a HUD-on ismétlődő vevői mondat.
 - #11: Misi és Nóra saját karakterkoncepciója, abszurd személyisége és dialógusterve elkészült a `docs/11-character-concept` ágon. A 3D-modellek és játékbeli dialógus-integráció még nincs implementálva.
 - A kassza/kéz grafikai átdolgozását a felhasználó félretette. Az ajtó/tábla alapú napváltás kiadva (#13); a pult alatti csempészáru (#20) és az ajtóra tett kifelé olvasható tábla (#21) implementálva és ellenőrizve, kiadás nélkül.
@@ -73,3 +73,8 @@ Workflow: [WORKFLOW.md](../WORKFLOW.md). Böngészős előfeltételek: [Acceptan
 
 - Az MNB változatlan képei mind a 12 címlethez, kétoldalas bankjegyekkel és pénzdarabokkal; közös megjelenítés a fiókban, a visszajáró tálcáján és a vásárló kezében. Forrásmegjelölés a H műszaksegédben; eredeti források és SHA-256 dokumentálva.
 - Unity: 448 sikeres állítás, ebből 59 célzott forintpróba. Helyi WebGL: 15 készpénzes + 12 aprópénzes próba, 0 konzolhiba. Vizuális és tényleges interakciós review passed 1280×720 és 1920×1080 felbontáson. [Jelentés és képek](../Acceptance/2026-11-04-forint/REPORT.md). Pagesre nem került ki.
+
+## #37 — Játékos felőli kéznézet és közvetlen interakció
+
+- Természetes, játékos felőli kamera világ szerinti felfelé iránnyal, a játékos felé olvasható pénzdarabokkal. Tenyér/ujjak/pénz célzására E vagy bal kattintás nyitja az aprópénzválogatást; a nyitó kattintás nem választ ki pénzt. Teljes kameravisszaállítás, hatótáv/foglalt kéz/eltűnő kéz védelme ellenőrizve.
+- Unity: 469 sikeres állítás; helyi WebGL: 9 kézinterakciós + 12 aprópénzes + 15 készpénzes ellenőrzés, 0 konzolhiba. Vizuális és tényleges interakciós próba passed mindkét felbontáson. [Jelentés és képek](../Acceptance/2026-11-04-customer-hand/REPORT.md). Pagesre nem került ki.
