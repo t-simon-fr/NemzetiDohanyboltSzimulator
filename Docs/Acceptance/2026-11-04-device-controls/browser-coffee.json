@@ -1,0 +1,111 @@
+{
+  "sourceCommit": "865dde5734bcf9082448c8f44bbfea760e20586e",
+  "sourceFingerprint": "feb2a0a5cba156a9ac4479de6bb7bc85b33d2f8eca9024d4ee791308be61dd09",
+  "sourceReport": "Builds/Verification/acceptance-1793809137642/report.json",
+  "sourceReportSha256": "cae9e46515d003d98fbb54fcf23348af20139b5ff32dd543f512fad9c129f086",
+  "started": "2026-11-04T16:18:57.643Z",
+  "finished": "2026-11-04T16:19:43.905Z",
+  "result": "passed",
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 0,
+    "bytes": 21097217,
+    "seconds": 252.4358557,
+    "error": "",
+    "completedUtc": "2026-11-04T16:18:19.455Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "e82ca341111b422bd479a0ebd59222e8012012cf7f4f48e54ca2cb7f8c65085f",
+      "AcceptanceWebGL.framework.js.unityweb": "739b7ee9eaf17e5e98ba25392e77776cd14474354c98812c625b1e751d48f93e",
+      "AcceptanceWebGL.loader.js": "b5475f1bd3f69442774ec141086fe13d2d983e1677ec59d17772ad15a55d4a11",
+      "AcceptanceWebGL.wasm.unityweb": "d75663adb710499d67754f2a2775c546164d3f32114b8624c61e3860dec0bf28"
+    }
+  },
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Actual E opens own coffee machine display",
+      "passed": true
+    },
+    {
+      "label": "Physical touchscreen selects latte",
+      "passed": true
+    },
+    {
+      "label": "Machine starts real brew and displays ingredient/progress state",
+      "passed": true
+    },
+    {
+      "label": "Busy physical recipe key cannot change drink or consume twice",
+      "passed": true
+    },
+    {
+      "label": "Escape exits machine without opening pause menu",
+      "passed": true
+    },
+    {
+      "label": "Pause freezes real ongoing brew",
+      "passed": true
+    },
+    {
+      "label": "Resuming pause restores active world context",
+      "passed": true
+    },
+    {
+      "label": "Machine finishes after leaving view and reports actual ready latte",
+      "passed": true
+    },
+    {
+      "label": "Physical take gives actual cup without same-click replacement",
+      "passed": true
+    },
+    {
+      "label": "Physical touchscreen brews actual coffee",
+      "passed": true
+    },
+    {
+      "label": "Physical take collects coffee",
+      "passed": true
+    },
+    {
+      "label": "Physical touchscreen brews actual coffee_long",
+      "passed": true
+    },
+    {
+      "label": "Physical take collects coffee_long",
+      "passed": true
+    },
+    {
+      "label": "Three physical coffee recipes preserve exact stock and money",
+      "passed": true
+    },
+    {
+      "label": "Machine display explains latte milk shortage",
+      "passed": true
+    },
+    {
+      "label": "Disabled physical brew does not consume stock",
+      "passed": true
+    },
+    {
+      "label": "Machine display continuously reports coffee shortage",
+      "passed": true
+    },
+    {
+      "label": "Machine keyboard and touchscreen use same recipe",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-coffee-display-ready.png",
+    "1280x720-coffee-display-brewing.png",
+    "1280x720-coffee-display-latte.png",
+    "1920x1080-coffee-display-no-milk-large.png",
+    "1920x1080-coffee-display-no-coffee-large.png"
+  ]
+}
