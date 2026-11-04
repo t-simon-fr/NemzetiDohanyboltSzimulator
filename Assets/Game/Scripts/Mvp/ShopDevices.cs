@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum ShopDeviceKind { None, Monitor, Till, Coins, Terminal }
+public enum ShopDeviceKind { None, Monitor, Till, Coins, Terminal, Coffee }
 public enum ShopComputerApp { Desktop, Orders, Furnishing, Coffee, Cameras, Games, Prices }
 public sealed partial class ShopDevices : MonoBehaviour
 {
@@ -317,6 +317,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     }
     public void Focus(ShopDeviceKind kind)
     {
+        if (kind == ShopDeviceKind.Coffee && (shop == null || !shop.Activities.CoffeeOwned)) return;
         if (kind == ShopDeviceKind.Till && shop != null && shop.CardPayment) kind = ShopDeviceKind.Terminal;
         if(view==null||shop==null||shop.HasHeldProduct)return;
         if(Focused)Release();
@@ -330,6 +331,11 @@ public sealed partial class ShopDevices : MonoBehaviour
             float distance=.5f*Mathf.Max(1.18f/tangent,1.95f/(Mathf.Max(.5f,view.aspect)*tangent))*1.04f;
             view.transform.position=monitor.TransformPoint(new Vector3(0,0,distance));
             view.transform.LookAt(monitor.TransformPoint(new Vector3(0,-.025f,0)),monitor.up);
+        }
+        else if (kind == ShopDeviceKind.Coffee)
+        {
+            registerDrawer.SetOpen(false);
+            shop.Activities.CoffeeDisplay.Focus(view);
         }
         else if (kind == ShopDeviceKind.Terminal)
         {
@@ -378,7 +384,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         {
             var control=hit.collider.GetComponentInParent<ShopWorldControl>();
             if(control==null)return;
-            bool valid=FocusKind==ShopDeviceKind.Monitor?control.transform.IsChildOf(monitor):FocusKind==ShopDeviceKind.Coins?shop.Activities.CustomerHand!=null&&control.transform.IsChildOf(shop.Activities.CustomerHand):FocusKind==ShopDeviceKind.Terminal?control.transform.IsChildOf(Terminal.transform):control.transform.IsChildOf(tillAssembly);
+            bool valid=FocusKind==ShopDeviceKind.Monitor?control.transform.IsChildOf(monitor):FocusKind==ShopDeviceKind.Coins?shop.Activities.CustomerHand!=null&&control.transform.IsChildOf(shop.Activities.CustomerHand):FocusKind==ShopDeviceKind.Terminal?control.transform.IsChildOf(Terminal.transform):FocusKind==ShopDeviceKind.Coffee?control.transform.IsChildOf(shop.Activities.CoffeeDisplay.transform):control.transform.IsChildOf(tillAssembly);
             if(control.Kind==WorldControlKind.Denomination&&!registerDrawer.IsOpen)valid=false;
             if(FocusKind==ShopDeviceKind.Till&&control.transform.IsChildOf(Terminal.transform))valid=false;
             if(valid){keyboardOutline=false;control.Activate(shop);}

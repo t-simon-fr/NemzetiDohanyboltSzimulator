@@ -19,7 +19,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     private Vector3 batHome,mopHome;
     private float dirtTimer=48,coffeeDelivery,brewRemaining,cameraTimer,snakeTimer,swingCooldown;
     private int pendingCoffee,selectedCamera,gameChoice;
-    private TextMesh coffeeLabel;
+    public ShopCoffeeDisplay CoffeeDisplay { get; private set; }
     private ShopSnake snake;
     private ShopMemoryGame memory;
     private GUIStyle heading,label,buttonStyle;
@@ -64,14 +64,15 @@ public sealed partial class ShopActivities : MonoBehaviour
     {
         coffeeRoot=new GameObject("Purchased Coffee Machine").transform;coffeeRoot.SetParent(worldRoot,false);coffeeRoot.position=new Vector3(1.66f,0,1.02f);
         Box(coffeeRoot,"Coffee cabinet",new Vector3(0,.41f,0),new Vector3(.65f,.82f,.55f),dark,true);
-        Box(coffeeRoot,"Coffee machine body",new Vector3(0,1.08f,.05f),new Vector3(.43f,.48f,.37f),metal,true);
-        Box(coffeeRoot,"Coffee drip tray",new Vector3(0,.84f,-.16f),new Vector3(.34f,.025f,.24f),dark,true);
-        Box(coffeeRoot,"Coffee nozzle",new Vector3(0,1.17f,-.18f),new Vector3(.06f,.065f,.09f),dark,true);
-        Shape(coffeeRoot,"Coffee bean hopper",new Vector3(0,1.37f,.05f),new Vector3(.22f,.07f,.22f),coffee,PrimitiveType.Cylinder);
-        coffeeLabel=ProductVisuals.Text(coffeeRoot,"Coffee machine screen","",new Vector3(0,1.28f,-.144f),Quaternion.identity,.026f,Color.white);
+        Box(coffeeRoot,"Coffee machine body",new Vector3(0,1.175f,.05f),new Vector3(.49f,.67f,.37f),metal,true);
+        Box(coffeeRoot,"Coffee drip tray",new Vector3(0,.84f,-.27f),new Vector3(.34f,.025f,.32f),dark,true);
+        Box(coffeeRoot,"Coffee nozzle",new Vector3(0,1.17f,-.235f),new Vector3(.06f,.065f,.21f),dark,true);
+        Shape(coffeeRoot,"Coffee bean hopper",new Vector3(0,1.56f,.05f),new Vector3(.22f,.07f,.22f),coffee,PrimitiveType.Cylinder);
         var target=coffeeRoot.gameObject.AddComponent<ShopFeatureTarget>();target.Kind=ShopFeatureKind.CoffeeMachine;
-        CoffeeOutput=new GameObject("Coffee output slot").AddComponent<ProductSlot>();CoffeeOutput.transform.SetParent(coffeeRoot,false);CoffeeOutput.transform.localPosition=new Vector3(0,.86f,-.16f);CoffeeOutput.Configure(new Vector3(.2f,.23f,.2f));CoffeeOutput.RestrictTo("coffee");CoffeeOutput.Configure(new Vector3(.2f,.32f,.2f));
+        CoffeeOutput=new GameObject("Coffee output slot").AddComponent<ProductSlot>();CoffeeOutput.transform.SetParent(coffeeRoot,false);CoffeeOutput.transform.localPosition=new Vector3(0,.86f,-.29f);CoffeeOutput.Configure(new Vector3(.2f,.23f,.2f));CoffeeOutput.RestrictTo("coffee");CoffeeOutput.Configure(new Vector3(.2f,.32f,.2f));
         ProductVisuals.Text(coffeeRoot,"Coffee station sign","TRAFIK PRESSZÓ",new Vector3(0,.62f,-.281f),Quaternion.identity,.038f,Color.white);
+        CoffeeDisplay = new GameObject("Coffee machine touchscreen").AddComponent<ShopCoffeeDisplay>();
+        CoffeeDisplay.Configure(this, shop, coffeeRoot);
     }
     private void BuildTools()
     {
@@ -80,7 +81,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         Shape(batRoot.transform,"Bat barrel",new Vector3(0,.49f,0),new Vector3(.075f,.22f,.075f),ivory,PrimitiveType.Cylinder);
         var hitbox=batRoot.AddComponent<BoxCollider>();hitbox.center=Vector3.up*.35f;hitbox.size=new Vector3(.10f,.72f,.10f);
         bat=batRoot.AddComponent<ShopHandTool>();bat.Configure(ShopToolKind.Bat);
-        var mopRoot=new GameObject("Floor mop");mopRoot.transform.SetParent(worldRoot,false);mopHome=new Vector3(-1.8f,.035f,.68f);mopRoot.transform.position=mopHome;
+        var mopRoot=new GameObject("Floor mop");mopRoot.transform.SetParent(worldRoot,false);mopHome=new Vector3(2.18f,.035f,1.4f);mopRoot.transform.position=mopHome;
         Shape(mopRoot.transform,"Mop handle",new Vector3(0,.59f,0),new Vector3(.025f,.58f,.025f),metal,PrimitiveType.Cylinder);
         Box(mopRoot.transform,"Mop head",new Vector3(0,.015f,0),new Vector3(.28f,.045f,.17f),ivory);
         var mopBox=mopRoot.AddComponent<BoxCollider>();mopBox.center=Vector3.up*.60f;mopBox.size=new Vector3(.28f,1.23f,.17f);
@@ -111,13 +112,22 @@ public sealed partial class ShopActivities : MonoBehaviour
     {
         if(selectedRecipe==ShopCatalog.Latte&&MilkSupplies==0){shop.Notify("A lattéhoz tölts tejet a gépbe.");return false;}
         if(!CoffeeOwned||shop.Phase==ShopPhase.Summary||CoffeeSupplies==0||brewRemaining>0||CoffeeOutput.Occupant!=null){shop.Notify("Kávéfőzéshez szabad tálca és megérkezett alapanyag szükséges.");return false;}
-        CoffeeSupplies--;if(selectedRecipe==ShopCatalog.Latte)MilkSupplies--;brewRemaining=3.5f;shop.Notify("Készül a kávé…");return true;
+        CoffeeSupplies--;if(selectedRecipe==ShopCatalog.Latte)MilkSupplies--;brewRemaining=3.5f;shop.Notify("Készül a kávé…");CoffeeDisplay.Refresh();return true;
     }
     public void UseCoffeeMachine()
     {
         if(RefillFromHand())return;
         if(CoffeeOutput.Occupant!=null){if(!player.TryHold(CoffeeOutput.Occupant))shop.Notify("Előbb tedd le a kezedben levő tárgyat.");}
         else BrewCoffee();
+    }
+    public bool TakeCoffeeFromDisplay()
+    {
+        if (CoffeeOutput.Occupant == null || CoffeeOutput.Occupant.IsHeld || player.HasHeldItem) return false;
+        if (!player.TryHold(CoffeeOutput.Occupant)) return false;
+        ShopInputGate.ConsumeWorldAction();
+        shop.ClosePanel();
+        CoffeeDisplay.Refresh();
+        return true;
     }
     public bool PlaceBasket(MvpCustomerActor customer)
     {
@@ -132,7 +142,7 @@ public sealed partial class ShopActivities : MonoBehaviour
             brewRemaining=Mathf.Max(0,brewRemaining-dt);
             if(brewRemaining==0){var cup=shop.CreateCoffee(selectedRecipe);if(!cup.AssignInitialSlot(CoffeeOutput)){cup.RemoveFromWorld();CoffeeSupplies++;if(selectedRecipe==ShopCatalog.Latte)MilkSupplies++;shop.Notify("A főzőtálca foglalt, az alapanyag megmaradt.");}else shop.Notify("Elkészült a kávé. E a gépen: felvétel.");}
         }
-        coffeeLabel.text=brewRemaining>0?"FŐZÉS "+brewRemaining.ToString("0.0")+" mp":ShopCatalog.ShortNames[selectedRecipe]+"\n"+CoffeeSupplies+" kávé / "+MilkSupplies+" tej";
+        CoffeeDisplay.Refresh();
         if(shop.Modal==ShopModal.None&&shop.Phase==ShopPhase.Open)
         {dirtTimer-=dt;if(dirtTimer<=0){SpawnSpill();dirtTimer=55+(shop.Spawned%3)*9;}}
         if(shop.Devices.FocusKind==ShopDeviceKind.Monitor)
@@ -199,6 +209,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         ResetIngredientPackages();ClearHand();gameChoice=0;snake=null;memory=null;selectedCamera=0;CoffeeOwned=false;CoffeeSupplies=0;pendingCoffee=0;brewRemaining=0;coffeeDelivery=0;dirtTimer=48;coffeeRoot.gameObject.SetActive(false);
         foreach(var spill in spills)if(spill!=null){spill.gameObject.SetActive(false);Destroy(spill.gameObject);}spills.Clear();
         ResetTool(bat,batHome);ResetTool(mop,mopHome);
+        CoffeeDisplay?.Refresh();
     }
     private void ResetTool(ShopHandTool tool,Vector3 home){tool.ReturnToPickupPosition();ShopLoosePhysics.Freeze(tool.gameObject);tool.transform.SetParent(worldRoot,true);tool.transform.SetPositionAndRotation(home,Quaternion.identity);}
     public void StartSnake(){snake=new ShopSnake(shop.Day*37+Time.frameCount);gameChoice=1;snakeTimer=.17f;}

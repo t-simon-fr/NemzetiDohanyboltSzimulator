@@ -19,7 +19,8 @@
       "door-storage",
       "ui-presentation",
       "player-movement",
-      "physical-terminal"
+      "physical-terminal",
+      "coffee-display"
     ]
   },
   "suites": {
@@ -72,6 +73,11 @@
       "file": "Tools/Checks/ArrangementChecks.cs",
       "entry": "ArrangementChecks.Run",
       "purpose": "A* detours, invalid placement, atomic save/cancel, stocked item identity and next-day persistence"
+    },
+    "coffee-display": {
+      "file": "Tools/Checks/CoffeeDisplayChecks.cs",
+      "entry": "CoffeeDisplayChecks.Run",
+      "purpose": "Physical coffee recipes, live state, ingredient conservation, disabled busy actions, real cup and input consumption"
     },
     "physical-terminal": {
       "file": "Tools/Checks/PhysicalTerminalChecks.cs",

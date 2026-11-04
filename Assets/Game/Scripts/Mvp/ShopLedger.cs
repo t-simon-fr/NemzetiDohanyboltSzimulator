@@ -80,6 +80,9 @@ public sealed class ShopLedger
 
 public static class ShopInputGate
 {
+    private static int consumedFrame = -1;
+    public static bool WorldActionConsumed => consumedFrame == Time.frameCount;
+    public static void ConsumeWorldAction() => consumedFrame = Time.frameCount;
     public static bool Blocked { get; set; }
 }
 

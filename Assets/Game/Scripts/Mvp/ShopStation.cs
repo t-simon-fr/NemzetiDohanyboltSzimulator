@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton, Smuggler, Exit, Terminal }
+public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton, Smuggler, Exit, Terminal, CoffeeControl }
 public sealed class ShopStation : MonoBehaviour
 {
     [SerializeField] private ShopStationKind kind;
@@ -11,6 +11,7 @@ public sealed class ShopStation : MonoBehaviour
     public void ConfigureBrand(MvpShopController controller,int type){Configure(controller,ShopStationKind.Supplies);productType=type;}
     public bool IsSupplies=>kind==ShopStationKind.Supplies;
     public bool IsPanicButton=>kind==ShopStationKind.PanicButton;
+    public bool IsCoffeeControl=>kind==ShopStationKind.CoffeeControl;
     public string Contents
     {
         get
@@ -37,6 +38,7 @@ public sealed class ShopStation : MonoBehaviour
             if(IsPanicButton)return shop.Security.Prompt;
             if(kind==ShopStationKind.Monitor)return "E / B – Számítógép: rendelések és berendezés";
             if(kind==ShopStationKind.Terminal)return "E – Bankkártyaterminál";
+            if(IsCoffeeControl)return "E – Kávégép kijelzője: italválasztás és főzés";
             if(kind==ShopStationKind.Till)return "E – Kassza / fizetés";
             if(kind==ShopStationKind.Exit)return shop.CanEndDay ? "E – Hazamegyek: nap lezárása" : "E – Bejárati ajtó";
             if(kind==ShopStationKind.Door)return shop.Phase==ShopPhase.Preparing ? "E – Tábla megfordítása: NYITVA" : shop.Phase==ShopPhase.Open ? "E – Tábla megfordítása: ZÁRVA" : "ZÁRVA • A napot az ajtónál fejezheted be";
@@ -53,6 +55,7 @@ public sealed class ShopStation : MonoBehaviour
         else if(IsPanicButton)shop.Security.Toggle();
         else if(kind==ShopStationKind.Monitor)shop.OpenSupplier();
         else if(kind==ShopStationKind.Terminal)shop.Devices.Focus(ShopDeviceKind.Terminal);
+        else if(IsCoffeeControl)shop.Devices.Focus(ShopDeviceKind.Coffee);
         else if(kind==ShopStationKind.Till)shop.OpenCash();
         else if(kind==ShopStationKind.Exit)shop.TryEndDay();
         else if(kind==ShopStationKind.Door){if(shop.Phase==ShopPhase.Preparing)shop.OpenShop();else shop.RequestClose();}

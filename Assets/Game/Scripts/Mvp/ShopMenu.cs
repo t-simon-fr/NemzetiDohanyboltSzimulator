@@ -60,7 +60,7 @@ public sealed class ShopMenu : MonoBehaviour
         if (!Application.isFocused || shop.Arrangement != null && shop.Arrangement.Active) return;
         if (!Active)
         {
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) Open();
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame && !ShopInputGate.Blocked) Open();
             return;
         }
         ShopInputGate.Blocked = true;

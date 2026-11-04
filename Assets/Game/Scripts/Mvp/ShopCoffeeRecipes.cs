@@ -24,7 +24,7 @@ public sealed partial class ShopActivities
     }
     public int MilkSupplies{get;private set;}
     private readonly List<GameObject> ingredientPackages=new List<GameObject>();
-    public void SelectRecipe(int type){if(ShopCatalog.IsCoffee(type)&&brewRemaining==0)selectedRecipe=type;}
+    public void SelectRecipe(int type){if(ShopCatalog.IsCoffee(type)&&brewRemaining==0){selectedRecipe=type;CoffeeDisplay?.Refresh();}}
     private void SpawnIngredientPackage(int servings,bool milk=false)
     {
         var root=new GameObject(milk?"Milk ingredient delivery":"Coffee ingredient delivery");root.transform.SetParent(worldRoot,false);root.transform.position=shop.Warehouse.Dock(4).position+Vector3.up*.55f+shop.Warehouse.Dock(4).right*((ingredientPackages.Count%2-.5f)*.32f);
