@@ -52,7 +52,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "card")
+        if (scenario == "entrance")
+        {
+            Aim(GameObject.Find("Open Close Sign").transform.position);
+            Shop.ManualTick = false;
+        }
+        else if (scenario == "card")
         {
             Visit(3, 0);
             DeliverAll();
@@ -95,13 +100,15 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         {
             Visit(scenario == "refuse" ? 2 : 0, 0);
             foreach (var item in FindObjectsByType<ShopProduct>().Where(p => p.ProductId == ShopCatalog.Ids[0])) item.RemoveFromWorld();
-            Shop.SetModal(ShopModal.Dialogue);
+            Shop.ClosePanel();
+            Shop.ManualTick = false;
         }
         else if (scenario == "summary")
         {
             Shop.OpenShop();
             Shop.RequestClose();
             Shop.Tick(.1f);
+            Aim(Shop.Entrance.Position + Vector3.up * 1.3f);
             Shop.ManualTick = false;
         }
         else if (scenario == "menu") Shop.GetComponent<ShopMenu>().Open();
@@ -112,6 +119,16 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action == "aim-door") Aim(Shop.Entrance.Position + Vector3.up * 1.3f);
+        if (action == "view-entrance") Aim(Shop.Entrance.Position + Vector3.up * 1.3f, 1.65f);
+        if (action == "drain-shop")
+        {
+            for (int i = 0; i < 3000 && !Shop.CanEndDay; i++)
+            {
+                if (Shop.ActiveCustomer != null) Shop.SkipCurrent();
+                Shop.Tick(.1f);
+            }
+        }
         if (action == "aim-place") Aim(Shop.Activities.BasketSlot.transform.position + Vector3.up * .05f);
         if (action == "milk") Set(Shop.Activities, "MilkSupplies", 2);
         if (action == "finish-brew") Shop.Activities.Tick(4);
@@ -129,15 +146,15 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Snapshot("");
     }
 
-    private void Aim(Vector3 target)
+    private void Aim(Vector3 target, float distance = .85f)
     {
         var root = Player.transform;
         var body = Player.GetComponent<CharacterController>();
         body.enabled = false;
         root.rotation = Quaternion.Euler(0, 180, 0);
-        Vector3 eye = new Vector3(target.x, Mathf.Max(target.y + .3f, 1.75f), target.z + .85f);
+        Vector3 eye = new Vector3(target.x, Mathf.Max(target.y + .3f, 1.75f), target.z + distance);
         root.position = eye - root.rotation * View.transform.localPosition;
-        float pitch = Mathf.Atan2(eye.y - target.y, .85f) * Mathf.Rad2Deg;
+        float pitch = Mathf.Atan2(eye.y - target.y, distance) * Mathf.Rad2Deg;
         View.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
         typeof(FirstPersonController).GetField("pitch", Private).SetValue(Player.GetComponent<FirstPersonController>(), pitch);
         body.enabled = true;
@@ -150,7 +167,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     private sealed class State
     {
         public string stage, phase, modal, message, entered, held, cup, order, interactionKey, tool;
-        public bool menu, blocked, unavailable;
+        public bool menu, blocked, unavailable, entranceOpen, canEndDay;
         public int balance, drawer, sales, missing, received, recipe, milk, coffee, day, missed, dirt;
         public float elapsed, timeScale;
         public Vector3 position;
@@ -171,6 +188,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             cup = g.Activities.CoffeeOutput.Occupant?.ProductId ?? "", order = g.ActiveCustomer?.OrderDescription ?? "",
             interactionKey = ShopBindings.Resolve(Key.E).ToString(), menu = ShopMenu.Active, blocked = ShopInputGate.Blocked,
             unavailable = g.HasUnavailableRequest, balance = g.Ledger.Cash, drawer = g.Drawer.Total, sales = g.Ledger.Sales,
+            entranceOpen = g.Entrance.IsOpen, canEndDay = g.CanEndDay,
             missing = g.MissingOrderTypes.Length, received = receipts.Length, recipe = g.Activities.SelectedRecipe,
             milk = g.Activities.MilkSupplies, coffee = g.Activities.CoffeeSupplies, day = g.Day, missed = g.Missed,
             elapsed = g.Elapsed, timeScale = Time.timeScale, position = Player.transform.position,

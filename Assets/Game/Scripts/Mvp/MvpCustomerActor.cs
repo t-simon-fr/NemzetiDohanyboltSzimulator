@@ -120,6 +120,7 @@ public sealed class MvpCustomerActor : MonoBehaviour
         Vector3 delta=target-transform.position;if(delta.sqrMagnitude<.0025f)return true;
         transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(delta),360f*dt);
         Vector3 next=Vector3.MoveTowards(transform.position,target,(IsStealing?1.65f:1.3f)*dt);
+        MvpShopController.Instance.Entrance?.RequestPassage(transform.position);
         transform.position=security!=null?security.ConstrainMovement(transform.position,next):next;
         return (transform.position-target).sqrMagnitude<.0025f;
     }

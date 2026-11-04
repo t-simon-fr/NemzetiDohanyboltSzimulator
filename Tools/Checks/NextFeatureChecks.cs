@@ -44,7 +44,18 @@ public static class NextFeatureChecks
             g.OpenShop();
             for(int tick=0;tick<23000&&g.Phase!=ShopPhase.Summary;tick++)
             {
-                g.Tick(.1f);var c=g.ActiveCustomer;if(c==null||g.Stage==ServiceStage.Thanks)continue;
+                g.Tick(.1f);
+                if (g.Spawned >= g.TotalVisitors) g.RequestClose();
+                if (g.CanEndDay)
+                {
+                    var player = Object.FindAnyObjectByType<PlayerInteractor>();
+                    var body = player.GetComponent<CharacterController>();
+                    body.enabled = false;
+                    player.transform.position = g.Layout.EntryInside;
+                    body.enabled = true;
+                    g.TryEndDay();
+                }
+                var c=g.ActiveCustomer;if(c==null||g.Stage==ServiceStage.Thanks)continue;
                 if(g.Stage==ServiceStage.Order)
                 {
                     foreach(int type in g.MissingOrderTypes)

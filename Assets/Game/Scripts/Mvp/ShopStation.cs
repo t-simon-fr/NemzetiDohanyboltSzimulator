@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton, Smuggler }
+public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton, Smuggler, Exit }
 public sealed class ShopStation : MonoBehaviour
 {
     [SerializeField] private ShopStationKind kind;
@@ -37,7 +37,8 @@ public sealed class ShopStation : MonoBehaviour
             if(IsPanicButton)return shop.Security.Prompt;
             if(kind==ShopStationKind.Monitor)return "E / B – Számítógép: rendelések és berendezés";
             if(kind==ShopStationKind.Till)return "E – Kassza / fizetés";
-            if(kind==ShopStationKind.Door)return "E – Nyitás / zárás";
+            if(kind==ShopStationKind.Exit)return shop.CanEndDay ? "E – Hazamegyek: nap lezárása" : "E – Bejárati ajtó";
+            if(kind==ShopStationKind.Door)return shop.Phase==ShopPhase.Preparing ? "E – Tábla megfordítása: NYITVA" : shop.Phase==ShopPhase.Open ? "E – Tábla megfordítása: ZÁRVA" : "ZÁRVA • A napot az ajtónál fejezheted be";
             var carton=GetComponent<WarehouseCarton>();
             if(carton!=null&&carton.Quantity==0)return "Üres "+ShopCatalog.Names[productType]+" karton\nE – Felvétel és kivitel a papírgyűjtőhöz";
             int type=productType>=0?productType:shop.SelectedSupply;
@@ -51,6 +52,7 @@ public sealed class ShopStation : MonoBehaviour
         else if(IsPanicButton)shop.Security.Toggle();
         else if(kind==ShopStationKind.Monitor)shop.OpenSupplier();
         else if(kind==ShopStationKind.Till)shop.OpenCash();
+        else if(kind==ShopStationKind.Exit)shop.TryEndDay();
         else if(kind==ShopStationKind.Door){if(shop.Phase==ShopPhase.Preparing)shop.OpenShop();else shop.RequestClose();}
         else if(player.HeldCarton!=null)
         {

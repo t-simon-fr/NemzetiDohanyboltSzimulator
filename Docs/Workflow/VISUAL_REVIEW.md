@@ -10,7 +10,7 @@ Minden érintett issue-hoz a releváns sorok. Javasolt nézetek: 1280×720 és 1
 | Egér / billentyű | Felvétel és lerakás mindkét módon; eldobás; felmosó/ütő; UI-kattintás nem működteti a világot. |
 | Kávé | Látható választás és eredmény: rövid, hosszú, latte; tejhiány, betöltés, foglalt kimenet; gépnél és monitoron. |
 | Párbeszéd | Mondatban elhangzó rendelés, tényleges készlethiány, helyettesítő elfogadása és távozás; hosszú szöveg sem takarja a választ. |
-| Nap vége | Elszámolás gombjai látszanak; következő nap elérhető; pénz/készlet megmarad. |
+| Műszak / ajtó | Nyitás előtt nincs üdvözlőmodal és áll az óra; E megfordítja a táblát; NPC nyitja/csukja az ajtót; játékos nem jut át. Zárás nem nyit elszámolást; a vendégek távoznak; csak üres kézzel, üres boltban, E az ajtónál zárja a napot. Következő nap elérhető; pénz/készlet megmarad. |
 
 ## Rögzítendő eredmény (issue vagy PR)
 
