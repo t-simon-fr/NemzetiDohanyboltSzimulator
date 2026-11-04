@@ -31,6 +31,9 @@ public static class ArrangementChecks
             Vector3 stockPosition = product.transform.position;
             Vector3 original = shelf.transform.position;
             int money = shop.Ledger.Cash;
+            check(player.TryHold(product) && !layout.Begin(), "Held product blocks arrangement");
+            player.CancelHeld();
+            product.AssignInitialSlot(slot);
             check(layout.Begin() && Time.timeScale == 0 && ShopInputGate.Blocked, "Editor freezes world and blocks first-person input");
             float elapsed = shop.Elapsed;
             shop.Tick(60);
@@ -39,12 +42,13 @@ public static class ArrangementChecks
             check(!layout.TryPlace(shelf, new ShopFurniturePose(new Vector3(1.2f,0,-3.5f),1)), "Reject entrance obstruction");
             check(!layout.TryPlace(shelf, new ShopFurniturePose(new Vector3(-1.3f,0,-1),0)), "Reject staff aisle obstruction");
             check(!layout.TryPlace(shelf, new ShopFurniturePose(fridge.transform.position,1)), "Reject overlap with fridge");
+            check(!layout.TryPlace(shelf, new ShopFurniturePose(new Vector3(5.95f,0,-1),2)), "Reject shelf with its usable face against wall");
             var moved = new ShopFurniturePose(new Vector3(3.75f,0,-1.75f),1);
             check(layout.TryPlace(shelf, moved), "Move and rotate stocked shelf in preview");
             check(shelf.transform.position == original && product.transform.position == stockPosition && product.CurrentSlot == slot,
                 "Preview does not mutate furniture or stock");
             layout.Cancel();
-            check(shelf.transform.position == original && Time.timeScale == 1 && !layout.Active, "Cancel restores full pre-edit state and clock");
+            check(shelf.transform.position == original && Time.timeScale == 1 && !layout.Active && !Camera.main.orthographic, "Cancel restores full pre-edit state, camera and clock");
             check(layout.Begin() && layout.TryPlace(shelf, moved) && layout.Save(), "Atomic layout save");
             check(shelf.transform.position == moved.Position && shelf.Pose.QuarterTurns == 1 && product.CurrentSlot == slot &&
                 product.transform.position != stockPosition && shop.Ledger.Cash == money, "Stock moves with slot, same item and money preserved");
@@ -57,9 +61,18 @@ public static class ArrangementChecks
             check(shop.Activities.BrewCoffee() && !layout.Begin(), "Busy machine blocks editing");
             shop.Activities.Tick(4);
             shop.OpenShop();
-            check(!layout.Begin(), "Open shop blocks editing");
+            check(!shop.Devices.BeginArrangement() && shop.Message.Contains("Átrendezni"), "Monitor explains why open shop blocks editing");
+            shop.SingleProductVisits = true;
+            typeof(MvpShopController).GetMethod("SpawnCustomer",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance)
+                .Invoke(shop,new object[]{ShopCatalog.Index("water"),false});
+            typeof(MvpShopController).GetProperty("Spawned").SetValue(shop,shop.TotalVisitors);
+            for (int i = 0; i < 3000 && shop.ActiveCustomer == null; i++) shop.Tick(.1f);
+            check(shop.ActiveCustomer != null && shop.ActiveCustomer.BasketItem == product,
+                "Real NPC navigates to rotated shelf, picks its product and reaches counter");
+            shop.SkipCurrent();
             shop.RequestClose();
-            shop.Tick(.1f);
+            for (int i = 0; i < 3000 && !shop.CanEndDay; i++) shop.Tick(.1f);
+            check(product.CurrentSlot == slot, "Cancelled purchase returns exact product to moved shelf");
             var body = player.GetComponent<CharacterController>();
             body.enabled = false;
             player.transform.position = shop.Layout.EntryInside;

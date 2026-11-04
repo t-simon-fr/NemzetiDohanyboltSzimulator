@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
+const { createHash } = require('node:crypto');
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const root = path.resolve('Builds/AcceptanceWebGL');
 const output = path.resolve('Builds/Verification/acceptance-' + Date.now());
@@ -15,7 +16,12 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
 
 (async () => {
   try {
-    if (!JSON.parse(fs.readFileSync(path.join(root, 'build-result.json'))).success) throw Error('Acceptance build has not succeeded.');
+    const buildFile = path.join(root, 'build-result.json');
+    report.build = JSON.parse(fs.readFileSync(buildFile));
+    if (!report.build.success) throw Error('Acceptance build has not succeeded.');
+    report.build.completedUtc = fs.statSync(buildFile).mtime.toISOString();
+    report.build.assets = Object.fromEntries(fs.readdirSync(path.join(root, 'Build')).map(name =>
+      [name, createHash('sha256').update(fs.readFileSync(path.join(root, 'Build', name))).digest('hex')]));
     server = http.createServer((req, res) => {
       let file = path.resolve(root, '.' + new URL(req.url, 'http://localhost').pathname);
       if (file !== root && !file.startsWith(root + path.sep)) return res.writeHead(403).end();
@@ -167,6 +173,65 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await click(width / 2, (height - 650) / 2 + 590); check((await state()).interactionKey === 'E', 'Settings restore defaults through GUI');
       await viewport(1920, 1080); await capture('settings-large');
     }
+    if (!selected || selected === 'arrangement') {
+      await probe('Prepare', 'arrangement');
+      let s = await state();
+      const money = s.balance, item = s.stockedItem;
+      await capture('arrangement-monitor');
+      const openEditor = async () => {
+        const current = await state();
+        await click(current.arrangeButton.x, height - current.arrangeButton.y);
+        check((await state()).arranging, 'TobaccOS mouse button enters arrangement');
+      };
+      const movePointer = async point => {
+        await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: point.x, y: height - point.y });
+        await sleep(350);
+      };
+      await openEditor();
+      s = await state();
+      check(s.timeScale === 0 && s.blocked && !s.menu, 'Arrangement pauses world and takes input without pause menu');
+      await capture('arrangement-overview');
+      await click(150, 130);
+      check((await state()).selectedFurniture === 'public-shelf', 'Mouse selects movable shelf');
+      await movePointer((await state()).badTarget);
+      s = await state();
+      check(!s.previewValid && s.dragging && s.shelfPosition.x > 5, 'Entrance obstruction shows invalid preview without moving shelf');
+      await capture('arrangement-invalid');
+      await movePointer(s.moveTarget);
+      await key('e', 'KeyE', 69);
+      s = await state();
+      check(s.previewValid, 'Mouse position and keyboard rotation form a valid preview');
+      await click(s.moveTarget.x, height - s.moveTarget.y);
+      s = await state();
+      check(!s.dragging && s.draftTurns === 1 && Math.abs(s.draftPosition.x - 3.75) < .01 && s.shelfPosition.x > 5 && s.stockedItem === item,
+        'Placing preview changes draft only and keeps exact stock');
+      await capture('arrangement-draft');
+      await click(150, height - 38);
+      s = await state();
+      check(!s.arranging && s.shelfPosition.x > 5 && s.stockedItem === item && s.balance === money && s.timeScale === 1,
+        'Cancel restores original world, inventory, cash and clock');
+      await probe('Action', 'monitor-furnishing');
+      await openEditor();
+      await click(150, 130); await movePointer((await state()).moveTarget); await key('e', 'KeyE', 69);
+      s = await state(); await click(s.moveTarget.x, height - s.moveTarget.y);
+      await click(150, height - 86);
+      s = await state();
+      check(!s.arranging && s.shelfTurns === 1 && Math.abs(s.shelfPosition.x - 3.75) < .01 && s.stockedItem === item && s.balance === money && s.routeToShelf,
+        'Save applies rotated stocked shelf with navigation and no charge');
+      await capture('arrangement-saved');
+      await probe('Action', 'monitor-furnishing'); await openEditor();
+      await click(150, 178); await movePointer((await state()).fridgeTarget);
+      s = await state(); check(s.selectedFurniture === 'drinks-fridge' && s.previewValid, 'Purchased fridge can also be moved');
+      await click(s.fridgeTarget.x, height - s.fridgeTarget.y); await click(150, height - 86);
+      s = await state(); check(!s.arranging && Math.abs(s.fridgePosition.x - 4.75) < .01 && Math.abs(s.fridgePosition.z - .75) < .01, 'Save retains fridge position');
+      await probe('Action', 'monitor-furnishing'); await openEditor();
+      await viewport(1920, 1080); await capture('arrangement-large'); await viewport(1280, 720);
+      await click(150, height - 38);
+      await probe('Action', 'finish-arranged-day'); await key('e', 'KeyE', 69); await enter();
+      s = await state();
+      check(s.day === 2 && s.phase === 'Preparing' && s.shelfTurns === 1 && Math.abs(s.shelfPosition.x - 3.75) < .01 && s.stockedItem === item && Math.abs(s.fridgePosition.x - 4.75) < .01,
+        'Door exit and next day preserve saved layout and stocked item');
+    }
     if (!selected || selected === 'entrance') {
       await probe('Prepare', 'entrance');
       let s = await state();
@@ -218,6 +283,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
   } catch (error) { report.result = 'failed'; report.failure = error.stack ?? String(error); console.error(report.failure); try { await captureFailure?.(); } catch {} process.exitCode = 1; }
   finally {
     report.errors.push(...messages.filter(m => m.type === 'error'));
+    if (report.errors.length) { report.result = 'failed'; report.failure ??= 'Browser console errors.'; process.exitCode = 1; }
     report.finished = new Date().toISOString();
     fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2));
     fs.writeFileSync(path.join(output, 'console.json'), JSON.stringify(messages, null, 2));

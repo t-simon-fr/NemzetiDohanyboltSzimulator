@@ -1,6 +1,6 @@
 # Elfogadási ellenőrzések
 
-Aktuális bizonyíték: [2026-11-04 — #13 ajtó és műszak](2026-11-04/REPORT.md). Korábbi csomag: [2026-11-03 — #2–#8](2026-11-03/REPORT.md).
+Aktuális fejlesztés: [#15 alaprajz és átrendezés](2026-11-04-layout/REPORT.md). Előző csomagok: [#13 ajtó és műszak](2026-11-04/REPORT.md), [#2–#8](2026-11-03/REPORT.md).
 
 ```powershell
 pwsh -File Tools/Verify-Project.ps1 -Profile checkout
@@ -20,6 +20,7 @@ node Tools/Verify-Acceptance.cjs
 node Tools/Verify-Acceptance.cjs --case=menu
 node Tools/Verify-Acceptance.cjs --case=entrance
 node Tools/Verify-Acceptance.cjs --case=dialogue
+node Tools/Verify-Acceptance.cjs --case=arrangement
 ```
 
 Feltétel: Node WebSocket-támogatással és helyi Chromium a meglévő ms-playwright cache-ben, vagy WEBGL_BROWSER környezeti változóval megadva. A script csak helyi tesztbuildet szolgál ki; nem deployol. A normál publikus build nem kap SHOP_ACCEPTANCE jelzőt.

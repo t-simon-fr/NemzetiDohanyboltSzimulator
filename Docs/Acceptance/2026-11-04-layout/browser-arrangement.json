@@ -1,0 +1,94 @@
+{
+  "sourceReport": "Builds\\Verification\\acceptance-1793788113939\\report.json",
+  "sourceReportSha256": "2A2D3D78C3B9008B92978F4BDEDF1F8DCB710EB09EC16EEBF48F1C7B4CACDE6C",
+  "started": "2026-11-04T10:28:33.939Z",
+  "finished": "2026-11-04T10:29:07.715Z",
+  "result": "passed",
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 0,
+    "bytes": 21064430,
+    "seconds": 239.09483369999998,
+    "error": "",
+    "completedUtc": "2026-11-04T10:25:39.762Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "14d834fe506077d8a9d27d563bee9ddf661ee160ea4cabfad2eab5d4587f8018",
+      "AcceptanceWebGL.framework.js.unityweb": "b1d09707d2e26fe9424b3d5902febdcd27d772dd6574acdc77e05c427f8148a2",
+      "AcceptanceWebGL.loader.js": "188c064490292ba0a05b66b2d97eec5245968297d218f1ffa749b189116d8f55",
+      "AcceptanceWebGL.wasm.unityweb": "c99456f173ae19109e31fae4977dacc3400863a1890c262c36efcd9cb598bfbb"
+    }
+  },
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Arrangement pauses world and takes input without pause menu",
+      "passed": true
+    },
+    {
+      "label": "Mouse selects movable shelf",
+      "passed": true
+    },
+    {
+      "label": "Entrance obstruction shows invalid preview without moving shelf",
+      "passed": true
+    },
+    {
+      "label": "Mouse position and keyboard rotation form a valid preview",
+      "passed": true
+    },
+    {
+      "label": "Placing preview changes draft only and keeps exact stock",
+      "passed": true
+    },
+    {
+      "label": "Cancel restores original world, inventory, cash and clock",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Save applies rotated stocked shelf with navigation and no charge",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Purchased fridge can also be moved",
+      "passed": true
+    },
+    {
+      "label": "Save retains fridge position",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Door exit and next day preserve saved layout and stocked item",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-arrangement-monitor.png",
+    "1280x720-arrangement-overview.png",
+    "1280x720-arrangement-invalid.png",
+    "1280x720-arrangement-draft.png",
+    "1280x720-arrangement-saved.png",
+    "1920x1080-arrangement-large.png"
+  ]
+}

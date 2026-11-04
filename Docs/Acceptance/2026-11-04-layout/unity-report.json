@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profile": "checkout",
+  "startedUtc": "2026-11-04T10:21:02.0385567Z",
+  "source": {
+    "commit": "d366ca58596b08916e176b48bd5c226f7a2bf0b4",
+    "sourceFingerprint": "5413a726b27fedfa9bab0927b59658c6e368092482af1c65b841a625fa2236db",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "entry": "LedgerChecks.Run",
+      "id": "ledger",
+      "failed": 0,
+      "passed": 12
+    },
+    {
+      "entry": "CheckoutRevisionChecks.Run",
+      "id": "checkout-revision",
+      "failed": 0,
+      "passed": 20
+    },
+    {
+      "entry": "NextFeatureChecks.BasketDay",
+      "id": "basket-day",
+      "failed": 0,
+      "passed": 41
+    },
+    {
+      "entry": "NextFeatureChecks.RecoveryAndCancellation",
+      "id": "recovery",
+      "failed": 0,
+      "passed": 9
+    },
+    {
+      "entry": "AcceptanceLogicChecks.Run",
+      "id": "acceptance-logic",
+      "failed": 0,
+      "passed": 15
+    },
+    {
+      "entry": "NextFeatureChecks.WorldAndCoffee",
+      "id": "coffee-world",
+      "failed": 0,
+      "passed": 29
+    },
+    {
+      "entry": "BindingAcceptanceChecks.Run",
+      "id": "binding-acceptance",
+      "failed": 0,
+      "passed": 4
+    },
+    {
+      "entry": "EntranceDayChecks.Run",
+      "id": "entrance-day",
+      "failed": 0,
+      "passed": 15
+    },
+    {
+      "entry": "FloorPlanChecks.Run",
+      "id": "floor-plan",
+      "failed": 0,
+      "passed": 16
+    },
+    {
+      "entry": "ArrangementChecks.Run",
+      "id": "arrangement",
+      "failed": 0,
+      "passed": 31
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "finishedUtc": "2026-11-04T10:21:08.9919057Z"
+}

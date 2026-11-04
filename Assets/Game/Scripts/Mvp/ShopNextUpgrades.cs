@@ -93,7 +93,7 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     }
     void Update()
     {
-        if(shop==null||shop.Ledger==null)return;RefreshLayout();
+        if(shop==null||shop.Ledger==null||shop.Arrangement != null && shop.Arrangement.Active)return;RefreshLayout();
         if(Application.isFocused&&(Application.isEditor||Debug.isDebugBuild)&&Keyboard.current!=null&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.F1))
         HandleDeveloperKey(Key.F1);
     }
@@ -105,9 +105,7 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     }
     void OnGUI()
     {
-        if(shop==null||shop.Ledger==null)return;
-        if(shop.Devices.FocusKind==ShopDeviceKind.Monitor&&shop.Devices.ComputerApp==ShopComputerApp.Furnishing)
-        {var r=shop.Devices.AppRect;var b=new Rect(r.x+10,r.yMax-28,r.width-20,26);if(GUI.Button(b,FridgeOwned?"HŰTŐ • MEGVÁSÁROLVA":"HŰTŐ • "+ShopCatalog.Money(FridgePrice)))BuyFridge();}
+        if(shop==null||shop.Ledger==null||shop.Arrangement != null && shop.Arrangement.Active)return;
         if(!developer)return;
         GUI.depth=-200;GUI.Box(new Rect(12,12,380,Mathf.Min(Screen.height-24,680)),"DEVELOPER MODE • F1");GUILayout.BeginArea(new Rect(25,45,352,Mathf.Min(Screen.height-65,615)));developerScroll=GUILayout.BeginScrollView(developerScroll);
         GUILayout.Label("Nap "+shop.Day+" | "+shop.Phase+" | "+shop.Stage);GUILayout.Label("Kassza "+shop.Ledger.Cash+" / címletek "+shop.Drawer.Total);

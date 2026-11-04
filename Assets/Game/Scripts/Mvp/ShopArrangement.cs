@@ -37,7 +37,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
 
     public Dictionary<ShopFurniture, ShopFurniturePose> Current() => furniture.Where(f => f.gameObject.activeInHierarchy).ToDictionary(f => f, f => f.Pose);
     public Dictionary<ShopFurniture, ShopFurniturePose> Draft => draft == null ? Current() : new Dictionary<ShopFurniture, ShopFurniturePose>(draft);
-    public bool CanBegin => !Active && !ShopMenu.Active && !shop.HasHeldProduct &&
+    public bool CanBegin => !Active && !ShopMenu.Active && shop.Modal == ShopModal.None && !shop.HasHeldProduct &&
         (shop.Phase == ShopPhase.Preparing || shop.Phase == ShopPhase.AfterHours && shop.CanEndDay) &&
         shop.Activities.BrewRemaining <= 0 && !shop.AfterHours.TradeOpen;
 
@@ -49,7 +49,9 @@ public sealed partial class ShopArrangement : MonoBehaviour
             shop.Notify(Feedback);
             return false;
         }
-        shop.ClosePanel();
+        // Keep the cursor unlocked when moving from the monitor into the editor.
+        // ClosePanel would briefly request pointer lock in WebGL before releasing it.
+        shop.Devices.Release();
         draft = Current();
         previousScale = Time.timeScale;
         Active = true;
