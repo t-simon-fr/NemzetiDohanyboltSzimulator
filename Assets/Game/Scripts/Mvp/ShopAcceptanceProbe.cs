@@ -54,7 +54,14 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "movement")
+        if (scenario == "shelf-labels")
+        {
+            foreach (var product in FindObjectsByType<ShopProduct>().Where(product => product.CurrentSlot != null && product.CurrentSlot.IsStockShelf))
+                product.RemoveFromWorld();
+            foreach (var label in FindObjectsByType<ShopShelfPriceLabel>(FindObjectsInactive.Include)) label.Refresh();
+            AimWarehouseShelf();
+        }
+        else if (scenario == "movement")
         {
             var floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
             floor.name = "Acceptance movement floor";
@@ -173,6 +180,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action == "aim-warehouse-shelf") AimWarehouseShelf();
+        if (action == "order-shelf-delivery") { Shop.OrderSupply(0, 2); Shop.ManualTick = false; }
+        if (action == "aim-stock-shelf")
+        {
+            var slot = GameObject.Find("Cigarette slot 0-0").GetComponent<ProductSlot>();
+            Aim(slot.transform.position + Vector3.up * .09f, .85f, -slot.transform.forward);
+        }
         if (action == "aim-coffee-display") AimCoffeeDisplay();
         if (action == "empty-coffee-milk") { Set(Shop.Activities, "MilkSupplies", 0); Shop.Activities.CoffeeDisplay.Refresh(); }
         if (action == "empty-coffee-supplies") { Set(Shop.Activities, "CoffeeSupplies", 0); Shop.Activities.CoffeeDisplay.Refresh(); }
@@ -239,6 +253,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Snapshot("");
     }
 
+    private void AimWarehouseShelf()
+    {
+        var dock = Shop.Warehouse.Dock(0);
+        Aim(dock.position + Vector3.up * .15f, 1.45f, new Vector3(1.2f, 0, .8f).normalized);
+    }
+
     private void AimCoffeeDisplay()
     {
         Shop.ClosePanel();
@@ -256,14 +276,14 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f, .5f, 0)));
     }
 
-    private void Aim(Vector3 target, float distance = .85f)
+    private void Aim(Vector3 target, float distance = .85f, Vector3? outward = null)
     {
         var root = Player.transform;
         var body = Player.GetComponent<CharacterController>();
         body.enabled = false;
         bool counter = target.x < .25f && target.z < -.4f && target.z > -4.2f;
         root.rotation = Quaternion.Euler(0, counter ? 90 : 180, 0);
-        Vector3 eye = target + (counter ? Vector3.left : Vector3.forward) * distance;
+        Vector3 eye = target + (outward ?? (counter ? Vector3.left : Vector3.forward)) * distance;
         // The relocated sign is beside the counter end; approach from the door
         // rather than placing the test player inside the counter body.
         if (target.z < -4.2f && Mathf.Abs(target.y - 1.5f) < .1f) eye.x = ShopFloorPlan.EntranceX + .7f;
@@ -306,6 +326,8 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public Rect[] cardDigits;
         public Rect cardUndo, cardClear;
         public string cardDisplayAmount, cardDisplayStatus, device;
+        public string retailShelfLabel, warehouseShelfLabel, supplyPrompt;
+        public int cartonQuantity, warehouseGoods, retailGoods;
         public Rect[] coffeeButtons;
         public string coffeeScreenRecipe, coffeeScreenStatus, coffeeScreenSupplies;
         public float brewRemaining;
@@ -374,6 +396,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.cardDigits = Enumerable.Range(0, 10).Select(digit => g.Devices.Terminal.Bounds(View, WorldControlKind.CardDigit, digit)).ToArray();
         state.cardDisplayAmount = g.Devices.Terminal.DisplayAmount;
         state.cardDisplayStatus = g.Devices.Terminal.DisplayStatus;
+        state.retailShelfLabel = GameObject.Find("Shelf price 0-0").GetComponent<TextMesh>().text;
+        state.warehouseShelfLabel = g.Warehouse.Dock(0).Find("Brand dock label").GetComponent<TextMesh>().text;
+        state.supplyPrompt = g.Warehouse.Dock(0).GetComponent<ShopStation>().Prompt;
+        state.cartonQuantity = Player.HeldCarton != null ? Player.HeldCarton.Quantity : -1;
+        state.warehouseGoods = g.WarehouseCount(0);
+        state.retailGoods = g.StockCount(0);
         state.device = g.Devices.FocusKind.ToString();
         state.coffeeButtons = Enumerable.Range(0, 4).Select(index => g.Activities.CoffeeDisplay.Bounds(View, index)).ToArray();
         state.coffeeScreenRecipe = g.Activities.CoffeeDisplay.DisplayRecipe;

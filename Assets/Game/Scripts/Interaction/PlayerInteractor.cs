@@ -263,20 +263,13 @@ public sealed class PlayerInteractor : MonoBehaviour
             float textHeight = ShopUi.Text(17).CalcHeight(new GUIContent(label), 580);
             float height = textHeight + 28 + (string.IsNullOrEmpty(hint) ? 0 : 28);
             bool meaningful = HasHeldItem || target != null || station != null || targetBin != null || targetTool != null || featureTarget != null || !cursorLocked || !hud.MovementLearned;
-            if (meaningful)
+            if (meaningful && !string.IsNullOrEmpty(prompt))
             {
                 Rect panel = new Rect(334, 696 - height, 612, height);
                 ShopUi.Panel(panel, true);
                 GUI.Label(new Rect(panel.x + 16, panel.y + 12, 580, textHeight), label, ShopUi.Text(17, false, true, TextAnchor.MiddleCenter));
                 if (!string.IsNullOrEmpty(hint)) GUI.Label(new Rect(panel.x + 16, panel.y + textHeight + 19, 580, 24), ShopUi.BoundText(hint), ShopUi.Text(14, false, true, TextAnchor.MiddleCenter));
             }
-        }
-        if (LookingAtSupplies)
-        {
-            Rect contents=new Rect(12,158,330,220);
-            ShopUi.Panel(contents);
-            var stockStyle=ShopUi.Text(16);
-            GUI.Label(new Rect(contents.x+12,contents.y+10,contents.width-24,contents.height-20),station.Contents,stockStyle);
         }
     }
 

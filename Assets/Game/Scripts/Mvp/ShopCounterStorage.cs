@@ -30,7 +30,8 @@ public sealed class ShopCounterStorage : MonoBehaviour
             slot.RestrictExclusivelyTo(ShopCatalog.Ids[ShopCatalog.Contraband]);
             Slots[i] = slot;
         }
-        ProductVisuals.Text(root,"Private storage label","DNYIPRO",new Vector3(0,-.42f,.387f),Quaternion.Euler(0,180,0),.025f,new Color(.8f,.75f,.6f));
+        var label = ProductVisuals.Text(root,"Private storage label","",new Vector3(0,-.42f,.387f),Quaternion.Euler(0,180,0),.025f,new Color(.8f,.75f,.6f));
+        label.gameObject.AddComponent<ShopShelfPriceLabel>().Configure(label, Slots, true);
     }
 
     private void Box(Transform root,string title,Vector3 position,Vector3 size)

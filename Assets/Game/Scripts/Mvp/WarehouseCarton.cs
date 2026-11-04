@@ -46,6 +46,7 @@ public sealed class WarehouseCarton : MonoBehaviour
         if(frontLabel==null)return;
         frontLabel.text=ShopCatalog.Names[ProductType]+"\n"+(Quantity>0?Quantity+" db":"ÜRES KARTON");
         for(int i=0;i<samples.Length;i++)samples[i].SetActive(i<Quantity);
+        area.RefreshLabels();
     }
     public bool PickUp(Transform hand)
     {

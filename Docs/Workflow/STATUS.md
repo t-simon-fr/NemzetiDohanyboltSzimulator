@@ -3,7 +3,7 @@
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
 - #2–#8: implementáció, Unity-integrációs és helyi WebGL-bemeneti ellenőrzés kész. Részletek: [elfogadási jelentés](../Acceptance/2026-11-03/REPORT.md).
-- Aktuális checkout profil: **310 sikeres állítás**, 15 csoport. A #23–#25 integrált WebGL-próbája: **113 teljes + 19 célzott sikeres ellenőrzés, 0 konzolhiba**, mindkét felbontásban átnézve. Korábbi UI-csomag: 73 teljes + 9 célzott sikeres böngészős ellenőrzés; pontos hatókör a #22 jelentésében.
+- Aktuális checkout profil: **342 sikeres állítás**, 16 csoport. #31: 11 sikeres célzott WebGL-ellenőrzés, 0 konzolhiba; 1280×720 és 1920×1080 képek átnézve. A korábbi csomagok eredményei a saját jelentéseikben szerepelnek.
 - Javítva az elkészült kávé téves hiányjelzése és a HUD-on ismétlődő vevői mondat.
 - #11: Misi és Nóra saját karakterkoncepciója, abszurd személyisége és dialógusterve elkészült a `docs/11-character-concept` ágon. A 3D-modellek és játékbeli dialógus-integráció még nincs implementálva.
 - A kassza/kéz grafikai átdolgozását a felhasználó félretette. Az ajtó/tábla alapú napváltás kiadva (#13); a pult alatti csempészáru (#20) és az ajtóra tett kifelé olvasható tábla (#21) implementálva és ellenőrizve, kiadás nélkül.
@@ -58,3 +58,8 @@ Workflow: [WORKFLOW.md](../WORKFLOW.md). Böngészős előfeltételek: [Acceptan
 - Konfigurálható Shift-sprint és Space-ugrás; valódi POS-számgombok és kijelző; a kávégépen három recept, főzés/hiány/kész ital állapot és tényleges csészeátvétel. Nincs kettős könyvelés, duplafőzés vagy kattintás átadása a világba.
 - Unity: 310 sikeres állítás. Natív Game view-k és sugaras vezérlési próbák kész; helyi WebGL: 113 teljes + 19 célzott sikeres ellenőrzés, 0 konzolhiba. Vizuális és interakciós próba: passed, 1280×720 és 1920×1080. A közben talált szünet/kurzorfókusz miatti megálló főzés javítva és újrapróbálva. [Jelentés](../Acceptance/2026-11-04-device-controls/REPORT.md).
 - Mainre mergelve. Pagesre még nincs kiadva.
+
+## #31 – Polccímkék készletablak nélkül
+
+- A ránézésre felugró raktári készletlista eltávolítva; az üres polc címkéje és felvételi panelje üres. A bolti, raktári és pult alatti címke a tényleges tartalmat követi: érkezés, felvétel/visszarakás, feltöltés, más/vegyes áru, aktuális ár és kiürítés.
+- Unity: 342 sikeres állítás, ebből 32 célzott ellenőrzés. WebGL: 11 sikeres célzott próba, 0 konzolhiba; vizuális/interakciós eredmény passed mindkét felbontásban. [Jelentés és képek](../Acceptance/2026-11-04-shelf-labels/REPORT.md). Pagesre nem került ki.
