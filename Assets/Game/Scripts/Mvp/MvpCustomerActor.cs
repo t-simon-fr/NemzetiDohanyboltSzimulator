@@ -32,6 +32,9 @@ public sealed class MvpCustomerActor : MonoBehaviour
     private ShopProduct shelfItem;
     private ProductSlot basketSource;
     private Transform basket;
+    private List<Vector3> route;
+    private int routeIndex, routeVersion = -1;
+    private Vector3 routeGoal;
     public void Initialize(int person,int product,int visit)
     {
         Person=person;Product=product;var game=MvpShopController.Instance;int count=game.SingleProductVisits?1:1+visit%3;OrderTypes=Enumerable.Range(0,count).Select(i=>i==0?product:(product+i)%game.AvailableProducts).ToArray();UnitPrices=OrderTypes.Select(ShopCatalog.SalePrice).ToArray();AcceptsPrices=OrderTypes.Select((t,i)=>ShopPricing.Accepts(t,UnitPrices[i],visit,game.Day)).All(x=>x);int price=TotalPrice;
@@ -89,7 +92,9 @@ public sealed class MvpCustomerActor : MonoBehaviour
             }
             return false;
         }
-        return Move(queueTarget,dt);
+        bool atCounter = Move(queueTarget,dt);
+        if (atCounter) transform.rotation = Quaternion.LookRotation(MvpShopController.Instance.Counter.transform.forward);
+        return atCounter;
     }
     public void SetTheftIntent(){if(layout.IsPublicProduct(Product))WillSteal=true;}
     public bool PlaceBasket(ProductSlot slot)=>BasketItem!=null && (!BasketItem.IsHeld ? BasketItem.CurrentSlot==slot : BasketItem.TryPlace(slot));
@@ -117,9 +122,21 @@ public sealed class MvpCustomerActor : MonoBehaviour
     public void Leave(){Leaving=true;exitStep=0;}
     private bool Move(Vector3 target,float dt)
     {
-        Vector3 delta=target-transform.position;if(delta.sqrMagnitude<.0025f)return true;
-        transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(delta),360f*dt);
-        Vector3 next=Vector3.MoveTowards(transform.position,target,(IsStealing?1.65f:1.3f)*dt);
+        Vector3 delta = target - transform.position;
+        if (delta.sqrMagnitude < .0025f) return true;
+        var navigation = MvpShopController.Instance.Navigation;
+        if (route == null || routeVersion != navigation.Version || (routeGoal - target).sqrMagnitude > .01f)
+        {
+            if (!navigation.TryPath(transform.position, target, out route)) return false;
+            routeGoal = target;
+            routeVersion = navigation.Version;
+            routeIndex = 0;
+        }
+        while (routeIndex < route.Count - 1 && (route[routeIndex] - transform.position).sqrMagnitude < .015f) routeIndex++;
+        Vector3 waypoint = route[routeIndex];
+        delta = waypoint - transform.position;
+        if (delta.sqrMagnitude > .0001f) transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(delta), 360f * dt);
+        Vector3 next = Vector3.MoveTowards(transform.position, waypoint, (IsStealing ? 1.65f : 1.3f) * dt);
         MvpShopController.Instance.Entrance?.RequestPassage(transform.position);
         transform.position=security!=null?security.ConstrainMovement(transform.position,next):next;
         return (transform.position-target).sqrMagnitude<.0025f;

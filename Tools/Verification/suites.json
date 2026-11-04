@@ -14,7 +14,8 @@
       "coffee-world",
       "binding-acceptance",
       "entrance-day",
-      "floor-plan"
+      "floor-plan",
+      "arrangement"
     ]
   },
   "suites": {
@@ -62,6 +63,11 @@
       "file": "Tools/Checks/FloorPlanChecks.cs",
       "entry": "FloorPlanChecks.Run",
       "purpose": "Starter entrance and actual CharacterController/carton staff circulation, fixed expansion anchors"
+    },
+    "arrangement": {
+      "file": "Tools/Checks/ArrangementChecks.cs",
+      "entry": "ArrangementChecks.Run",
+      "purpose": "A* detours, invalid placement, atomic save/cancel, stocked item identity and next-day persistence"
     }
   },
   "historicalExcluded": {

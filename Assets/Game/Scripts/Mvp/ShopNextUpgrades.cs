@@ -81,8 +81,10 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     public bool BuyFridge()
     {
         if(FridgeOwned||!shop.Layout.Expanded||shop.Phase!=ShopPhase.Preparing){shop.Notify("Hűtőt a bővített boltba, nyitás előtt vásárolhatsz.");return false;}
+        var furniture = fridge.GetComponent<ShopFurniture>();
+        if (furniture != null && !shop.Arrangement.CanActivate(furniture)) return false;
         if(!shop.Ledger.TryImprove(FridgePrice)){shop.Notify("Nincs elég pénz a hűtőre.");return false;}
-        shop.SyncCashDrawer();FridgeOwned=true;fridge.SetActive(true);shop.Notify("Hűtő megvásárolva. A polcait kézzel töltheted fel.");return true;
+        shop.SyncCashDrawer();FridgeOwned=true;fridge.SetActive(true);shop.Navigation?.Rebuild();shop.Notify("Hűtő megvásárolva. A polcait kézzel töltheted fel.");return true;
     }
     public void ResetUpgrades(){FridgeOwned=false;if(fridge!=null)fridge.SetActive(false);}
     public void RefreshLayout()
