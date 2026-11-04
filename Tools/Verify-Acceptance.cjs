@@ -232,6 +232,26 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.day === 2 && s.phase === 'Preparing' && s.shelfTurns === 1 && Math.abs(s.shelfPosition.x - 3.75) < .01 && s.stockedItem === item && Math.abs(s.fridgePosition.x - 4.75) < .01,
         'Door exit and next day preserve saved layout and stocked item');
     }
+    if (!selected || selected === 'door-storage') {
+      await probe('Prepare', 'counter-storage');
+      let s = await state();
+      check(s.privateStock === 5 && !s.held, 'Five physical Dnyipro packs fit under counter');
+      await capture('private-stock');
+      await key('e', 'KeyE', 69); s = await state();
+      // Pickup reserves its source slot until placement, allowing safe cancellation.
+      check(s.held === 'dnyipro' && s.privateStock === 5, 'E retrieves real private pack and reserves its source slot');
+      await key('e', 'KeyE', 69); s = await state();
+      check(!s.held && s.privateStock === 5, 'E returns pack to dedicated under-counter slot');
+      await probe('Action', 'view-door-outside'); await sleep(700);
+      s = await state(); check(s.outwardSign === 'ZÁRVA', 'Closed sign reads ZARVA from street');
+      await capture('door-outside-closed');
+      await key('e', 'KeyE', 69); await sleep(700); s = await state();
+      check(s.phase === 'Open' && s.outwardSign === 'NYITVA', 'E flips door sign to street-facing NYITVA');
+      await capture('door-outside-open');
+      await key('e', 'KeyE', 69); await sleep(700); s = await state();
+      check(s.phase === 'Closing' && s.outwardSign === 'ZÁRVA', 'E flips back without ending day');
+      await probe('Action', 'view-door-inside'); await capture('door-inside');
+    }
     if (!selected || selected === 'entrance') {
       await probe('Prepare', 'entrance');
       let s = await state();
@@ -268,6 +288,8 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'w', code: 'KeyW', windowsVirtualKeyCode: 87 });
       s = await state();
       check(s.position.z > -4.4 && s.phase === 'AfterHours', 'Player movement cannot cross entrance or silently end day');
+      // Walking closer changes the ray height at the door; aim below the sign again.
+      await probe('Action', 'aim-door');
       await key('e', 'KeyE', 69);
       s = await state();
       check(s.phase === 'Summary', 'E at closed entrance ends day');

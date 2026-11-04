@@ -52,7 +52,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "arrangement")
+        if (scenario == "counter-storage")
+        {
+            foreach (var slot in Shop.CounterStorage.Slots) Shop.CreateNightProduct().AssignInitialSlot(slot);
+            Aim(Shop.CounterStorage.Slots[2].transform.position + Vector3.up*.13f);
+        }
+        else if (scenario == "arrangement")
         {
             Shop.Ledger.TrySellCard(150000, 0);
             Shop.SyncCashDrawer();
@@ -135,6 +140,20 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action == "view-door-outside")
+        {
+            var body = Player.GetComponent<CharacterController>();
+            body.enabled = false;
+            Vector3 eye = Shop.Entrance.Position + new Vector3(0,1.75f,-1.3f);
+            Player.transform.rotation = Quaternion.identity;
+            Player.transform.position = eye - View.transform.localPosition;
+            float pitch = Mathf.Atan2(.25f,1.3f)*Mathf.Rad2Deg;
+            View.transform.localRotation = Quaternion.Euler(pitch,0,0);
+            typeof(FirstPersonController).GetField("pitch",Private).SetValue(Player.GetComponent<FirstPersonController>(),pitch);
+            body.enabled = true;
+            Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f,.5f,0)));
+        }
+        if (action == "view-door-inside") Aim(Shop.Entrance.Sign.position,1.3f);
         if (action == "monitor-furnishing")
         {
             Shop.Devices.Focus(ShopDeviceKind.Monitor);
@@ -214,6 +233,8 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public Vector3 shelfPosition, draftPosition, fridgePosition, arrangeButton, moveTarget, badTarget, fridgeTarget;
         public int shelfTurns, draftTurns, shelfStock;
         public string stockedItem;
+        public int privateStock;
+        public string outwardSign;
     }
 
     [Preserve]
@@ -260,6 +281,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.badTarget = View.WorldToScreenPoint(new Vector3(1.25f,0,-3.5f));
         state.fridgeTarget = View.WorldToScreenPoint(new Vector3(4.75f,0,.75f));
         state.routeToShelf = g.Navigation.TryPath(g.Layout.EntryInside, shelf.AccessAt(shelf.Pose).First(), out var path);
+        state.privateStock = g.CounterStorage.Slots.Count(s => s.Occupant != null);
+        state.outwardSign = g.Entrance.Sign.GetComponentsInChildren<TextMesh>()
+            .FirstOrDefault(t => Vector3.Dot(-t.transform.forward,-g.Entrance.DoorLeaf.forward) > .99f)?.text ?? "";
         Debug.Log("ACCEPTANCE_STATE:" + JsonUtility.ToJson(state));
     }
 }

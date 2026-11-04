@@ -7,10 +7,12 @@ public sealed class ProductSlot : MonoBehaviour
     [SerializeField] private Vector3 capacity = new Vector3(0.65f, 0.38f, 0.65f);
     [SerializeField] private ShopProduct occupant;
     [SerializeField] private string allowedProductId = "";
+    [SerializeField] private bool exclusiveType;
     // Existing scenes retain their preferred layout without locking shelves to a brand.
     public string PreferredProductId => allowedProductId;
     public bool IsStockShelf => ShopCatalog.Index(allowedProductId)>=0 && allowedProductId!="coffee";
     public void RestrictTo(string id) => allowedProductId = id;
+    public void RestrictExclusivelyTo(string id) { allowedProductId = id; exclusiveType = true; }
     private LineRenderer placementHint;
     private static Material hintMaterial;
     public Vector3 HintCenter => transform.TransformPoint(Vector3.up * .16f);
@@ -33,10 +35,10 @@ public sealed class ProductSlot : MonoBehaviour
     public event System.Action<ShopProduct> ProductPlaced;
     public void NotifyProductPlaced(ShopProduct product) => ProductPlaced?.Invoke(product);
     public ShopProduct Occupant => occupant;
-    public bool AcceptsType(ShopProduct product) => product != null && (IsStockShelf || string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId || allowedProductId=="coffee"&&ShopCatalog.IsCoffee(ShopCatalog.Index(product.ProductId)));
+    public bool AcceptsType(ShopProduct product) => product != null && (!exclusiveType || product.ProductId == allowedProductId) && (IsStockShelf || string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId || allowedProductId=="coffee"&&ShopCatalog.IsCoffee(ShopCatalog.Index(product.ProductId)));
     public bool CanAccept(ShopProduct product) => isActiveAndEnabled && AcceptsType(product) && (occupant == null || occupant == product);
 
-    public bool CanAcceptStock(string id) => isActiveAndEnabled && occupant==null && IsStockShelf && ShopCatalog.Index(id)>=0;
+    public bool CanAcceptStock(string id) => isActiveAndEnabled && occupant==null && IsStockShelf && ShopCatalog.Index(id)>=0 && (!exclusiveType || id==allowedProductId);
     public bool CanStock(string id,Vector3 size,out Pose pose)
     {
         pose=GetPose(size*.5f,Vector3.zero);

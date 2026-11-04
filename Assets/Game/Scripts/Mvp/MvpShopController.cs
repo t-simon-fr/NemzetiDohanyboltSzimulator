@@ -63,6 +63,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ShopFloorPlan FloorPlan { get; private set; }
     public ShopNavigation Navigation { get; private set; }
     public ShopArrangement Arrangement { get; private set; }
+    public ShopCounterStorage CounterStorage { get; private set; }
     public bool CanEndDay => (Phase == ShopPhase.Closing || Phase == ShopPhase.AfterHours) &&
         queue.Count == 0 && departing.Count == 0 && fleeing.Count == 0 && !HasHeldProduct;
     public bool BuyPanicButton() => Security != null && Security.TryPurchase();
@@ -117,6 +118,8 @@ public sealed partial class MvpShopController : MonoBehaviour
         stock.AddRange(FindObjectsByType<ShopProduct>().Where(p => p.gameObject.scene == gameObject.scene));
         FloorPlan = gameObject.AddComponent<ShopFloorPlan>();
         FloorPlan.Configure(this, player);
+        CounterStorage = gameObject.AddComponent<ShopCounterStorage>();
+        CounterStorage.Configure(this);
         Security = GetComponent<ShopSecurity>();
         if (Security == null) Security = gameObject.AddComponent<ShopSecurity>();
         Security.Configure(this);
@@ -403,7 +406,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Security?.ReleaseEntrance();
         Phase = ShopPhase.Preparing; Stage = ServiceStage.None; Spawned = 0; Missed = 0; Elapsed = 0f;
         StolenToday=0;CaughtToday=0;PriceRefusals=0;
-        receivedOrder.Clear();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg a bejárat melletti ZÁRVA táblát. Az óra csak nyitáskor indul.";
+        receivedOrder.Clear();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.";
         SetModal(ShopModal.None);
     }
     public void ResetDemo()

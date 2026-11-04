@@ -15,7 +15,8 @@
       "binding-acceptance",
       "entrance-day",
       "floor-plan",
-      "arrangement"
+      "arrangement",
+      "door-storage"
     ]
   },
   "suites": {
@@ -68,6 +69,11 @@
       "file": "Tools/Checks/ArrangementChecks.cs",
       "entry": "ArrangementChecks.Run",
       "purpose": "A* detours, invalid placement, atomic save/cancel, stocked item identity and next-day persistence"
+    },
+    "door-storage": {
+      "file": "Tools/Checks/DoorStorageChecks.cs",
+      "entry": "DoorStorageChecks.Run",
+      "purpose": "Outward door sign, moving attachment and private stock placement, checkout and next-day conservation"
     }
   },
   "historicalExcluded": {
