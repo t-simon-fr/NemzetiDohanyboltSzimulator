@@ -36,10 +36,12 @@ public static class CustomerHandChecks
             Vector3 approachDirection = Vector3.ProjectOnPlane(camera.transform.position-hand.position,Vector3.up).normalized;
             station.Use(player);
             check(shop.Devices.FocusKind == ShopDeviceKind.Coins && shop.Activities.CoinOffer.Total == 0, "Palm opens existing coin checkout without selecting a piece");
+            check(!hand.GetComponent<Collider>().enabled, "World hand target cannot obstruct individual coin clicks in close view");
             check(ShopInputGate.WorldActionConsumed, "Opening palm consumes the initiating world action");
             check(Vector3.Dot(camera.transform.up,Vector3.up) > .3f, "Close view uses natural world-up orientation");
             check(Vector3.Dot(Vector3.ProjectOnPlane(camera.transform.position-hand.position,Vector3.up).normalized,approachDirection) > .99f, "Camera stays on the player's approach side");
             shop.ClosePanel();
+            check(hand.GetComponent<Collider>().enabled, "Leaving close view restores the world hand target");
             check(camera.transform.localPosition == position && Quaternion.Angle(camera.transform.localRotation,rotation) < .01f && camera.fieldOfView == fov, "Leaving hand restores complete player camera");
             foreach (float angle in new[] { -30f, 0f, 30f })
             {

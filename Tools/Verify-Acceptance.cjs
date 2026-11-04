@@ -174,7 +174,8 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); s = await state();
       check(s.device === 'None' && s.cameraFov === normalFov && s.balance === balance, 'Escape restores ordinary player view without charging');
       await probe('Action', 'aim-customer-hand'); s = await state();
-      await click(width/2, height/2); s = await state();
+      await send('Input.dispatchMouseEvent', {type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1}); await sleep(90);
+      await send('Input.dispatchMouseEvent', {type:'mouseReleased',x:width/2,y:height/2,button:'left',clickCount:1}); await sleep(300); s = await state();
       check(s.device === 'Coins' && s.coinSelected === 0 && s.sales === 0, 'Actual click on the hand opens once and cannot leak into coin selection');
       const value = s.offeredCoins[0]; await clickRect(s.coinTargets[0]); s = await state();
       check(s.coinSelected === value && s.balance === balance, 'Coin clicks still select in the corrected view');

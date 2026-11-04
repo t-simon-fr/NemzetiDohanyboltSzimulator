@@ -268,7 +268,20 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     private void AimCustomerHand()
     {
         var hand = Shop.Activities.CustomerHand;
-        Aim(hand.TransformPoint(new Vector3(.185f, -.015f, .04f)), 1.10f, hand.forward);
+        Vector3 target = hand.TransformPoint(new Vector3(.08f, .01f, .06f));
+        Aim(target, 1.10f, hand.forward);
+        // Let the real controller reach the floor before locking in the test aim.
+        // Otherwise its first gravity step shifts a thin world target off-center.
+        var controller = Player.GetComponent<FirstPersonController>();
+        controller.StepMovement(Vector2.zero, false, false, .3f);
+        Vector3 direction = target - View.transform.position;
+        Vector3 horizontal = Vector3.ProjectOnPlane(direction, Vector3.up);
+        Player.transform.rotation = Quaternion.LookRotation(horizontal);
+        float pitch = Mathf.Atan2(-direction.y, horizontal.magnitude) * Mathf.Rad2Deg;
+        View.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
+        typeof(FirstPersonController).GetField("pitch", Private).SetValue(controller, pitch);
+        Physics.SyncTransforms();
+        Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f,.5f,0)));
     }
 
     private void AimWarehouseShelf()
@@ -452,7 +465,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         if (hand != null)
         {
             Physics.SyncTransforms();
-            if (Physics.Raycast(View.ViewportPointToRay(new Vector3(.5f,.5f,0)), out var handHit, 2.5f))
+            if (Physics.Raycast(View.ViewportPointToRay(new Vector3(.5f,.5f,0)), out var handHit, 2.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                 state.lookingAtHand = handHit.collider.GetComponentInParent<ShopStation>() == hand.GetComponent<ShopStation>();
             state.handPrompt = hand.GetComponent<ShopStation>().Prompt;
             state.handUpright = Vector3.Dot(View.transform.up, Vector3.up) > .3f;

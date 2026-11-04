@@ -323,6 +323,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     public void Release()
     {
         if(!Focused)return;
+        if (FocusKind == ShopDeviceKind.Coins) shop.Activities.SetCustomerHandFocused(false);
         if(view!=null){view.transform.localPosition=cameraPosition;view.transform.localRotation=cameraRotation;view.fieldOfView=cameraFieldOfView;}
         if(registerDrawer!=null)registerDrawer.SetOpen(false);
         FocusKind=ShopDeviceKind.None;ShopInputGate.Blocked=false;

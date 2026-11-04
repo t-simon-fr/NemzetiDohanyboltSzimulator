@@ -191,14 +191,20 @@ public sealed partial class ShopActivities : MonoBehaviour
         for(int i=0;i<4;i++)Shape(hand,"Finger",new Vector3((i-1.5f)*.075f,-.015f,.13f),new Vector3(.055f,.025f,.16f),skin,PrimitiveType.Capsule).transform.localRotation=Quaternion.Euler(90,0,0);
         coinViewYaw = 0;
         var hitbox = hand.gameObject.AddComponent<BoxCollider>();
-        // Keep the palm hitbox below the money faces, so it cannot hide coin clicks.
-        hitbox.center = new Vector3(0, -.025f, .035f);
-        hitbox.size = new Vector3(.42f, .045f, .38f);
+        // Generous world target includes the fingers. Disable it in close view,
+        // where each money piece owns its own precise collider.
+        hitbox.center = new Vector3(0, -.005f, .035f);
+        hitbox.size = new Vector3(.43f, .18f, .39f);
         hand.gameObject.AddComponent<ShopStation>().Configure(shop, ShopStationKind.CustomerHand);
         RefreshHandCoins();
     }
+    public void SetCustomerHandFocused(bool focused)
+    {
+        if (hand != null) hand.GetComponent<Collider>().enabled = !focused;
+    }
     public void FocusCustomerCoins(Camera view)
     {
+        SetCustomerHandFocused(true);
         Vector3 towardPlayer = Vector3.ProjectOnPlane(view.transform.position - hand.position, Vector3.up);
         if (towardPlayer.sqrMagnitude < .01f) towardPlayer = hand.forward;
         towardPlayer.Normalize();
