@@ -3,6 +3,7 @@
 Read `Docs/WORKFLOW.md` before implementation and `Docs/Workflow/STATUS.md` when resuming. GitHub issues are the task source of truth; `Docs/CONTINUE.md` contains historical notes.
 
 - Communicate in Hungarian; code, identifiers and commit messages stay English.
+- Keep delivery lean: small playable slices, targeted checks while developing, then one combined full verification/WebGL build when the batch is stable. Repeat only for relevant source changes, failures or unresolved risks. Finish behavior before one visual refinement pass; stop when acceptance criteria pass. Keep documentation concise and link shared evidence. Documentation-only changes need a diff/link check, not a Unity build. See `Docs/WORKFLOW.md` section 2.1.
 - One issue per independently reviewable feature or bug. Record observable acceptance criteria, dependencies and exclusions before editing. A user-approved batch authorizes its implementation without another approval prompt.
 - Implement one coherent slice, inspect its diff, run the relevant `Tools/Verify-Project.ps1` profile, then commit it separately. Do not bundle unrelated features. Use a short feature branch/PR for new feature work; keep review focused on that issue. Do not merge or publish unless authorized.
 - Use `Tools/Invoke-Pipeline.ps1` for Unity. Compilation must complete before entering Play; top-level transport success alone is not test success. Never reuse a previous run as evidence for changed source.
