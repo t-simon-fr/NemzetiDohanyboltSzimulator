@@ -11,6 +11,7 @@ public sealed class CashRegisterDrawer : MonoBehaviour
     public float Progress { get; private set; }
     public bool IsOpen => Progress >= .999f;
     public Transform MovingDrawer => movingDrawer;
+    public Vector3 OpenPosition => movingDrawer.parent.TransformPoint(closedPosition + Vector3.forward * travel);
     public void Configure(Transform tray, Transform contents)
     {
         movingDrawer = tray; moneyContents = contents; closedPosition = tray.localPosition;

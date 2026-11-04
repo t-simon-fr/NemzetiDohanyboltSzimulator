@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,7 +15,8 @@ public sealed partial class ShopDevices : MonoBehaviour
     private Camera view;
     private Vector3 cameraPosition;
     private Quaternion cameraRotation;
-    private TextMesh monitorText, cashText, appTitle, furnishingStatus;
+    private float cameraFieldOfView;
+    private TextMesh monitorText, appTitle, furnishingStatus;
     private TextMesh shopStatusText, orderQuantityText, monitorNotice;
     private TextMesh panicUpgradeLabel,coffeeUpgradeLabel,fridgeUpgradeLabel;
     private Transform featurePage;
@@ -40,7 +42,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     private Transform desktopPage, orderPage, furnishingPage, buildingPage;
     public ShopComputerApp ComputerApp { get; private set; }
     private readonly List<TextMesh> stockLabels = new List<TextMesh>();
-    private readonly List<TextMesh> moneyLabels = new List<TextMesh>();
+    private readonly List<TMP_Text> moneyLabels = new List<TMP_Text>();
     private readonly List<GameObject> selectedVisuals = new List<GameObject>();
     private readonly List<GameObject> cashStacks = new List<GameObject>();
     private string lastSelection = "";
@@ -52,6 +54,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     public CashRegisterDrawer RegisterDrawer => registerDrawer;
     public Transform TillAssembly => tillAssembly;
     public ShopCardTerminal Terminal { get; private set; }
+    public ShopRegisterVisuals RegisterVisuals { get; private set; }
     public void Configure(Transform screen, Transform contents, Transform tray, Transform display,
         Transform monitorRoot, Transform tillRoot, Transform keyboard, CashRegisterDrawer mechanism)
     {
@@ -64,7 +67,9 @@ public sealed partial class ShopDevices : MonoBehaviour
         bodyMaterial = Material(new Color(.045f,.06f,.07f));
         paperMaterial = Material(new Color(.65f,.73f,.6f));
         coinMaterial = Material(new Color(.72f,.62f,.34f));
-        BuildMonitor(); BuildDrawer(); BuildKeypad();
+        RegisterVisuals = gameObject.AddComponent<ShopRegisterVisuals>();
+        RegisterVisuals.Configure(tillAssembly, registerDrawer, keypad, tillDisplay);
+        BuildMonitor(); BuildDrawer(); RegisterVisuals.BuildKeys(keypad);
         Terminal = new GameObject("Bank card terminal").AddComponent<ShopCardTerminal>();
         Terminal.Configure(shop, tillAssembly);
         Font.textureRebuilt+=OnFontTextureRebuilt;
@@ -259,8 +264,6 @@ public sealed partial class ShopDevices : MonoBehaviour
     }
     private void BuildDrawer()
     {
-        cashText = Label(tillDisplay,"KASSZA",Vector3.forward*.018f,.0135f);
-        cashText.color = new Color(.68f,1f,.60f);
         for (int i = 0; i < ShopCatalog.Denominations.Length; i++)
         {
             int value = ShopCatalog.Denominations[i];
@@ -273,21 +276,8 @@ public sealed partial class ShopDevices : MonoBehaviour
             Box(drawer,"Rekeszfal",p+new Vector3(.04f,.015f,0),new Vector3(.005f,.04f,banknote?.16f:.104f),bodyMaterial);
             var money = Money(drawer,value,p+Vector3.up*.013f,1f);
             Control(money,WorldControlKind.Denomination,value); cashStacks.Add(money);
-            Vector3 label = p+new Vector3(0,.043f,banknote?-.062f:.032f);
-            moneyLabels.Add(ProductVisuals.Text(drawer,"Címlet és darabszám","",label,Quaternion.Euler(90,180,0),.011f,Color.white));
+            moneyLabels.Add(RegisterVisuals.DenominationLabel(drawer, value, p.x));
         }
-    }
-    private void BuildKeypad()
-    {
-        Key("VISSZA",new Vector3(.12f,.008f,-.045f),WorldControlKind.Undo);
-        Key("TÖRLÉS",new Vector3(0,.008f,-.045f),WorldControlKind.Clear);
-        Key("VÁLTÁS",new Vector3(-.12f,.008f,-.045f),WorldControlKind.Exchange);
-        Key("ÁTADÁS",new Vector3(0,.008f,.045f),WorldControlKind.Pay,.34f);
-    }
-    private void Key(string label,Vector3 p,WorldControlKind kind,float width=.108f)
-    {
-        var go=Box(keypad,label,p,new Vector3(width,.018f,.065f),bodyMaterial);Control(go,kind);
-        ProductVisuals.Text(keypad,label,label,p+Vector3.up*.013f,Quaternion.Euler(90,180,0),.014f,Color.white);
     }
     private GameObject Money(Transform parent,int value,Vector3 p,float scale)
     {
@@ -321,7 +311,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         if (kind == ShopDeviceKind.Till && shop != null && shop.CardPayment) kind = ShopDeviceKind.Terminal;
         if(view==null||shop==null||shop.HasHeldProduct)return;
         if(Focused)Release();
-        cameraPosition=view.transform.localPosition;cameraRotation=view.transform.localRotation;
+        cameraPosition=view.transform.localPosition;cameraRotation=view.transform.localRotation;cameraFieldOfView=view.fieldOfView;
         ResetKeyboardFocus();FocusKind=kind;ShopInputGate.Blocked=true;Cursor.lockState=CursorLockMode.None;Cursor.visible=true;
         if(kind==ShopDeviceKind.Monitor)
         {
@@ -350,14 +340,13 @@ public sealed partial class ShopDevices : MonoBehaviour
         else
         {
             registerDrawer.SetOpen(!shop.CardPayment);
-            view.transform.position=tillAssembly.TransformPoint(new Vector3(0,.90f,.90f));
-            view.transform.LookAt(tillAssembly.TransformPoint(new Vector3(0,.13f,.25f)),tillAssembly.up);
+            RegisterVisuals.Focus(view);
         }
     }
     public void Release()
     {
         if(!Focused)return;
-        if(view!=null){view.transform.localPosition=cameraPosition;view.transform.localRotation=cameraRotation;}
+        if(view!=null){view.transform.localPosition=cameraPosition;view.transform.localRotation=cameraRotation;view.fieldOfView=cameraFieldOfView;}
         if(registerDrawer!=null)registerDrawer.SetOpen(false);
         FocusKind=ShopDeviceKind.None;ShopInputGate.Blocked=false;
     }
@@ -368,12 +357,11 @@ public sealed partial class ShopDevices : MonoBehaviour
         Terminal.Refresh();
         for(int i=0;i<moneyLabels.Count;i++)
         {
-            int v=ShopCatalog.Denominations[i];moneyLabels[i].text=v+" ×"+(shop.Drawer.Count(v)-shop.SelectedPieces(v));
+            int v=ShopCatalog.Denominations[i];moneyLabels[i].text=ShopCatalog.Money(v).Replace(" Ft", "")+"\n<size=70%>× "+(shop.Drawer.Count(v)-shop.SelectedPieces(v))+"</size>";
             cashStacks[i].SetActive(shop.Drawer.Count(v)>shop.SelectedPieces(v));
         }
-        cashText.text=shop.Stage==ServiceStage.Payment&&shop.ActiveCustomer!=null
-            ? (shop.CardPayment?"BANKKÁRTYA\nFIZETENDŐ "+ShopCatalog.Money(shop.ActiveCustomer.TotalPrice):"FIZETENDŐ "+ShopCatalog.Money(shop.ActiveCustomer.TotalPrice)+"\nKAPOTT "+ShopCatalog.Money(shop.ActiveCustomer.Tender)+"\nVISSZAJÁRÓ "+ShopCatalog.Money(shop.ActiveCustomer.Tender-shop.ActiveCustomer.TotalPrice)+"\nKIVÉVE "+ShopCatalog.Money(shop.ChangeSelected))
-            : "KASSZA\n"+ShopCatalog.Money(shop.Ledger.Cash);
+        RegisterVisuals.Refresh(shop);
+        if (FocusKind == ShopDeviceKind.Till && RegisterVisuals.NeedsReframe(view)) RegisterVisuals.Focus(view);
         string selection=string.Join(",",ShopCatalog.Denominations.Select(shop.SelectedPieces));
         if(lastSelection!=selection){lastSelection=selection;RefreshTray();}
         PollDeviceKeyboard();

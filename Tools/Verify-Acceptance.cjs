@@ -129,6 +129,39 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
     await clickRect((await state()).menuStart);
     check(!(await state()).menu, 'Main menu starts by mouse');
 
+    if (!selected || selected === 'cash-register') {
+      const amount = text => Number(text.replace(/[^0-9]/g, ''));
+      const normalFov = (await state()).cameraFov;
+      await probe('Prepare', 'cash'); await sleep(500); let s = await state();
+      const balance = s.balance, price = s.cashPrice;
+      check(s.device === 'Till' && s.cameraFov === 42 && s.cameraFov < normalFov, 'Cash checkout opens dedicated close lens');
+      check(amount(s.cashDue) === price && amount(s.cashReceived) === s.cashTender && amount(s.cashChange) === s.cashTender - price, 'Own register display shows real tender and required change');
+      check(s.cashKeys.every(r => r.width > 20 && r.x >= 0 && r.y >= 0 && r.x + r.width <= width && r.y + r.height < height - 48), 'Physical cash commands remain visible and clickable');
+      await capture('cash-register-ready');
+      await clickRect(s.cashKeys[3]); s = await state();
+      check(s.sales === 0 && s.balance === balance, 'Physical pay rejects empty change without charging');
+      await clickRect(s.cashDenominations[5]); s = await state();
+      check(amount(s.cashSelected) === 500 && s.balance === balance, 'Physical note selection updates own screen without charging');
+      await clickRect(s.cashKeys[0]); s = await state();
+      check(amount(s.cashSelected) === 0, 'Physical undo updates screen');
+      await clickRect(s.cashDenominations[5]); s = await state(); await clickRect(s.cashKeys[1]); s = await state();
+      check(amount(s.cashSelected) === 0, 'Physical clear resets selected change');
+      await key('4', 'Digit4', 52); s = await state();
+      check(amount(s.cashSelected) === 2000, 'Keyboard shares cash screen state');
+      for (const index of [5, 6, 7]) { await clickRect(s.cashDenominations[index]); s = await state(); }
+      check(amount(s.cashSelected) === s.cashTender - price && s.balance === balance, 'Actual note and coin clicks produce exact unpaid change');
+      await capture('cash-register-selected');
+      await viewport(1920, 1080); s = await state(); await capture('cash-register-selected-large');
+      check(s.cashKeys.every(r => r.width > 20 && r.y + r.height < height - 48), 'Large cash view retains all commands above help bar');
+      await clickRect(s.cashKeys[3]); s = await state();
+      check(s.sales === 1 && s.balance === balance + price && s.drawer === s.balance, 'Physical cash approval settles exactly once');
+      check(s.device === 'None' && s.cameraFov === normalFov, 'Completed cash sale restores normal camera');
+      await enter(); s = await state();
+      check(s.sales === 1 && s.balance === balance + price, 'Repeated Enter cannot charge completed cash sale twice');
+      await viewport(1280, 720); await probe('Prepare', 'cash'); await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); s = await state();
+      check(s.device === 'None' && !s.menu && s.cameraFov === normalFov, 'Escape leaves register and restores original lens');
+    }
+
     if (!selected || selected === 'shelf-labels') {
       await probe('Prepare', 'shelf-labels'); let s = await state();
       check(!s.warehouseShelfLabel && !s.retailShelfLabel && !s.supplyPrompt, 'Empty shelves have blank labels and no pickup prompt');
