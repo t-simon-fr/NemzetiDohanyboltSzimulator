@@ -1,0 +1,60 @@
+{
+  "sourceReport": "Builds/Verification/acceptance-1793790016943/report.json",
+  "sourceReportSha256": "8C65EB70D0D3DA62A5700C93CFC23A3D460DC1079F5AC631EE6424307B1D2E83",
+  "started": "2026-11-04T11:00:16.943Z",
+  "finished": "2026-11-04T11:00:38.615Z",
+  "result": "passed",
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 0,
+    "bytes": 21067847,
+    "seconds": 237.82142679999998,
+    "error": "",
+    "completedUtc": "2026-11-04T10:58:25.058Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "f999af146a703cb87de3c42de0e669c0d719547cdc7d852b456240476a59c5b8",
+      "AcceptanceWebGL.framework.js.unityweb": "40b6668c54ff38e4aee76c2ad9154c67b6b00449db7d50ec526467df5600b3f4",
+      "AcceptanceWebGL.loader.js": "c388bbadf68b97dc389ddcc72285a72cc34abb88f62dabfb3d819a5aadbbafad",
+      "AcceptanceWebGL.wasm.unityweb": "a87cc019d93b7538e24485e66569f7b4d5c385176ec0ffb7e7ff0e7ea28e3034"
+    }
+  },
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Five physical Dnyipro packs fit under counter",
+      "passed": true
+    },
+    {
+      "label": "E retrieves real private pack and reserves its source slot",
+      "passed": true
+    },
+    {
+      "label": "E returns pack to dedicated under-counter slot",
+      "passed": true
+    },
+    {
+      "label": "Closed sign reads ZARVA from street",
+      "passed": true
+    },
+    {
+      "label": "E flips door sign to street-facing NYITVA",
+      "passed": true
+    },
+    {
+      "label": "E flips back without ending day",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-private-stock.png",
+    "1280x720-door-outside-closed.png",
+    "1280x720-door-outside-open.png",
+    "1280x720-door-inside.png"
+  ]
+}
