@@ -245,6 +245,8 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       for (let i = 0; i < 40 && !opened; i++) { await sleep(200); opened = (await state()).entranceOpen; }
       check(opened, 'Arriving NPC opens physical entrance');
       await capture('entrance-npc-open');
+      for (let i = 0; i < 40 && (await state()).entranceOpen; i++) await sleep(200);
+      await probe('Action', 'aim-sign');
       await key('e', 'KeyE', 69);
       s = await state();
       check(s.phase === 'Closing' && s.modal === 'None', 'E on sign closes without summary');

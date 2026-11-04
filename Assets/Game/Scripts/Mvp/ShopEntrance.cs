@@ -13,6 +13,8 @@ public sealed class ShopEntrance : MonoBehaviour
     public Vector3 Position => root.position;
     public bool IsOpen => angle > 5f;
     public BoxCollider PlayerBoundary { get; private set; }
+    public Transform Sign => signPivot;
+    public Transform DoorLeaf => hinge;
 
     public void Configure(MvpShopController owner)
     {
@@ -34,22 +36,30 @@ public sealed class ShopEntrance : MonoBehaviour
         hinge.SetParent(root, false);
         hinge.localPosition = Vector3.left * (width * .5f - .04f);
         var paint = Material("Entrance paint", new Color(.14f, .23f, .21f));
-        var panel = Material("Entrance panel", new Color(.38f, .44f, .40f));
         var handle = Material("Entrance handle", new Color(.63f, .64f, .60f));
         float leafWidth = width - .08f;
-        Box("Door panel", new Vector3(leafWidth * .5f, height * .5f, 0), new Vector3(leafWidth, height - .04f, .065f), paint);
-        Box("Door inset", new Vector3(leafWidth * .5f, height * .63f, .039f), new Vector3(leafWidth - .22f, height * .54f, .018f), panel);
+        Box("Door lower panel", new Vector3(leafWidth * .5f, .45f, 0), new Vector3(leafWidth, .86f, .065f), paint);
+        foreach (float x in new[] { .055f, leafWidth - .055f })
+            Box("Door stile", new Vector3(x, height * .5f, 0), new Vector3(.11f, height-.04f, .065f), paint);
+        Box("Door top rail", new Vector3(leafWidth*.5f,height-.07f,0),new Vector3(leafWidth,.10f,.065f),paint);
+        var glass = new Material(Shader.Find("Shop/PET")) { name="Entrance glass", color=new Color(.75f,.86f,.85f,.12f), renderQueue=3000 };
+        materials.Add(glass);
+        Box("Door glass",new Vector3(leafWidth*.5f,(height+.88f)*.5f,0),new Vector3(leafWidth-.22f,height-.98f,.009f),glass);
         Box("Door handle", new Vector3(leafWidth - .16f, 1.05f, .09f), new Vector3(.035f, .23f, .05f), handle);
 
         var sign = GameObject.Find("Open Close Sign");
         signPivot = new GameObject("Opening Sign Pivot").transform;
-        signPivot.SetParent(transform, false);
-        signPivot.position = sign.transform.position;
-        sign.transform.SetParent(signPivot, true);
+        signPivot.SetParent(hinge, false);
+        signPivot.localPosition = new Vector3(leafWidth*.5f,1.5f,0);
+        sign.transform.SetParent(signPivot, false);
+        sign.transform.localPosition = Vector3.zero;
+        sign.transform.localRotation = Quaternion.identity;
+        // Reach the sign in front of the fixed player boundary on both sides.
+        sign.GetComponent<BoxCollider>().size = new Vector3(1,1,3);
         var oldLabel = GameObject.Find("Nyitás felirat");
         if (oldLabel != null) oldLabel.SetActive(false);
-        ProductVisuals.Text(signPivot, "Closed sign face", "ZÁRVA\nE – Nyitás", new Vector3(0, 0, .052f), Quaternion.Euler(0, 180, 0), .065f, Color.white);
-        ProductVisuals.Text(signPivot, "Open sign face", "NYITVA\nE – Zárás", new Vector3(0, 0, -.052f), Quaternion.identity, .065f, Color.white);
+        ProductVisuals.Text(signPivot, "Closed sign face", "ZÁRVA", new Vector3(0, 0, -.052f), Quaternion.identity, .065f, Color.white);
+        ProductVisuals.Text(signPivot, "Open sign face", "NYITVA", new Vector3(0, 0, .052f), Quaternion.Euler(0,180,0), .065f, Color.white);
     }
 
     public void RequestPassage(Vector3 from)
@@ -60,14 +70,15 @@ public sealed class ShopEntrance : MonoBehaviour
             passageTime = .8f;
     }
 
-    private void Update()
+    private void Update() => Tick(Time.deltaTime);
+    public void Tick(float dt)
     {
         if (root == null || ShopMenu.Active || ShopInputGate.Blocked) return;
-        passageTime = Mathf.Max(0, passageTime - Time.deltaTime);
-        angle = Mathf.MoveTowards(angle, passageTime > 0 && !shop.Security.Locked ? 100 : 0, 240 * Time.deltaTime);
+        passageTime = Mathf.Max(0, passageTime - dt);
+        angle = Mathf.MoveTowards(angle, passageTime > 0 && !shop.Security.Locked ? 100 : 0, 240 * dt);
         hinge.localRotation = Quaternion.Euler(0, angle, 0);
         signPivot.localRotation = Quaternion.RotateTowards(signPivot.localRotation,
-            Quaternion.Euler(0, shop.Phase == ShopPhase.Open ? 180 : 0, 0), 360 * Time.deltaTime);
+            Quaternion.Euler(0, shop.Phase == ShopPhase.Open ? 180 : 0, 0), 360 * dt);
     }
 
     private Material Material(string title, Color color)

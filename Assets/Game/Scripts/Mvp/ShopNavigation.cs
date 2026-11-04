@@ -26,6 +26,7 @@ public sealed class ShopNavigation : MonoBehaviour
         {
             if (!collider.enabled || collider.isTrigger || collider == shop.Entrance.PlayerBoundary ||
                 collider == shop.Security.EntranceCollider || collider.gameObject.layer == 2) continue;
+            if (collider.transform.IsChildOf(shop.Entrance.DoorLeaf)) continue;
             if (collider.GetComponentInParent<MvpCustomerActor>() != null || collider.GetComponentInParent<ShopHandTool>() != null ||
                 collider.GetComponentInParent<WarehouseCarton>() != null || collider.GetComponentInParent<ShopFurniture>() != null) continue;
             var product = collider.GetComponentInParent<ShopProduct>();

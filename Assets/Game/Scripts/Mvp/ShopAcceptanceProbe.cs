@@ -124,7 +124,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.OpenShop();
             Shop.RequestClose();
             Shop.Tick(.1f);
-            Aim(Shop.Entrance.Position + Vector3.up * 1.3f);
+            Aim(Shop.Entrance.Position + Vector3.up * .95f);
             Shop.ManualTick = false;
         }
         else if (scenario == "menu") Shop.GetComponent<ShopMenu>().Open();
@@ -145,10 +145,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.OpenShop();
             Shop.RequestClose();
             Shop.Tick(.1f);
-            Aim(Shop.Entrance.Position + Vector3.up * 1.3f);
+            Aim(Shop.Entrance.Position + Vector3.up * .95f);
         }
-        if (action == "aim-door") Aim(Shop.Entrance.Position + Vector3.up * 1.3f);
-        if (action == "view-entrance") Aim(Shop.Entrance.Position + Vector3.up * 1.3f, 1.65f);
+        if (action == "aim-sign") Aim(Shop.Entrance.Sign.position);
+        if (action == "aim-door") Aim(Shop.Entrance.Position + Vector3.up * .95f);
+        if (action == "view-entrance") Aim(Shop.Entrance.Position + Vector3.up * .95f, 1.65f);
         if (action == "drain-shop")
         {
             for (int i = 0; i < 3000 && !Shop.CanEndDay; i++)
@@ -184,7 +185,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Vector3 eye = target + (counter ? Vector3.left : Vector3.forward) * distance;
         // The relocated sign is beside the counter end; approach from the door
         // rather than placing the test player inside the counter body.
-        if (target.z < -4.2f && target.x < .4f) eye.x = ShopFloorPlan.EntranceX + .7f;
+        if (target.z < -4.2f && Mathf.Abs(target.y - 1.5f) < .1f) eye.x = ShopFloorPlan.EntranceX + .7f;
         eye.y = Mathf.Max(target.y + .3f, 1.75f);
         Vector3 horizontal = target - eye;
         horizontal.y = 0;
