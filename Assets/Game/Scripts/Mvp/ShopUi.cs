@@ -107,6 +107,7 @@ public static class ShopUi
     public static string Key(Key key)
     {
         var resolved = ShopBindings.Resolve(key);
+        if (resolved == UnityEngine.InputSystem.Key.LeftShift) return "Bal Shift";
         return resolved == UnityEngine.InputSystem.Key.Escape ? "Esc" : resolved.ToString();
     }
 

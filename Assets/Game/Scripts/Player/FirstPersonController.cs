@@ -10,6 +10,8 @@ public sealed class FirstPersonController : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField, Min(0f)] private float moveSpeed = 3.5f;
+    [SerializeField, Min(1f)] private float sprintMultiplier = 1.65f;
+    [SerializeField, Min(0f)] private float jumpHeight = .65f;
     [SerializeField] private float gravity = -20f;
 
     [Header("Look")]
@@ -18,6 +20,9 @@ public sealed class FirstPersonController : MonoBehaviour
 
     private float pitch;
     private float verticalVelocity;
+    public bool IsGrounded => characterController != null && characterController.isGrounded;
+    public float VerticalSpeed => verticalVelocity;
+    public float CurrentSpeed { get; private set; }
 
     private void Awake()
     {
@@ -44,7 +49,8 @@ public sealed class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
-        if (ShopInputGate.Blocked) { SetCursorLocked(false); return; }
+        if (ShopInputGate.Blocked) { CurrentSpeed = 0; SetCursorLocked(false); return; }
+        if (!Application.isFocused) return;
         Keyboard keyboard = Keyboard.current;
         Mouse mouse = Mouse.current;
         if (keyboard == null || characterController == null || viewTransform == null)
@@ -86,18 +92,29 @@ public sealed class FirstPersonController : MonoBehaviour
         if (ShopBindings.Held(UnityEngine.InputSystem.Key.W)) input.y += 1f;
         input = Cursor.lockState == CursorLockMode.Locked ? Vector2.ClampMagnitude(input, 1f) : Vector2.zero;
 
+        bool locked = Cursor.lockState == CursorLockMode.Locked;
+        StepMovement(input, locked && ShopBindings.Held(Key.LeftShift), locked && ShopBindings.Pressed(Key.Space), Time.deltaTime);
+    }
+
+    // Shared by actual input and scene checks; collision remains CharacterController-owned.
+    public void StepMovement(Vector2 input, bool sprint, bool jump, float dt)
+    {
+        if (ShopInputGate.Blocked || ShopMenu.Active || Time.timeScale == 0 || characterController == null || !characterController.enabled || dt <= 0) return;
+        input = Vector2.ClampMagnitude(input, 1f);
         if (characterController.isGrounded && verticalVelocity < 0f)
         {
             verticalVelocity = -2f;
         }
-        else
+        if (jump && characterController.isGrounded && gravity < 0)
         {
-            verticalVelocity += gravity * Time.deltaTime;
+            verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
-
-        Vector3 planarMovement = (transform.right * input.x + transform.forward * input.y) * moveSpeed;
+        verticalVelocity += gravity * dt;
+        CurrentSpeed = moveSpeed * (sprint ? sprintMultiplier : 1f) * input.magnitude;
+        Vector3 planarMovement = (transform.right * input.x + transform.forward * input.y) * (moveSpeed * (sprint ? sprintMultiplier : 1f));
         Vector3 movement = planarMovement + Vector3.up * verticalVelocity;
-        characterController.Move(movement * Time.deltaTime);
+        var collision = characterController.Move(movement * dt);
+        if ((collision & CollisionFlags.Above) != 0 && verticalVelocity > 0) verticalVelocity = 0;
     }
 
     private static void SetCursorLocked(bool locked)

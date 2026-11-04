@@ -103,6 +103,11 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await send('Input.dispatchKeyEvent', { type: 'keyDown', key: name, code, windowsVirtualKeyCode: number }); await sleep(100);
       await send('Input.dispatchKeyEvent', { type: 'keyUp', key: name, code, windowsVirtualKeyCode: number }); await sleep(200);
     };
+    const hold = async (keys, milliseconds) => {
+      for (const [key, code, windowsVirtualKeyCode] of keys) await send('Input.dispatchKeyEvent', { type: 'keyDown', key, code, windowsVirtualKeyCode });
+      await sleep(milliseconds);
+      for (const [key, code, windowsVirtualKeyCode] of [...keys].reverse()) await send('Input.dispatchKeyEvent', { type: 'keyUp', key, code, windowsVirtualKeyCode });
+    };
     const type = async text => { for (const digit of text) await key(digit, 'Digit' + digit, 48 + Number(digit)); };
     const enter = () => key('Enter', 'Enter', 13);
     const ready = async () => {
@@ -117,6 +122,26 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
     await clickRect((await state()).menuStart);
     check(!(await state()).menu, 'Main menu starts by mouse');
 
+    if (!selected || selected === 'movement') {
+      const forward = ['w', 'KeyW', 87], sprint = ['Shift', 'ShiftLeft', 16], jump = [' ', 'Space', 32];
+      await probe('Prepare', 'movement'); await sleep(300); let start = await state();
+      await hold([forward], 500); let s = await state(); const walked = s.position.z - start.position.z;
+      check(walked > 1.3 && walked < 2.2, 'Actual W input walks at normal speed');
+      await probe('Prepare', 'movement'); await sleep(300); start = await state();
+      await hold([sprint, forward], 500); s = await state();
+      check(s.position.z - start.position.z > walked * 1.35, 'Actual Shift+W input sprints faster');
+      await probe('Prepare', 'movement'); await sleep(300); start = await state();
+      await send('Input.dispatchKeyEvent', { type: 'keyDown', key: ' ', code: 'Space', windowsVirtualKeyCode: 32 });
+      await sleep(100); s = await state();
+      check(s.position.y > start.position.y + .2 && !s.grounded, 'Actual Space input jumps from ground');
+      await sleep(700); s = await state();
+      check(s.grounded && Math.abs(s.position.y - start.position.y) < .08, 'Holding Space lands without automatic repeated jumps');
+      await send('Input.dispatchKeyEvent', { type: 'keyUp', key: ' ', code: 'Space', windowsVirtualKeyCode: 32 });
+      await key('Escape', 'Escape', 27); start = await state(); await hold([sprint, forward, jump], 400); s = await state();
+      check(s.menu && s.position.y === start.position.y && s.position.z === start.position.z, 'Pause blocks actual sprint and jump inputs');
+      await probe('Prepare', 'summary'); await hold([sprint, forward, jump], 900); s = await state();
+      check(s.position.z > -4.4 && s.phase === 'AfterHours', 'Sprint and jump cannot cross real shop entrance boundary');
+    }
     if (!selected || selected === 'card') {
       await probe('Prepare', 'card'); let s = await state();
       check(s.stage === 'Payment' && s.sales === 0, 'Real card customer and complete basket');
