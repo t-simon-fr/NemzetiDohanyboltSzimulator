@@ -17,7 +17,8 @@
       "floor-plan",
       "arrangement",
       "door-storage",
-      "ui-presentation"
+      "ui-presentation",
+      "player-movement"
     ]
   },
   "suites": {
@@ -70,6 +71,11 @@
       "file": "Tools/Checks/ArrangementChecks.cs",
       "entry": "ArrangementChecks.Run",
       "purpose": "A* detours, invalid placement, atomic save/cancel, stocked item identity and next-day persistence"
+    },
+    "player-movement": {
+      "file": "Tools/Checks/PlayerMovementChecks.cs",
+      "entry": "PlayerMovementChecks.Run",
+      "purpose": "Real controller sprint normalization, grounded jump, ceiling collision and device/pause gates"
     },
     "ui-presentation": {
       "file": "Tools/Checks/UiPresentationChecks.cs",

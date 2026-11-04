@@ -47,12 +47,30 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Prepare(string scenario)
     {
+        var oldFloor = GameObject.Find("Acceptance movement floor");
+        if (oldFloor != null) { oldFloor.SetActive(false); Destroy(oldFloor); }
         Player.CancelHeld();
         Shop.GetComponent<ShopMenu>().Resume();
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "ui-order")
+        if (scenario == "movement")
+        {
+            var floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            floor.name = "Acceptance movement floor";
+            floor.transform.position = new Vector3(100, -.1f, 100);
+            floor.transform.localScale = new Vector3(24, .2f, 24);
+            var body = Player.GetComponent<CharacterController>();
+            body.enabled = false;
+            Player.transform.SetPositionAndRotation(new Vector3(100, .1f, 100), Quaternion.identity);
+            View.transform.localRotation = Quaternion.Euler(15, 0, 0);
+            typeof(FirstPersonController).GetField("pitch", Private).SetValue(Player.GetComponent<FirstPersonController>(), 15f);
+            typeof(FirstPersonController).GetField("verticalVelocity", Private).SetValue(Player.GetComponent<FirstPersonController>(), -2f);
+            body.enabled = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else if (scenario == "ui-order")
         {
             Visit(2, 0);
             Set(Shop.ActiveCustomer, "OrderTypes", new[] { 0, 0, 1 });
@@ -256,6 +274,8 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public ShopOrderLine[] orderLines;
         public Rect menuStart, menuSettings, menuBinding, menuDefaults, menuBack, cardConfirm, cardBack;
         public bool settingsOpen, movementLearned;
+        public bool grounded;
+        public float verticalSpeed;
     }
 
     [Preserve]
@@ -319,6 +339,8 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.orderLines = hud.OrderLines;
         state.uiNotice = hud.CurrentNotice;
         state.spoken = g.Dialogue;
+        state.grounded = Player.GetComponent<FirstPersonController>().IsGrounded;
+        state.verticalSpeed = Player.GetComponent<FirstPersonController>().VerticalSpeed;
         Debug.Log("ACCEPTANCE_STATE:" + JsonUtility.ToJson(state));
     }
 }

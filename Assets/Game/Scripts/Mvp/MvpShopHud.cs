@@ -168,7 +168,7 @@ public sealed class MvpShopHud : MonoBehaviour
         GUILayout.BeginArea(new Rect(278, 132, 724, 440));
         helpScroll = GUILayout.BeginScrollView(helpScroll);
         string[] sections = {
-            "A BOLTBAN\nW / A / S / D: mozgás  •  Egér: körülnézés\nE: használat, felvétel vagy lerakás  •  G: eldobás\nB: számítógép a pultnál  •  F: kassza  •  Esc: menü",
+            "A BOLTBAN\nW / A / S / D: mozgás  •  Egér: körülnézés\n" + ShopUi.Key(Key.LeftShift) + ": sprint  •  " + ShopUi.Key(Key.Space) + ": ugrás (csak a földről)\nE: használat, felvétel vagy lerakás  •  G: eldobás\nB: számítógép a pultnál  •  F: kassza  •  Esc: menü",
             "KISZOLGÁLÁS\nA jobb oldali listán követheted az átadott darabszámokat. Tedd a kért árut az átadóhelyre. T: helyettesítés készlethiánynál. X: aktuális vevő elküldése.",
             "FELTÖLTÉS\nE a raktári dobozon: felvétel. Dobozzal E a zöld helyen: egy termék kipakolása. Az üres kartont a hátsó papírgyűjtő fogadja. A pult alatti rekesz csak Dnyipro csomagoknak való.",
             "KASSZA\n1–6: bankjegy  •  Shift + 1–6: érme\nEnter: fizetés  •  Backspace: javítás  •  Del: törlés\nKártyánál írd be a pontos fizetendő összeget. Tab / nyilak: választás, Space: kiválasztás.",
