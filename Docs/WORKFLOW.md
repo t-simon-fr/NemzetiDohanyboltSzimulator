@@ -8,6 +8,8 @@ GitHub issue az önálló funkció vagy bug alapegysége. A #1 issue megmarad t�
 
 Egy issue → rövid terv → `feature/<issue>-<slug>` vagy `fix/<issue>-<slug>` ág → megvalósítás → ellenőrzés → külön commit → PR a sablonnal. Nagy issue-t bonts kisebb, külön ellenőrizhető részekre. Minden commit működő állapotot adjon; kapcsolódó refaktor mehet vele, idegen funkció nem. Korábbi, már mainre került csomagokat nem írunk át utólag. A user által kért közvetlen main munka felülírja az ág/PR alapértelmezést.
 
+A felhasználó állandó felhatalmazása alapján a kész, ellenőrzött munka PR-jét külön rákérdezés nélkül mergeld mainre. A függő PR-eket sorrendben vezesd össze, a következő PR-t szükség szerint irányítsd mainre. Tartsd be a kötelező ellenőrzéseket és review-kat; feloldatlan hibával vagy konfliktussal ne mergelj. Ellenőrizd a távoli merge állapotát és a main tartalmát; változatlan tesztelt kódhoz ne indíts új teljes buildet. A munka végén a forrás legyen mainen, a kapcsolódó issue-k állapota legyen rendezve. A Pages-publikálás továbbra is külön engedélyt igényel.
+
 ### 2.1. Rövid fejlesztési körök
 
 A felhasználó kérése alapján a gyorsan kipróbálható eredmény és az arányos ellenőrzés az alapértelmezés:
