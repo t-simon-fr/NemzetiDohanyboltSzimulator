@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+**Aktuális Pages-kiadás (2026-11-04):** minden elkészült, mainre mergelt fejlesztés #37-ig publikálva. Forrás `fa37203`, publish `a5b7484`. [Élő játék](https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/?v=fa37203), [kiadási jelentés](../Acceptance/2026-11-04-pages/REPORT.md). A lenti korábbi „még nincs kiadva” megjegyzések történeti állapotot írnak le.
+
 - #2–#8: implementáció, Unity-integrációs és helyi WebGL-bemeneti ellenőrzés kész. Részletek: [elfogadási jelentés](../Acceptance/2026-11-03/REPORT.md).
 - Aktuális checkout profil: **469 sikeres állítás**, 19 csoport. #37: 9 kézinterakciós + 12 aprópénzes + 15 készpénzes WebGL-próba, 0 konzolhiba; [jelentés](../Acceptance/2026-11-04-customer-hand/REPORT.md). #35: 15 készpénzes + 12 aprópénzes WebGL-ellenőrzés sikeres, 0 konzolhiba; [jelentés](../Acceptance/2026-11-04-forint/REPORT.md). #33: 15 készpénzes + 17 kártyaterminál WebGL-ellenőrzés sikeres, 0 konzolhiba; 1280×720 és 1920×1080 képek átnézve. A korábbi csomagok eredményei a saját jelentéseikben szerepelnek.
 - Javítva az elkészült kávé téves hiányjelzése és a HUD-on ismétlődő vevői mondat.

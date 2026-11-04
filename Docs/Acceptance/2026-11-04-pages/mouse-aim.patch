@@ -1,0 +1,34 @@
+--- Tools/Verify-Acceptance.cjs
++++ release-only-real-aim-runner.cjs
+@@ -306,14 +306,26 @@
+       check(s.received === 3 && s.missing === 0 && s.stage === 'Payment', 'Three identical cigarettes recognized');
+       check(s.receipts.every((p, i) => s.receipts.every((q, j) => i === j || Math.hypot(p.x - q.x, p.z - q.z) > .2)), 'Three identical items have separate positions'); await capture('triple');
+     }
++    const worldClick = async () => {
++      await send('Input.dispatchMouseEvent', {type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1}); await sleep(100);
++      await send('Input.dispatchMouseEvent', {type:'mouseReleased',x:width/2,y:height/2,button:'left',clickCount:1}); await sleep(300);
++    };
++    const aimedWorldAction = async (action, ready) => {
++      await action(); let s = await state(); if (ready(s)) return s;
++      let previous = 0;
++      for (const y of [...Array.from({length:40},(_,i)=>(i+1)*5), ...Array.from({length:40},(_,i)=>-(i+1)*5)]) {
++        await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:width/2,y:height/2+y,movementX:0,movementY:y-previous}); previous=y;
++        await sleep(80); await action(); s=await state(); if(ready(s)) return s;
++      }
++      throw Error('Real mouse aiming did not reach the intended interaction');
++    };
+     if (!selected || selected === 'mouse') {
+-      await probe('Prepare', 'pickup'); await click(width / 2, height / 2); let s = await state();
+-      if (!s.held) { await click(width / 2, height / 2); s = await state(); }
++      await probe('Prepare', 'pickup'); let s = await aimedWorldAction(worldClick, s=>s.held === 'cig_red');
+       check(s.held === 'cig_red', 'Left click picks up physical cigarette'); await capture('mouse-held');
+-      await probe('Action', 'aim-place'); await click(width / 2, height / 2); s = await state();
++      await probe('Action', 'aim-place'); s = await aimedWorldAction(worldClick, s=>!s.held && s.received === 1);
+       check(!s.held && s.received === 1, 'Left click places physical cigarette'); await capture('mouse-placed');
+-      await probe('Prepare', 'pickup'); await key('e', 'KeyE', 69); check((await state()).held === 'cig_red', 'Keyboard picks up physical cigarette');
+-      await probe('Action', 'aim-place'); await key('e', 'KeyE', 69); check(!(await state()).held, 'Keyboard places physical cigarette');
++      await probe('Prepare', 'pickup'); await aimedWorldAction(()=>key('e','KeyE',69), s=>s.held === 'cig_red'); check((await state()).held === 'cig_red', 'Keyboard picks up physical cigarette');
++      await probe('Action', 'aim-place'); await aimedWorldAction(()=>key('e','KeyE',69), s=>!s.held); check(!(await state()).held, 'Keyboard places physical cigarette');
+       await probe('Prepare', 'bat'); await click(width / 2, height / 2); s = await state(); check(s.tool === 'Bat' && s.message.includes('tolvajt'), 'Bat retains left-click swing action');
+       await probe('Prepare', 'mop'); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); await sleep(2200);
+       await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); s = await state(); check(s.tool === 'Mop' && s.dirt === 0, 'Mop retains held left-click cleaning'); await capture('mop-cleaned');

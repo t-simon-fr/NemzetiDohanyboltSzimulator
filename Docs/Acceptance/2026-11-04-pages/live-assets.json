@@ -1,0 +1,39 @@
+{
+  "url": "https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/",
+  "verifiedUtc": "2026-11-04T21:51:26.245Z",
+  "sourceCommit": "fa372031d3a53d4475fd7d6bd8cc00d1657546c7",
+  "files": [
+    {
+      "file": "Build/WebGL.data.unityweb",
+      "bytes": 13210576,
+      "sha256": "9f52419078ca42dc64ea883aaa7719390531a3396d09a51b4138cc014a177ea9",
+      "passed": true
+    },
+    {
+      "file": "Build/WebGL.framework.js.unityweb",
+      "bytes": 75003,
+      "sha256": "f34f249ba304863ec1c08a8ff60b85d0a88a8231f9ea2d54dcbf9e6e48fb9c96",
+      "passed": true
+    },
+    {
+      "file": "Build/WebGL.loader.js",
+      "bytes": 48779,
+      "sha256": "844d1daa5e06623701399e19f26d6f55b29b8bc749cca392a8844913fa74fb4a",
+      "passed": true
+    },
+    {
+      "file": "Build/WebGL.wasm.unityweb",
+      "bytes": 9800021,
+      "sha256": "6ae7dba4944e2c8606c47a82300824430bbd4fdc973bb73cede98ab2a53f7e1b",
+      "passed": true
+    },
+    {
+      "file": "index.html",
+      "bytes": 6502,
+      "sha256": "c2d4cca3e26d084744c0725dce0cba8e3e2acf3ec399edabe126a28c6f0bec93",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "result": "passed"
+}
