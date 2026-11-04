@@ -3,7 +3,7 @@
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
 - #2–#8: implementáció, Unity-integrációs és helyi WebGL-bemeneti ellenőrzés kész. Részletek: [elfogadási jelentés](../Acceptance/2026-11-03/REPORT.md).
-- Aktuális checkout profil: **310 sikeres állítás**, 15 csoport. A #23–#25 integrált WebGL-próbája: **113 teljes + 19 célzott sikeres ellenőrzés, 0 konzolhiba**, mindkét felbontásban átnézve. Korábbi UI-csomag: 73 teljes + 9 célzott sikeres böngészős ellenőrzés; pontos hatókör a #22 jelentésében.
+- Aktuális checkout profil: **342 sikeres állítás**, 16 csoport. #31: 11 sikeres célzott WebGL-ellenőrzés, 0 konzolhiba; 1280×720 és 1920×1080 képek átnézve. A korábbi csomagok eredményei a saját jelentéseikben szerepelnek.
 - Javítva az elkészült kávé téves hiányjelzése és a HUD-on ismétlődő vevői mondat.
 - #11: Misi és Nóra saját karakterkoncepciója, abszurd személyisége és dialógusterve elkészült a `docs/11-character-concept` ágon. A 3D-modellek és játékbeli dialógus-integráció még nincs implementálva.
 - A kassza/kéz grafikai átdolgozását a felhasználó félretette. Az ajtó/tábla alapú napváltás kiadva (#13); a pult alatti csempészáru (#20) és az ajtóra tett kifelé olvasható tábla (#21) implementálva és ellenőrizve, kiadás nélkül.
