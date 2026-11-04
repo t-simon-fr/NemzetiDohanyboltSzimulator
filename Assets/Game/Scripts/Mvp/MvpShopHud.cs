@@ -173,7 +173,8 @@ public sealed class MvpShopHud : MonoBehaviour
             "FELTÖLTÉS\nE a raktári dobozon: felvétel. Dobozzal E a zöld helyen: egy termék kipakolása. Az üres kartont a hátsó papírgyűjtő fogadja. A pult alatti rekesz csak Dnyipro csomagoknak való.",
             "KASSZA\n1–6: bankjegy  •  Shift + 1–6: érme\nEnter: fizetés  •  Backspace: javítás  •  Del: törlés\nKártyánál írd be a pontos fizetendő összeget. Tab / nyilak: választás, Space: kiválasztás.",
             "MŰSZAK\nE az ajtó tábláján: nyitás vagy zárás. Az óra nyitáskor indul. Zárás után várd meg a vendégek távozását, majd üres kézzel E az ajtó alsó részén: nap lezárása.",
-            "TOBACCOS\nA monitoron rendelsz árut, vásárolsz fejlesztést és rendezed át az üzletet. Tab / nyilak és Enter is használható. Az átrendezés szünetelteti a boltot; a kamerák és játékok közben tovább folyik a műszak."
+            "TOBACCOS\nA monitoron rendelsz árut, vásárolsz fejlesztést és rendezed át az üzletet. Tab / nyilak és Enter is használható. Az átrendezés szünetelteti a boltot; a kamerák és játékok közben tovább folyik a műszak.",
+            "PÉNZKÉPEK\nForrás: Magyar Nemzeti Bank — mnb.hu. Bankjegytervek: Pálinkás György. Az eredeti MNB-illusztrációk felhasználásával."
         };
         foreach (string section in sections)
         {

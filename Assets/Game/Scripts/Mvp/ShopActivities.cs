@@ -14,7 +14,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     private readonly List<Camera> cameras=new List<Camera>();
     private readonly List<RenderTexture> cameraImages=new List<RenderTexture>();
     private readonly List<ShopFeatureTarget> spills=new List<ShopFeatureTarget>();
-    private Material metal,ivory,dark,coffee,skin,coin,dirt;
+    private Material metal,ivory,dark,coffee,skin,dirt;
     private ShopHandTool bat,mop;
     private Vector3 batHome,mopHome;
     private float dirtTimer=48,coffeeDelivery,brewRemaining,cameraTimer,snakeTimer,swingCooldown;
@@ -43,7 +43,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         shop=controller;player=interactor;
         worldRoot=new GameObject("Shop Activities").transform;worldRoot.SetParent(transform,false);
         metal=Mat("Brushed steel",new Color(.45f,.49f,.51f));ivory=Mat("Coffee porcelain",new Color(.90f,.87f,.78f));dark=Mat("Activities charcoal",new Color(.045f,.065f,.07f));
-        coffee=Mat("Coffee",new Color(.12f,.055f,.018f));skin=Mat("Customer palm",new Color(.73f,.54f,.39f));coin=Mat("Customer coins",new Color(.77f,.64f,.29f));dirt=Mat("Floor stain",new Color(.18f,.13f,.055f));
+        coffee=Mat("Coffee",new Color(.12f,.055f,.018f));skin=Mat("Customer palm",new Color(.73f,.54f,.39f));dirt=Mat("Floor stain",new Color(.18f,.13f,.055f));
         var spare=shop.DeliverySlot.transform.parent.Find("Counter Slot 1");BasketSlot=spare!=null?spare.GetComponent<ProductSlot>():new GameObject("Customer basket handover").AddComponent<ProductSlot>();BasketSlot.transform.SetParent(shop.DeliverySlot.transform.parent,false);
         BasketSlot.transform.localPosition=new Vector3(.47f,.012f,-.01f);BasketSlot.Configure(new Vector3(.35f,.4f,.33f));
         Box(BasketSlot.transform,"Customer basket mat",new Vector3(-.13f,-.006f,-.13f),new Vector3(.58f,.006f,.58f),metal);
@@ -198,9 +198,12 @@ public sealed partial class ShopActivities : MonoBehaviour
         for(int i=0;i<CoinOffer.Coins.Count;i++)
         {
             Vector3 position=new Vector3((i%5-2)*.07f,CoinOffer.Selected[i]?.09f:.035f,(i/5)*.07f-.055f);
-            var item=Shape(root,"Customer coin "+i,position,new Vector3(.058f,.004f,.058f),coin,PrimitiveType.Cylinder,true);
-            var control=item.AddComponent<ShopWorldControl>();control.Kind=WorldControlKind.CustomerCoin;control.Value=i;
-            ProductVisuals.Text(root,"Coin value "+i,CoinOffer.Coins[i].ToString(),position+Vector3.up*.006f,Quaternion.Euler(90,0,0),.018f,Color.black);
+            var item = shop.Devices.MoneyVisuals.Create(root, CoinOffer.Coins[i], position, .058f / .043f);
+            item.name = "Customer coin " + i;
+            item.transform.localRotation = Quaternion.Euler(0, 180, 0);
+            var control = item.AddComponent<ShopWorldControl>();
+            control.Kind = WorldControlKind.CustomerCoin;
+            control.Value = i;
         }
     }
     public void ClearHand(){CoinOffer=null;if(hand!=null){hand.gameObject.SetActive(false);Destroy(hand.gameObject);hand=null;}}

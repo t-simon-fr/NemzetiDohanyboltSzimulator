@@ -162,6 +162,37 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.device === 'None' && !s.menu && s.cameraFov === normalFov, 'Escape leaves register and restores original lens');
     }
 
+    if (!selected || selected === 'forint-coins') {
+      await probe('Prepare', 'coins'); let s = await state();
+      const balance = s.balance, price = s.cashPrice;
+      check(s.device === 'Coins' && new Set(s.offeredCoins).size === 6, 'Palm presents all six official coin denominations');
+      check(s.coinTargets.every(r => r.width > 20 && r.height > 12 && r.x > 0 && r.y > 0 && r.x + r.width < width && r.y + r.height < height - 170), 'Every offered coin has an unobstructed on-screen target');
+      await capture('forint-coins-ready');
+      await clickRect(s.coinPay); s = await state();
+      check(s.sales === 0 && s.balance === balance, 'Empty palm approval cannot charge');
+      const firstValue = s.offeredCoins[0];
+      await clickRect(s.coinTargets[0]); s = await state();
+      check(s.coinSelected === firstValue && s.selectedCoins[0], 'Actual coin face click selects its denomination');
+      await clickRect(s.coinTargets[0]); s = await state();
+      check(s.coinSelected === 0 && !s.selectedCoins[0], 'Actual second coin click deselects');
+      await clickRect(s.coinTargets[0]); s = await state(); await clickRect(s.coinClear); s = await state();
+      check(s.coinSelected === 0 && s.balance === balance, 'Clear returns selected coins without charging');
+      for (const value of [200, 100, 50, 20, 10, 5]) {
+        const index = s.offeredCoins.findIndex((v, i) => v === value && !s.selectedCoins[i]);
+        await clickRect(s.coinTargets[index]); s = await state();
+      }
+      check(s.coinSelected === price && s.sales === 0 && s.balance === balance, 'Actual clicks on all six denominations select exact unpaid amount');
+      await capture('forint-coins-selected');
+      await viewport(1920, 1080); s = await state(); await capture('forint-coins-selected-large');
+      check(s.coinTargets.every(r => r.width > 20 && r.y + r.height < height - 170), 'Large palm view keeps coins above controls');
+      await clickRect(s.coinPay); s = await state();
+      check(s.sales === 1 && s.balance === balance + price && s.drawer === s.balance, 'Real coin approval settles once with conserved cash');
+      check(s.device === 'None' && s.offeredCoins.length === 0, 'Accepted payment clears the physical palm and leaves close view');
+      await enter(); s = await state();
+      check(s.sales === 1 && s.balance === balance + price, 'Repeated approval cannot charge coin sale twice');
+      await viewport(1280, 720);
+    }
+
     if (!selected || selected === 'shelf-labels') {
       await probe('Prepare', 'shelf-labels'); let s = await state();
       check(!s.warehouseShelfLabel && !s.retailShelfLabel && !s.supplyPrompt, 'Empty shelves have blank labels and no pickup prompt');
