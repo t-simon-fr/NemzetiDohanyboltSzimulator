@@ -10,6 +10,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     private MvpShopController shop;
     private PlayerInteractor player;
     private Transform worldRoot,coffeeRoot,hand;
+    private float coinViewYaw;
     private readonly List<Material> materials=new List<Material>();
     private readonly List<Camera> cameras=new List<Camera>();
     private readonly List<RenderTexture> cameraImages=new List<RenderTexture>();
@@ -188,6 +189,24 @@ public sealed partial class ShopActivities : MonoBehaviour
         hand=new GameObject("Customer coin palm").transform;hand.SetParent(customer.transform,false);hand.localPosition=new Vector3(-.22f,shop.DeliverySlot.transform.position.y-customer.transform.position.y+.14f,.32f);
         Shape(hand,"Open palm",new Vector3(0,-.025f,0),new Vector3(.42f,.045f,.23f),skin,PrimitiveType.Capsule);
         for(int i=0;i<4;i++)Shape(hand,"Finger",new Vector3((i-1.5f)*.075f,-.015f,.13f),new Vector3(.055f,.025f,.16f),skin,PrimitiveType.Capsule).transform.localRotation=Quaternion.Euler(90,0,0);
+        coinViewYaw = 0;
+        var hitbox = hand.gameObject.AddComponent<BoxCollider>();
+        // Keep the palm hitbox below the money faces, so it cannot hide coin clicks.
+        hitbox.center = new Vector3(0, -.025f, .035f);
+        hitbox.size = new Vector3(.42f, .045f, .38f);
+        hand.gameObject.AddComponent<ShopStation>().Configure(shop, ShopStationKind.CustomerHand);
+        RefreshHandCoins();
+    }
+    public void FocusCustomerCoins(Camera view)
+    {
+        Vector3 towardPlayer = Vector3.ProjectOnPlane(view.transform.position - hand.position, Vector3.up);
+        if (towardPlayer.sqrMagnitude < .01f) towardPlayer = hand.forward;
+        towardPlayer.Normalize();
+        Vector3 localDirection = hand.InverseTransformDirection(towardPlayer);
+        coinViewYaw = Mathf.Atan2(localDirection.x, localDirection.z) * Mathf.Rad2Deg;
+        view.fieldOfView = 46;
+        view.transform.position = hand.position + Vector3.up * .60f + towardPlayer * .50f;
+        view.transform.LookAt(hand.position + Vector3.up * .015f, Vector3.up);
         RefreshHandCoins();
     }
     public void RefreshHandCoins()
@@ -197,10 +216,10 @@ public sealed partial class ShopActivities : MonoBehaviour
         var root=new GameObject("Offered coins").transform;root.SetParent(hand,false);
         for(int i=0;i<CoinOffer.Coins.Count;i++)
         {
-            Vector3 position=new Vector3((i%5-2)*.07f,CoinOffer.Selected[i]?.09f:.035f,(i/5)*.07f-.055f);
+            Vector3 position=new Vector3((i%5-2)*.07f,CoinOffer.Selected[i]?.045f:.035f,(i/5)*.07f-.055f);
             var item = shop.Devices.MoneyVisuals.Create(root, CoinOffer.Coins[i], position, .058f / .043f);
             item.name = "Customer coin " + i;
-            item.transform.localRotation = Quaternion.Euler(0, 180, 0);
+            item.transform.localRotation = Quaternion.Euler(0, coinViewYaw, 0);
             var control = item.AddComponent<ShopWorldControl>();
             control.Kind = WorldControlKind.CustomerCoin;
             control.Value = i;
