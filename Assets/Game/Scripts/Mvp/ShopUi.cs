@@ -88,8 +88,9 @@ public static class ShopUi
     public static void Fill(Rect rect, Color color)
     {
         var previous = GUI.color;
-        GUI.color = color;
-        GUI.DrawTexture(rect, Texture2D.whiteTexture);
+        // Match GUIStyle textures in both linear Editor and WebGL colour paths.
+        GUI.color = Color.white;
+        GUI.DrawTexture(rect, Solid(color));
         GUI.color = previous;
     }
 
