@@ -1,0 +1,289 @@
+{
+  "sourceReport": "Builds\\Verification\\acceptance-1793787985286\\report.json",
+  "sourceReportSha256": "E83E05B2F15CEBD6C91C3D0256CE27851BFF0269F0C7FCE52AD60DF2E0F9ED4A",
+  "started": "2026-11-04T10:26:25.286Z",
+  "finished": "2026-11-04T10:28:05.149Z",
+  "result": "passed",
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 0,
+    "bytes": 21064430,
+    "seconds": 239.09483369999998,
+    "error": "",
+    "completedUtc": "2026-11-04T10:25:39.762Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "14d834fe506077d8a9d27d563bee9ddf661ee160ea4cabfad2eab5d4587f8018",
+      "AcceptanceWebGL.framework.js.unityweb": "b1d09707d2e26fe9424b3d5902febdcd27d772dd6574acdc77e05c427f8148a2",
+      "AcceptanceWebGL.loader.js": "188c064490292ba0a05b66b2d97eec5245968297d218f1ffa749b189116d8f55",
+      "AcceptanceWebGL.wasm.unityweb": "c99456f173ae19109e31fae4977dacc3400863a1890c262c36efcd9cb598bfbb"
+    }
+  },
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Real card customer and complete basket",
+      "passed": true
+    },
+    {
+      "label": "Empty terminal rejected through Enter",
+      "passed": true
+    },
+    {
+      "label": "Wrong terminal amount does not charge",
+      "passed": true
+    },
+    {
+      "label": "Terminal Backspace edits typed digits",
+      "passed": true
+    },
+    {
+      "label": "Exact card input credits unified physical drawer",
+      "passed": true
+    },
+    {
+      "label": "Repeated Enter cannot double charge",
+      "passed": true
+    },
+    {
+      "label": "Three identical cigarettes recognized",
+      "passed": true
+    },
+    {
+      "label": "Three identical items have separate positions",
+      "passed": true
+    },
+    {
+      "label": "Left click picks up physical cigarette",
+      "passed": true
+    },
+    {
+      "label": "Left click places physical cigarette",
+      "passed": true
+    },
+    {
+      "label": "Keyboard picks up physical cigarette",
+      "passed": true
+    },
+    {
+      "label": "Keyboard places physical cigarette",
+      "passed": true
+    },
+    {
+      "label": "Bat retains left-click swing action",
+      "passed": true
+    },
+    {
+      "label": "Mop retains held left-click cleaning",
+      "passed": true
+    },
+    {
+      "label": "Machine key selects latte",
+      "passed": true
+    },
+    {
+      "label": "Latte without milk preserves coffee",
+      "passed": true
+    },
+    {
+      "label": "Machine makes selected latte",
+      "passed": true
+    },
+    {
+      "label": "Machine makes long coffee",
+      "passed": true
+    },
+    {
+      "label": "Machine makes short coffee",
+      "passed": true
+    },
+    {
+      "label": "Monitor mouse button selects long coffee",
+      "passed": true
+    },
+    {
+      "label": "Monitor mouse button selects latte",
+      "passed": true
+    },
+    {
+      "label": "Monitor mouse button selects short coffee",
+      "passed": true
+    },
+    {
+      "label": "Real shortage offers inline dialogue without modal",
+      "passed": true
+    },
+    {
+      "label": "Inline reply accepts available alternative without charging",
+      "passed": true
+    },
+    {
+      "label": "Customer refuses substitution and leaves without charge",
+      "passed": true
+    },
+    {
+      "label": "Escape pauses world and input",
+      "passed": true
+    },
+    {
+      "label": "Pause blocks clock, movement and world interaction",
+      "passed": true
+    },
+    {
+      "label": "Settings rebind interaction through actual GUI",
+      "passed": true
+    },
+    {
+      "label": "Binding survives WebGL reload",
+      "passed": true
+    },
+    {
+      "label": "Persisted remapped key operates real pickup",
+      "passed": true
+    },
+    {
+      "label": "Settings restore defaults through GUI",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Arrangement pauses world and takes input without pause menu",
+      "passed": true
+    },
+    {
+      "label": "Mouse selects movable shelf",
+      "passed": true
+    },
+    {
+      "label": "Entrance obstruction shows invalid preview without moving shelf",
+      "passed": true
+    },
+    {
+      "label": "Mouse position and keyboard rotation form a valid preview",
+      "passed": true
+    },
+    {
+      "label": "Placing preview changes draft only and keeps exact stock",
+      "passed": true
+    },
+    {
+      "label": "Cancel restores original world, inventory, cash and clock",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Save applies rotated stocked shelf with navigation and no charge",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Purchased fridge can also be moved",
+      "passed": true
+    },
+    {
+      "label": "Save retains fridge position",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Door exit and next day preserve saved layout and stocked item",
+      "passed": true
+    },
+    {
+      "label": "Preparation has no welcome modal and clock is stopped",
+      "passed": true
+    },
+    {
+      "label": "E on sign opens shop and starts clock",
+      "passed": true
+    },
+    {
+      "label": "Arriving NPC opens physical entrance",
+      "passed": true
+    },
+    {
+      "label": "E on sign closes without summary",
+      "passed": true
+    },
+    {
+      "label": "Door refuses end while customer is inside",
+      "passed": true
+    },
+    {
+      "label": "NPC leaves, door closes and player remains in closed shop",
+      "passed": true
+    },
+    {
+      "label": "Player movement cannot cross entrance or silently end day",
+      "passed": true
+    },
+    {
+      "label": "E at closed entrance ends day",
+      "passed": true
+    },
+    {
+      "label": "Next day has no welcome modal and awaits sign",
+      "passed": true
+    },
+    {
+      "label": "Closed shop stays playable",
+      "passed": true
+    },
+    {
+      "label": "Door interaction ends day",
+      "passed": true
+    },
+    {
+      "label": "Enter starts next day preserving drawer",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-card-wrong.png",
+    "1280x720-card-paid.png",
+    "1280x720-triple.png",
+    "1280x720-mouse-held.png",
+    "1280x720-mouse-placed.png",
+    "1280x720-mop-cleaned.png",
+    "1280x720-coffee-no-milk.png",
+    "1280x720-coffee-latte.png",
+    "1280x720-coffee-monitor.png",
+    "1280x720-dialogue-shortage.png",
+    "1280x720-dialogue-multi-item.png",
+    "1280x720-pause.png",
+    "1280x720-settings.png",
+    "1280x720-settings-persisted.png",
+    "1920x1080-settings-large.png",
+    "1920x1080-arrangement-monitor.png",
+    "1920x1080-arrangement-overview.png",
+    "1920x1080-arrangement-invalid.png",
+    "1920x1080-arrangement-draft.png",
+    "1920x1080-arrangement-saved.png",
+    "1920x1080-arrangement-large.png",
+    "1280x720-entrance-closed.png",
+    "1280x720-entrance-npc-open.png",
+    "1280x720-entrance-after-hours.png",
+    "1920x1080-entrance-after-hours-large.png",
+    "1280x720-entrance-summary.png",
+    "1280x720-entrance-next-day.png",
+    "1280x720-summary.png",
+    "1280x720-next-day.png"
+  ]
+}

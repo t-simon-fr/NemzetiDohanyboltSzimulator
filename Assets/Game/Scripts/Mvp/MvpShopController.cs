@@ -60,6 +60,10 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ShopLayout Layout { get; private set; }
     public ShopSecurity Security { get; private set; }
     public ShopEntrance Entrance { get; private set; }
+    public ShopFloorPlan FloorPlan { get; private set; }
+    public ShopNavigation Navigation { get; private set; }
+    public ShopArrangement Arrangement { get; private set; }
+    public ShopCounterStorage CounterStorage { get; private set; }
     public bool CanEndDay => (Phase == ShopPhase.Closing || Phase == ShopPhase.AfterHours) &&
         queue.Count == 0 && departing.Count == 0 && fleeing.Count == 0 && !HasHeldProduct;
     public bool BuyPanicButton() => Security != null && Security.TryPurchase();
@@ -112,6 +116,10 @@ public sealed partial class MvpShopController : MonoBehaviour
         stockRoot = new GameObject("MVP Stock").transform; stockRoot.SetParent(transform, false);
         actorRoot = new GameObject("MVP Customers").transform; actorRoot.SetParent(transform, false);
         stock.AddRange(FindObjectsByType<ShopProduct>().Where(p => p.gameObject.scene == gameObject.scene));
+        FloorPlan = gameObject.AddComponent<ShopFloorPlan>();
+        FloorPlan.Configure(this, player);
+        CounterStorage = gameObject.AddComponent<ShopCounterStorage>();
+        CounterStorage.Configure(this);
         Security = GetComponent<ShopSecurity>();
         if (Security == null) Security = gameObject.AddComponent<ShopSecurity>();
         Security.Configure(this);
@@ -119,12 +127,16 @@ public sealed partial class MvpShopController : MonoBehaviour
         Entrance.Configure(this);
         Activities=gameObject.AddComponent<ShopActivities>();Activities.Configure(this,player);delivery.Configure(new Vector3(.4f,.4f,.4f));gameObject.AddComponent<ShopNextUpgrades>().Configure(this);
         Pricing=gameObject.AddComponent<ShopPricing>();Pricing.Configure(this);AfterHours=gameObject.AddComponent<ShopAfterHours>();AfterHours.Configure(this);
+        Navigation = gameObject.AddComponent<ShopNavigation>();
+        Arrangement = gameObject.AddComponent<ShopArrangement>();
+        Arrangement.Configure(this, player);
+        Navigation.Configure(this);
         Activities.BasketSlot.ProductPlaced+=OnDelivery;
         ResetDemo();gameObject.AddComponent<ShopMenu>().Configure(this);
     }
     private void Update()
     {
-        if (ManualTick || Ledger == null || ShopMenu.Active) return;
+        if (ManualTick || Ledger == null || ShopMenu.Active || Arrangement != null && Arrangement.Active) return;
         Keyboard keyboard = Keyboard.current;
         if (Application.isFocused && keyboard != null)
         {
@@ -152,7 +164,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public void Tick(float dt)
     {
-        if (Ledger == null || Phase == ShopPhase.Summary) return;
+        if (Ledger == null || Phase == ShopPhase.Summary || Arrangement != null && Arrangement.Active) return;
         dt = Mathf.Max(0f, dt);
         if(Phase==ShopPhase.AfterHours){Activities?.Tick(dt);return;}
         for (int i = shipments.Count - 1; i >= 0; i--)
@@ -246,7 +258,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";
     }
     private bool PreparedIsValid()=>active!=null&&receivedOrder.Count==active.OrderTypes.Length&&receivedOrder.All(p=>p!=null&&p.gameObject.activeSelf&&!p.IsHeld&&p.CurrentSlot!=null&&(p.CurrentSlot.name.StartsWith("Order receipt")||p.CurrentSlot==Activities.BasketSlot));
-    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+new Vector3(index==2?-.26f:0,0,index==0?0:-.26f);
+    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+Counter.transform.rotation*new Vector3(index==2?-.26f:0,0,index==0?0:-.26f);
     private bool CollectOrderItem(ShopProduct product)
     {
         receivedOrder.RemoveAll(p=>p==null||p.IsHeld||p.CurrentSlot==null||(!p.CurrentSlot.name.StartsWith("Order receipt")&&p.CurrentSlot!=Activities.BasketSlot));
@@ -394,11 +406,12 @@ public sealed partial class MvpShopController : MonoBehaviour
         Security?.ReleaseEntrance();
         Phase = ShopPhase.Preparing; Stage = ServiceStage.None; Spawned = 0; Missed = 0; Elapsed = 0f;
         StolenToday=0;CaughtToday=0;PriceRefusals=0;
-        receivedOrder.Clear();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg a bejárat melletti ZÁRVA táblát. Az óra csak nyitáskor indul.";
+        receivedOrder.Clear();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.";
         SetModal(ShopModal.None);
     }
     public void ResetDemo()
     {
+        Arrangement?.ResetLayout();
         AfterHours?.ResetEvenings();Pricing?.ResetPrices();GetComponent<ShopNextUpgrades>()?.ResetUpgrades();
         SingleProductVisits=false;receivedOrder.Clear();
         if (stockRoot == null) return;
@@ -424,6 +437,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Security?.ResetUpgrade();
         Devices?.ResetComputer();
         BeginPreparation();
+        Navigation?.Rebuild();
     }
     private ShopProduct CreateProduct(int type)
     {
@@ -524,7 +538,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         if (Layout == null || Layout.Expanded || Phase != ShopPhase.Preparing) { Message = "Bővíteni nyitás előtt lehet, üres boltban."; return false; }
         if (!Ledger.TryImprove(ShopLayout.ExpansionPrice)) { Message = "Nincs elég pénz a bővítéshez."; return false; }
-        SyncCashDrawer(); Layout.SetExpanded(true); Devices?.RefreshMonitor();
+        SyncCashDrawer(); Layout.SetExpanded(true); Navigation?.Rebuild(); Devices?.RefreshMonitor();
         Message = "Megnyílt az önkiszolgáló rész! Rendelj árut, és töltsd fel az új polcokat. A pult a helyén maradt.";
         return true;
     }
@@ -532,7 +546,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         if(Layout==null||Layout.ExtraShelfOwned||Phase!=ShopPhase.Preparing){Message="Berendezést nyitás előtt vehetsz. Ez a polc csak egyszer vásárolható meg.";return false;}
         if(!Ledger.TryImprove(ShopLayout.ExtraShelfPrice)){Message="Nincs elég pénz a kiegészítő polcra.";return false;}
-        SyncCashDrawer();Layout.SetExtraShelf(true);
+        SyncCashDrawer();Layout.SetExtraShelf(true);Navigation?.Rebuild();
         Message="Kiegészítő cigarettapolc a jobb oldali személyzeti falnál: 9 új termékhely. A pult a helyén maradt.";return true;
     }
     public void ClosePanel() { if (Phase != ShopPhase.Summary) SetModal(ShopModal.None); }

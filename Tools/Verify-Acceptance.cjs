@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
+const { createHash } = require('node:crypto');
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const root = path.resolve('Builds/AcceptanceWebGL');
 const output = path.resolve('Builds/Verification/acceptance-' + Date.now());
@@ -15,7 +16,12 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
 
 (async () => {
   try {
-    if (!JSON.parse(fs.readFileSync(path.join(root, 'build-result.json'))).success) throw Error('Acceptance build has not succeeded.');
+    const buildFile = path.join(root, 'build-result.json');
+    report.build = JSON.parse(fs.readFileSync(buildFile));
+    if (!report.build.success) throw Error('Acceptance build has not succeeded.');
+    report.build.completedUtc = fs.statSync(buildFile).mtime.toISOString();
+    report.build.assets = Object.fromEntries(fs.readdirSync(path.join(root, 'Build')).map(name =>
+      [name, createHash('sha256').update(fs.readFileSync(path.join(root, 'Build', name))).digest('hex')]));
     server = http.createServer((req, res) => {
       let file = path.resolve(root, '.' + new URL(req.url, 'http://localhost').pathname);
       if (file !== root && !file.startsWith(root + path.sep)) return res.writeHead(403).end();
@@ -167,6 +173,85 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await click(width / 2, (height - 650) / 2 + 590); check((await state()).interactionKey === 'E', 'Settings restore defaults through GUI');
       await viewport(1920, 1080); await capture('settings-large');
     }
+    if (!selected || selected === 'arrangement') {
+      await probe('Prepare', 'arrangement');
+      let s = await state();
+      const money = s.balance, item = s.stockedItem;
+      await capture('arrangement-monitor');
+      const openEditor = async () => {
+        const current = await state();
+        await click(current.arrangeButton.x, height - current.arrangeButton.y);
+        check((await state()).arranging, 'TobaccOS mouse button enters arrangement');
+      };
+      const movePointer = async point => {
+        await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: point.x, y: height - point.y });
+        await sleep(350);
+      };
+      await openEditor();
+      s = await state();
+      check(s.timeScale === 0 && s.blocked && !s.menu, 'Arrangement pauses world and takes input without pause menu');
+      await capture('arrangement-overview');
+      await click(150, 130);
+      check((await state()).selectedFurniture === 'public-shelf', 'Mouse selects movable shelf');
+      await movePointer((await state()).badTarget);
+      s = await state();
+      check(!s.previewValid && s.dragging && s.shelfPosition.x > 5, 'Entrance obstruction shows invalid preview without moving shelf');
+      await capture('arrangement-invalid');
+      await movePointer(s.moveTarget);
+      await key('e', 'KeyE', 69);
+      s = await state();
+      check(s.previewValid, 'Mouse position and keyboard rotation form a valid preview');
+      await click(s.moveTarget.x, height - s.moveTarget.y);
+      s = await state();
+      check(!s.dragging && s.draftTurns === 1 && Math.abs(s.draftPosition.x - 3.75) < .01 && s.shelfPosition.x > 5 && s.stockedItem === item,
+        'Placing preview changes draft only and keeps exact stock');
+      await capture('arrangement-draft');
+      await click(150, height - 38);
+      s = await state();
+      check(!s.arranging && s.shelfPosition.x > 5 && s.stockedItem === item && s.balance === money && s.timeScale === 1,
+        'Cancel restores original world, inventory, cash and clock');
+      await probe('Action', 'monitor-furnishing');
+      await openEditor();
+      await click(150, 130); await movePointer((await state()).moveTarget); await key('e', 'KeyE', 69);
+      s = await state(); await click(s.moveTarget.x, height - s.moveTarget.y);
+      await click(150, height - 86);
+      s = await state();
+      check(!s.arranging && s.shelfTurns === 1 && Math.abs(s.shelfPosition.x - 3.75) < .01 && s.stockedItem === item && s.balance === money && s.routeToShelf,
+        'Save applies rotated stocked shelf with navigation and no charge');
+      await capture('arrangement-saved');
+      await probe('Action', 'monitor-furnishing'); await openEditor();
+      await click(150, 178); await movePointer((await state()).fridgeTarget);
+      s = await state(); check(s.selectedFurniture === 'drinks-fridge' && s.previewValid, 'Purchased fridge can also be moved');
+      await click(s.fridgeTarget.x, height - s.fridgeTarget.y); await click(150, height - 86);
+      s = await state(); check(!s.arranging && Math.abs(s.fridgePosition.x - 4.75) < .01 && Math.abs(s.fridgePosition.z - .75) < .01, 'Save retains fridge position');
+      await probe('Action', 'monitor-furnishing'); await openEditor();
+      await viewport(1920, 1080); await capture('arrangement-large'); await viewport(1280, 720);
+      await click(150, height - 38);
+      await probe('Action', 'finish-arranged-day'); await key('e', 'KeyE', 69); await enter();
+      s = await state();
+      check(s.day === 2 && s.phase === 'Preparing' && s.shelfTurns === 1 && Math.abs(s.shelfPosition.x - 3.75) < .01 && s.stockedItem === item && Math.abs(s.fridgePosition.x - 4.75) < .01,
+        'Door exit and next day preserve saved layout and stocked item');
+    }
+    if (!selected || selected === 'door-storage') {
+      await probe('Prepare', 'counter-storage');
+      let s = await state();
+      check(s.privateStock === 5 && !s.held, 'Five physical Dnyipro packs fit under counter');
+      await capture('private-stock');
+      await key('e', 'KeyE', 69); s = await state();
+      // Pickup reserves its source slot until placement, allowing safe cancellation.
+      check(s.held === 'dnyipro' && s.privateStock === 5, 'E retrieves real private pack and reserves its source slot');
+      await key('e', 'KeyE', 69); s = await state();
+      check(!s.held && s.privateStock === 5, 'E returns pack to dedicated under-counter slot');
+      await probe('Action', 'view-door-outside'); await sleep(700);
+      s = await state(); check(s.outwardSign === 'ZÁRVA', 'Closed sign reads ZARVA from street');
+      await capture('door-outside-closed');
+      await key('e', 'KeyE', 69); await sleep(700); s = await state();
+      check(s.phase === 'Open' && s.outwardSign === 'NYITVA', 'E flips door sign to street-facing NYITVA');
+      await capture('door-outside-open');
+      await key('e', 'KeyE', 69); await sleep(700); s = await state();
+      check(s.phase === 'Closing' && s.outwardSign === 'ZÁRVA', 'E flips back without ending day');
+      await probe('Action', 'view-door-inside'); await capture('door-inside');
+    }
     if (!selected || selected === 'entrance') {
       await probe('Prepare', 'entrance');
       let s = await state();
@@ -180,6 +265,8 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       for (let i = 0; i < 40 && !opened; i++) { await sleep(200); opened = (await state()).entranceOpen; }
       check(opened, 'Arriving NPC opens physical entrance');
       await capture('entrance-npc-open');
+      for (let i = 0; i < 40 && (await state()).entranceOpen; i++) await sleep(200);
+      await probe('Action', 'aim-sign');
       await key('e', 'KeyE', 69);
       s = await state();
       check(s.phase === 'Closing' && s.modal === 'None', 'E on sign closes without summary');
@@ -201,6 +288,8 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'w', code: 'KeyW', windowsVirtualKeyCode: 87 });
       s = await state();
       check(s.position.z > -4.4 && s.phase === 'AfterHours', 'Player movement cannot cross entrance or silently end day');
+      // Walking closer changes the ray height at the door; aim below the sign again.
+      await probe('Action', 'aim-door');
       await key('e', 'KeyE', 69);
       s = await state();
       check(s.phase === 'Summary', 'E at closed entrance ends day');
@@ -218,6 +307,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
   } catch (error) { report.result = 'failed'; report.failure = error.stack ?? String(error); console.error(report.failure); try { await captureFailure?.(); } catch {} process.exitCode = 1; }
   finally {
     report.errors.push(...messages.filter(m => m.type === 'error'));
+    if (report.errors.length) { report.result = 'failed'; report.failure ??= 'Browser console errors.'; process.exitCode = 1; }
     report.finished = new Date().toISOString();
     fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2));
     fs.writeFileSync(path.join(output, 'console.json'), JSON.stringify(messages, null, 2));

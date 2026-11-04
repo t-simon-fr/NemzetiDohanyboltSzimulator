@@ -9,9 +9,8 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     public const int FridgePrice=18000;
     public bool FridgeOwned{get;private set;}
     private MvpShopController shop;
-    private GameObject counter,fridge;
-    private Transform coffee,homeParent;
-    private Vector3 homePosition;
+    private GameObject fridge;
+    private Transform coffee;
     private readonly List<Material> materials=new List<Material>();
     private bool developer;private Vector2 developerScroll;
     public void Configure(MvpShopController owner)
@@ -54,13 +53,8 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     }
     void BuildCounter()
     {
-        counter=new GameObject("Expansion L Counter");counter.transform.SetParent(transform,false);
-        var wood=GameObject.Find("Service counter").GetComponent<Renderer>().sharedMaterial;var top=GameObject.Find("Counter top").GetComponent<Renderer>().sharedMaterial;
-        Box(counter.transform,"Counter connector",new Vector3(2.3f,.55f,-2.05f),new Vector3(1.1f,1.1f,.75f),wood);
-        Box(counter.transform,"L counter body",new Vector3(2.85f,.55f,-.75f),new Vector3(.65f,1.1f,3.25f),wood);
-        Box(counter.transform,"L counter worktop",new Vector3(2.85f,1.13f,-.75f),new Vector3(.76f,.08f,3.35f),top);
-        Box(counter.transform,"Counter connector worktop",new Vector3(2.3f,1.13f,-2.05f),new Vector3(1.2f,.08f,.85f),top);counter.SetActive(false);
-        coffee=GetComponentsInChildren<Transform>(true).First(t=>t.name=="Purchased Coffee Machine");homeParent=coffee.parent;homePosition=coffee.position;
+        coffee=GetComponentsInChildren<Transform>(true).First(t=>t.name=="Purchased Coffee Machine");
+        coffee.SetPositionAndRotation(new Vector3(-1.85f,0,1.15f),Quaternion.identity);
     }
     void BuildFridge()
     {
@@ -87,24 +81,19 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     public bool BuyFridge()
     {
         if(FridgeOwned||!shop.Layout.Expanded||shop.Phase!=ShopPhase.Preparing){shop.Notify("Hűtőt a bővített boltba, nyitás előtt vásárolhatsz.");return false;}
+        var furniture = fridge.GetComponent<ShopFurniture>();
+        if (furniture != null && !shop.Arrangement.CanActivate(furniture)) return false;
         if(!shop.Ledger.TryImprove(FridgePrice)){shop.Notify("Nincs elég pénz a hűtőre.");return false;}
-        shop.SyncCashDrawer();FridgeOwned=true;fridge.SetActive(true);shop.Notify("Hűtő megvásárolva. A polcait kézzel töltheted fel.");return true;
+        shop.SyncCashDrawer();FridgeOwned=true;fridge.SetActive(true);shop.Navigation?.Rebuild();shop.Notify("Hűtő megvásárolva. A polcait kézzel töltheted fel.");return true;
     }
     public void ResetUpgrades(){FridgeOwned=false;if(fridge!=null)fridge.SetActive(false);}
     public void RefreshLayout()
     {
-        if(shop==null||counter==null)return;
-        counter.SetActive(shop.Layout.Expanded);
-        if(coffee!=null)
-        {
-            bool expanded=shop.Layout.Expanded;
-            coffee.position=expanded?new Vector3(2.85f,.32f,.25f):homePosition;
-            var cabinet=coffee.Find("Coffee cabinet");if(cabinet!=null)cabinet.gameObject.SetActive(!expanded);
-        }
+        // Expansion changes available floor area, never existing furniture poses.
     }
     void Update()
     {
-        if(shop==null||shop.Ledger==null)return;RefreshLayout();
+        if(shop==null||shop.Ledger==null||shop.Arrangement != null && shop.Arrangement.Active)return;RefreshLayout();
         if(Application.isFocused&&(Application.isEditor||Debug.isDebugBuild)&&Keyboard.current!=null&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.F1))
         HandleDeveloperKey(Key.F1);
     }
@@ -116,9 +105,7 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     }
     void OnGUI()
     {
-        if(shop==null||shop.Ledger==null)return;
-        if(shop.Devices.FocusKind==ShopDeviceKind.Monitor&&shop.Devices.ComputerApp==ShopComputerApp.Furnishing)
-        {var r=shop.Devices.AppRect;var b=new Rect(r.x+10,r.yMax-28,r.width-20,26);if(GUI.Button(b,FridgeOwned?"HŰTŐ • MEGVÁSÁROLVA":"HŰTŐ • "+ShopCatalog.Money(FridgePrice)))BuyFridge();}
+        if(shop==null||shop.Ledger==null||shop.Arrangement != null && shop.Arrangement.Active)return;
         if(!developer)return;
         GUI.depth=-200;GUI.Box(new Rect(12,12,380,Mathf.Min(Screen.height-24,680)),"DEVELOPER MODE • F1");GUILayout.BeginArea(new Rect(25,45,352,Mathf.Min(Screen.height-65,615)));developerScroll=GUILayout.BeginScrollView(developerScroll);
         GUILayout.Label("Nap "+shop.Day+" | "+shop.Phase+" | "+shop.Stage);GUILayout.Label("Kassza "+shop.Ledger.Cash+" / címletek "+shop.Drawer.Total);

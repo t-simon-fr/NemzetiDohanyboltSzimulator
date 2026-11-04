@@ -13,7 +13,7 @@ public static class NextFeatureChecks
         {
             g.ResetDemo();g.ClosePanel();var u=g.GetComponent<ShopNextUpgrades>();Check(u!=null,"Upgrade system exists");
             Check(!u.BuyFridge(),"Fridge needs expanded shop");ShopCheckFixtures.Fund(g,150000);Check(g.TryExpand(),"Expand");u.RefreshLayout();
-            Check(GameObject.Find("Expansion L Counter")!=null,"Expansion enables L counter");Check(u.BuyFridge()&&!u.BuyFridge(),"Fridge purchased once");
+            Check(GameObject.Find("Expansion L Counter")==null,"Expansion preserves straight left-wall counter");Check(u.BuyFridge()&&!u.BuyFridge(),"Fridge purchased once");
             Check(g.Drawer.Total==g.Ledger.Cash,"Fridge and expansion conserve cash");Check(Object.FindObjectsByType<ProductSlot>().Count(s=>s.name.StartsWith("Fridge slot"))==16,"Sixteen usable fridge slots");
             Check(g.Activities.BuyCoffeeMachine(),"Buy separate coffee machine");Check(g.Activities.OrderCoffeeSupplies()&&g.Activities.OrderMilkSupplies(),"Order coffee and milk independently");g.Tick(8.1f);
             Check(g.Activities.CoffeeSupplies==0&&g.Activities.MilkSupplies==0,"Delivery does not automatically fill machine");

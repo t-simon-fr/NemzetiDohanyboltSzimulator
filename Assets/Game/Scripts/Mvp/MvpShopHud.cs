@@ -10,7 +10,7 @@ public sealed class MvpShopHud : MonoBehaviour
     public void Configure(MvpShopController controller)=>shop=controller;
     private void OnGUI()
     {
-        if(shop==null||shop.Ledger==null||ShopMenu.Active)return;
+        if(shop==null||shop.Ledger==null||ShopMenu.Active||shop.Arrangement != null && shop.Arrangement.Active)return;
         if(shop.AfterHours!=null&&shop.AfterHours.TradeOpen)return;
         if(title==null)
         {

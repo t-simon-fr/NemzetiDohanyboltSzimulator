@@ -52,7 +52,28 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "entrance")
+        if (scenario == "counter-storage")
+        {
+            foreach (var slot in Shop.CounterStorage.Slots) Shop.CreateNightProduct().AssignInitialSlot(slot);
+            Aim(Shop.CounterStorage.Slots[2].transform.position + Vector3.up*.13f);
+        }
+        else if (scenario == "arrangement")
+        {
+            Shop.Ledger.TrySellCard(150000, 0);
+            Shop.SyncCashDrawer();
+            Shop.TryExpand();
+            Shop.GetComponent<ShopNextUpgrades>().BuyFridge();
+            var slot = Shop.Arrangement.Furniture.First(f => f.Id == "public-shelf").Slots.First(s => s.Occupant == null);
+            Shop.CreateCoffee(ShopCatalog.Index("water")).AssignInitialSlot(slot);
+            var body = Player.GetComponent<CharacterController>();
+            body.enabled = false;
+            Player.transform.SetPositionAndRotation(ShopFloorPlan.StaffSpawn, Quaternion.Euler(0, 90, 0));
+            body.enabled = true;
+            Shop.Devices.Focus(ShopDeviceKind.Monitor);
+            Shop.Devices.OpenApp(ShopComputerApp.Furnishing);
+            Shop.ManualTick = false;
+        }
+        else if (scenario == "entrance")
         {
             Aim(GameObject.Find("Open Close Sign").transform.position);
             Shop.ManualTick = false;
@@ -108,7 +129,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.OpenShop();
             Shop.RequestClose();
             Shop.Tick(.1f);
-            Aim(Shop.Entrance.Position + Vector3.up * 1.3f);
+            Aim(Shop.Entrance.Position + Vector3.up * .95f);
             Shop.ManualTick = false;
         }
         else if (scenario == "menu") Shop.GetComponent<ShopMenu>().Open();
@@ -119,8 +140,35 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
-        if (action == "aim-door") Aim(Shop.Entrance.Position + Vector3.up * 1.3f);
-        if (action == "view-entrance") Aim(Shop.Entrance.Position + Vector3.up * 1.3f, 1.65f);
+        if (action == "view-door-outside")
+        {
+            var body = Player.GetComponent<CharacterController>();
+            body.enabled = false;
+            Vector3 eye = Shop.Entrance.Position + new Vector3(0,1.75f,-1.3f);
+            Player.transform.rotation = Quaternion.identity;
+            Player.transform.position = eye - View.transform.localPosition;
+            float pitch = Mathf.Atan2(.25f,1.3f)*Mathf.Rad2Deg;
+            View.transform.localRotation = Quaternion.Euler(pitch,0,0);
+            typeof(FirstPersonController).GetField("pitch",Private).SetValue(Player.GetComponent<FirstPersonController>(),pitch);
+            body.enabled = true;
+            Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f,.5f,0)));
+        }
+        if (action == "view-door-inside") Aim(Shop.Entrance.Sign.position,1.3f);
+        if (action == "monitor-furnishing")
+        {
+            Shop.Devices.Focus(ShopDeviceKind.Monitor);
+            Shop.Devices.OpenApp(ShopComputerApp.Furnishing);
+        }
+        if (action == "finish-arranged-day")
+        {
+            Shop.OpenShop();
+            Shop.RequestClose();
+            Shop.Tick(.1f);
+            Aim(Shop.Entrance.Position + Vector3.up * .95f);
+        }
+        if (action == "aim-sign") Aim(Shop.Entrance.Sign.position);
+        if (action == "aim-door") Aim(Shop.Entrance.Position + Vector3.up * .95f);
+        if (action == "view-entrance") Aim(Shop.Entrance.Position + Vector3.up * .95f, 1.65f);
         if (action == "drain-shop")
         {
             for (int i = 0; i < 3000 && !Shop.CanEndDay; i++)
@@ -151,10 +199,18 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         var root = Player.transform;
         var body = Player.GetComponent<CharacterController>();
         body.enabled = false;
-        root.rotation = Quaternion.Euler(0, 180, 0);
-        Vector3 eye = new Vector3(target.x, Mathf.Max(target.y + .3f, 1.75f), target.z + distance);
+        bool counter = target.x < .25f && target.z < -.4f && target.z > -4.2f;
+        root.rotation = Quaternion.Euler(0, counter ? 90 : 180, 0);
+        Vector3 eye = target + (counter ? Vector3.left : Vector3.forward) * distance;
+        // The relocated sign is beside the counter end; approach from the door
+        // rather than placing the test player inside the counter body.
+        if (target.z < -4.2f && Mathf.Abs(target.y - 1.5f) < .1f) eye.x = ShopFloorPlan.EntranceX + .7f;
+        eye.y = Mathf.Max(target.y + .3f, 1.75f);
+        Vector3 horizontal = target - eye;
+        horizontal.y = 0;
+        root.rotation = Quaternion.LookRotation(horizontal);
         root.position = eye - root.rotation * View.transform.localPosition;
-        float pitch = Mathf.Atan2(eye.y - target.y, distance) * Mathf.Rad2Deg;
+        float pitch = Mathf.Atan2(eye.y - target.y, horizontal.magnitude) * Mathf.Rad2Deg;
         View.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
         typeof(FirstPersonController).GetField("pitch", Private).SetValue(Player.GetComponent<FirstPersonController>(), pitch);
         body.enabled = true;
@@ -172,6 +228,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public float elapsed, timeScale;
         public Vector3 position;
         public Vector3[] receipts;
+        public bool arranging, dragging, previewValid, routeToShelf;
+        public string selectedFurniture, arrangementFeedback;
+        public Vector3 shelfPosition, draftPosition, fridgePosition, arrangeButton, moveTarget, badTarget, fridgeTarget;
+        public int shelfTurns, draftTurns, shelfStock;
+        public string stockedItem;
+        public int privateStock;
+        public string outwardSign;
     }
 
     [Preserve]
@@ -194,6 +257,33 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             elapsed = g.Elapsed, timeScale = Time.timeScale, position = Player.transform.position,
             receipts = receipts.Select(p => p.transform.position).ToArray()
         };
+        state.arranging = g.Arrangement.Active;
+        state.dragging = g.Arrangement.Dragging;
+        state.previewValid = g.Arrangement.PreviewValid;
+        state.selectedFurniture = g.Arrangement.SelectedFurnitureId;
+        state.arrangementFeedback = g.Arrangement.PreviewFeedback;
+        var shelf = g.Arrangement.Furniture.First(f => f.Id == "public-shelf");
+        var fridge = g.Arrangement.Furniture.First(f => f.Id == "drinks-fridge");
+        state.shelfPosition = shelf.transform.position;
+        state.fridgePosition = fridge.transform.position;
+        state.shelfTurns = shelf.Pose.QuarterTurns;
+        var poses = g.Arrangement.Draft;
+        if (poses.TryGetValue(shelf, out var pose))
+        {
+            state.draftPosition = pose.Position;
+            state.draftTurns = pose.QuarterTurns;
+        }
+        state.shelfStock = shelf.Slots.Count(s => s.Occupant != null);
+        state.stockedItem = shelf.Slots.FirstOrDefault(s => s.Occupant != null)?.Occupant.GetEntityId().ToString() ?? "";
+        var control = FindObjectsByType<ShopWorldControl>().FirstOrDefault(c => c.Kind == WorldControlKind.Arrange && c.isActiveAndEnabled);
+        if (control != null) state.arrangeButton = View.WorldToScreenPoint(control.GetComponent<Collider>().bounds.center);
+        state.moveTarget = View.WorldToScreenPoint(new Vector3(3.75f,0,-1.75f));
+        state.badTarget = View.WorldToScreenPoint(new Vector3(1.25f,0,-3.5f));
+        state.fridgeTarget = View.WorldToScreenPoint(new Vector3(4.75f,0,.75f));
+        state.routeToShelf = g.Navigation.TryPath(g.Layout.EntryInside, shelf.AccessAt(shelf.Pose).First(), out var path);
+        state.privateStock = g.CounterStorage.Slots.Count(s => s.Occupant != null);
+        state.outwardSign = g.Entrance.Sign.GetComponentsInChildren<TextMesh>()
+            .FirstOrDefault(t => Vector3.Dot(-t.transform.forward,-g.Entrance.DoorLeaf.forward) > .99f)?.text ?? "";
         Debug.Log("ACCEPTANCE_STATE:" + JsonUtility.ToJson(state));
     }
 }

@@ -16,7 +16,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     private Quaternion cameraRotation;
     private TextMesh monitorText, cashText, appTitle, furnishingStatus;
     private TextMesh shopStatusText, orderQuantityText, monitorNotice;
-    private TextMesh panicUpgradeLabel,coffeeUpgradeLabel;
+    private TextMesh panicUpgradeLabel,coffeeUpgradeLabel,fridgeUpgradeLabel;
     private Transform featurePage;
     public Rect AppRect
     {
@@ -132,15 +132,16 @@ public sealed partial class ShopDevices : MonoBehaviour
         catalogHelp=new GameObject("Delivery help").transform;catalogHelp.SetParent(orderPage,false);
         ScreenPanel(catalogHelp,"Delivery help background",new Vector3(0,-.285f,.01f),new Vector3(1.72f,.12f,.006f),screenBar);
         Label(catalogHelp,"A rendelés a raktárba érkezik.\nA dobozból egyesével töltheted fel a polcokat.",new Vector3(0,-.285f,.024f),.023f);
-        Label(furnishingPage,"ÜZLETFEJLESZTÉS",new Vector3(0,.22f,.025f),.037f);
-        furnishingStatus=Label(furnishingPage,"",new Vector3(0,.105f,.025f),.024f);
-        MonitorButton(furnishingPage,"ÖNKISZOLGÁLÓ BŐVÍTÉS • "+ShopCatalog.Money(ShopLayout.ExpansionPrice),new Vector3(0,0,.02f),WorldControlKind.Expand,0,1.72f,.07f,screenAccent);
-        MonitorButton(furnishingPage,"CIGARETTAPOLC • 9 HELY • "+ShopCatalog.Money(ShopLayout.ExtraShelfPrice),new Vector3(0,-.09f,.02f),WorldControlKind.ExtraShelf,0,1.72f,.07f);
-        var panicUpgrade=MonitorButton(furnishingPage,"",new Vector3(0,-.18f,.02f),WorldControlKind.PanicButtonUpgrade,0,1.72f,.07f);
+        Label(furnishingPage,"ÜZLETFEJLESZTÉS",new Vector3(0,.25f,.025f),.037f);
+        furnishingStatus=Label(furnishingPage,"",new Vector3(0,.16f,.025f),.024f);
+        MonitorButton(furnishingPage,"ÖNKISZOLGÁLÓ BŐVÍTÉS • "+ShopCatalog.Money(ShopLayout.ExpansionPrice),new Vector3(0,.06f,.02f),WorldControlKind.Expand,0,1.72f,.07f,screenAccent);
+        MonitorButton(furnishingPage,"CIGARETTAPOLC • 9 HELY • "+ShopCatalog.Money(ShopLayout.ExtraShelfPrice),new Vector3(0,-.02f,.02f),WorldControlKind.ExtraShelf,0,1.72f,.07f);
+        var panicUpgrade=MonitorButton(furnishingPage,"",new Vector3(0,-.10f,.02f),WorldControlKind.PanicButtonUpgrade,0,1.72f,.07f);
         panicUpgrade.name="Panic button upgrade";
         panicUpgradeLabel=panicUpgrade.GetComponentInChildren<TextMesh>();
-        coffeeUpgradeLabel=MonitorButton(furnishingPage,"KÁVÉGÉP • "+ShopCatalog.Money(ShopActivities.CoffeeMachinePrice),new Vector3(0,-.27f,.02f),WorldControlKind.CoffeeMachineUpgrade,0,1.72f,.07f).GetComponentInChildren<TextMesh>();
-        Label(furnishingPage,"Fejlesztések vásárlása nyitás előtt.",new Vector3(0,-.34f,.025f),.021f);
+        coffeeUpgradeLabel=MonitorButton(furnishingPage,"KÁVÉGÉP • "+ShopCatalog.Money(ShopActivities.CoffeeMachinePrice),new Vector3(0,-.18f,.02f),WorldControlKind.CoffeeMachineUpgrade,0,1.72f,.07f).GetComponentInChildren<TextMesh>();
+        fridgeUpgradeLabel=MonitorButton(furnishingPage,"",new Vector3(0,-.26f,.02f),WorldControlKind.FridgeUpgrade,0,1.72f,.065f).GetComponentInChildren<TextMesh>();
+        MonitorButton(furnishingPage,"ÜZLET ÁTRENDEZÉSE",new Vector3(0,-.34f,.02f),WorldControlKind.Arrange,0,1.72f,.065f,screenAccent);
         ScreenPanel(monitor,"TobaccOS status bar",new Vector3(0,-.391f,.010f),new Vector3(1.80f,.048f,.006f),screenBar);
         monitorNotice=Label(monitor,"",new Vector3(0,-.39f,.023f),.023f);
         buildingPage=Page("Computer Navigation");
@@ -191,6 +192,20 @@ public sealed partial class ShopDevices : MonoBehaviour
     {
         bool purchased=shop.BuyPanicButton();furnishingFeedback=shop.Message;RefreshMonitor();return purchased;
     }
+    public bool BeginArrangement()
+    {
+        bool started = shop.Arrangement.Begin();
+        furnishingFeedback = shop.Arrangement.Feedback;
+        RefreshMonitor();
+        return started;
+    }
+    public bool PurchaseFridge()
+    {
+        bool purchased = shop.GetComponent<ShopNextUpgrades>().BuyFridge();
+        furnishingFeedback = shop.Message;
+        RefreshMonitor();
+        return purchased;
+    }
     public void ResetComputer()
     {
         orderQuantity=3;lastOrderType=-1;lastOrderSucceeded=false;orderFeedback="";furnishingFeedback="";OpenApp(ShopComputerApp.Desktop);
@@ -203,6 +218,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         orderQuantityText.text="Mennyiség: "+orderQuantity+" db";
         furnishingStatus.text=(shop.Layout.Expanded?"Önkiszolgáló rész: megnyitva":"Önkiszolgáló rész: zárva")+"\n"+(shop.Layout.ExtraShelfOwned?"Kiegészítő polc: megvásárolva":"Kiegészítő polc: nincs");
         if(coffeeUpgradeLabel!=null)coffeeUpgradeLabel.text=shop.Activities!=null&&shop.Activities.CoffeeOwned ? "KÁVÉGÉP • MEGVÁSÁROLVA" : "KÁVÉGÉP • "+ShopCatalog.Money(ShopActivities.CoffeeMachinePrice);
+        if(fridgeUpgradeLabel!=null)fridgeUpgradeLabel.text=shop.GetComponent<ShopNextUpgrades>()?.FridgeOwned == true ? "HŰTŐ • MEGVÁSÁROLVA" : "HŰTŐ • "+ShopCatalog.Money(ShopNextUpgrades.FridgePrice);
         if(panicUpgradeLabel!=null)panicUpgradeLabel.text=shop.Security!=null&&shop.Security.Owned ? "VÉSZGOMB • MEGVÁSÁROLVA" : "VÉSZGOMB • "+ShopCatalog.Money(ShopSecurity.PurchasePrice);
         for(int type=0;type<orderCards.Count;type++)
         {

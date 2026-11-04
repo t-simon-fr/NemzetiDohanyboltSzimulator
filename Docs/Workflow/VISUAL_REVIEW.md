@@ -11,6 +11,7 @@ Minden érintett issue-hoz a releváns sorok. Javasolt nézetek: 1280×720 és 1
 | Kávé | Látható választás és eredmény: rövid, hosszú, latte; tejhiány, betöltés, foglalt kimenet; gépnél és monitoron. |
 | Párbeszéd | Mondatban elhangzó rendelés, tényleges készlethiány, helyettesítő elfogadása és távozás; hosszú szöveg sem takarja a választ. |
 | Műszak / ajtó | Nyitás előtt nincs üdvözlőmodal és áll az óra; E megfordítja a táblát; NPC nyitja/csukja az ajtót; játékos nem jut át. Zárás nem nyit elszámolást; a vendégek távoznak; csak üres kézzel, üres boltban, E az ajtónál zárja a napot. Következő nap elérhető; pénz/készlet megmarad. |
+| Alaprajz / átrendezés | Kezdő méretű ajtó és kartonos raktár–pultvégi átjáró–feltöltés kör; TobaccOS gomb; felülnézet 1280×720 és 1920×1080 méretben; piros előnézet nem menthető, Q/E forgatás, polc/hűtő lerakása, mentés és teljes megszakítás; termékazonosság, szabad NPC-útvonal és következő napi elrendezés megmarad. |
 
 ## Rögzítendő eredmény (issue vagy PR)
 

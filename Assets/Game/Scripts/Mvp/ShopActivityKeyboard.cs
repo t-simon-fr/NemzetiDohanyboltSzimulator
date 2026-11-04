@@ -21,7 +21,6 @@ public sealed partial class ShopActivities
             add("Coffee:Milk","Tej rendelése",new Rect(w/2+3,105,(w-30)/2,32),()=>OrderMilkSupplies(),true);
             for(int i=0;i<3;i++){int type=ShopCatalog.Coffee+i;add("Coffee:Recipe:"+type,ShopCatalog.ShortNames[type],new Rect(12+i*(w-24)/3,h-88,(w-30)/3,32),()=>SelectRecipe(type),brewRemaining==0);}
         }
-        if(app==ShopComputerApp.Furnishing){var upgrades=shop.GetComponent<ShopNextUpgrades>();if(upgrades!=null)add("Upgrade:Fridge","Hűtő",new Rect(10,h-28,w-20,26),()=>upgrades.BuyFridge(),!upgrades.FridgeOwned&&shop.Layout.Expanded);}
         if(app==ShopComputerApp.Cameras)
         {
             add("Camera:0","Bejárat",new Rect(10,8,w*.42f,35),()=>{selectedCamera=0;RenderCamera(0);},true);

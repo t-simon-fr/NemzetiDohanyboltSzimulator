@@ -13,7 +13,10 @@
       "acceptance-logic",
       "coffee-world",
       "binding-acceptance",
-      "entrance-day"
+      "entrance-day",
+      "floor-plan",
+      "arrangement",
+      "door-storage"
     ]
   },
   "suites": {
@@ -56,6 +59,21 @@
       "file": "Tools/Checks/EntranceDayChecks.cs",
       "entry": "EntranceDayChecks.Run",
       "purpose": "Sign-driven clock, explicit door exit, customer draining and single daily charge"
+    },
+    "floor-plan": {
+      "file": "Tools/Checks/FloorPlanChecks.cs",
+      "entry": "FloorPlanChecks.Run",
+      "purpose": "Starter entrance and actual CharacterController/carton staff circulation, fixed expansion anchors"
+    },
+    "arrangement": {
+      "file": "Tools/Checks/ArrangementChecks.cs",
+      "entry": "ArrangementChecks.Run",
+      "purpose": "A* detours, invalid placement, atomic save/cancel, stocked item identity and next-day persistence"
+    },
+    "door-storage": {
+      "file": "Tools/Checks/DoorStorageChecks.cs",
+      "entry": "DoorStorageChecks.Run",
+      "purpose": "Outward door sign, moving attachment and private stock placement, checkout and next-day conservation"
     }
   },
   "historicalExcluded": {
