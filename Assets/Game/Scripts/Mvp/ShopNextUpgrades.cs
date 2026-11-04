@@ -15,19 +15,11 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     private bool developer;private Vector2 developerScroll;
     public void Configure(MvpShopController owner)
     {
-        shop=owner;BuildExterior();BuildCounter();BuildFridge();BuildCardTerminal();
+        shop=owner;BuildExterior();BuildCounter();BuildFridge();
     }
     Material Mat(Color c){var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){color=c};materials.Add(m);return m;}
     GameObject Box(Transform parent,string name,Vector3 pos,Vector3 scale,Material material)
     {var o=GameObject.CreatePrimitive(PrimitiveType.Cube);o.name=name;o.transform.SetParent(parent,false);o.transform.localPosition=pos;o.transform.localScale=scale;o.GetComponent<Renderer>().sharedMaterial=material;return o;}
-    void BuildCardTerminal()
-    {
-        var terminal=new GameObject("Bank Card Terminal").transform;terminal.SetParent(shop.Devices.TillAssembly,false);terminal.localPosition=new Vector3(-.42f,.06f,.08f);
-        var body=Box(terminal,"POS terminal",Vector3.zero,new Vector3(.20f,.08f,.30f),Mat(new Color(.06f,.08f,.09f)));
-        body.AddComponent<ShopStation>().Configure(shop,ShopStationKind.Till);
-        var screen=Box(terminal,"POS display",new Vector3(0,.045f,-.06f),new Vector3(.16f,.012f,.11f),Mat(new Color(.04f,.48f,.32f)));screen.GetComponent<Collider>().enabled=false;
-        for(int i=0;i<9;i++)Box(terminal,"POS key",new Vector3((i%3-1)*.045f,.045f,.025f+(i/3)*.04f),new Vector3(.03f,.012f,.025f),Mat(i==8?Color.green:Color.gray)).GetComponent<Collider>().enabled=false;
-    }
     void BuildExterior()
     {
         var root=new GameObject("Shop Exterior").transform;root.SetParent(transform,false);

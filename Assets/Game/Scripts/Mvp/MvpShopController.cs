@@ -205,6 +205,7 @@ public sealed partial class MvpShopController : MonoBehaviour
             if (i == 0 && active == null && arrived)
             {
                 active = customer; Stage = ServiceStage.Order;
+                ResetCardTerminal();
                 if(!customer.AcceptsPrices){PriceRefusals++;Missed++;Notify(ShopPeople.Names[customer.Person]+": Ennyiért inkább nem kérem. Túl drága! Állíts kedvezőbb árat az Árak alkalmazásban.");DismissActive();i--;continue;}
                 Dialogue = ShopPeople.Order(active.Person, active.OrderTypes);
                 if (active.BasketItem != null)
@@ -219,7 +220,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         if (active != null && Stage == ServiceStage.Order && active.WaitTime > 180f) SkipCurrent();
         if (active != null && Stage == ServiceStage.Payment && !PreparedIsValid())
         {
-            Activities.ClearHand();Drawer.CancelTender(); changeCoins.Clear(); prepared = null; Stage = ServiceStage.Order; if (Devices != null && (Devices.FocusKind == ShopDeviceKind.Till || Devices.FocusKind == ShopDeviceKind.Coins)) ClosePanel();
+            Activities.ClearHand();Drawer.CancelTender(); changeCoins.Clear(); prepared = null; Stage = ServiceStage.Order; ResetCardTerminal(); if (Devices != null && (Devices.FocusKind == ShopDeviceKind.Till || Devices.FocusKind == ShopDeviceKind.Coins || Devices.FocusKind == ShopDeviceKind.Terminal)) ClosePanel();
             Dialogue = "A termék visszakerült a pultról. Tedd újra az átadóhelyre.";
         }
         if (active != null && Stage == ServiceStage.Thanks)
@@ -409,6 +410,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     private void BeginPreparation()
     {
+        ResetCardTerminal();
         Security?.ReleaseEntrance();
         Phase = ShopPhase.Preparing; Stage = ServiceStage.None; Spawned = 0; Missed = 0; Elapsed = 0f;
         StolenToday=0;CaughtToday=0;PriceRefusals=0;

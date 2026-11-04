@@ -142,6 +142,32 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'summary'); await hold([sprint, forward, jump], 900); s = await state();
       check(s.position.z > -4.4 && s.phase === 'AfterHours', 'Sprint and jump cannot cross real shop entrance boundary');
     }
+    if (!selected || selected === 'physical-terminal') {
+      await probe('Prepare', 'card'); let s = await state(); const balance = s.balance;
+      check(s.device === 'Terminal', 'Card checkout focuses actual terminal');
+      for (let digit = 0; digit < 10; digit++) {
+        await clickRect((await state()).cardClear);
+        await clickRect((await state()).cardDigits[digit]);
+        check((await state()).entered === String(digit), 'Actual physical numeric button ' + digit);
+      }
+      await clickRect((await state()).cardClear);
+      for (const digit of [1, 2, 3]) await clickRect((await state()).cardDigits[digit]);
+      await clickRect((await state()).cardConfirm); s = await state();
+      check(s.balance === balance && s.sales === 0 && s.cardDisplayStatus === 'HIBÁS ÖSSZEG', 'Physical terminal rejects wrong input on its own display');
+      await capture('physical-terminal-error');
+      await clickRect(s.cardUndo); await type('4'); s = await state();
+      check(s.entered === '124' && s.cardDisplayAmount === '124 Ft', 'Physical correction and keyboard share live terminal amount');
+      await clickRect(s.cardClear);
+      for (const digit of [2, 2, 0, 0]) await clickRect((await state()).cardDigits[digit]);
+      await clickRect((await state()).cardConfirm); s = await state();
+      check(s.sales === 1 && s.balance === balance + 2200 && s.cardDisplayStatus === 'SIKERES FIZETÉS', 'Physical OK pays once and keeps success visible');
+      await capture('physical-terminal-approved');
+      await clickRect(s.cardConfirm); check((await state()).sales === 1, 'Repeated physical OK cannot double charge');
+      await viewport(1920, 1080); await probe('Prepare', 'card');
+      await capture('physical-terminal-large');
+      await clickRect((await state()).cardBack); check((await state()).device === 'None', 'Physical ESC leaves terminal at large viewport');
+      await viewport(1280, 720);
+    }
     if (!selected || selected === 'card') {
       await probe('Prepare', 'card'); let s = await state();
       check(s.stage === 'Payment' && s.sales === 0, 'Real card customer and complete basket');

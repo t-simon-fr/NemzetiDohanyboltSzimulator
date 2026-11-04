@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum ShopDeviceKind { None, Monitor, Till, Coins }
+public enum ShopDeviceKind { None, Monitor, Till, Coins, Terminal }
 public enum ShopComputerApp { Desktop, Orders, Furnishing, Coffee, Cameras, Games, Prices }
 public sealed partial class ShopDevices : MonoBehaviour
 {
@@ -51,6 +51,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     public Vector3 MonitorPosition => monitor.position;
     public CashRegisterDrawer RegisterDrawer => registerDrawer;
     public Transform TillAssembly => tillAssembly;
+    public ShopCardTerminal Terminal { get; private set; }
     public void Configure(Transform screen, Transform contents, Transform tray, Transform display,
         Transform monitorRoot, Transform tillRoot, Transform keyboard, CashRegisterDrawer mechanism)
     {
@@ -64,6 +65,8 @@ public sealed partial class ShopDevices : MonoBehaviour
         paperMaterial = Material(new Color(.65f,.73f,.6f));
         coinMaterial = Material(new Color(.72f,.62f,.34f));
         BuildMonitor(); BuildDrawer(); BuildKeypad();
+        Terminal = new GameObject("Bank card terminal").AddComponent<ShopCardTerminal>();
+        Terminal.Configure(shop, tillAssembly);
         Font.textureRebuilt+=OnFontTextureRebuilt;
     }
     private static Material Material(Color color) => new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = color };
@@ -314,6 +317,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     }
     public void Focus(ShopDeviceKind kind)
     {
+        if (kind == ShopDeviceKind.Till && shop != null && shop.CardPayment) kind = ShopDeviceKind.Terminal;
         if(view==null||shop==null||shop.HasHeldProduct)return;
         if(Focused)Release();
         cameraPosition=view.transform.localPosition;cameraRotation=view.transform.localRotation;
@@ -326,6 +330,11 @@ public sealed partial class ShopDevices : MonoBehaviour
             float distance=.5f*Mathf.Max(1.18f/tangent,1.95f/(Mathf.Max(.5f,view.aspect)*tangent))*1.04f;
             view.transform.position=monitor.TransformPoint(new Vector3(0,0,distance));
             view.transform.LookAt(monitor.TransformPoint(new Vector3(0,-.025f,0)),monitor.up);
+        }
+        else if (kind == ShopDeviceKind.Terminal)
+        {
+            registerDrawer.SetOpen(false);
+            Terminal.Focus(view);
         }
         else if(kind==ShopDeviceKind.Coins)
         {
@@ -350,6 +359,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     {
         if(shop==null||shop.Ledger==null||ShopMenu.Active)return;
         RefreshMonitor();
+        Terminal.Refresh();
         for(int i=0;i<moneyLabels.Count;i++)
         {
             int v=ShopCatalog.Denominations[i];moneyLabels[i].text=v+" ×"+(shop.Drawer.Count(v)-shop.SelectedPieces(v));
@@ -361,7 +371,6 @@ public sealed partial class ShopDevices : MonoBehaviour
         string selection=string.Join(",",ShopCatalog.Denominations.Select(shop.SelectedPieces));
         if(lastSelection!=selection){lastSelection=selection;RefreshTray();}
         PollDeviceKeyboard();
-        if(shop.CardPayment&&Focused&&FocusKind==ShopDeviceKind.Till)return;
         if(!Focused||!Application.isFocused||Mouse.current==null||!Mouse.current.leftButton.wasPressedThisFrame)return;
         if(Keyboard.current!=null&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))return;
         Ray ray=view.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -369,8 +378,9 @@ public sealed partial class ShopDevices : MonoBehaviour
         {
             var control=hit.collider.GetComponentInParent<ShopWorldControl>();
             if(control==null)return;
-            bool valid=FocusKind==ShopDeviceKind.Monitor?control.transform.IsChildOf(monitor):FocusKind==ShopDeviceKind.Coins?shop.Activities.CustomerHand!=null&&control.transform.IsChildOf(shop.Activities.CustomerHand):control.transform.IsChildOf(tillAssembly);
+            bool valid=FocusKind==ShopDeviceKind.Monitor?control.transform.IsChildOf(monitor):FocusKind==ShopDeviceKind.Coins?shop.Activities.CustomerHand!=null&&control.transform.IsChildOf(shop.Activities.CustomerHand):FocusKind==ShopDeviceKind.Terminal?control.transform.IsChildOf(Terminal.transform):control.transform.IsChildOf(tillAssembly);
             if(control.Kind==WorldControlKind.Denomination&&!registerDrawer.IsOpen)valid=false;
+            if(FocusKind==ShopDeviceKind.Till&&control.transform.IsChildOf(Terminal.transform))valid=false;
             if(valid){keyboardOutline=false;control.Activate(shop);}
         }
     }
