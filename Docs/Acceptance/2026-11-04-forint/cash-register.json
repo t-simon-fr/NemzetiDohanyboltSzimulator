@@ -1,0 +1,90 @@
+{
+  "started": "2026-11-04T20:51:20.945Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Cash checkout opens dedicated close lens",
+      "passed": true
+    },
+    {
+      "label": "Own register display shows real tender and required change",
+      "passed": true
+    },
+    {
+      "label": "Physical cash commands remain visible and clickable",
+      "passed": true
+    },
+    {
+      "label": "Physical pay rejects empty change without charging",
+      "passed": true
+    },
+    {
+      "label": "Physical note selection updates own screen without charging",
+      "passed": true
+    },
+    {
+      "label": "Physical undo updates screen",
+      "passed": true
+    },
+    {
+      "label": "Physical clear resets selected change",
+      "passed": true
+    },
+    {
+      "label": "Keyboard shares cash screen state",
+      "passed": true
+    },
+    {
+      "label": "Actual note and coin clicks produce exact unpaid change",
+      "passed": true
+    },
+    {
+      "label": "Large cash view retains all commands above help bar",
+      "passed": true
+    },
+    {
+      "label": "Physical cash approval settles exactly once",
+      "passed": true
+    },
+    {
+      "label": "Completed cash sale restores normal camera",
+      "passed": true
+    },
+    {
+      "label": "Repeated Enter cannot charge completed cash sale twice",
+      "passed": true
+    },
+    {
+      "label": "Escape leaves register and restores original lens",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-cash-register-ready.png",
+    "1280x720-cash-register-selected.png",
+    "1920x1080-cash-register-selected-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23178076,
+    "seconds": 328.4177496,
+    "error": "",
+    "completedUtc": "2026-11-04T20:48:44.297Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "3c72b30eacd6b3079ae869f33fb627ce0a3b840df21a2725990fbe25303c62d8",
+      "AcceptanceWebGL.framework.js.unityweb": "e7174646de6df229fa443fce80caa90e2bdaed92d53157afb6a1d7d0abedbd2a",
+      "AcceptanceWebGL.loader.js": "3989166ceeadba63583bf81ea7e11035bf85ee14dcb6e16a37e2d131b6c567ec",
+      "AcceptanceWebGL.wasm.unityweb": "a1fc1de56db6b7fda119e15f1af46a73f41aead17544cfb46165e2b02d161c68"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-04T20:51:50.336Z"
+}
