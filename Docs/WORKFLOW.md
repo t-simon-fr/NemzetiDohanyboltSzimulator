@@ -8,6 +8,19 @@ GitHub issue az önálló funkció vagy bug alapegysége. A #1 issue megmarad t�
 
 Egy issue → rövid terv → `feature/<issue>-<slug>` vagy `fix/<issue>-<slug>` ág → megvalósítás → ellenőrzés → külön commit → PR a sablonnal. Nagy issue-t bonts kisebb, külön ellenőrizhető részekre. Minden commit működő állapotot adjon; kapcsolódó refaktor mehet vele, idegen funkció nem. Korábbi, már mainre került csomagokat nem írunk át utólag. A user által kért közvetlen main munka felülírja az ág/PR alapértelmezést.
 
+### 2.1. Rövid fejlesztési körök
+
+A felhasználó kérése alapján a gyorsan kipróbálható eredmény és az arányos ellenőrzés az alapértelmezés:
+
+- Kis, játszható munkacsomagokban haladj. Az elfogadási feltételeken túl ne bővítsd önkényesen a feladatot.
+- Fejlesztés közben az érintett működést ellenőrizd célzottan. A stabil, engedélyezett csomag végén egyszer futtasd a szükséges teljes integrációs ellenőrzést és közös WebGL-buildet; az egyes részekhez ugyanarra a közös bizonyítékra hivatkozz.
+- Sikeres ellenőrzést csak releváns forrásmódosítás, hiba vagy fennmaradó bizonytalanság indokolta esetben ismételj. Változott működéshez friss bizonyíték kell; változatlan működés miatt ne induljon újabb teljes kör.
+- Előbb a működést véglegesítsd, utána egy vizuális finomítási kör következzen. Ha a megfigyelhető elfogadási feltételek teljesülnek és a tényleges játékpróba sikeres, fejezd be; további csiszolás külön kérésre történjen.
+- Röviden rögzítsd az eredményt, a lényeges döntéseket és az ellenőrzési bizonyítékot. Ne másold ugyanazt a részletes jelentést több helyre; használj hivatkozást.
+- Csak dokumentációt vagy munkaszabályt érintő változtatáshoz diff- és hivatkozásellenőrzés elegendő; ne indíts Unity-tesztet vagy WebGL-buildet.
+
+A releváns pénz-, készlet- és állapotellenőrzés, a látható változások tényleges játékpróbája és a külön publikálási engedély továbbra is szükséges.
+
 ## 3. Egységes ellenőrzés
 
 Unityben a ShopPrototype projekt legyen megnyitva. Mentsd a munkádat; a futtató kilép a Play módból, fordít, majd új Play példányon tesztel, végül kilép. A futtató nem ment vagy generál jelenetet.

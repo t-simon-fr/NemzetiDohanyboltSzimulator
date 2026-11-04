@@ -166,7 +166,7 @@ public sealed partial class MvpShopController : MonoBehaviour
                 else if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.X)) SkipCurrent();
             }
         }
-        if (Application.isFocused && (Cursor.lockState == CursorLockMode.Locked || (Devices != null && Devices.Focused))) Tick(Time.deltaTime);
+        if (Application.isFocused && (!ShopInputGate.Blocked || (Devices != null && Devices.Focused))) Tick(Time.deltaTime);
     }
     public void Tick(float dt)
     {

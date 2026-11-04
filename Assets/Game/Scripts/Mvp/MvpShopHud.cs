@@ -31,6 +31,7 @@ public sealed class MvpShopHud : MonoBehaviour
             if (shop.Devices.Focused)
             {
                 if (shop.Devices.FocusKind == ShopDeviceKind.Terminal) CardTerminal();
+                else if (shop.Devices.FocusKind == ShopDeviceKind.Coffee) CoffeeControls();
                 else if (shop.Devices.FocusKind == ShopDeviceKind.Till) CashFeedback();
                 return;
             }
@@ -117,6 +118,13 @@ public sealed class MvpShopHud : MonoBehaviour
         ShopUi.Label(new Rect(40, 40, 268, 32), "BANKKÁRTYATERMINÁL", 18, true);
         ShopUi.Label(new Rect(40, 86, 268, 138), "Kattints a terminál számgombjaira, vagy gépeld be az összeget.\n\nJAV / Backspace: utolsó számjegy\nTÖR / Del: teljes törlés\nOK / Enter: jóváhagyás\nESC: vissza a boltba", 16);
         ShopUi.Label(new Rect(40, 238, 268, 66), shop.Message, 16);
+    }
+    private void CoffeeControls()
+    {
+        ShopUi.Panel(new Rect(24, 24, 300, 252));
+        ShopUi.Label(new Rect(40, 40, 268, 28), "TRAFIK PRESSZÓ", 20, true);
+        ShopUi.Label(new Rect(40, 84, 268, 120), "Válassz italt a gép kijelzőjén, majd indítsd el a főzést.\n\n1 / 2 / 3: receptválasztás\nEnter: főzés vagy italátvétel\nAz állapotot a gép jelzi.", 16);
+        if (ShopUi.Button(new Rect(40, 216, 268, 40), "Vissza a boltba / Esc")) shop.ClosePanel();
     }
     private void Summary()
     {

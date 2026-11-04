@@ -104,9 +104,16 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await send('Input.dispatchKeyEvent', { type: 'keyUp', key: name, code, windowsVirtualKeyCode: number }); await sleep(200);
     };
     const hold = async (keys, milliseconds) => {
-      for (const [key, code, windowsVirtualKeyCode] of keys) await send('Input.dispatchKeyEvent', { type: 'keyDown', key, code, windowsVirtualKeyCode });
+      let modifiers = 0;
+      for (const [key, code, windowsVirtualKeyCode] of keys) {
+        if (code === 'ShiftLeft' || code === 'ShiftRight') modifiers |= 8;
+        await send('Input.dispatchKeyEvent', { type: 'keyDown', key, code, windowsVirtualKeyCode, modifiers });
+      }
       await sleep(milliseconds);
-      for (const [key, code, windowsVirtualKeyCode] of [...keys].reverse()) await send('Input.dispatchKeyEvent', { type: 'keyUp', key, code, windowsVirtualKeyCode });
+      for (const [key, code, windowsVirtualKeyCode] of [...keys].reverse()) {
+        if (code === 'ShiftLeft' || code === 'ShiftRight') modifiers &= ~8;
+        await send('Input.dispatchKeyEvent', { type: 'keyUp', key, code, windowsVirtualKeyCode, modifiers });
+      }
     };
     const type = async text => { for (const digit of text) await key(digit, 'Digit' + digit, 48 + Number(digit)); };
     const enter = () => key('Enter', 'Enter', 13);
@@ -194,6 +201,57 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'bat'); await click(width / 2, height / 2); s = await state(); check(s.tool === 'Bat' && s.message.includes('tolvajt'), 'Bat retains left-click swing action');
       await probe('Prepare', 'mop'); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); await sleep(2200);
       await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); s = await state(); check(s.tool === 'Mop' && s.dirt === 0, 'Mop retains held left-click cleaning'); await capture('mop-cleaned');
+    }
+    if (!selected || selected === 'coffee-display') {
+      await viewport(1280, 720);
+      await probe('Prepare', 'coffee-display'); await key('e', 'KeyE', 69); let s = await state();
+      check(s.device === 'Coffee' && s.coffeeScreenStatus === 'KÉSZENLÉT', 'Actual E opens own coffee machine display');
+      await capture('coffee-display-ready');
+      const balance = s.balance;
+      await clickRect(s.coffeeButtons[2]); s = await state();
+      check(s.recipe === 11 && s.coffeeScreenRecipe === 'Latte', 'Physical touchscreen selects latte');
+      await clickRect(s.coffeeButtons[3]); s = await state();
+      check(s.brewRemaining > 0 && s.coffee === 4 && s.milk === 1 && s.coffeeScreenStatus.startsWith('FŐZÉS'), 'Machine starts real brew and displays ingredient/progress state');
+      await capture('coffee-display-brewing');
+      await clickRect(s.coffeeButtons[0]); s = await state();
+      check(s.recipe === 11 && s.coffee === 4 && s.milk === 1, 'Busy physical recipe key cannot change drink or consume twice');
+      await key('Escape', 'Escape', 27); s = await state();
+      check(s.device === 'None' && !s.menu, 'Escape exits machine without opening pause menu');
+      await key('Escape', 'Escape', 27); s = await state(); const paused = s.brewRemaining;
+      await sleep(600); s = await state();
+      check(s.menu && s.brewRemaining === paused, 'Pause freezes real ongoing brew');
+      await key('Escape', 'Escape', 27);
+      s = await state();
+      check(!s.menu && !s.blocked && s.timeScale === 1, 'Resuming pause restores active world context');
+      for (let i = 0; i < 30 && (await state()).cup !== 'latte'; i++) await sleep(100);
+      await probe('Action', 'aim-coffee-display'); await key('e', 'KeyE', 69); s = await state();
+      check(s.cup === 'latte' && s.coffeeScreenStatus.startsWith('ELKÉSZÜLT'), 'Machine finishes after leaving view and reports actual ready latte');
+      await capture('coffee-display-latte');
+      await clickRect(s.coffeeButtons[3]); s = await state();
+      check(s.held === 'latte' && s.device === 'None' && s.coffeeSlotHeld, 'Physical take gives actual cup without same-click replacement');
+      await probe('Action', 'remove-cup');
+      for (const [index, type] of [[0, 'coffee'], [1, 'coffee_long']]) {
+        await probe('Action', 'aim-coffee-display'); await key('e', 'KeyE', 69); s = await state();
+        await clickRect(s.coffeeButtons[index]); await clickRect((await state()).coffeeButtons[3]);
+        for (let i = 0; i < 30 && (await state()).cup !== type; i++) await sleep(100);
+        s = await state(); check(s.cup === type && s.coffeeScreenStatus.startsWith('ELKÉSZÜLT'), 'Physical touchscreen brews actual ' + type);
+        await clickRect(s.coffeeButtons[3]); check((await state()).held === type, 'Physical take collects ' + type);
+        await probe('Action', 'remove-cup');
+      }
+      await viewport(1920, 1080);
+      await probe('Action', 'aim-coffee-display'); await key('e', 'KeyE', 69); s = await state();
+      check(s.coffee === 2 && s.milk === 1 && s.balance === balance, 'Three physical coffee recipes preserve exact stock and money');
+      await probe('Action', 'empty-coffee-milk'); await clickRect((await state()).coffeeButtons[2]); s = await state();
+      check(s.coffeeScreenStatus === 'NINCS TEJ' && !s.coffeeActionEnabled, 'Machine display explains latte milk shortage');
+      await clickRect(s.coffeeButtons[3]); s = await state();
+      check(s.coffee === 2 && s.brewRemaining === 0, 'Disabled physical brew does not consume stock');
+      await capture('coffee-display-no-milk-large');
+      await probe('Action', 'empty-coffee-supplies'); s = await state();
+      check(s.coffeeScreenStatus === 'NINCS KÁVÉALAPANYAG' && !s.coffeeActionEnabled, 'Machine display continuously reports coffee shortage');
+      await capture('coffee-display-no-coffee-large');
+      await key('1', 'Digit1', 49); s = await state();
+      check(s.recipe === 9 && s.coffeeScreenRecipe === 'Rövid kávé', 'Machine keyboard and touchscreen use same recipe');
+      await key('Escape', 'Escape', 27); await viewport(1280, 720);
     }
     if (!selected || selected === 'coffee') {
       await probe('Prepare', 'coffee');

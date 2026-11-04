@@ -1,14 +1,20 @@
 using UnityEngine;
 
-public enum WorldControlKind { Order, Expand, Denomination, Undo, Clear, Pay, Exit, Exchange, OpenApp, Desktop, ExtraShelf, ChangeOrderQuantity, PanicButtonUpgrade, CoffeeMachineUpgrade, CustomerCoin, FridgeUpgrade, Arrange, CardDigit, CardUndo, CardClear, CardConfirm }
+public enum WorldControlKind { Order, Expand, Denomination, Undo, Clear, Pay, Exit, Exchange, OpenApp, Desktop, ExtraShelf, ChangeOrderQuantity, PanicButtonUpgrade, CoffeeMachineUpgrade, CustomerCoin, FridgeUpgrade, Arrange, CardDigit, CardUndo, CardClear, CardConfirm, CoffeeSelect, CoffeeBrew, CoffeeTake }
 public sealed class ShopWorldControl : MonoBehaviour
 {
     public WorldControlKind Kind;
     public int Value;
+    public bool Interactable = true;
     public void Activate(MvpShopController shop)
     {
+        if (!Interactable || !isActiveAndEnabled) return;
+        ShopInputGate.ConsumeWorldAction();
         switch(Kind)
         {
+            case WorldControlKind.CoffeeSelect:shop.Activities.SelectRecipe(Value);break;
+            case WorldControlKind.CoffeeBrew:shop.Activities.BrewCoffee();break;
+            case WorldControlKind.CoffeeTake:shop.Activities.TakeCoffeeFromDisplay();break;
             case WorldControlKind.CardDigit:shop.EnterCardDigit(Value);break;
             case WorldControlKind.CardUndo:shop.UndoCardDigit();break;
             case WorldControlKind.CardClear:shop.ClearCardAmount();break;

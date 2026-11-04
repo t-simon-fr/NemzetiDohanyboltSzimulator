@@ -108,6 +108,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         if (ShopInputGate.Blocked || viewCamera == null || Cursor.lockState != CursorLockMode.Locked || !Application.isFocused)
         { station=null;targetBin=null;target=null;targetSlot=null;canPlace=false;targetTool=null;featureTarget=null;UpdatePlacementHints(false);return; }
         RefreshTarget(viewCamera.ViewportPointToRay(new Vector3(.5f,.5f,0)));
+        if (ShopInputGate.WorldActionConsumed) return;
         if (Keyboard.current == null) return;
         if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.G)){DropHeld();return;}
         if(heldTool!=null&&Mouse.current!=null)
@@ -125,6 +126,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         }
         if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !(heldTool==null&&Mouse.current!=null&&Mouse.current.leftButton.wasPressedThisFrame)) return;
         if (station != null && station.IsPanicButton) { station.Use(this); return; }
+        if (station != null && station.IsCoffeeControl && !HasHeldItem) { station.Use(this); return; }
         if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&(!HasHeldItem||heldTool!=null&&heldTool.Kind==ShopToolKind.CoffeeRefill)){MvpShopController.Instance.Activities.UseCoffeeMachine();return;}
         if(heldTool!=null)return;
         if(!HasHeldItem&&targetTool!=null){TryHoldTool(targetTool);return;}
@@ -245,6 +247,7 @@ public sealed class PlayerInteractor : MonoBehaviour
             targetSlot != null ? "Az áru nem fér el ezen a helyen" : "Nézz egy kijelölt, üres polc- vagy pulthelyre";
         string prompt = !cursorLocked ? "Kattints a játékba a folytatáshoz" :
             station != null && station.IsPanicButton ? station.Prompt :
+            station != null && station.IsCoffeeControl && !HasHeldItem ? station.Prompt :
             heldTool!=null ? (featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill?featureTarget.Prompt:heldTool.DisplayName+" • Bal egérgomb: használat • G: eldobás") :
             !HasHeldItem&&targetTool!=null ? "E – Felvétel: "+targetTool.DisplayName :
             !HasHeldItem&&featureTarget!=null ? featureTarget.Prompt :

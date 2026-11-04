@@ -136,13 +136,19 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Player.TryHoldTool(Shop.Activities.Mop);
             Aim(spill.transform.position + Vector3.up * .02f);
         }
-        else if (scenario == "coffee")
+        else if (scenario == "coffee" || scenario == "coffee-display")
         {
             Shop.Ledger.TrySellCard(60000, 0);
             Shop.SyncCashDrawer();
             Shop.Activities.BuyCoffeeMachine();
             Set(Shop.Activities, "CoffeeSupplies", 5);
-            Aim(Shop.Activities.CoffeeOutput.transform.position + Vector3.up * .25f);
+            if (scenario == "coffee-display")
+            {
+                Set(Shop.Activities, "MilkSupplies", 2);
+                AimCoffeeDisplay();
+                Shop.ManualTick = false;
+            }
+            else Aim(Shop.Activities.CoffeeOutput.transform.position + Vector3.up * .25f);
         }
         else if (scenario == "dialogue" || scenario == "refuse")
         {
@@ -167,6 +173,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action == "aim-coffee-display") AimCoffeeDisplay();
+        if (action == "empty-coffee-milk") { Set(Shop.Activities, "MilkSupplies", 0); Shop.Activities.CoffeeDisplay.Refresh(); }
+        if (action == "empty-coffee-supplies") { Set(Shop.Activities, "CoffeeSupplies", 0); Shop.Activities.CoffeeDisplay.Refresh(); }
         if (action == "deliver-ui-one")
         {
             var item = FindObjectsByType<ShopProduct>().First(p => p.ProductId == ShopCatalog.Ids[0] && p.CurrentSlot != null && p.CurrentSlot.IsStockShelf);
@@ -217,6 +226,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         if (action == "finish-brew") Shop.Activities.Tick(4);
         if (action == "remove-cup")
         {
+            if (Player.HeldProduct != null && Player.HeldProduct == Shop.Activities.CoffeeOutput.Occupant) Player.CancelHeld();
             Shop.Activities.CoffeeOutput.Occupant?.RemoveFromWorld();
         }
         if (action == "monitor-coffee")
@@ -227,6 +237,23 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         if (action == "live-clock") { Shop.OpenShop(); Shop.ManualTick = false; }
         if (action == "resume") Shop.GetComponent<ShopMenu>().Resume();
         Snapshot("");
+    }
+
+    private void AimCoffeeDisplay()
+    {
+        Shop.ClosePanel();
+        var body = Player.GetComponent<CharacterController>();
+        body.enabled = false;
+        Vector3 target = Shop.Activities.CoffeeDisplay.transform.position;
+        Vector3 eye = target + new Vector3(0, .38f, -.85f);
+        Player.transform.rotation = Quaternion.identity;
+        Player.transform.position = eye - View.transform.localPosition;
+        float pitch = Mathf.Atan2(.38f, .85f) * Mathf.Rad2Deg;
+        View.transform.localRotation = Quaternion.Euler(pitch, 0, 0);
+        typeof(FirstPersonController).GetField("pitch", Private).SetValue(Player.GetComponent<FirstPersonController>(), pitch);
+        body.enabled = true;
+        Physics.SyncTransforms();
+        Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f, .5f, 0)));
     }
 
     private void Aim(Vector3 target, float distance = .85f)
@@ -258,7 +285,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     private sealed class State
     {
         public string stage, phase, modal, message, entered, held, cup, order, interactionKey, tool;
-        public bool menu, blocked, unavailable, entranceOpen, canEndDay;
+        public bool menu, blocked, unavailable, entranceOpen, canEndDay, applicationFocused, cursorLocked;
         public int balance, drawer, sales, missing, received, recipe, milk, coffee, day, missed, dirt;
         public float elapsed, timeScale;
         public Vector3 position;
@@ -279,6 +306,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public Rect[] cardDigits;
         public Rect cardUndo, cardClear;
         public string cardDisplayAmount, cardDisplayStatus, device;
+        public Rect[] coffeeButtons;
+        public string coffeeScreenRecipe, coffeeScreenStatus, coffeeScreenSupplies;
+        public float brewRemaining;
+        public bool coffeeActionEnabled, coffeeSlotHeld;
     }
 
     [Preserve]
@@ -299,6 +330,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             missing = g.MissingOrderTypes.Length, received = receipts.Length, recipe = g.Activities.SelectedRecipe,
             milk = g.Activities.MilkSupplies, coffee = g.Activities.CoffeeSupplies, day = g.Day, missed = g.Missed,
             elapsed = g.Elapsed, timeScale = Time.timeScale, position = Player.transform.position,
+            applicationFocused = Application.isFocused, cursorLocked = Cursor.lockState == CursorLockMode.Locked,
             receipts = receipts.Select(p => p.transform.position).ToArray()
         };
         state.arranging = g.Arrangement.Active;
@@ -343,6 +375,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.cardDisplayAmount = g.Devices.Terminal.DisplayAmount;
         state.cardDisplayStatus = g.Devices.Terminal.DisplayStatus;
         state.device = g.Devices.FocusKind.ToString();
+        state.coffeeButtons = Enumerable.Range(0, 4).Select(index => g.Activities.CoffeeDisplay.Bounds(View, index)).ToArray();
+        state.coffeeScreenRecipe = g.Activities.CoffeeDisplay.DisplayRecipe;
+        state.coffeeScreenStatus = g.Activities.CoffeeDisplay.DisplayStatus;
+        state.coffeeScreenSupplies = g.Activities.CoffeeDisplay.DisplaySupplies;
+        state.brewRemaining = g.Activities.BrewRemaining;
+        state.coffeeActionEnabled = g.Activities.CoffeeDisplay.ActionControl.Interactable;
+        state.coffeeSlotHeld = g.Activities.CoffeeOutput.Occupant != null && g.Activities.CoffeeOutput.Occupant.IsHeld;
         state.settingsOpen = menu.SettingsOpen;
         state.movementLearned = hud.MovementLearned;
         state.orderLines = hud.OrderLines;
