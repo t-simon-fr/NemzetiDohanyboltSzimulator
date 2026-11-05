@@ -21,7 +21,7 @@ public sealed class ShopHandTool : MonoBehaviour
     {
         get
         {
-            if (Kind!=ShopToolKind.CoffeeRefill) return Kind==ShopToolKind.Bat?"Baseballütő":"Felmosó";
+            if (Kind!=ShopToolKind.CoffeeRefill) return Kind==ShopToolKind.Bat?"Baseballütő":"Seprű";
             var package=GetComponent<ShopIngredientPackage>();
             return (package!=null&&package.Milk>0?"Tej":"Kávéalapanyag")+" • E a gépen: feltöltés";
         }
@@ -33,7 +33,17 @@ public sealed class ShopHandTool : MonoBehaviour
     private bool dropped;
     private float swing;
     public void PlaySwing(){swing=.24f;}
-    private void LateUpdate(){if(!IsHeld)return;swing=Mathf.Max(0,swing-Time.deltaTime);float angle=swing>0?Mathf.Sin((.24f-swing)/.24f*Mathf.PI)*85:0;transform.localRotation=Quaternion.Euler(-30,angle,-18);}
+    public void PlaySweep() { if (Kind == ShopToolKind.Mop && swing <= 0) swing = .55f; }
+    private void LateUpdate()
+    {
+        if (!IsHeld) return;
+        swing = Mathf.Max(0, swing - Time.deltaTime);
+        float duration = Kind == ShopToolKind.Mop ? .55f : .24f;
+        float angle = swing > 0 ? Mathf.Sin((duration-swing)/duration*Mathf.PI) : 0;
+        transform.localRotation = Kind == ShopToolKind.Mop
+            ? Quaternion.Euler(-55,angle*28,-18-angle*18)
+            : Quaternion.Euler(-30,angle*85,-18);
+    }
     public void Configure(ShopToolKind kind){Kind=kind;colliders=GetComponentsInChildren<Collider>();RememberHome();}
     private void RememberHome(){originalParent=transform.parent;originalPosition=transform.position;originalRotation=transform.rotation;}
     public bool PickUp(Transform hand)
@@ -60,7 +70,7 @@ public sealed class ShopFeatureTarget : MonoBehaviour
 {
     public ShopFeatureKind Kind;
     public float Cleaning { get; private set; }
-    public string Prompt=>Kind==ShopFeatureKind.CoffeeMachine?"E / bal kattintás: kávégép menüje • Alapanyaggal: feltöltés":"Felmosóval tartsd nyomva a bal egérgombot • "+Mathf.RoundToInt(Cleaning/1.5f*100)+"%";
+    public string Prompt=>Kind==ShopFeatureKind.CoffeeMachine?"E / bal kattintás: kávégép menüje • Alapanyaggal: feltöltés":"Seprűvel tartsd nyomva a bal egérgombot • "+Mathf.RoundToInt(Cleaning/1.5f*100)+"%";
     public void Scrub(float dt)
     {
         if(Kind!=ShopFeatureKind.Spill)return;Cleaning+=Mathf.Clamp(dt,0,.1f);

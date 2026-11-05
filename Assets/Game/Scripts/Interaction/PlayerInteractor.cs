@@ -121,7 +121,11 @@ public sealed class PlayerInteractor : MonoBehaviour
         if(heldTool!=null&&Mouse.current!=null)
         {
             if(heldTool.Kind==ShopToolKind.Bat&&Mouse.current.leftButton.wasPressedThisFrame)MvpShopController.Instance.Activities.SwingBat(viewCamera);
-            if(heldTool.Kind==ShopToolKind.Mop&&Mouse.current.leftButton.isPressed&&featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill)featureTarget.Scrub(Time.deltaTime);
+            if(heldTool.Kind==ShopToolKind.Mop&&Mouse.current.leftButton.isPressed&&featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill)
+            {
+                heldTool.PlaySweep();
+                featureTarget.Scrub(Time.deltaTime);
+            }
         }
         if (station != null && !HasHeldProduct && ShopBindings.Pressed(UnityEngine.InputSystem.Key.Q)) station.Cycle();
         if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !(heldTool==null&&Mouse.current!=null&&Mouse.current.leftButton.wasPressedThisFrame)) return;

@@ -83,9 +83,17 @@ public sealed partial class ShopActivities : MonoBehaviour
         Shape(batRoot.transform,"Bat barrel",new Vector3(0,.49f,0),new Vector3(.075f,.22f,.075f),ivory,PrimitiveType.Cylinder);
         var hitbox=batRoot.AddComponent<BoxCollider>();hitbox.center=Vector3.up*.35f;hitbox.size=new Vector3(.10f,.72f,.10f);
         bat=batRoot.AddComponent<ShopHandTool>();bat.Configure(ShopToolKind.Bat);
-        var mopRoot=new GameObject("Floor mop");mopRoot.transform.SetParent(worldRoot,false);mopHome=new Vector3(2.18f,.035f,1.4f);mopRoot.transform.position=mopHome;
-        Shape(mopRoot.transform,"Mop handle",new Vector3(0,.59f,0),new Vector3(.025f,.58f,.025f),metal,PrimitiveType.Cylinder);
-        Box(mopRoot.transform,"Mop head",new Vector3(0,.015f,0),new Vector3(.28f,.045f,.17f),ivory);
+        var mopRoot=new GameObject("Warehouse broom");mopRoot.transform.SetParent(worldRoot,false);mopHome=new Vector3(-3.1f,.035f,.5f);mopRoot.transform.position=mopHome;
+        var wood = Mat("Broom handle wood", new Color(.45f,.29f,.13f));
+        var bristles = Mat("Broom natural bristles", new Color(.58f,.46f,.22f));
+        Shape(mopRoot.transform,"Broom wooden handle",new Vector3(0,.73f,0),new Vector3(.023f,.53f,.023f),wood,PrimitiveType.Cylinder);
+        Box(mopRoot.transform,"Broom head binding",new Vector3(0,.23f,0),new Vector3(.20f,.06f,.07f),wood);
+        for (int i = 0; i < 15; i++)
+        {
+            var tuft = Box(mopRoot.transform,"Broom bristle tuft",new Vector3((i-7)*.019f,.115f,0),new Vector3(.016f,.20f,.065f),bristles);
+            tuft.transform.localRotation = Quaternion.Euler(0,0,(7-i)*1.8f);
+        }
+        Box(worldRoot,"Warehouse broom holder",mopHome+new Vector3(0,.88f,.06f),new Vector3(.14f,.07f,.08f),metal);
         var mopBox=mopRoot.AddComponent<BoxCollider>();mopBox.center=Vector3.up*.60f;mopBox.size=new Vector3(.28f,1.23f,.17f);
         mop=mopRoot.AddComponent<ShopHandTool>();mop.Configure(ShopToolKind.Mop);
     }
