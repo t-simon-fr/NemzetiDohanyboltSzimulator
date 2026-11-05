@@ -61,6 +61,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             foreach (var label in FindObjectsByType<ShopShelfPriceLabel>(FindObjectsInactive.Include)) label.Refresh();
             AimWarehouseShelf();
         }
+        else if (scenario == "ingredient-pickup")
+        {
+            Shop.Ledger.TrySellCard(60000,0);Shop.SyncCashDrawer();Shop.Activities.BuyCoffeeMachine();
+            Shop.Activities.OrderCoffeeSupplies();Shop.Activities.OrderMilkSupplies();Shop.Tick(8.1f);
+            AimIngredient(false);
+        }
         else if (scenario == "after-hours-upgrades")
         {
             Shop.Ledger.TrySellCard(200000,0);Shop.SyncCashDrawer();
@@ -212,6 +218,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action == "aim-ingredient-coffee") AimIngredient(false);
+        if (action == "aim-ingredient-milk") AimIngredient(true);
+        if (action == "aim-refill-machine") AimCoffeeDisplay();
+        if (action == "view-refilled-machine") Shop.Devices.Focus(ShopDeviceKind.Coffee);
         if (action == "take-stock-order")
         {
             Shop.TakeSupply(Player,6);
@@ -318,6 +328,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Aim(dock.position + Vector3.up * .15f, 1.45f, new Vector3(1.2f, 0, .8f).normalized);
     }
 
+    private void AimIngredient(bool milk)
+    {
+        Physics.SyncTransforms();
+        var package=FindObjectsByType<ShopIngredientPackage>().First(p=>milk?p.Milk>0:p.Coffee>0);
+        Aim(package.GetComponentInChildren<Collider>().bounds.center,1.25f,Vector3.right);
+    }
+
     private Transform LowerStorageDock() => Shop.Warehouse.StorageDocks
         .First(d => d.parent == Shop.Warehouse.Dock(0) && d.position.y < Shop.Warehouse.Dock(0).position.y-.2f);
 
@@ -419,6 +436,8 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public bool[] upgradesOwned;
         public Vector3[] upgradeButtons;
         public int[] upgradeCosts;
+        public string ingredientTarget;
+        public int ingredientCoffee,ingredientMilk,readyCoffee,readyMilk;
         public Rect[] cashDenominations, cashKeys;
         public int[] cashCounts;
         public int[] offeredCoins;
@@ -511,6 +530,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.lowerStorageLabel = LowerStorageDock().Find("Brand dock label").GetComponent<TextMesh>().text;
         state.heldCartonType = Player.HeldCarton != null ? Player.HeldCarton.ProductType : -1;
         state.canDevelop = g.CanDevelopShop;
+        var targetTool=typeof(PlayerInteractor).GetField("targetTool",Private).GetValue(Player) as ShopHandTool;
+        var targetPackage=targetTool!=null?targetTool.GetComponent<ShopIngredientPackage>():null;
+        state.ingredientTarget=targetPackage!=null?(targetPackage.Milk>0?"milk":"coffee"):"";
+        state.ingredientCoffee=g.Activities.CoffeeSupplies;state.ingredientMilk=g.Activities.MilkSupplies;
+        state.readyCoffee=g.Activities.ReadyCoffee;state.readyMilk=g.Activities.ReadyMilk;
         state.upgradesOwned = new[]{g.Layout.Expanded,g.Layout.ExtraShelfOwned,g.Activities.CoffeeOwned,g.GetComponent<ShopNextUpgrades>().FridgeOwned,g.Security.Owned};
         state.upgradeCosts = new[]{ShopLayout.ExpansionPrice,ShopLayout.ExtraShelfPrice,ShopActivities.CoffeeMachinePrice,ShopNextUpgrades.FridgePrice,ShopSecurity.PurchasePrice};
         state.upgradeButtons = new[]{WorldControlKind.Expand,WorldControlKind.ExtraShelf,WorldControlKind.CoffeeMachineUpgrade,WorldControlKind.FridgeUpgrade,WorldControlKind.PanicButtonUpgrade}

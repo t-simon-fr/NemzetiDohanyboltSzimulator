@@ -157,7 +157,10 @@ public sealed class PlayerInteractor : MonoBehaviour
     public void RefreshTarget(Ray ray)
     {
         station=null;targetBin=null;target=null;targetSlot=null;canPlace=false;targetTool=null;featureTarget=null;
-        foreach (var hit in Physics.RaycastAll(ray,reach,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Collide).OrderBy(h=>h.distance))
+        var hits=Physics.RaycastAll(ray,reach,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Collide).OrderBy(h=>h.distance).ToArray();
+        var firstSolid=hits.FirstOrDefault(hit=>!hit.collider.isTrigger);
+        bool visibleTool=!HasHeldItem && firstSolid.collider!=null && firstSolid.collider.GetComponentInParent<ShopHandTool>()!=null;
+        foreach (var hit in hits)
         {
             var slot=hit.collider.GetComponent<ProductSlot>();
             if (hit.collider.isTrigger)
@@ -165,6 +168,9 @@ public sealed class PlayerInteractor : MonoBehaviour
                 var supply = hit.collider.GetComponent<ShopStation>();
                 if (supply != null && supply.IsSupplies && MvpShopController.Instance.Warehouse.IsStorageDock(supply.transform))
                 {
+                    // An empty storage trigger must not hide a visible refill package.
+                    // Only the nearest solid hit qualifies, so walls and cartons still occlude it.
+                    if (visibleTool) continue;
                     station = supply;
                     break;
                 }
