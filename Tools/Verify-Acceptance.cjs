@@ -217,6 +217,20 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await viewport(1280, 720);
     }
 
+    if (!selected || selected === 'after-hours-upgrades' || selected === 'closing-fixes') {
+      await probe('Prepare','after-hours-upgrades');let s=await state();
+      check(s.phase==='AfterHours'&&s.canDevelop&&s.device==='Monitor','Closed empty shop opens normal development app after hours');
+      await capture('after-hours-upgrades-before');
+      for(let i=0;i<5;i++){
+        const before=s.balance,point=s.upgradeButtons[i];
+        await click(point.x,height-point.y);s=await state();
+        check(s.upgradesOwned[i]&&s.balance===before-s.upgradeCosts[i],'Real computer click buys after-hours development exactly once: '+i);
+      }
+      const balance=s.balance,p=s.upgradeButtons[4];await click(p.x,height-p.y);s=await state();
+      check(s.balance===balance&&s.upgradesOwned.every(Boolean),'Owned development cannot be charged again after hours');
+      await viewport(1920,1080);await capture('after-hours-upgrades-owned-large');await viewport(1280,720);
+    }
+
     if (!selected || selected === 'stock-orders') {
       await probe('Prepare','stock-orders'); let s=await state();
       const cash=s.balance;

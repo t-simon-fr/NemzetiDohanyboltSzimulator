@@ -72,7 +72,7 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     }
     public bool BuyFridge()
     {
-        if(FridgeOwned||!shop.Layout.Expanded||shop.Phase!=ShopPhase.Preparing){shop.Notify("Hűtőt a bővített boltba, nyitás előtt vásárolhatsz.");return false;}
+        if(FridgeOwned||!shop.Layout.Expanded||!shop.CanDevelopShop){shop.Notify("Hűtőt a bővített boltba, nyitás előtt vagy zárás után, üres boltban vásárolhatsz.");return false;}
         var furniture = fridge.GetComponent<ShopFurniture>();
         if (furniture != null && !shop.Arrangement.CanActivate(furniture)) return false;
         if(!shop.Ledger.TryImprove(FridgePrice)){shop.Notify("Nincs elég pénz a hűtőre.");return false;}

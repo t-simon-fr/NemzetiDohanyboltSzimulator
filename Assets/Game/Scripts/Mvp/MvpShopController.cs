@@ -74,6 +74,8 @@ public sealed partial class MvpShopController : MonoBehaviour
         queue.Count == 0 && departing.Count == 0 && fleeing.Count == 0 && !HasHeldProduct;
     public bool BuyPanicButton() => Security != null && Security.TryPurchase();
     public int AvailableProducts => Layout != null && Layout.Expanded ? ShopCatalog.Count : ShopCatalog.CigaretteCount;
+    public bool CanDevelopShop => Ledger != null && !Ledger.Closed &&
+        (Phase == ShopPhase.Preparing || (Phase == ShopPhase.Closing || Phase == ShopPhase.AfterHours) && CanEndDay);
     public int SelectedPieces(int value) => changeCoins.Count(c=>c==value);
     public bool HasHeldProduct => player != null && player.HasHeldItem;
     public WarehouseArea Warehouse { get; private set; }
@@ -551,7 +553,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public bool TryExpand()
     {
-        if (Layout == null || Layout.Expanded || Phase != ShopPhase.Preparing) { Message = "Bővíteni nyitás előtt lehet, üres boltban."; return false; }
+        if (Layout == null || Layout.Expanded || !CanDevelopShop) { Message = "Bővíteni nyitás előtt vagy zárás után, üres boltban lehet."; return false; }
         if (!Ledger.TryImprove(ShopLayout.ExpansionPrice)) { Message = "Nincs elég pénz a bővítéshez."; return false; }
         SyncCashDrawer(); Layout.SetExpanded(true); Navigation?.Rebuild(); Devices?.RefreshMonitor();
         Message = "Megnyílt az önkiszolgáló rész! Rendelj árut, és töltsd fel az új polcokat. A pult a helyén maradt.";
@@ -559,7 +561,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public bool BuyExtraShelf()
     {
-        if(Layout==null||Layout.ExtraShelfOwned||Phase!=ShopPhase.Preparing){Message="Berendezést nyitás előtt vehetsz. Ez a polc csak egyszer vásárolható meg.";return false;}
+        if(Layout==null||Layout.ExtraShelfOwned||!CanDevelopShop){Message="Berendezést nyitás előtt vagy zárás után, üres boltban vehetsz. Ez a polc csak egyszer vásárolható meg.";return false;}
         if(!Ledger.TryImprove(ShopLayout.ExtraShelfPrice)){Message="Nincs elég pénz a kiegészítő polcra.";return false;}
         SyncCashDrawer();Layout.SetExtraShelf(true);Navigation?.Rebuild();
         Message="Kiegészítő cigarettapolc a jobb oldali személyzeti falnál: 9 új termékhely. A pult a helyén maradt.";return true;

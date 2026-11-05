@@ -99,7 +99,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     public bool BuyCoffeeMachine()
     {
-        if(CoffeeOwned||shop.Phase!=ShopPhase.Preparing){shop.Notify("Kávégépet nyitás előtt, egyszer vásárolhatsz.");return false;}
+        if(CoffeeOwned||!shop.CanDevelopShop){shop.Notify("Kávégépet nyitás előtt vagy zárás után, üres boltban, egyszer vásárolhatsz.");return false;}
         if(!shop.Ledger.TryImprove(CoffeeMachinePrice)){shop.Notify("Nincs elég pénz a kávégépre.");return false;}
         shop.SyncCashDrawer();CoffeeOwned=true;shop.Navigation?.Rebuild();coffeeRoot.gameObject.SetActive(true);shop.Notify("Kávégép felszerelve. A Kávé alkalmazásban rendelhetsz alapanyagot.");return true;
     }
