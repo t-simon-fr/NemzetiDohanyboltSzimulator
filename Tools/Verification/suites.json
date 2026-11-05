@@ -35,10 +35,16 @@
       "continuous-arrivals",
       "tool-storage",
       "fixture-lighting",
-      "walkable-entrance"
+      "walkable-entrance",
+      "scanner-placement"
     ]
   },
   "suites": {
+    "scanner-placement": {
+      "file": "Tools/Checks/ScannerPlacementChecks.cs",
+      "entry": "ScannerPlacementChecks.Run",
+      "purpose": "Cigarette-only manual scanner path, no customer-zone guide, internal NPC transfer and three prepared coffees"
+    },
     "walkable-entrance": {
       "file": "Tools/Checks/WalkableEntranceChecks.cs",
       "entry": "WalkableEntranceChecks.Run",
