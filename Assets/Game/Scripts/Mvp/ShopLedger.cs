@@ -58,7 +58,7 @@ public sealed class ShopLedger
     // The ledger now remains open until the player leaves at the entrance.
     public bool TryBuyAfterHours(int cost,int quantity)
     {
-        if(Cash<0||cost<=0||quantity<=0||quantity>5||(long)cost*quantity>AvailableFunds)return false;
+        if(Closed||Cash<0||cost<=0||quantity<=0||quantity>10||(long)cost*quantity>AvailableFunds)return false;
         int amount=cost*quantity;SpendFunds(amount);Purchases+=amount;return true;
     }
     public bool TryImprove(int amount)

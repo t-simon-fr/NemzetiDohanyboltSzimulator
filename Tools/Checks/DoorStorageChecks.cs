@@ -33,13 +33,13 @@ public static class DoorStorageChecks
             check(g.Phase==ShopPhase.Closing && Vector3.Dot(-closed.forward,-g.Entrance.DoorLeaf.forward)>.99f,"Closing restores outward closed face");
             g.ResetDemo();
             var slots=g.CounterStorage.Slots;
-            check(slots.Length==5 && slots.All(s=>s.Occupant==null),"Five empty private slots");
+            check(slots.Length==10 && slots.All(s=>s.Occupant==null),"Ten empty private slots across two shelves");
             var ordinary=g.CreateCoffee(0);
             check(!slots[0].CanAccept(ordinary)&&!slots[0].CanAcceptStock(ordinary.ProductId),"Private slots reject normal goods and cartons");
             ordinary.RemoveFromWorld();
             int money=g.Ledger.Cash;
             foreach(var slot in slots)check(g.CreateNightProduct().AssignInitialSlot(slot),"Store physical contraband pack");
-            check(g.StockCount(ShopCatalog.Contraband)==5 && g.Ledger.Cash==money,"Storage preserves stock and money");
+            check(g.StockCount(ShopCatalog.Contraband)==10 && g.Ledger.Cash==money,"Storage preserves stock and money");
             var item=slots[0].Occupant;
             check(player.TryHold(item),"Take pack from under counter");
             Physics.SyncTransforms();
@@ -57,13 +57,13 @@ public static class DoorStorageChecks
             player.CancelHeld();
             int due=g.ActiveCustomer.Tender-g.ActiveCustomer.TotalPrice;
             foreach(int value in ShopCatalog.Denominations)while(due>=value){g.AddChange(value);due-=value;}
-            check(g.SubmitChange(g.ChangeSelected)&&g.StockCount(ShopCatalog.Contraband)==4,"Sell once without duplicate private stock");
+            check(g.SubmitChange(g.ChangeSelected)&&g.StockCount(ShopCatalog.Contraband)==9,"Sell once without duplicate private stock");
             g.RequestClose();
             for(int i=0;i<3000&&!g.CanEndDay;i++)g.Tick(.1f);
             var body=player.GetComponent<CharacterController>();body.enabled=false;player.transform.position=g.Layout.EntryInside;body.enabled=true;
             check(g.TryEndDay(),"Door still closes the day separately from sign");
             g.NextDay();
-            check(slots.Count(s=>s.Occupant!=null)==4,"Private stock survives next day");
+            check(slots.Count(s=>s.Occupant!=null)==9,"Private stock survives next day");
             g.ResetDemo();
             check(slots.All(s=>s.Occupant==null),"New game clears private stock");
             return new {passed,failed=0};

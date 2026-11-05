@@ -20,13 +20,14 @@ public sealed class ShopCounterStorage : MonoBehaviour
         Box(root,"Counter storage back",new Vector3(0,0,-.28f),new Vector3(1.3f,1.1f,.19f));
         Box(root,"Counter storage floor",new Vector3(0,-.43f,0),new Vector3(1.3f,.24f,.75f));
         Box(root,"Counter storage roof",new Vector3(0,.44f,0),new Vector3(1.3f,.22f,.75f));
-        Slots = new ProductSlot[5];
+        Box(root,"Counter storage middle shelf",new Vector3(0,-.02f,.08f),new Vector3(1.3f,.035f,.48f));
+        Slots = new ProductSlot[10];
         for (int i=0;i<Slots.Length;i++)
         {
             var slot = new GameObject("Under counter Dnyipro slot "+i).AddComponent<ProductSlot>();
             slot.transform.SetParent(root,false);
-            slot.transform.localPosition = new Vector3((i-2)*.22f,-.30f,.23f);
-            slot.Configure(new Vector3(.20f,.35f,.16f));
+            slot.transform.localPosition = new Vector3((i%5-2)*.22f,i<5?-.30f:.005f,.23f);
+            slot.Configure(new Vector3(.20f,.26f,.16f));
             slot.RestrictExclusivelyTo(ShopCatalog.Ids[ShopCatalog.Contraband]);
             Slots[i] = slot;
         }

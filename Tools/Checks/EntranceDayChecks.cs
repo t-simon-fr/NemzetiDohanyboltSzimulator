@@ -45,8 +45,9 @@ public static class EntranceDayChecks
             player.transform.position = shop.AfterHours.Merchant.position + Vector3.right;
             body.enabled = true;
             int beforeTrade = shop.Ledger.Cash;
+            int offered = shop.AfterHours.OfferedQuantity;
             check(shop.AfterHours.OpenTrade() && shop.AfterHours.BuyBundle() &&
-                shop.Ledger.Cash == beforeTrade - 3500 && !shop.Ledger.Closed,
+                shop.Ledger.Cash == beforeTrade - offered*700 && !shop.Ledger.Closed,
                 "Evening trade remains available before the door closes the ledger");
             shop.AfterHours.CloseTrade();
             body.enabled = false;
@@ -67,7 +68,7 @@ public static class EntranceDayChecks
             shop.NextDay();
             check(shop.Day == 2 && shop.Phase == ShopPhase.Preparing && shop.Modal == ShopModal.None && shop.Elapsed == 0,
                 "Next day starts without another welcome modal");
-            check(shop.StockCount(ShopCatalog.Contraband) == 5 && shop.Ledger.Cash == cash - 300,
+            check(shop.StockCount(ShopCatalog.Contraband) == offered && shop.Ledger.Cash == cash - 300,
                 "Next day preserves paid evening goods and charges no second operating fee");
             return new { passed, failed = 0 };
         }

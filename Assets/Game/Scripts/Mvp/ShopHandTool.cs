@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ShopToolKind { Bat, Mop, CoffeeRefill }
+public enum ShopToolKind { Bat, Mop, CoffeeRefill, ContrabandBox }
 public static class ShopLoosePhysics
 {
     public static void Freeze(GameObject item)
@@ -21,6 +21,7 @@ public sealed class ShopHandTool : MonoBehaviour
     {
         get
         {
+            if (Kind == ShopToolKind.ContrabandBox) return "Dnyipro doboz • "+GetComponent<ShopContrabandBox>().Quantity+" db • E a pult alatti polcon: bepakolás";
             if (Kind!=ShopToolKind.CoffeeRefill) return Kind==ShopToolKind.Bat?"Baseballütő":"Seprű";
             var package=GetComponent<ShopIngredientPackage>();
             return (package!=null&&package.Milk>0?"Tej":"Kávéalapanyag")+" • E a gépen: feltöltés";

@@ -20,6 +20,15 @@ public sealed class ShopAfterHours:MonoBehaviour
     private bool night;
     private Vector2 tradeScroll;
     private int tradeDay;
+    private readonly int scheduleSeed = System.Guid.NewGuid().GetHashCode();
+    public int OfferedQuantity { get; private set; }
+    public ShopContrabandBox DeliveryBox { get; private set; }
+    public static int QuantityForEvening(int seed, int day)
+    {
+        var random = new System.Random(unchecked(seed+day*7919));
+        if (day>1 && random.NextDouble()>=.65) return 0;
+        return random.Next(1,11);
+    }
     public bool BoughtTonight{get;private set;}
     public bool TradeOpen{get;private set;}
     public Transform Merchant=>merchant.transform;
@@ -48,8 +57,8 @@ public sealed class ShopAfterHours:MonoBehaviour
     public void Enter()
     {
         if(shop.Phase!=ShopPhase.AfterHours||night)return;
-        if(tradeDay!=shop.Day){tradeDay=shop.Day;BoughtTonight=false;}
-        night=true;merchant.SetActive(true);yardLight.enabled=true;
+        if(tradeDay!=shop.Day){tradeDay=shop.Day;BoughtTonight=false;OfferedQuantity=QuantityForEvening(scheduleSeed,shop.Day);}
+        night=true;merchant.SetActive(OfferedQuantity>0);yardLight.enabled=true;
         sun=FindObjectsByType<Light>().FirstOrDefault(l=>l.type==LightType.Directional&&l.enabled);if(sun!=null){sunIntensity=sun.intensity;sunColor=sun.color;sun.intensity*=.18f;sun.color=new Color(.45f,.55f,1);}
         ambientMode=RenderSettings.ambientMode;ambientColor=RenderSettings.ambientLight;ambientIntensity=RenderSettings.ambientIntensity;skybox=RenderSettings.skybox;
         RenderSettings.skybox=null;RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.10f,.13f,.23f);RenderSettings.ambientIntensity=.35f;
@@ -61,29 +70,37 @@ public sealed class ShopAfterHours:MonoBehaviour
         if(sun!=null){sun.intensity=sunIntensity;sun.color=sunColor;}RenderSettings.ambientMode=ambientMode;RenderSettings.ambientLight=ambientColor;RenderSettings.ambientIntensity=ambientIntensity;RenderSettings.skybox=skybox;
         var camera=Camera.main;if(camera!=null){camera.clearFlags=clearFlags;camera.backgroundColor=background;}
     }
-    public void ResetEvenings(){EndEvening();tradeDay=0;BoughtTonight=false;}
+    public void ResetEvenings()
+    {
+        EndEvening();tradeDay=0;BoughtTonight=false;OfferedQuantity=0;
+        if (DeliveryBox!=null) { DeliveryBox.gameObject.SetActive(false); Destroy(DeliveryBox.gameObject); }
+    }
     public bool OpenTrade()
     {
-        if(shop.Phase!=ShopPhase.AfterHours||!night||shop.HasHeldProduct||Vector3.Distance(FindAnyObjectByType<PlayerInteractor>().transform.position,merchant.transform.position)>2.5f)return false;
+        if(shop.Phase!=ShopPhase.AfterHours||!night||!merchant.activeSelf||FindAnyObjectByType<PlayerInteractor>().HasHeldItem||Vector3.Distance(FindAnyObjectByType<PlayerInteractor>().transform.position,merchant.transform.position)>2.5f)return false;
         shop.ClosePanel();TradeOpen=true;ShopInputGate.Blocked=true;Cursor.lockState=CursorLockMode.None;Cursor.visible=true;return true;
     }
     public void CloseTrade(){if(!TradeOpen)return;TradeOpen=false;shop.ClosePanel();}
     public bool BuyBundle()
     {
         if(!TradeOpen||shop.Phase!=ShopPhase.AfterHours||BoughtTonight)return false;
-        if(slots.Any(s=>s.Occupant!=null)){shop.Notify("Előbb vidd be az előző csomagokat az átvételi asztalról.");return false;}
-        if(!shop.Ledger.TryBuyAfterHours(ShopCatalog.Costs[ShopCatalog.Contraband],BundleQuantity)){shop.Notify("Nincs elég pénzed az 5 csomagra.");return false;}
-        shop.SyncCashDrawer();foreach(var slot in slots)shop.CreateNightProduct().AssignInitialSlot(slot);BoughtTonight=true;shop.Notify("5 csomag Dnyipro az udvari asztalon. Egyesével vedd fel, és töltsd fel a bolti polcot.");return true;
+        if(OfferedQuantity<=0 || DeliveryBox!=null && DeliveryBox.Quantity>0){shop.Notify("Előbb pakold be az előző dobozt a pult alá.");return false;}
+        if(!shop.Ledger.TryBuyAfterHours(ShopCatalog.Costs[ShopCatalog.Contraband],OfferedQuantity)){shop.Notify("Nincs elég pénzed a szállítmányra.");return false;}
+        shop.SyncCashDrawer();
+        DeliveryBox = new GameObject("Paid Dnyipro delivery box").AddComponent<ShopContrabandBox>();
+        DeliveryBox.transform.position = new Vector3(-5.3f,.62f,4.45f);
+        DeliveryBox.Configure(shop,OfferedQuantity);
+        BoughtTonight=true;shop.Notify(OfferedQuantity+" csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.");return true;
     }
     void Update(){if(TradeOpen&&Application.isFocused&&Keyboard.current!=null){if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))CloseTrade();else if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Enter)||ShopBindings.Pressed(UnityEngine.InputSystem.Key.NumpadEnter))BuyBundle();}}
     void OnGUI()
     {
         if(!TradeOpen||ShopMenu.Active)return;var old=GUI.matrix;float scale=Mathf.Min(Screen.width/1280f,Screen.height/720f);GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1280*scale)*.5f,(Screen.height-720*scale)*.5f),Quaternion.identity,Vector3.one*scale);
         ShopUi.Panel(new Rect(300,150,680,420));GUILayout.BeginArea(new Rect(320,170,640,235));tradeScroll=GUILayout.BeginScrollView(tradeScroll);var style=ShopUi.Text(21);
-        GUILayout.Label("GYANÚS ALAK",style);GUILayout.Space(12);GUILayout.Label("Jó estét. Ukrán Dnyipro van nálam. Öt csomag, egy üzlet. Holnap is erre járok.",style);
-        GUILayout.Label("5 × 700 Ft = 3500 Ft • Egy csomagban 20 szál",style);GUILayout.Label("Pénzed: "+ShopCatalog.Money(shop.Ledger.AvailableFunds),style);GUILayout.Label(shop.Message,style);GUILayout.EndScrollView();GUILayout.EndArea();
+        GUILayout.Label("GYANÚS ALAK",style);GUILayout.Space(12);GUILayout.Label("Jó estét. Ma "+OfferedQuantity+" csomag Dnyiprót tudtam hozni. Dobozban van, egyben elviheted. Nem minden este jutok erre.",style);
+        GUILayout.Label(OfferedQuantity+" × 700 Ft = "+ShopCatalog.Money(OfferedQuantity*700)+" • Egy csomagban 20 szál",style);GUILayout.Label("Pénzed: "+ShopCatalog.Money(shop.Ledger.AvailableFunds),style);GUILayout.Label(shop.Message,style);GUILayout.EndScrollView();GUILayout.EndArea();
         GUILayout.BeginArea(new Rect(320,425,640,130));var button=ShopUi.ButtonStyle(20);
-        GUI.enabled=!BoughtTonight;if(GUILayout.Button(BoughtTonight?"Ma elfogyott":"Megveszem • 3500 Ft • Enter",button,GUILayout.Height(48)))BuyBundle();GUI.enabled=true;
+        GUI.enabled=!BoughtTonight;if(GUILayout.Button(BoughtTonight?"Ma elfogyott":"Megveszem • "+ShopCatalog.Money(OfferedQuantity*700)+" • Enter",button,GUILayout.Height(48)))BuyBundle();GUI.enabled=true;
         if(GUILayout.Button("Most ennyi • Esc",button,GUILayout.Height(48)))CloseTrade();GUILayout.EndArea();GUI.matrix=old;
     }
     void OnDestroy(){if(night)EndEvening();foreach(var material in materials)if(material!=null)Destroy(material);}
