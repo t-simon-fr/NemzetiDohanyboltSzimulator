@@ -13,6 +13,8 @@ public sealed class PlayerInteractor : MonoBehaviour
     private WarehouseBin targetBin;
     private WarehouseCarton heldCarton;
     private ShopHandTool heldTool,targetTool;
+    private ShopToolRack targetRack;
+    public ShopToolRack TargetToolRack => targetRack;
     private ShopFeatureTarget featureTarget;
     public ShopHandTool HeldTool=>heldTool;
     public void ConsumeHeldTool(){if(heldTool==null)return;var tool=heldTool;heldTool=null;tool.gameObject.SetActive(false);Destroy(tool.gameObject);UpdatePlacementHints();}
@@ -62,6 +64,12 @@ public sealed class PlayerInteractor : MonoBehaviour
     }
     public bool TryHoldTool(ShopHandTool tool)
     {if(HasHeldItem||tool==null||!tool.PickUp(holdPoint))return false;heldTool=tool;UpdatePlacementHints();return true;}
+    public bool TryReturnHeldTool(ShopToolRack rack)
+    {
+        if(heldTool==null || rack==null || !rack.TryStore(heldTool))return false;
+        heldTool=null;targetRack=null;
+        ShopInputGate.ConsumeWorldAction();UpdatePlacementHints();return true;
+    }
     public bool DropHeld()
     {
         if(!HasHeldItem)return false;
@@ -120,7 +128,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.G)){DropHeld();return;}
         if(heldTool!=null&&Mouse.current!=null)
         {
-            if(heldTool.Kind==ShopToolKind.Bat&&Mouse.current.leftButton.wasPressedThisFrame)MvpShopController.Instance.Activities.SwingBat(viewCamera);
+            if(heldTool.Kind==ShopToolKind.Bat&&targetRack==null&&Mouse.current.leftButton.wasPressedThisFrame)MvpShopController.Instance.Activities.SwingBat(viewCamera);
             if(heldTool.Kind==ShopToolKind.Mop&&Mouse.current.leftButton.isPressed&&featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill)
             {
                 heldTool.PlaySweep();
@@ -128,7 +136,8 @@ public sealed class PlayerInteractor : MonoBehaviour
             }
         }
         if (station != null && !HasHeldProduct && ShopBindings.Pressed(UnityEngine.InputSystem.Key.Q)) station.Cycle();
-        if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !(heldTool==null&&Mouse.current!=null&&Mouse.current.leftButton.wasPressedThisFrame)) return;
+        if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !((heldTool==null||targetRack!=null)&&Mouse.current!=null&&Mouse.current.leftButton.wasPressedThisFrame)) return;
+        if(targetRack!=null && heldTool!=null){TryReturnHeldTool(targetRack);return;}
         if (station != null && station.IsPanicButton) { station.Use(this); return; }
         if (station != null && station.IsCoffeeControl && !HasHeldItem) { station.Use(this); return; }
         if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&(!HasHeldItem||heldTool!=null&&heldTool.Kind==ShopToolKind.CoffeeRefill)){MvpShopController.Instance.Activities.UseCoffeeMachine();return;}
@@ -161,7 +170,7 @@ public sealed class PlayerInteractor : MonoBehaviour
     // Shared by keyboard interaction and the scene-level targeting checks.
     public void RefreshTarget(Ray ray)
     {
-        station=null;targetBin=null;target=null;targetSlot=null;canPlace=false;targetTool=null;featureTarget=null;
+        station=null;targetBin=null;target=null;targetSlot=null;canPlace=false;targetTool=null;featureTarget=null;targetRack=null;
         var hits=Physics.RaycastAll(ray,reach,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Collide).OrderBy(h=>h.distance).ToArray();
         var firstSolid=hits.FirstOrDefault(hit=>!hit.collider.isTrigger);
         bool visibleTool=!HasHeldItem && firstSolid.collider!=null && firstSolid.collider.GetComponentInParent<ShopHandTool>()!=null;
@@ -170,6 +179,8 @@ public sealed class PlayerInteractor : MonoBehaviour
             var slot=hit.collider.GetComponent<ProductSlot>();
             if (hit.collider.isTrigger)
             {
+                var rack=hit.collider.GetComponent<ShopToolRack>();
+                if(rack!=null && heldTool!=null && rack.Tool==heldTool){targetRack=rack;break;}
                 var supply = hit.collider.GetComponent<ShopStation>();
                 if (supply != null && supply.IsSupplies && MvpShopController.Instance.Warehouse.IsStorageDock(supply.transform))
                 {
@@ -279,6 +290,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         string prompt = !cursorLocked ? "Kattints a játékba a folytatáshoz" :
             station != null && station.IsPanicButton ? station.Prompt :
             station != null && station.IsCoffeeControl && !HasHeldItem ? station.Prompt :
+            heldTool!=null && targetRack!=null ? targetRack.Prompt :
             heldTool!=null ? (featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill?featureTarget.Prompt:heldTool.DisplayName+" • Bal egérgomb: használat • G: eldobás") :
             !HasHeldItem&&targetTool!=null ? "E – Felvétel: "+targetTool.DisplayName :
             !HasHeldItem&&featureTarget!=null ? featureTarget.Prompt :

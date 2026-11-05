@@ -85,7 +85,8 @@ public sealed partial class ShopActivities : MonoBehaviour
             Box(worldRoot,"Bat wall hook",batHome+new Vector3(0,y,-.035f),new Vector3(.13f,.025f,.12f),metal);
         var hitbox=batRoot.AddComponent<BoxCollider>();hitbox.center=Vector3.up*.41f;hitbox.size=new Vector3(.10f,.84f,.10f);
         bat=batRoot.AddComponent<ShopHandTool>();bat.Configure(ShopToolKind.Bat);
-        var mopRoot=new GameObject("Warehouse broom");mopRoot.transform.SetParent(worldRoot,false);mopHome=new Vector3(-3.1f,.035f,.5f);mopRoot.transform.position=mopHome;
+        new GameObject("Bat return target").AddComponent<ShopToolRack>().Configure(bat);
+        var mopRoot=new GameObject("Warehouse broom");mopRoot.transform.SetParent(worldRoot,false);mopHome=new Vector3(-2.95f,.035f,1.65f);mopRoot.transform.SetPositionAndRotation(mopHome,Quaternion.Euler(8,0,-8));
         var wood = Mat("Broom handle wood", new Color(.45f,.29f,.13f));
         var bristles = Mat("Broom natural bristles", new Color(.58f,.46f,.22f));
         Shape(mopRoot.transform,"Broom wooden handle",new Vector3(0,.73f,0),new Vector3(.023f,.53f,.023f),wood,PrimitiveType.Cylinder);
@@ -95,9 +96,9 @@ public sealed partial class ShopActivities : MonoBehaviour
             var tuft = Box(mopRoot.transform,"Broom bristle tuft",new Vector3((i-7)*.019f,.115f,0),new Vector3(.016f,.20f,.065f),bristles);
             tuft.transform.localRotation = Quaternion.Euler(0,0,(7-i)*1.8f);
         }
-        Box(worldRoot,"Warehouse broom stand",mopHome+new Vector3(0,-.02f,.03f),new Vector3(.34f,.025f,.22f),dark);
         var mopBox=mopRoot.AddComponent<BoxCollider>();mopBox.center=Vector3.up*.60f;mopBox.size=new Vector3(.28f,1.23f,.17f);
         mop=mopRoot.AddComponent<ShopHandTool>();mop.Configure(ShopToolKind.Mop);
+        new GameObject("Broom return target").AddComponent<ShopToolRack>().Configure(mop);
     }
     private void BuildBatModel(Transform parent)
     {
@@ -285,7 +286,11 @@ public sealed partial class ShopActivities : MonoBehaviour
         ResetTool(bat,batHome);ResetTool(mop,mopHome);
         CoffeeDisplay?.Refresh();
     }
-    private void ResetTool(ShopHandTool tool,Vector3 home){tool.ReturnToPickupPosition();ShopLoosePhysics.Freeze(tool.gameObject);tool.transform.SetParent(worldRoot,true);tool.transform.SetPositionAndRotation(home,Quaternion.identity);}
+    private void ResetTool(ShopHandTool tool,Vector3 home)
+    {
+        if(tool.Rack!=null){tool.Rack.Restore();return;}
+        tool.ReturnToPickupPosition();ShopLoosePhysics.Freeze(tool.gameObject);tool.transform.SetParent(worldRoot,true);tool.transform.SetPositionAndRotation(home,Quaternion.identity);
+    }
     public void StartSnake(){snake=new ShopSnake(shop.Day*37+Time.frameCount);gameChoice=1;snakeTimer=.17f;}
     public void StartMemory(){memory=new ShopMemoryGame(shop.Day*51+Time.frameCount);gameChoice=2;}
     private void TickGames(float dt)

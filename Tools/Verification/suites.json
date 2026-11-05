@@ -32,10 +32,16 @@
       "after-hours-upgrades",
       "ingredient-pickup",
       "feature-batch",
-      "continuous-arrivals"
+      "continuous-arrivals",
+      "tool-storage"
     ]
   },
   "suites": {
+    "tool-storage": {
+      "file": "Tools/Checks/ToolStorageChecks.cs",
+      "entry": "ToolStorageChecks.Run",
+      "purpose": "Corner broom pose, reachable permanent racks, wrong-tool rejection, repeated use and return after dropping"
+    },
     "continuous-arrivals": {
       "file": "Tools/Checks/ContinuousArrivalChecks.cs",
       "entry": "ContinuousArrivalChecks.Run",
