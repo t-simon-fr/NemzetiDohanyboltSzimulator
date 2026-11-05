@@ -59,7 +59,7 @@ public sealed partial class ShopDevices
                 ShopComputerTheme.Label(new Rect(16,y,380,30),ShopCatalog.Names[type],22,true);
                 ShopComputerTheme.Label(new Rect(16,y+29,380,25),ShopCatalog.Money(ShopCatalog.Costs[type])+" / db",18);
                 ShopComputerTheme.Label(new Rect(410,y,310,54),shop.StockCount(type)+" / "+shop.WarehouseCount(type)+" / "+shop.PendingQuantity(type),22);
-                if(GUI.Button(new Rect(796,y+6,48,44),"−",ShopComputerTheme.Button()))SetCartQuantity(type,Mathf.Max(0,q)-1);
+                if(GUI.Button(new Rect(796,y+6,48,44),"-",ShopComputerTheme.Button()))SetCartQuantity(type,Mathf.Max(0,q)-1);
                 GUI.SetNextControlName("CartQuantity"+type);
                 cartInputs[type]=GUI.TextField(new Rect(858,y+6,90,44),cartInputs[type],3,ShopComputerTheme.Field(24));
                 if(GUI.Button(new Rect(962,y+6,48,44),"+",ShopComputerTheme.Button()))SetCartQuantity(type,Mathf.Max(0,q)+1);

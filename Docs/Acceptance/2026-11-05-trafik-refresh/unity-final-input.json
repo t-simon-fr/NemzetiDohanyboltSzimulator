@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "price-editor",
+    "computer-ui"
+  ],
+  "startedUtc": "2026-11-05T19:22:46.2033744Z",
+  "source": {
+    "commit": "8d8481b21cce8a45ab27880208de730218db987c",
+    "sourceFingerprint": "e7516efeddd02a646ac14c4cb160fd336c4fb2df0eb84b5ba2ca919d30a64842",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "passed": 32,
+      "id": "price-editor",
+      "entry": "VisualRefreshChecks.Prices",
+      "seconds": 0.8493062,
+      "failed": 0
+    },
+    {
+      "passed": 12,
+      "id": "computer-ui",
+      "entry": "VisualRefreshChecks.Computer",
+      "seconds": 0.1704085,
+      "failed": 0
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.087795,
+  "finishedUtc": "2026-11-05T19:22:52.8411889Z",
+  "totalSeconds": 6.6462662
+}

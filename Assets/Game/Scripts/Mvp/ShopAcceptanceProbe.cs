@@ -55,7 +55,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "requests-arrivals")
+        if(scenario=="visual-refresh") {
+            Shop.Ledger.TrySellCard(100000,0);Shop.SyncCashDrawer();
+            Shop.Devices.Focus(ShopDeviceKind.Monitor);
+        }
+        else if (scenario == "requests-arrivals")
         {
             Shop.OpenShop();Aim(Shop.DeliverySlot.transform.position+Vector3.up*.1f,1.4f);
         }
@@ -264,6 +268,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if(action=="design-exterior"||action=="design-interior") {
+            Shop.ClosePanel();Player.GetComponent<FirstPersonController>().enabled=false;
+            View.transform.position=action=="design-exterior"?new Vector3(-4.5f,2.5f,-12):new Vector3(1.7f,1.7f,-4);
+            View.transform.LookAt(action=="design-exterior"?new Vector3(1,1.9f,-1.5f):new Vector3(-.4f,1.3f,.8f));
+        }
         if (action == "aim-ingredient-coffee") AimIngredient(false);
         if (action == "advance-requests-arrivals")
         {
@@ -490,6 +499,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public int requestsSpawned,customerGuides,fixtureLights,coffeeMerchandise;
         public bool broomAtHome,batAtHome;
         public string toolRack;
+        public string computerApp,priceDraft,priceError;
+        public int selectedPrice,priceCategory;
+        public bool priceEditing;
+        public string[] priceProducts,computerControlIds;
+        public Rect[] computerControls;
+        public Rect computerScreen;
         public int[] cartQuantities, pendingCart;
         public Rect[] cartFields;
         public Rect cartSubmit;
@@ -583,13 +598,22 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.tradeOpen=g.AfterHours.TradeOpen;
         state.scannerCount=g.Scanner.ScanCount;
         state.scannerProduct=g.Scanner.LastProductId;
+        state.computerApp=g.Devices.ComputerApp.ToString();
+        state.selectedPrice=g.Pricing.Price(g.Pricing.SelectedType);
+        state.priceCategory=(int)g.Pricing.Category;
+        state.priceDraft=g.Pricing.Draft;state.priceError=g.Pricing.Error;state.priceEditing=g.Pricing.Editing;
+        state.priceProducts=g.Pricing.VisibleTypes.Select(t=>ShopCatalog.Ids[t]).ToArray();
+        if(g.Devices.ComputerShellActive) {
+            var controls=g.Devices.KeyboardTargets();state.computerControlIds=controls.Select(t=>t.Id).ToArray();
+            state.computerControls=controls.Select(t=>t.Bounds).ToArray();state.computerScreen=g.Devices.ComputerScreenRect;
+        }
         state.cartQuantities=Enumerable.Range(0,ShopCatalog.Count).Select(g.Devices.CartQuantity).ToArray();
         state.pendingCart=Enumerable.Range(0,ShopCatalog.Count).Select(g.PendingQuantity).ToArray();
         if (g.Devices.Focused && g.Devices.FocusKind==ShopDeviceKind.Monitor)
         {
             var rect=g.Devices.AppRect;
-            state.cartFields=Enumerable.Range(0,2).Select(i=>new Rect(rect.x+6+rect.width-193,rect.y+8+i*43,48,30)).ToArray();
-            state.cartSubmit=new Rect(rect.x+rect.width*.5f,rect.y+rect.height-78,rect.width*.48f-10,32);
+            state.cartFields=Enumerable.Range(0,2).Select(i=>Shop.Devices.CartFieldRect(i)).ToArray();
+            state.cartSubmit=Shop.Devices.ComputerToScreen(new Rect(ShopDevices.ComputerBody.x+802,ShopDevices.ComputerBody.y+400,330,46));
         }
         state.arranging = g.Arrangement.Active;
         state.dragging = g.Arrangement.Dragging;
@@ -698,7 +722,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.spoken = g.Dialogue;
         state.grounded = Player.GetComponent<FirstPersonController>().IsGrounded;
         state.verticalSpeed = Player.GetComponent<FirstPersonController>().VerticalSpeed;
-        Debug.Log("ACCEPTANCE_STATE:" + JsonUtility.ToJson(state));
+        // WebGL's log transport truncates large individual messages. Keep complete
+        // JSON across bounded chunks instead of silently losing a snapshot.
+        string json=JsonUtility.ToJson(state);
+        const int chunkSize=3000;
+        int count=(json.Length+chunkSize-1)/chunkSize;
+        for(int i=0;i<count;i++)
+            Debug.Log("ACCEPTANCE_CHUNK:"+i+"/"+count+":"+json.Substring(i*chunkSize,Mathf.Min(chunkSize,json.Length-i*chunkSize)));
     }
 }
 #endif

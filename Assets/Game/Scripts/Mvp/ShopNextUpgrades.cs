@@ -82,6 +82,7 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     public void RefreshLayout()
     {
         // Expansion changes available floor area, never existing furniture poses.
+        shop.GetComponent<ShopTrafikIdentity>()?.RefreshLayout(shop.Layout.Expanded);
     }
     void Update()
     {

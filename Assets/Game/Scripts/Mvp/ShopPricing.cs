@@ -37,10 +37,11 @@ public sealed partial class ShopPricing:MonoBehaviour
             int category=i;
             targets.Add(new ShopKeyboardTarget("Price:Category:"+i,CategoryNames[i],new Rect(r.x+i*r.width/4,r.y,r.width/4-8,44),()=>ChooseCategory((ShopPriceCategory)category)));
         }
+        if(VisibleTypes.Length==0)return;
         float x=r.x+r.width*.32f+32;
         float fw=Mathf.Min(300,r.width-r.width*.32f-32-200);
         targets.Add(new ShopKeyboardTarget("Price:Edit","Ár szerkesztése",new Rect(x+74,r.y+168,fw,62),BeginEdit));
-        targets.Add(new ShopKeyboardTarget("Price:Minus","−",new Rect(x,r.y+168,60,62),()=>StepEditor(-1,Keyboard.current!=null&&Keyboard.current.shiftKey.isPressed)));
+        targets.Add(new ShopKeyboardTarget("Price:Minus","-",new Rect(x,r.y+168,60,62),()=>StepEditor(-1,Keyboard.current!=null&&Keyboard.current.shiftKey.isPressed)));
         targets.Add(new ShopKeyboardTarget("Price:Plus","+",new Rect(x+74+fw+58,r.y+168,60,62),()=>StepEditor(1,Keyboard.current!=null&&Keyboard.current.shiftKey.isPressed)));
         targets.Add(new ShopKeyboardTarget("Price:Reset","Alapár",new Rect(x,r.y+330,260,44),()=>{CancelEdit();TrySetPrice(SelectedType,ShopCatalog.Prices[SelectedType]);}));
         var visible=VisibleTypes;

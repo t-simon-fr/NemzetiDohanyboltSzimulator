@@ -12,6 +12,7 @@ public sealed partial class ShopPricing
     private const string PriceField = "TobaccOS.Price";
     private string draft = "", error = "";
     private bool editing, clearFocus, focusEdit;
+    private int cancelledFrame=-1;
     private Vector2 productScroll;
     public bool Editing => editing;
     public string Draft => draft;
@@ -25,6 +26,7 @@ public sealed partial class ShopPricing
     private void ResetEditor()
     {
         Category = ShopPriceCategory.Tobacco;
+        cancelledFrame=-1;
         editing = false; clearFocus = true; focusEdit = false;
         error = "";
         draft = Price(SelectedType).ToString();
@@ -57,7 +59,8 @@ public sealed partial class ShopPricing
 
     public bool CancelEdit()
     {
-        if (!editing) return false;
+        if (!editing) return cancelledFrame==Time.frameCount;
+        cancelledFrame=Time.frameCount;
         editing = false; clearFocus = true; focusEdit = false;
         error = "";
         draft = Price(SelectedType).ToString();
@@ -85,6 +88,7 @@ public sealed partial class ShopPricing
 
     public void StepEditor(int direction, bool fine)
     {
+        if(VisibleTypes.Length==0)return;
         if (!CommitEdit()) return;
         AdjustSelected(Math.Sign(direction) * (fine ? 5 : 100));
         draft = Price(SelectedType).ToString();
@@ -111,6 +115,16 @@ public sealed partial class ShopPricing
         GUI.BeginGroup(area);
         try
         {
+            var e=Event.current;
+            // WebGL's native text editor can consume Escape before Input System.
+            // Own the IMGUI path too, and consume cancellation once per frame.
+            if(e.type==EventType.KeyDown&&e.keyCode==KeyCode.Escape&&(editing||cancelledFrame==Time.frameCount)) {
+                CancelEdit();GUI.FocusControl(null);e.Use();
+            }
+            if(e.type==EventType.KeyDown&&(e.keyCode==KeyCode.Return||e.keyCode==KeyCode.KeypadEnter)&&editing) {
+                CommitEdit();e.Use();
+            }
+            if(clearFocus){GUI.FocusControl(null);clearFocus=false;}
             float w = area.width, h = area.height, left = w * .32f, x = left + 32;
             for (int i = 0; i < CategoryNames.Length; i++)
                 if (GUI.Button(new Rect(i * w / 4, 0, w / 4 - 8, 44), CategoryNames[i],
@@ -136,7 +150,7 @@ public sealed partial class ShopPricing
             ShopComputerTheme.Label(new Rect(x, 104, w - x, 32), "Beszerzés " + ShopCatalog.Money(ShopCatalog.Costs[current]) + "     Alapár " + ShopCatalog.Money(ShopCatalog.Prices[current]), 20);
             float fieldWidth = Mathf.Min(300, w - x - 200);
             var field = new Rect(x + 74, 168, fieldWidth, 62);
-            var e = Event.current;
+
             if (e.type == EventType.MouseDown)
             {
                 if (field.Contains(e.mousePosition)) BeginEdit();
@@ -145,10 +159,10 @@ public sealed partial class ShopPricing
             if (!editing && error.Length == 0) draft = Price(current).ToString();
             ShopComputerTheme.Label(new Rect(x, 140, w - x, 26), "Eladási ár", 19);
             bool fine = e.shift || Keyboard.current != null && Keyboard.current.shiftKey.isPressed;
-            if (GUI.Button(new Rect(x, 168, 60, 62), "−", ShopComputerTheme.Button(false, 30))) StepEditor(-1, fine);
+            if (GUI.Button(new Rect(x, 168, 60, 62), "-", ShopComputerTheme.Button(false, 30))) StepEditor(-1, fine);
             GUI.SetNextControlName(PriceField);
             string value = GUI.TextField(field, draft, 9, ShopComputerTheme.Field());
-            if (value != draft) SetDraft(value);
+            if (value != draft && cancelledFrame!=Time.frameCount) SetDraft(value);
             ShopComputerTheme.Label(new Rect(field.xMax + 8, 168, 40, 62), "Ft", 24);
             if (GUI.Button(new Rect(field.xMax + 58, 168, 60, 62), "+", ShopComputerTheme.Button(false, 30))) StepEditor(1, fine);
             if (focusEdit) { GUI.FocusControl(PriceField); focusEdit = false; }
