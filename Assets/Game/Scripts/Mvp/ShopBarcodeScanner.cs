@@ -16,6 +16,8 @@ public sealed class ShopBarcodeScanner : MonoBehaviour
         transform.SetParent(slot.transform, false);
         var oldTray = shop.FloorPlan.Find("Blue handover tray");
         if (oldTray != null) oldTray.gameObject.SetActive(false);
+        var oldLabel = shop.FloorPlan.Find("Átadó felirat");
+        if (oldLabel != null) oldLabel.gameObject.SetActive(false);
         housing = MakeMaterial("Scanner housing", new Color(.08f,.10f,.10f));
         glass = MakeMaterial("Scanner glass", new Color(.025f,.035f,.035f));
         indicator = MakeMaterial("Scanner scan line", new Color(.9f,.08f,.04f));

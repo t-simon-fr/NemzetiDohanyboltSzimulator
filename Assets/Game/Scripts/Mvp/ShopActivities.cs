@@ -95,7 +95,7 @@ public sealed partial class ShopActivities : MonoBehaviour
             var tuft = Box(mopRoot.transform,"Broom bristle tuft",new Vector3((i-7)*.019f,.115f,0),new Vector3(.016f,.20f,.065f),bristles);
             tuft.transform.localRotation = Quaternion.Euler(0,0,(7-i)*1.8f);
         }
-        Box(worldRoot,"Warehouse broom holder",mopHome+new Vector3(0,.88f,.06f),new Vector3(.14f,.07f,.08f),metal);
+        Box(worldRoot,"Warehouse broom stand",mopHome+new Vector3(0,-.02f,.03f),new Vector3(.34f,.025f,.22f),dark);
         var mopBox=mopRoot.AddComponent<BoxCollider>();mopBox.center=Vector3.up*.60f;mopBox.size=new Vector3(.28f,1.23f,.17f);
         mop=mopRoot.AddComponent<ShopHandTool>();mop.Configure(ShopToolKind.Mop);
     }

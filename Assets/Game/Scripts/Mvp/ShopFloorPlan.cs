@@ -35,7 +35,11 @@ public sealed class ShopFloorPlan : MonoBehaviour
         var hours = Find("Opening hours card");
         if (hours != null) hours.position = new Vector3(-.65f, 1.62f, -4.3f);
         var hoursText = Find("Opening hours");
-        if (hoursText != null) hoursText.position = new Vector3(-.65f, 1.62f, -4.289f);
+        if (hoursText != null)
+        {
+            hoursText.position = new Vector3(-.65f, 1.62f, -4.289f);
+            hoursText.GetComponent<TextMesh>().text = "NYITÁS: 08:00\nZÁRÁS: A TÁBLA SZERINT";
+        }
         Find("Entrance outside").position = new Vector3(EntranceX, 0, -4.95f);
         Find("Entrance inside").position = new Vector3(EntranceX, 0, -3.55f);
         Find("Exit doorway").position = new Vector3(EntranceX, 0, -4.05f);
