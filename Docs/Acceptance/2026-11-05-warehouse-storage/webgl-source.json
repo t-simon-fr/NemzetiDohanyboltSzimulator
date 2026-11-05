@@ -1,0 +1,11 @@
+{
+  "sourceCommit": "42b7d95",
+  "sourceFingerprint": "68e676abfa643bd31ffab0f7a522f7d155ec174b91dad37b5f540d1113f9db12",
+  "acceptanceProbe": true,
+  "files": {
+    "AcceptanceWebGL.data.unityweb": "199e2452806b2f63f73a6c1f4d9c92da3c904e178221ecf1e89a8f30c2542f9b",
+    "AcceptanceWebGL.framework.js.unityweb": "1371c8bca0d7043c5ebe4c82f56a25097d87a128b668abf84eef93e17599c927",
+    "AcceptanceWebGL.loader.js": "a00c16ffe3a1383711d3b75f4627bd52772714a67baffea8d93e9308189039a9",
+    "AcceptanceWebGL.wasm.unityweb": "07644b02a66acb9a62068ebff15412ec9d869c9e368de303bf9f96e69608a87f"
+  }
+}

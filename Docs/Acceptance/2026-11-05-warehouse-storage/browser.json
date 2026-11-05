@@ -1,0 +1,87 @@
+{
+  "started": "2026-11-05T07:48:29.342Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Real shipments occupy physical storage; previously unassigned rows are usable",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks carton and clears vacated source",
+      "passed": true
+    },
+    {
+      "label": "Actual E places carton on another former brand dock",
+      "passed": true
+    },
+    {
+      "label": "Vacant source cannot remotely pick up relocated carton",
+      "passed": true
+    },
+    {
+      "label": "Actual mouse click picks the physically relocated carton",
+      "passed": true
+    },
+    {
+      "label": "Occupied storage rejects E without replacing its different-brand carton",
+      "passed": true
+    },
+    {
+      "label": "Actual E places carton on formerly unusable lower shelf row",
+      "passed": true
+    },
+    {
+      "label": "Mouse can retrieve carton from lower shelf row",
+      "passed": true
+    },
+    {
+      "label": "Relocated carton still unpacks exactly one finite product",
+      "passed": true
+    },
+    {
+      "label": "Mouse places part-filled carton at chosen empty warehouse dock",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks the stocked unit for carton return",
+      "passed": true
+    },
+    {
+      "label": "Unit return uses actual carton contents instead of dock original brand",
+      "passed": true
+    },
+    {
+      "label": "All keyboard and mouse relocation preserves exact cash and other carton",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-warehouse-relocated.png",
+    "1920x1080-warehouse-lower-relocated.png",
+    "1920x1080-warehouse-returned-large.png",
+    "1280x720-warehouse-returned.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23185395,
+    "seconds": 246.3662092,
+    "error": "",
+    "completedUtc": "2026-11-05T07:46:21.096Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "199e2452806b2f63f73a6c1f4d9c92da3c904e178221ecf1e89a8f30c2542f9b",
+      "AcceptanceWebGL.framework.js.unityweb": "1371c8bca0d7043c5ebe4c82f56a25097d87a128b668abf84eef93e17599c927",
+      "AcceptanceWebGL.loader.js": "a00c16ffe3a1383711d3b75f4627bd52772714a67baffea8d93e9308189039a9",
+      "AcceptanceWebGL.wasm.unityweb": "07644b02a66acb9a62068ebff15412ec9d869c9e368de303bf9f96e69608a87f"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-05T07:48:56.545Z"
+}
