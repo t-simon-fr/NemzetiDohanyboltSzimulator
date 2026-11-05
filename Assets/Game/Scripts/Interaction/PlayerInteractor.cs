@@ -124,13 +124,6 @@ public sealed class PlayerInteractor : MonoBehaviour
             if(heldTool.Kind==ShopToolKind.Mop&&Mouse.current.leftButton.isPressed&&featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill)featureTarget.Scrub(Time.deltaTime);
         }
         if (station != null && !HasHeldProduct && ShopBindings.Pressed(UnityEngine.InputSystem.Key.Q)) station.Cycle();
-        if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&!HasHeldItem)
-        {
-            if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Q))MvpShopController.Instance.Activities.CycleRecipe();
-            if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Digit1))MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.Coffee);
-            if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Digit2))MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.LongCoffee);
-            if(ShopBindings.Pressed(UnityEngine.InputSystem.Key.Digit3))MvpShopController.Instance.Activities.SelectRecipe(ShopCatalog.Latte);
-        }
         if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !(heldTool==null&&Mouse.current!=null&&Mouse.current.leftButton.wasPressedThisFrame)) return;
         if (station != null && station.IsPanicButton) { station.Use(this); return; }
         if (station != null && station.IsCoffeeControl && !HasHeldItem) { station.Use(this); return; }

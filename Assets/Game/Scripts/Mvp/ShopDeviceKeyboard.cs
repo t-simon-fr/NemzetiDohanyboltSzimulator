@@ -74,8 +74,6 @@ public sealed partial class ShopDevices
         }
         if (FocusKind == ShopDeviceKind.Coffee)
         {
-            int digit = Digit(key);
-            if (digit >= 1 && digit <= 3) { shop.Activities.SelectRecipe(ShopCatalog.Coffee + digit - 1); return true; }
             if (enter) { shop.Activities.CoffeeDisplay.ActionControl.Activate(shop); return true; }
         }
         if(FocusKind==ShopDeviceKind.Till)

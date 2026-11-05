@@ -34,6 +34,13 @@ public static class CoffeeDisplayChecks
             station.Use(player);
             check(shop.Devices.FocusKind == ShopDeviceKind.Coffee && ShopInputGate.Blocked, "E target opens machine control without a modal");
             int balance = shop.Ledger.Cash;
+            int initialRecipe = activities.SelectedRecipe;
+            shop.Devices.HandleDeviceKey(UnityEngine.InputSystem.Key.Digit2);
+            shop.Devices.HandleDeviceKey(UnityEngine.InputSystem.Key.Digit3);
+            check(activities.SelectedRecipe == initialRecipe && activities.BrewRemaining == 0, "Number keys do not select recipes or brew");
+            shop.ClosePanel();
+            activities.UseCoffeeMachine();
+            check(shop.Devices.FocusKind == ShopDeviceKind.Coffee && activities.BrewRemaining == 0, "Machine body and screen both open the menu without brewing");
             for (int index = 0; index < 3; index++)
             {
                 shop.Devices.Focus(ShopDeviceKind.Coffee);

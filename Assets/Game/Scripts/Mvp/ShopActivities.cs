@@ -119,8 +119,11 @@ public sealed partial class ShopActivities : MonoBehaviour
     public void UseCoffeeMachine()
     {
         if(RefillFromHand())return;
-        if(CoffeeOutput.Occupant!=null){if(!player.TryHold(CoffeeOutput.Occupant))shop.Notify("Előbb tedd le a kezedben levő tárgyat.");}
-        else BrewCoffee();
+        if (!player.HasHeldItem)
+        {
+            ShopInputGate.ConsumeWorldAction();
+            shop.Devices.Focus(ShopDeviceKind.Coffee);
+        }
     }
     public bool TakeCoffeeFromDisplay()
     {
