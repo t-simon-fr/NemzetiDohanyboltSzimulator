@@ -443,7 +443,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await press('Desktop:0');await press('OpenApp:2');s=await state();const funds=s.balance;
       await press('Expand:0');s=await state();check(s.upgradesOwned[0]&&s.balance===funds-24000,'New upgrade list buys real shop expansion');
       await press('CoffeeMachineUpgrade:0');s=await state();check(s.upgradesOwned[2]&&s.balance===funds-40000,'New upgrade list buys physical coffee machine');await capture('upgrades');
-      await press('Desktop:0');await press('OpenApp:6');s=await state();const before=s.balance;
+      await press('Desktop:0');await press('OpenApp:6');await press('Price:Category:0');s=await state();const before=s.balance;
       check(s.priceProducts.every(id=>id.startsWith('cig_')),'Tobacco category excludes drinks');
       await fill(await control('Price:Edit'),'2400');s=await state();
       check(s.selectedPrice===2200&&s.priceDraft==='2400','Actual typing does not commit price prematurely');
