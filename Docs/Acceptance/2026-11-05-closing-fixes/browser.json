@@ -1,0 +1,163 @@
+{
+  "started": "2026-11-05T09:10:23.817Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Real delivered coffee package is targetable through its empty storage-cell trigger",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks the paid coffee ingredient package",
+      "passed": true
+    },
+    {
+      "label": "Actual E refills all ten coffee servings exactly once",
+      "passed": true
+    },
+    {
+      "label": "Milk package is targetable instead of the blank warehouse shelf",
+      "passed": true
+    },
+    {
+      "label": "Actual mouse click picks the physically targeted milk package",
+      "passed": true
+    },
+    {
+      "label": "Actual E refills milk without extra coffee brewing or duplicated ingredients",
+      "passed": true
+    },
+    {
+      "label": "Ingredient pickup and refill never charge or lose money",
+      "passed": true
+    },
+    {
+      "label": "Closed empty shop opens normal development app after hours",
+      "passed": true
+    },
+    {
+      "label": "Real computer click buys after-hours development exactly once: 0",
+      "passed": true
+    },
+    {
+      "label": "Real computer click buys after-hours development exactly once: 1",
+      "passed": true
+    },
+    {
+      "label": "Real computer click buys after-hours development exactly once: 2",
+      "passed": true
+    },
+    {
+      "label": "Real computer click buys after-hours development exactly once: 3",
+      "passed": true
+    },
+    {
+      "label": "Real computer click buys after-hours development exactly once: 4",
+      "passed": true
+    },
+    {
+      "label": "Owned development cannot be charged again after hours",
+      "passed": true
+    },
+    {
+      "label": "Card checkout focuses actual terminal",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 0",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 1",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 2",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 3",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 4",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 5",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 6",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 7",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 8",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 9",
+      "passed": true
+    },
+    {
+      "label": "Physical terminal rejects wrong input on its own display",
+      "passed": true
+    },
+    {
+      "label": "Physical correction and keyboard share live terminal amount",
+      "passed": true
+    },
+    {
+      "label": "Physical OK pays once and keeps success visible",
+      "passed": true
+    },
+    {
+      "label": "Successful card payment automatically restores normal player view and input",
+      "passed": true
+    },
+    {
+      "label": "Repeated confirmation after auto-close cannot double charge",
+      "passed": true
+    },
+    {
+      "label": "Physical ESC leaves terminal at large viewport",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-ingredient-coffee-target.png",
+    "1280x720-ingredient-milk-target.png",
+    "1920x1080-ingredient-machine-refilled-large.png",
+    "1280x720-after-hours-upgrades-before.png",
+    "1920x1080-after-hours-upgrades-owned-large.png",
+    "1280x720-physical-terminal-error.png",
+    "1280x720-physical-terminal-approved.png",
+    "1920x1080-physical-terminal-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23183475,
+    "seconds": 370.3317366,
+    "error": "",
+    "completedUtc": "2026-11-05T09:08:09.557Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "e73202638b22fbed34c55d4a5a7270e2c4d865f84c356c39fe1c3ca142016387",
+      "AcceptanceWebGL.framework.js.unityweb": "da60480de98dfb8307b98a999caede9afa2f293f366effb45cd1a3465fe5a3f3",
+      "AcceptanceWebGL.loader.js": "86a2d50e024bddc3a8852d7d6841481136db0dc389bfb93615fceb18c8ff753e",
+      "AcceptanceWebGL.wasm.unityweb": "466419e1405d022fae6ccf823d17a9e25fa4276ebc4164968645ab8ca8fd36c1"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-05T09:11:23.178Z"
+}

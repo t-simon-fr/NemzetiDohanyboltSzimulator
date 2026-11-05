@@ -226,14 +226,14 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.ingredientTarget==='coffee'&&s.readyCoffee===10&&s.readyMilk===10,'Real delivered coffee package is targetable through its empty storage-cell trigger');
       await capture('ingredient-coffee-target');
       await key('e','KeyE',69);s=await state();
-      check(s.tool.startsWith('Kávéalapanyag'),'Actual E picks the paid coffee ingredient package');
+      check(s.tool==='CoffeeRefill'&&s.readyCoffee===10,'Actual E picks the paid coffee ingredient package');
       await probe('Action','aim-refill-machine');await key('e','KeyE',69);s=await state();
       check(!s.tool&&s.ingredientCoffee===10&&s.readyCoffee===0,'Actual E refills all ten coffee servings exactly once');
       await probe('Action','aim-ingredient-milk');s=await state();
       check(s.ingredientTarget==='milk','Milk package is targetable instead of the blank warehouse shelf');
       await capture('ingredient-milk-target');
       await worldClick();s=await state();
-      check(s.tool.startsWith('Tej'),'Actual mouse click picks milk with the correct tooltip');
+      check(s.tool==='CoffeeRefill'&&s.readyMilk===10&&s.readyCoffee===0,'Actual mouse click picks the physically targeted milk package');
       await probe('Action','aim-refill-machine');await key('e','KeyE',69);s=await state();
       check(!s.tool&&s.ingredientMilk===10&&s.readyMilk===0&&s.ingredientCoffee===10,'Actual E refills milk without extra coffee brewing or duplicated ingredients');
       check(s.balance===cash,'Ingredient pickup and refill never charge or lose money');
