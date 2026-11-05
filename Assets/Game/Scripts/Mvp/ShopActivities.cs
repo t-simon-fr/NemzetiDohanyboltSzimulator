@@ -78,10 +78,12 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     private void BuildTools()
     {
-        var batRoot=new GameObject("Baseball bat");batRoot.transform.SetParent(worldRoot,false);batHome=new Vector3(1.9f,.12f,.25f);batRoot.transform.position=batHome;
-        Shape(batRoot.transform,"Bat grip",new Vector3(0,.15f,0),new Vector3(.035f,.15f,.035f),dark,PrimitiveType.Cylinder);
-        Shape(batRoot.transform,"Bat barrel",new Vector3(0,.49f,0),new Vector3(.075f,.22f,.075f),ivory,PrimitiveType.Cylinder);
-        var hitbox=batRoot.AddComponent<BoxCollider>();hitbox.center=Vector3.up*.35f;hitbox.size=new Vector3(.10f,.72f,.10f);
+        var batRoot=new GameObject("Baseball bat");batRoot.transform.SetParent(worldRoot,false);batHome=new Vector3(-1.7f,.8f,-4.15f);batRoot.transform.position=batHome;
+        BuildBatModel(batRoot.transform);
+        Box(worldRoot,"Bat rack backing",batHome+new Vector3(0,.35f,-.10f),new Vector3(.20f,.72f,.035f),dark);
+        foreach (float y in new[] { .15f, .60f })
+            Box(worldRoot,"Bat wall hook",batHome+new Vector3(0,y,-.035f),new Vector3(.13f,.025f,.12f),metal);
+        var hitbox=batRoot.AddComponent<BoxCollider>();hitbox.center=Vector3.up*.41f;hitbox.size=new Vector3(.10f,.84f,.10f);
         bat=batRoot.AddComponent<ShopHandTool>();bat.Configure(ShopToolKind.Bat);
         var mopRoot=new GameObject("Warehouse broom");mopRoot.transform.SetParent(worldRoot,false);mopHome=new Vector3(-3.1f,.035f,.5f);mopRoot.transform.position=mopHome;
         var wood = Mat("Broom handle wood", new Color(.45f,.29f,.13f));
@@ -96,6 +98,38 @@ public sealed partial class ShopActivities : MonoBehaviour
         Box(worldRoot,"Warehouse broom holder",mopHome+new Vector3(0,.88f,.06f),new Vector3(.14f,.07f,.08f),metal);
         var mopBox=mopRoot.AddComponent<BoxCollider>();mopBox.center=Vector3.up*.60f;mopBox.size=new Vector3(.28f,1.23f,.17f);
         mop=mopRoot.AddComponent<ShopHandTool>();mop.Configure(ShopToolKind.Mop);
+    }
+    private void BuildBatModel(Transform parent)
+    {
+        var profile = new Vector2[] {
+            new Vector2(0,0), new Vector2(.028f,.012f), new Vector2(.028f,.025f),
+            new Vector2(.016f,.04f), new Vector2(.016f,.25f), new Vector2(.024f,.40f),
+            new Vector2(.040f,.56f), new Vector2(.044f,.72f), new Vector2(.038f,.79f),
+            new Vector2(.023f,.82f), new Vector2(0,.83f)
+        };
+        const int sides = 16;
+        var vertices = new Vector3[profile.Length * sides];
+        var triangles = new List<int>();
+        for (int ring = 0; ring < profile.Length; ring++)
+        {
+            for (int side = 0; side < sides; side++)
+            {
+                float angle = side * Mathf.PI * 2 / sides;
+                vertices[ring*sides+side] = new Vector3(Mathf.Cos(angle)*profile[ring].x, profile[ring].y, Mathf.Sin(angle)*profile[ring].x);
+                if (ring == 0) continue;
+                int a = (ring-1)*sides+side, b = (ring-1)*sides+(side+1)%sides;
+                int c = ring*sides+side, d = ring*sides+(side+1)%sides;
+                triangles.AddRange(new[] { a,c,b,b,c,d });
+            }
+        }
+        var model = new GameObject("Turned wooden bat");
+        model.transform.SetParent(parent,false);
+        var mesh = new Mesh { name = "Original tapered baseball bat" };
+        mesh.vertices = vertices; mesh.triangles = triangles.ToArray(); mesh.RecalculateNormals(); mesh.RecalculateBounds();
+        model.AddComponent<MeshFilter>().sharedMesh = mesh;
+        model.AddComponent<MeshRenderer>().sharedMaterial = Mat("Bat varnished wood",new Color(.62f,.40f,.20f));
+        for (int i = 0; i < 12; i++)
+            Shape(parent,"Bat grip wrap",new Vector3(0,.06f+i*.014f,0),new Vector3(.018f,.004f,.018f),dark,PrimitiveType.Cylinder);
     }
     private void BuildCamera(string name,Vector3 position,Vector3 target)
     {
