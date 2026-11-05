@@ -24,7 +24,8 @@
       "shelf-labels",
       "modern-register",
       "forint-visuals",
-      "customer-hand"
+      "customer-hand",
+      "wall-seam"
     ]
   },
   "suites": {
@@ -122,6 +123,11 @@
       "file": "Tools/Checks/CustomerHandChecks.cs",
       "entry": "CustomerHandChecks.Run",
       "purpose": "Natural player-side hand camera, physical palm targeting, input consumption, every coin ray at approach angles, camera restore and stale/occupied guards"
+    },
+    "wall-seam": {
+      "file": "Tools/Checks/WallSeamChecks.cs",
+      "entry": "WallSeamChecks.Run",
+      "purpose": "Physical full-height seam closure, fixed boundary, expansion removal and reset"
     }
   },
   "historicalExcluded": {

@@ -24,6 +24,8 @@ public sealed class ShopFloorPlan : MonoBehaviour
         if (tobaccoSign != null)
             tobaccoSign.SetPositionAndRotation(new Vector3(-2.38f, 2.35f, -2.1f), Quaternion.Euler(0, -90, 0));
 
+        CloseStarterWallSeam();
+
         // Door opening: [0.4, 2.0], entirely inside the starter shop [-2.5, 2.5].
         ResizeWall("Front wall right", 2.25f, .5f);
         // Left wall ends at x=.4: centre (-2.5+.4)/2, width .4-(-2.5).
@@ -44,6 +46,20 @@ public sealed class ShopFloorPlan : MonoBehaviour
         player.transform.SetPositionAndRotation(StaffSpawn, Quaternion.Euler(0, 90, 0));
         controller.enabled = true;
         Physics.SyncTransforms();
+    }
+
+    private void CloseStarterWallSeam()
+    {
+        var partition = Find("Expansion partition").GetComponent<Renderer>().bounds;
+        var side = Find("Staff side wall");
+        var bounds = side.GetComponent<Renderer>().bounds;
+        // Extend toward the partition with a small overlap; keep the rear boundary.
+        float nearEdge = partition.max.z - .02f;
+        if (bounds.min.z <= nearEdge) return;
+        var scale = side.localScale;
+        scale.z *= (bounds.max.z - nearEdge) / bounds.size.z;
+        side.localScale = scale;
+        side.position = new Vector3(side.position.x, side.position.y, (bounds.max.z + nearEdge) * .5f);
     }
 
     private void ResizeWall(string title, float x, float width)
