@@ -319,7 +319,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'summary'); await hold([sprint, forward, jump], 900); s = await state();
       check(s.position.z > -4.4 && s.phase === 'AfterHours', 'Sprint and jump cannot cross real shop entrance boundary');
     }
-    if (!selected || selected === 'physical-terminal') {
+    if (!selected || selected === 'physical-terminal' || selected === 'closing-fixes') {
       await probe('Prepare', 'card'); let s = await state(); const balance = s.balance;
       check(s.device === 'Terminal', 'Card checkout focuses actual terminal');
       for (let digit = 0; digit < 10; digit++) {
@@ -338,8 +338,9 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       for (const digit of [2, 2, 0, 0]) await clickRect((await state()).cardDigits[digit]);
       await clickRect((await state()).cardConfirm); s = await state();
       check(s.sales === 1 && s.balance === balance + 2200 && s.cardDisplayStatus === 'SIKERES FIZETÉS', 'Physical OK pays once and keeps success visible');
+      check(s.device === 'None' && !s.blocked && s.cursorLocked, 'Successful card payment automatically restores normal player view and input');
       await capture('physical-terminal-approved');
-      await clickRect(s.cardConfirm); check((await state()).sales === 1, 'Repeated physical OK cannot double charge');
+      await enter(); check((await state()).sales === 1, 'Repeated confirmation after auto-close cannot double charge');
       await viewport(1920, 1080); await probe('Prepare', 'card');
       await capture('physical-terminal-large');
       await clickRect((await state()).cardBack); check((await state()).device === 'None', 'Physical ESC leaves terminal at large viewport');

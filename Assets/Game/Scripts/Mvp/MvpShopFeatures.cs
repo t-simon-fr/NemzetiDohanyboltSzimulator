@@ -43,6 +43,7 @@ public sealed partial class MvpShopController
         if(!int.TryParse(CardAmount,out int entered)||entered!=active.TotalPrice){CardStatus=CardTerminalStatus.Error;Notify("Hibás összeg. Írd be a pontos fizetendő összeget.");return false;}
         if(!Ledger.TrySellCard(active.TotalPrice,active.TotalCost))return false;
         int paid = active.TotalPrice;
+        ShopInputGate.ConsumeWorldAction();
         Drawer.CancelTender();SyncCashDrawer();ClearCardAmount();CompleteSale();
         LastApprovedCardAmount = paid;CardStatus = CardTerminalStatus.Approved;
         Notify("Sikeres kártyás fizetés. A kasszaegyenleg frissült.");return true;
@@ -90,7 +91,7 @@ public sealed partial class MvpShopController
         receivedOrder.Clear();prepared=null;active.SellBasket();
         Activities.ClearHand();Stage=ServiceStage.Thanks;thanksTimer=2.5f;
         Dialogue=ShopPeople.Thanks[active.Person];Message="Sikeres fizetés. A kassza és a készlet frissült.";
-        if (Devices == null || Devices.FocusKind != ShopDeviceKind.Terminal) SetModal(ShopModal.None);
+        SetModal(ShopModal.None);
         changeCoins.Clear();
     }
 }
