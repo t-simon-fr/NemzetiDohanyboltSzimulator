@@ -182,6 +182,7 @@ public sealed class PlayerInteractor : MonoBehaviour
                 var rack=hit.collider.GetComponent<ShopToolRack>();
                 if(rack!=null && heldTool!=null && rack.Tool==heldTool){targetRack=rack;break;}
                 var supply = hit.collider.GetComponent<ShopStation>();
+                if(supply!=null && supply.IsExit && !HasHeldItem){station=supply;break;}
                 if (supply != null && supply.IsSupplies && MvpShopController.Instance.Warehouse.IsStorageDock(supply.transform))
                 {
                     // An empty storage trigger must not hide a visible refill package.

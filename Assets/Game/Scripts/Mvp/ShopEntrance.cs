@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// NPCs control the leaf. A separate fixed collider keeps the player inside,
-// even while a customer passes through the open entrance.
+// The entrance opens for both customers and the player. Only the purchased
+// security shutter can block passage; the doorway remains an interaction target.
 [DisallowMultipleComponent]
 public sealed class ShopEntrance : MonoBehaviour
 {
     private MvpShopController shop;
+    private Transform player;
     private Transform root, hinge, signPivot;
     private float passageTime, angle;
     private readonly List<Material> materials = new List<Material>();
@@ -19,6 +20,7 @@ public sealed class ShopEntrance : MonoBehaviour
     public void Configure(MvpShopController owner)
     {
         shop = owner;
+        player = FindAnyObjectByType<PlayerInteractor>().transform;
         var lintel = GameObject.Find("Door lintel").transform;
         float width = Mathf.Abs(lintel.lossyScale.x);
         float height = lintel.position.y - Mathf.Abs(lintel.lossyScale.y) * .5f;
@@ -28,6 +30,7 @@ public sealed class ShopEntrance : MonoBehaviour
         PlayerBoundary = root.gameObject.AddComponent<BoxCollider>();
         PlayerBoundary.center = new Vector3(0, height * .5f, 0);
         PlayerBoundary.size = new Vector3(width, height, .12f);
+        PlayerBoundary.isTrigger = true;
         root.gameObject.AddComponent<ShopStation>().Configure(shop, ShopStationKind.Exit);
         var oldBoundary = GameObject.Find("Player Door Boundary");
         if (oldBoundary != null) oldBoundary.SetActive(false);
@@ -75,6 +78,7 @@ public sealed class ShopEntrance : MonoBehaviour
     {
         if (root == null || ShopMenu.Active || ShopInputGate.Blocked) return;
         passageTime = Mathf.Max(0, passageTime - dt);
+        if (player != null) RequestPassage(player.position);
         angle = Mathf.MoveTowards(angle, passageTime > 0 && !shop.Security.Locked ? 100 : 0, 240 * dt);
         hinge.localRotation = Quaternion.Euler(0, angle, 0);
         signPivot.localRotation = Quaternion.RotateTowards(signPivot.localRotation,

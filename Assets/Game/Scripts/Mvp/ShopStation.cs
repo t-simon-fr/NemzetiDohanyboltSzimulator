@@ -12,6 +12,7 @@ public sealed class ShopStation : MonoBehaviour
     public bool IsSupplies=>kind==ShopStationKind.Supplies;
     public bool IsPanicButton=>kind==ShopStationKind.PanicButton;
     public bool IsCoffeeControl=>kind==ShopStationKind.CoffeeControl;
+    public bool IsExit=>kind==ShopStationKind.Exit;
     private WarehouseCarton SupplyCarton => GetComponent<WarehouseCarton>() ?? shop.Warehouse.CartonAt(transform);
     private Transform StorageDock => shop.Warehouse.IsStorageDock(transform) ? transform :
         GetComponent<WarehouseCarton>() != null && shop.Warehouse.IsStorageDock(transform.parent) ? transform.parent : null;
