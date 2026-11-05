@@ -17,7 +17,15 @@ public sealed class ShopHandTool : MonoBehaviour
 {
     public ShopToolKind Kind { get; private set; }
     public bool IsHeld { get; private set; }
-    public string DisplayName=>Kind==ShopToolKind.CoffeeRefill?"Kávéalapanyag • E a gépen: feltöltés":Kind==ShopToolKind.Bat?"Baseballütő":"Felmosó";
+    public string DisplayName
+    {
+        get
+        {
+            if (Kind!=ShopToolKind.CoffeeRefill) return Kind==ShopToolKind.Bat?"Baseballütő":"Felmosó";
+            var package=GetComponent<ShopIngredientPackage>();
+            return (package!=null&&package.Milk>0?"Tej":"Kávéalapanyag")+" • E a gépen: feltöltés";
+        }
+    }
     private Transform originalParent;
     private Vector3 originalPosition;
     private Quaternion originalRotation;
