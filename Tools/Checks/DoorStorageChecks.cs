@@ -11,10 +11,13 @@ public static class DoorStorageChecks
         Action<bool,string> check=(ok,label)=>{if(!ok)throw new Exception(label);passed++;};
         var g=MvpShopController.Instance;
         var player=Object.FindAnyObjectByType<PlayerInteractor>();
+        var body=player.GetComponent<CharacterController>();
+        var home=player.transform.position;
         g.ManualTick=true;
         try
         {
             g.ResetDemo();
+            body.enabled=false;player.transform.position=ShopFloorPlan.StaffSpawn;body.enabled=true;
             var sign=GameObject.Find("Open Close Sign");
             check(g.Entrance.Sign.parent==g.Entrance.DoorLeaf && sign.transform.parent==g.Entrance.Sign,"Sign is attached to moving door");
             g.Entrance.Tick(1);
@@ -60,7 +63,7 @@ public static class DoorStorageChecks
             check(g.SubmitChange(g.ChangeSelected)&&g.StockCount(ShopCatalog.Contraband)==9,"Sell once without duplicate private stock");
             g.RequestClose();
             for(int i=0;i<3000&&!g.CanEndDay;i++)g.Tick(.1f);
-            var body=player.GetComponent<CharacterController>();body.enabled=false;player.transform.position=g.Layout.EntryInside;body.enabled=true;
+            body.enabled=false;player.transform.position=g.Layout.EntryInside;body.enabled=true;
             check(g.TryEndDay(),"Door still closes the day separately from sign");
             g.NextDay();
             check(slots.Count(s=>s.Occupant!=null)==9,"Private stock survives next day");
@@ -68,6 +71,6 @@ public static class DoorStorageChecks
             check(slots.All(s=>s.Occupant==null),"New game clears private stock");
             return new {passed,failed=0};
         }
-        finally{player.CancelHeld();g.ResetDemo();g.ManualTick=false;}
+        finally{player.CancelHeld();g.ResetDemo();g.ManualTick=false;body.enabled=false;player.transform.position=home;body.enabled=true;}
     }
 }

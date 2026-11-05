@@ -120,8 +120,8 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         if (delivery != null) delivery.ProductPlaced -= OnDelivery;
         if(Activities!=null&&Activities.BasketSlot!=null)Activities.BasketSlot.ProductPlaced-=OnDelivery;
-        if(Activities!=null&&Activities.CoffeeHandoverSlots!=null)
-            foreach(var slot in Activities.CoffeeHandoverSlots)slot.ProductPlaced-=OnDelivery;
+        if(Activities!=null&&Activities.CustomerHandoverSlots!=null)
+            foreach(var slot in Activities.CustomerHandoverSlots)slot.ProductPlaced-=OnDelivery;
         Security?.ReleaseEntrance();
         ShopInputGate.Blocked = false; Cursor.lockState = CursorLockMode.None; Cursor.visible = true;
         if (Instance == this) Instance = null;
@@ -149,7 +149,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Arrangement.Configure(this, player);
         Navigation.Configure(this);
         Activities.BasketSlot.ProductPlaced+=OnDelivery;
-        foreach(var slot in Activities.CoffeeHandoverSlots)slot.ProductPlaced+=OnDelivery;
+        foreach(var slot in Activities.CustomerHandoverSlots)slot.ProductPlaced+=OnDelivery;
         delivery.SetManualPlacementRule(product=>ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)));
         Scanner = new GameObject("Checkout barcode scanner").AddComponent<ShopBarcodeScanner>();
         Scanner.Configure(this);
@@ -234,7 +234,7 @@ public sealed partial class MvpShopController : MonoBehaviour
                 else
                 {
                     if(delivery.Occupant!=null)OnDelivery(delivery.Occupant);
-                    foreach(var slot in Activities.CoffeeHandoverSlots)
+                    foreach(var slot in Activities.CustomerHandoverSlots)
                         if(Stage==ServiceStage.Order && slot.Occupant!=null)OnDelivery(slot.Occupant);
                 }
             }
@@ -277,7 +277,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     private void OnDelivery(ShopProduct product)
     {
         if (active == null || Stage != ServiceStage.Order || product == null || product.IsHeld ||
-            (product.CurrentSlot != delivery&&product.CurrentSlot!=Activities.BasketSlot&&!Activities.CoffeeHandoverSlots.Contains(product.CurrentSlot))) return;
+            (product.CurrentSlot != delivery&&product.CurrentSlot!=Activities.BasketSlot&&!Activities.CustomerHandoverSlots.Contains(product.CurrentSlot))) return;
         if (!active.OrderTypes.Contains(ShopCatalog.Index(product.ProductId)))
         {
             Dialogue = ShopPeople.Wrong[active.Person]; Message = "Vedd vissza a téves árut, és tedd félre egy másik pulthelyre."; return;
@@ -296,7 +296,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";
     }
     private bool PreparedIsValid()=>active!=null&&receivedOrder.Count==active.OrderTypes.Length&&receivedOrder.All(p=>p!=null&&p.gameObject.activeSelf&&!p.IsHeld&&p.CurrentSlot!=null&&(p.CurrentSlot.name.StartsWith("Order receipt")||p.CurrentSlot==Activities.BasketSlot));
-    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+Counter.transform.rotation*new Vector3(index==2?.26f:0,0,index==0?0:-.26f);
+    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+Counter.transform.rotation*new Vector3(index==2?.24f:0,0,index==0?0:-.22f);
     private bool CollectOrderItem(ShopProduct product)
     {
         receivedOrder.RemoveAll(p=>p==null||p.IsHeld||p.CurrentSlot==null||(!p.CurrentSlot.name.StartsWith("Order receipt")&&p.CurrentSlot!=Activities.BasketSlot));

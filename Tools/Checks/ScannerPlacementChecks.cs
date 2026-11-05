@@ -26,7 +26,7 @@ public static class ScannerPlacementChecks
             check(player.TryHold(cigarette),"Hold real requested cigarette");
             aim(g.Activities.BasketSlot);
             check(!player.CanPlaceHeld && !player.TryPlaceHeld() && player.HeldProduct==cigarette,"Player cannot put cigarettes directly in the customer zone");
-            check(new[]{g.Activities.BasketSlot}.Concat(g.Activities.CoffeeHandoverSlots).All(slot=>{var line=slot.GetComponentInChildren<LineRenderer>();return line==null||!line.enabled;}),"Customer zone has no cigarette placement guides");
+            check(new[]{g.Activities.BasketSlot}.Concat(g.Activities.CustomerHandoverSlots).All(slot=>{var line=slot.GetComponentInChildren<LineRenderer>();return line==null||!line.enabled;}),"Customer zone has no cigarette placement guides");
             aim(g.DeliverySlot);
             check(player.CanPlaceHeld && player.TryPlaceHeld(),"Cigarette can be placed on the scanner");
             check(g.Scanner.ScanCount==scans+1 && cigarette.CurrentSlot==g.Activities.BasketSlot && g.Stage==ServiceStage.Payment,"Successful scan transfers the physical cigarette through the internal route");
@@ -46,7 +46,7 @@ public static class ScannerPlacementChecks
             {
                 cups[i]=g.CreateCoffee(i==2?ShopCatalog.Latte:ShopCatalog.Coffee);
                 check(player.TryHold(cups[i]),"Carry prepared cup "+i);
-                aim(g.Activities.CoffeeHandoverSlots[i]);
+                aim(g.Activities.CustomerHandoverSlots[i]);
                 check(player.CanPlaceHeld && player.TryPlaceHeld(),"Serve cup directly in free customer-zone place "+i);
             }
             check(g.Stage==ServiceStage.Payment && g.MissingOrderTypes.Length==0 && cups.Select(cup=>cup.CurrentSlot).Distinct().Count()==3,"Three cups reach three independent receipt places and enable checkout");

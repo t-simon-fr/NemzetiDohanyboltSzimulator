@@ -410,6 +410,61 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'mop'); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); await sleep(2200);
       await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); s = await state(); check(s.tool === 'Mop' && s.dirt === 0, 'Mop retains held left-click cleaning'); await capture('mop-cleaned');
     }
+    if (selected === 'requests-batch') {
+      const worldClick=async()=>{
+        await send('Input.dispatchMouseEvent',{type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(90);
+        await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(300);
+      };
+      await viewport(1280,720);
+      await probe('Prepare','requests-arrivals');await probe('Action','advance-requests-arrivals');let s=await state();
+      check(s.requestsSpawned>8 && s.phase==='Open','Open shop receives visits beyond the old fixed daily limit');await capture('continuous-arrivals');
+      const visitors=s.requestsSpawned;
+      await probe('Action','aim-sign-stable');await key('e','KeyE',69);s=await state();
+      check(s.phase==='Closing' || s.phase==='AfterHours','Actual sign interaction closes ongoing arrivals');
+      await probe('Action','drain-shop');await probe('Action','advance-requests-arrivals');s=await state();
+      check(s.requestsSpawned===visitors && s.phase==='AfterHours','No new arrivals after closing while existing customers leave');
+      await probe('Prepare','feature-scanner');s=await state();const scans=s.scannerCount;
+      await probe('Action','aim-customer-zone');await key('e','KeyE',69);s=await state();
+      check(s.held==='cig_red' && s.stage==='Order' && s.customerGuides===0,'Cigarette cannot be placed directly in customer zone and no green guide appears there');await capture('customer-zone-cigarette-blocked');
+      await probe('Action','aim-scanner');await worldClick();s=await state();
+      check(!s.held && s.stage==='Payment' && s.scannerCount===scans+1,'Mouse puts cigarette on scanner and internal handover reaches payment');
+      await viewport(1920,1080);await capture('scanner-zone-separated-large');await viewport(1280,720);
+      await probe('Prepare','feature-tools');await capture('broom-corner');await key('e','KeyE',69);
+      check((await state()).tool==='Mop','Actual E picks the leaning corner broom');
+      await probe('Action','aim-broom-rack');s=await state();
+      check(s.toolRack==='Mop','Empty broom home is a reachable return target');await capture('broom-return-target');
+      await worldClick();s=await state();check(!s.tool && s.broomAtHome,'Mouse returns broom to permanent leaning home without picking it up again');
+      await probe('Action','aim-bat');await key('e','KeyE',69);check((await state()).tool==='Bat','Actual E picks mounted bat');
+      await probe('Action','aim-bat-rack');await key('e','KeyE',69);s=await state();
+      check(!s.tool && s.batAtHome,'Actual E returns bat to its wall mount');await capture('bat-returned');
+      await probe('Prepare','requests-lighting');check((await state()).fixtureLights===2,'Both physical ceiling fixtures are lit after closing');
+      await probe('Action','fixture-lights-off');await capture('fixture-lights-off');
+      await probe('Action','fixture-lights-on');await capture('fixture-lights-on');
+      await viewport(1920,1080);await capture('fixture-lights-on-large');await viewport(1280,720);
+      await probe('Prepare','requests-entrance');s=await state();const cash=s.balance;
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'w',code:'KeyW',windowsVirtualKeyCode:87});await sleep(1000);
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'w',code:'KeyW',windowsVirtualKeyCode:87});s=await state();
+      check(s.position.z< -4.7 && s.phase==='AfterHours' && s.balance===cash,'Actual W walks outside with no invisible wall and no automatic day ending');await capture('outside-after-closing');
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'s',code:'KeyS',windowsVirtualKeyCode:83});await sleep(1000);
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'s',code:'KeyS',windowsVirtualKeyCode:83});s=await state();
+      check(s.position.z> -4.1 && s.phase==='AfterHours','Actual S walks back through the open doorway');
+      await probe('Action','aim-door');await key('e','KeyE',69);s=await state();
+      check(s.phase==='Summary' && s.balance===cash-300,'Explicit E at doorway finishes the closed day exactly once');await capture('explicit-day-end');
+      await probe('Prepare','requests-coffee-order');s=await state();const coffeeCash=s.balance,coffeeScans=s.scannerCount;
+      for(let i=0;i<3;i++){
+        await probe('Action','aim-coffee-display');await key('e','KeyE',69);s=await state();
+        await clickRect(s.coffeeButtons[i]);await clickRect((await state()).coffeeButtons[3]);
+        for(let wait=0;wait<40 && !(await state()).cup;wait++)await sleep(100);
+        s=await state();check(!!s.cup,'Physical coffee menu brews cup '+i);
+        await clickRect(s.coffeeButtons[3]);s=await state();check(!!s.held,'Physical menu gives actual cup '+i);
+        await probe('Action','aim-coffee-handover-'+i);await key('e','KeyE',69);s=await state();
+        check(!s.held && s.received===i+1,'Actual E serves coffee in a free customer-zone place '+i);
+      }
+      check(s.stage==='Payment' && s.scannerCount===coffeeScans && s.coffee===0 && s.milk===0,'Three prepared coffees reach payment without barcode scans or lost ingredients');await capture('three-coffees-served');
+      await viewport(1920,1080);await capture('three-coffees-served-large');await viewport(1280,720);
+      await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
+      check(s.sales===1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
+    }
     if (selected === 'new-features' || selected === 'cart-only') {
       await viewport(1280,720);
       await probe('Prepare','feature-cart'); let s=await state(); const balance=s.balance;

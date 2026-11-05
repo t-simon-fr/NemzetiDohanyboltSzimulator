@@ -55,7 +55,30 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "feature-cart")
+        if (scenario == "requests-arrivals")
+        {
+            Shop.OpenShop();Aim(Shop.DeliverySlot.transform.position+Vector3.up*.1f,1.4f);
+        }
+        else if (scenario == "requests-coffee-order")
+        {
+            Shop.Ledger.TrySellCard(60000,0);Shop.SyncCashDrawer();Shop.Activities.BuyCoffeeMachine();
+            Set(Shop.Activities,"CoffeeSupplies",3);Set(Shop.Activities,"MilkSupplies",1);
+            Shop.SingleProductVisits=true;Visit(0,ShopCatalog.Coffee);
+            Set(Shop.ActiveCustomer,"OrderTypes",new[]{ShopCatalog.Coffee,ShopCatalog.LongCoffee,ShopCatalog.Latte});
+            Set(Shop.ActiveCustomer,"UnitPrices",new[]{650,750,1100});Set(Shop.ActiveCustomer,"Tender",5000);
+            Set(Shop.ActiveCustomer,"UsesCard",true);
+            AimCoffeeDisplay();Shop.ManualTick=false;
+        }
+        else if (scenario == "requests-lighting")
+        {
+            Set(Shop,"Phase",ShopPhase.AfterHours);Shop.AfterHours.Enter();ViewInteriorLighting();
+        }
+        else if (scenario == "requests-entrance")
+        {
+            Shop.AutomaticArrivals=false;Shop.OpenShop();Shop.RequestClose();Shop.Tick(1);
+            Aim(Shop.Entrance.Position+Vector3.up*.9f,1.2f,Vector3.forward);
+        }
+        else if (scenario == "feature-cart")
         {
             Shop.Ledger.TrySellCard(100000,0); Shop.SyncCashDrawer();
             Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Orders);
@@ -68,7 +91,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         }
         else if (scenario == "feature-tools")
         {
-            Aim(Shop.Activities.Mop.transform.position+Vector3.up*.6f,1.15f);
+            Aim(Shop.Activities.Mop.transform.position+Vector3.up*.6f,1.15f,new Vector3(-1,0,-.6f).normalized);
         }
         else if (scenario == "feature-scanner")
         {
@@ -242,6 +265,25 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     public void Action(string action)
     {
         if (action == "aim-ingredient-coffee") AimIngredient(false);
+        if (action == "advance-requests-arrivals")
+        {
+            for(int i=0;i<1000;i++){Shop.Tick(.5f);if(Shop.ActiveCustomer!=null)Shop.SkipCurrent();}
+        }
+        if (action == "aim-sign-stable")
+        {
+            var body=Player.GetComponent<CharacterController>();body.enabled=false;
+            Player.transform.position=Shop.Entrance.Position+new Vector3(0,.08f,2.1f);body.enabled=true;
+            Shop.Entrance.Tick(2);Physics.SyncTransforms();Aim(Shop.Entrance.Sign.position,2.05f,Vector3.forward);
+        }
+        if (action == "aim-customer-zone") Aim(Shop.Activities.BasketSlot.transform.position+Vector3.up*.1f,1.2f);
+        if (action == "aim-scanner") Aim(Shop.DeliverySlot.transform.position+Vector3.up*.05f,1.2f);
+        if (action.StartsWith("aim-coffee-handover-") && int.TryParse(action.Substring("aim-coffee-handover-".Length),out int coffeePlace) && coffeePlace>=0 && coffeePlace<3)
+            Aim(Shop.Activities.CustomerHandoverSlots[coffeePlace].transform.position+Vector3.up*.08f,1.1f);
+        if (action == "aim-broom-rack") Aim(Shop.Activities.Mop.Rack.transform.TransformPoint(Vector3.up*.55f),1.1f,new Vector3(-1,0,-.6f).normalized);
+        if (action == "aim-bat-rack") Aim(Shop.Activities.Bat.Rack.transform.TransformPoint(Vector3.up*.45f),1.1f,Vector3.forward);
+        if (action == "fixture-lights-off") foreach(var light in Shop.InteriorLighting.Lights)light.enabled=false;
+        if (action == "fixture-lights-on") foreach(var light in Shop.InteriorLighting.Lights)light.enabled=true;
+        if (action == "focus-request-terminal") Shop.Devices.Focus(ShopDeviceKind.Terminal);
         if (action == "aim-ingredient-milk") AimIngredient(true);
         if (action == "aim-refill-machine") AimCoffeeDisplay();
         if (action == "view-refilled-machine") Shop.Devices.Focus(ShopDeviceKind.Coffee);
@@ -428,10 +470,26 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f, .5f, 0)));
     }
 
+    private void ViewInteriorLighting()
+    {
+        Vector3 eye=new Vector3(1.8f,1.7f,-3.5f),target=new Vector3(.5f,2.4f,-.4f);
+        var body=Player.GetComponent<CharacterController>();body.enabled=false;
+        Vector3 horizontal=Vector3.ProjectOnPlane(target-eye,Vector3.up);
+        Player.transform.rotation=Quaternion.LookRotation(horizontal);
+        Player.transform.position=eye-Player.transform.rotation*View.transform.localPosition;
+        float pitch=Mathf.Atan2(eye.y-target.y,horizontal.magnitude)*Mathf.Rad2Deg;
+        View.transform.localRotation=Quaternion.Euler(pitch,0,0);
+        typeof(FirstPersonController).GetField("pitch",Private).SetValue(Player.GetComponent<FirstPersonController>(),pitch);
+        body.enabled=true;Cursor.lockState=CursorLockMode.Locked;Cursor.visible=false;
+    }
+
     [Serializable]
     private sealed class State
     {
         public int offeredQuantity, boxedQuantity, scannerCount;
+        public int requestsSpawned,customerGuides,fixtureLights,coffeeMerchandise;
+        public bool broomAtHome,batAtHome;
+        public string toolRack;
         public int[] cartQuantities, pendingCart;
         public Rect[] cartFields;
         public Rect cartSubmit;
@@ -512,6 +570,14 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             receipts = receipts.Select(p => p.transform.position).ToArray()
         };
         state.clock=ShopUiState.Clock(g.ClockElapsed);
+        state.requestsSpawned=g.Spawned;
+        state.coffeeMerchandise=Enumerable.Range(ShopCatalog.Coffee,3).Sum(g.StockCount);
+        state.customerGuides=new[]{g.Activities.BasketSlot}.Concat(g.Activities.CustomerHandoverSlots)
+            .Sum(slot=>slot.GetComponentsInChildren<LineRenderer>().Count(line=>line.enabled));
+        state.fixtureLights=g.InteriorLighting.Lights.Count(light=>light.enabled);
+        state.broomAtHome=!g.Activities.Mop.IsHeld&&Vector3.Distance(g.Activities.Mop.transform.position,g.Activities.Mop.Rack.transform.position)<.01f;
+        state.batAtHome=!g.Activities.Bat.IsHeld&&Vector3.Distance(g.Activities.Bat.transform.position,g.Activities.Bat.Rack.transform.position)<.01f;
+        state.toolRack=Player.TargetToolRack!=null?Player.TargetToolRack.Tool.Kind.ToString():"";
         state.offeredQuantity=g.AfterHours.OfferedQuantity;
         state.boxedQuantity=g.AfterHours.DeliveryBox!=null?g.AfterHours.DeliveryBox.Quantity:0;
         state.tradeOpen=g.AfterHours.TradeOpen;

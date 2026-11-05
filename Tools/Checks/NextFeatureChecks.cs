@@ -94,7 +94,8 @@ public static class NextFeatureChecks
             Check(g.ActiveCustomer!=null&&g.Stage==ServiceStage.Payment&&g.ActiveCustomer.ExtraItems.Count>0,"NPC brings several real public-shelf products to checkout");
             int cash=g.Ledger.Cash;var item=g.ActiveCustomer.BasketItem;Check(item.PickUp(hand),"Recover unpaid item from basket");g.Tick(.1f);
             Check(g.Stage==ServiceStage.Order&&g.Drawer.PendingTender==0&&g.MissingOrderTypes.Length==1,"Removing basket item cancels tender and marks exact missing product");
-            Physics.SyncTransforms();Check(item.TryPlace(g.DeliverySlot)&&g.Stage==ServiceStage.Payment,"Re-delivery restores complete basket payment");
+            var returnSlot=ShopCatalog.IsCigarette(ShopCatalog.Index(item.ProductId))?g.DeliverySlot:g.Activities.CustomerHandoverSlots[0];
+            Physics.SyncTransforms();Check(item.TryPlace(returnSlot)&&g.Stage==ServiceStage.Payment,"Re-delivery by the correct product route restores complete basket payment");
             g.SkipCurrent();Check(g.Ledger.Cash==cash&&g.Drawer.Total==cash,"Cancelling complete basket charges nothing");
             Check(Enumerable.Range(0,ShopCatalog.Count).Sum(g.StockCount)==units,"Cancelled basket retains every real unit");
             Check(!Object.FindObjectsByType<ProductSlot>().Any(s=>s.name.StartsWith("Order receipt")),"Cancelled receipt slots are deactivated and cleaned up");

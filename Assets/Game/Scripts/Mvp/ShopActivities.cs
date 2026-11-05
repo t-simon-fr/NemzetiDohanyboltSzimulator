@@ -30,7 +30,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     public float BrewRemaining=>brewRemaining;
     public ProductSlot CoffeeOutput { get; private set; }
     public ProductSlot BasketSlot { get; private set; }
-    public ProductSlot[] CoffeeHandoverSlots { get; private set; }
+    public ProductSlot[] CustomerHandoverSlots { get; private set; }
     public ShopCoinOffer CoinOffer { get; private set; }
     public Transform CustomerHand=>hand;
     public ShopHandTool Bat=>bat;
@@ -51,15 +51,15 @@ public sealed partial class ShopActivities : MonoBehaviour
         // The visible mat follows its actual placement slot and leaves the blue tray clear.
         Box(BasketSlot.transform,"Customer basket mat",new Vector3(0,-.006f,0),new Vector3(.74f,.006f,.66f),metal);
         BasketSlot.SetManualPlacementRule(_=>false);
-        CoffeeHandoverSlots=new ProductSlot[3];
-        for(int i=0;i<CoffeeHandoverSlots.Length;i++)
+        CustomerHandoverSlots=new ProductSlot[3];
+        for(int i=0;i<CustomerHandoverSlots.Length;i++)
         {
-            var slot=new GameObject("Coffee handover input "+i).AddComponent<ProductSlot>();
+            var slot=new GameObject("Customer handover input "+i).AddComponent<ProductSlot>();
             slot.transform.SetParent(BasketSlot.transform.parent,false);
-            slot.transform.position=BasketSlot.transform.position+shop.Counter.transform.rotation*new Vector3(i==2?.26f:0,0,i==0?0:-.26f);
-            slot.Configure(new Vector3(.20f,.32f,.20f));slot.RestrictTo("coffee");
-            slot.SetManualPlacementRule(product=>ShopCatalog.IsCoffee(ShopCatalog.Index(product.ProductId)));
-            CoffeeHandoverSlots[i]=slot;
+            slot.transform.position=BasketSlot.transform.position+shop.Counter.transform.rotation*new Vector3(i==2?.24f:0,0,i==0?0:-.22f);
+            slot.Configure(new Vector3(.20f,.4f,.20f));
+            slot.SetManualPlacementRule(product=>ShopCatalog.Index(product.ProductId)>=0&&!ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)));
+            CustomerHandoverSlots[i]=slot;
         }
         ProductVisuals.Text(BasketSlot.transform,"Basket handover label","VÁSÁRLÓ TERMÉKEI",new Vector3(0,.004f,.18f),Quaternion.Euler(90,180,0),.022f,Color.white);
         BuildCoffeeMachine();BuildTools();

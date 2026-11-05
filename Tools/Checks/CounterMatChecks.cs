@@ -26,6 +26,7 @@ public static class CounterMatChecks
             check(Mathf.Abs(localCenter.x) < .001f && Mathf.Abs(localCenter.z) < .001f, "Visible customer mat is centered on the real product slot");
             var trigger = basket.GetComponent<BoxCollider>().bounds;
             check(trigger.min.x >= a.min.x && trigger.max.x <= a.max.x && trigger.min.z >= a.min.z && trigger.max.z <= a.max.z, "Placement footprint stays inside its visible mat");
+            check(shop.Activities.CustomerHandoverSlots.All(slot=>{var bounds=slot.GetComponent<BoxCollider>().bounds;return bounds.min.x>=a.min.x&&bounds.max.x<=a.max.x&&bounds.min.z>=a.min.z&&bounds.max.z<=a.max.z;}),"All customer handover places stay within the mat");
             var mesh = top.GetComponent<MeshFilter>().sharedMesh.bounds;
             bool inside = true;
             foreach (float x in new[] { a.min.x, a.max.x })
@@ -36,7 +37,7 @@ public static class CounterMatChecks
                 }
             check(inside, "Customer mat stays inside the beveled countertop edges");
             var product = shop.CreateCoffee(ShopCatalog.Coffee);
-            var input = shop.Activities.CoffeeHandoverSlots[0];
+            var input = shop.Activities.CustomerHandoverSlots[0];
             check(player.TryHold(product), "Actual prepared coffee can be held for placement");
             Physics.SyncTransforms();
             player.RefreshTarget(new Ray(basket.HintCenter + Vector3.up*.65f,Vector3.down));
