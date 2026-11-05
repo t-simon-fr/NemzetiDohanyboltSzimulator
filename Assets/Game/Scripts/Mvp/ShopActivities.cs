@@ -341,6 +341,7 @@ public sealed partial class ShopActivities : MonoBehaviour
             if(GUI.Button(new Rect(panel.x+panel.width*.35f,panel.y+86,panel.width*.62f,45),"Átveszem az összeget",buttonStyle))shop.ConfirmCustomerCoins();
             return;
         }
+        if(shop.Devices.ComputerShellActive)return;
         if(shop.Devices.FocusKind!=ShopDeviceKind.Monitor)return;
         var app=shop.Devices.ComputerApp;
         if(app!=ShopComputerApp.Coffee&&app!=ShopComputerApp.Cameras&&app!=ShopComputerApp.Games)return;
@@ -415,4 +416,3 @@ public sealed partial class ShopActivities : MonoBehaviour
         if(BasketSlot!=null)Destroy(BasketSlot.gameObject);if(worldRoot!=null)Destroy(worldRoot.gameObject);
     }
 }
-
