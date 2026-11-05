@@ -1,0 +1,145 @@
+{
+  "started": "2026-11-05T17:34:36.023Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Open shop receives visits beyond the old fixed daily limit",
+      "passed": true
+    },
+    {
+      "label": "Actual sign interaction closes ongoing arrivals",
+      "passed": true
+    },
+    {
+      "label": "No new arrivals after closing while existing customers leave",
+      "passed": true
+    },
+    {
+      "label": "Cigarette cannot be placed directly in customer zone and no green guide appears there",
+      "passed": true
+    },
+    {
+      "label": "Mouse puts cigarette on scanner and internal handover reaches payment",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks the leaning corner broom",
+      "passed": true
+    },
+    {
+      "label": "Empty broom home is a reachable return target",
+      "passed": true
+    },
+    {
+      "label": "Mouse returns broom to permanent leaning home without picking it up again",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks mounted bat",
+      "passed": true
+    },
+    {
+      "label": "Actual E returns bat to its wall mount",
+      "passed": true
+    },
+    {
+      "label": "Both physical ceiling fixtures are lit after closing",
+      "passed": true
+    },
+    {
+      "label": "Actual W walks outside with no invisible wall and no automatic day ending",
+      "passed": true
+    },
+    {
+      "label": "Actual S walks back through the open doorway",
+      "passed": true
+    },
+    {
+      "label": "Explicit E at doorway finishes the closed day exactly once",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 0",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 0",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 0",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 1",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 1",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 1",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 2",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 2",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 2",
+      "passed": true
+    },
+    {
+      "label": "Three prepared coffees reach payment without barcode scans or lost ingredients",
+      "passed": true
+    },
+    {
+      "label": "One real card approval sells all three served coffees and reconciles stock and money",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-continuous-arrivals.png",
+    "1280x720-customer-zone-cigarette-blocked.png",
+    "1920x1080-scanner-zone-separated-large.png",
+    "1280x720-broom-corner.png",
+    "1280x720-broom-return-target.png",
+    "1280x720-bat-returned.png",
+    "1280x720-fixture-lights-off.png",
+    "1280x720-fixture-lights-on.png",
+    "1920x1080-fixture-lights-on-large.png",
+    "1280x720-outside-after-closing.png",
+    "1280x720-explicit-day-end.png",
+    "1280x720-three-coffees-served.png",
+    "1920x1080-three-coffees-served-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23238556,
+    "seconds": 250.1100554,
+    "error": "",
+    "completedUtc": "2026-11-05T17:31:00.049Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "788dbaebaa03fffb0184bbff90f9866a093650186eb25e481bba14455fff40e0",
+      "AcceptanceWebGL.framework.js.unityweb": "62c469bc5fe53385cf1ab925fdb94c6c728157098a276a7f1d6503fb7b0911dc",
+      "AcceptanceWebGL.loader.js": "d71a1027f220972e1512fa3cccf9ec351b8352da532e974e22c3b8acade4f888",
+      "AcceptanceWebGL.wasm.unityweb": "47fba97e2e7aa50718110cb80b7357ed1ab5b8a25c8072f9d9f3f012d52959c1"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-05T17:35:40.440Z",
+  "capturedStateCount": 89
+}

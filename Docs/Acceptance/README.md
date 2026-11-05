@@ -2,7 +2,9 @@
 
 Aktuális Pages-kiadás: [#53–#59 új feature-csomag](2026-11-05-feature-pages/REPORT.md).
 
-Legfrissebb fejlesztés: [#53–#59 új feature-csomag](2026-11-05-feature-batch/REPORT.md): 650 Unity-állítás, 30 közös és 6 végső rendelőellenőrzés, tényleges egér/billentyű/szöveg bevitel és átnézett képek. Pagesre publikálva; lásd a fenti kiadási jelentést.
+Legfrissebb fejlesztés: [#77–#81 új issue-pontosítások](2026-11-05-request-followups/REPORT.md): 717 Unity-állítás, 26 helyi WebGL-ellenőrzés, 0 böngészőhiba. Pagesre még nincs kiadva.
+
+Korábbi fejlesztés: [#53–#59 új feature-csomag](2026-11-05-feature-batch/REPORT.md): 650 Unity-állítás, 30 közös és 6 végső rendelőellenőrzés, tényleges egér/billentyű/szöveg bevitel és átnézett képek. Pagesre publikálva; lásd a fenti kiadási jelentést.
 
 Korábbi publikált csomag: [#43 szabad raktári kartonhelyek — Pages](2026-11-05-warehouse-pages/REPORT.md). Előző kiadás: [#39–#40 falrés és pultalátétek](2026-11-05-geometry/REPORT.md). Előző kiadás: [minden merged fejlesztés #37-ig](2026-11-04-pages/REPORT.md).
 
@@ -47,3 +49,4 @@ A `door-storage` eset öt valódi Dnyipro csomagot készít elő, E-vel felvesz/
 A `ui` eset vegyes/azonos rendelést és részleges fizikai átadást készít elő, követi a darabszámot és a lejáró értesítést, hosszú magyar mondatot mutat mindkét felbontásban, majd valódi egérkattintással próbálja a hibás/javított kártyás fizetést, az elszámolás Következő nap gombját és a nagy nézet menüjét. A fixture nem helyettesíti a valós billentyűkiosztás-, szünet- és pénzügyi regressziós eseteket.
 
 A `movement` eset kontrollált tesztpadlón tényleges W / Shift+W / Space bemenettel méri a mozgást, majd a valódi üzlet ajtajánál próbálja a sprint/ugrás határát. A tesztpadló csak az acceptance fixture része, a normál playerbe nem kerül. A `physical-terminal` minden számgombot tényleges egérkattintással használ, javít/töröl, hibás és helyes összeget ad meg, majd a saját kijelzőt és egyszeri könyvelést ellenőrzi. A `coffee-display` E-vel lép be a gép nézetébe, fizikailag kattint a receptre és indításra, valós időben vár a főzésre, szüneteltet és átveszi az italt; mindhárom recept és a hiányállapotok is szerepelnek.
+
