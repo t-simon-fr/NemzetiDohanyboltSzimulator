@@ -50,6 +50,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public int TotalVisitors => ShopCatalog.VisitProducts.Length;
     public MvpCustomerActor ActiveCustomer => active;
     public ProductSlot DeliverySlot => delivery;
+    public ShopBarcodeScanner Scanner { get; private set; }
     public string Dialogue { get; private set; } = "";
     private string message = "";
     public int MessageRevision { get; private set; }
@@ -141,6 +142,8 @@ public sealed partial class MvpShopController : MonoBehaviour
         Arrangement.Configure(this, player);
         Navigation.Configure(this);
         Activities.BasketSlot.ProductPlaced+=OnDelivery;
+        Scanner = new GameObject("Checkout barcode scanner").AddComponent<ShopBarcodeScanner>();
+        Scanner.Configure(this);
         ResetDemo();gameObject.AddComponent<ShopMenu>().Configure(this);
     }
     private void Update()
@@ -260,6 +263,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         {
             Dialogue = ShopPeople.Wrong[active.Person]; Message = "Vedd vissza a téves árut, és tedd félre egy másik pulthelyre."; return;
         }
+        if (product.CurrentSlot == delivery && !Scanner.TryScan(product)) return;
         prepared = product; BeginPayment();
     }
     private void BeginPayment()
