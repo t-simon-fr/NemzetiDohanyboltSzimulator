@@ -17,6 +17,7 @@ public sealed class ShopHandTool : MonoBehaviour
 {
     public ShopToolKind Kind { get; private set; }
     public bool IsHeld { get; private set; }
+    public ShopToolRack Rack { get; internal set; }
     public string DisplayName
     {
         get
@@ -47,6 +48,15 @@ public sealed class ShopHandTool : MonoBehaviour
     }
     public void Configure(ShopToolKind kind){Kind=kind;colliders=GetComponentsInChildren<Collider>();RememberHome();}
     private void RememberHome(){originalParent=transform.parent;originalPosition=transform.position;originalRotation=transform.rotation;}
+    internal void ReturnToRackPose(Transform parent, Pose pose)
+    {
+        IsHeld=false;dropped=false;swing=0;
+        transform.SetParent(parent,true);
+        transform.SetPositionAndRotation(pose.position,pose.rotation);
+        ShopLoosePhysics.Freeze(gameObject);
+        foreach(var collider in colliders)if(collider!=null)collider.enabled=true;
+        RememberHome();
+    }
     public bool PickUp(Transform hand)
     {
         if(IsHeld||hand==null)return false;RememberHome();ShopLoosePhysics.Freeze(gameObject);
