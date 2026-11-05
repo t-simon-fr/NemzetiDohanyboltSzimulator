@@ -32,6 +32,13 @@ public sealed class PlayerInteractor : MonoBehaviour
         if(HasHeldItem || carton==null || !carton.PickUp(holdPoint))return false;
         heldCarton=carton;placementSlots=FindObjectsByType<ProductSlot>(FindObjectsInactive.Include);UpdatePlacementHints();return true;
     }
+    public bool TryPlaceCarton(Transform dock)
+    {
+        if (heldCarton == null || !MvpShopController.Instance.Warehouse.TryDock(heldCarton, dock)) return false;
+        heldCarton = null;
+        UpdatePlacementHints();
+        return true;
+    }
     public void ReturnCarton()
     {
         if(heldCarton==null)return;
@@ -155,11 +162,22 @@ public sealed class PlayerInteractor : MonoBehaviour
             var slot=hit.collider.GetComponent<ProductSlot>();
             if (hit.collider.isTrigger)
             {
+                var supply = hit.collider.GetComponent<ShopStation>();
+                if (supply != null && supply.IsSupplies && MvpShopController.Instance.Warehouse.IsStorageDock(supply.transform))
+                {
+                    station = supply;
+                    break;
+                }
                 if ((heldProduct!=null||heldCarton!=null) && slot != null)
                 { targetSlot=slot;canPlace=heldCarton!=null?heldCarton.CanPlace(slot):heldProduct.TryGetPlacement(slot,out _);break; }
                 continue;
             }
             station=hit.collider.GetComponentInParent<ShopStation>();
+            if (station != null && station.IsSupplies && MvpShopController.Instance.Warehouse.IsStorageDock(station.transform))
+            {
+                var dock = MvpShopController.Instance.Warehouse.DockOnShelf(station.transform, hit.point);
+                if (dock != null) station = dock.GetComponent<ShopStation>();
+            }
             targetBin=hit.collider.GetComponentInParent<WarehouseBin>();
             featureTarget=hit.collider.GetComponentInParent<ShopFeatureTarget>();
             targetTool=hit.collider.GetComponentInParent<ShopHandTool>();
@@ -251,7 +269,7 @@ public sealed class PlayerInteractor : MonoBehaviour
             heldTool!=null ? (featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill?featureTarget.Prompt:heldTool.DisplayName+" • Bal egérgomb: használat • G: eldobás") :
             !HasHeldItem&&targetTool!=null ? "E – Felvétel: "+targetTool.DisplayName :
             !HasHeldItem&&featureTarget!=null ? featureTarget.Prompt :
-            heldCarton != null ? (targetBin != null ? (heldCarton.Quantity==0?targetBin.Prompt:"A papírgyűjtőbe csak üres karton kerülhet") : LookingAtSupplies ? "E – Doboz visszarakása a saját raktári polcára" : heldCarton.Quantity==0 ? "Üres doboz: vidd vissza vagy dobd a hátsó papírgyűjtőbe" : canPlace ? "E – Egy termék kipakolása a kijelölt polchelyre" : targetSlot!=null ? "Ez a hely foglalt, vagy más márkához tartozik" : "Nézz egy zölddel jelölt üres polchelyre") :
+            heldCarton != null ? (targetBin != null ? (heldCarton.Quantity==0?targetBin.Prompt:"A papírgyűjtőbe csak üres karton kerülhet") : LookingAtSupplies ? station.CartonPlacementPrompt : heldCarton.Quantity==0 ? "Üres doboz: vidd vissza vagy dobd a hátsó papírgyűjtőbe" : canPlace ? "E – Egy termék kipakolása a kijelölt polchelyre" : targetSlot!=null ? "Ez a hely foglalt, vagy más márkához tartozik" : "Nézz egy zölddel jelölt üres polchelyre") :
             heldProduct != null ? (targetBin != null ? "A kukába csak üres kartondoboz kerülhet" : LookingAtSupplies ? "E – Kézben tartott áru visszarakása a dobozba" : placementPrompt) :
             targetBin != null ? targetBin.Prompt : station != null ? station.Prompt : target != null ? "E – Felvétel: " + target.DisplayName + (ShopCatalog.Index(target.ProductId)>=0?" • "+ShopCatalog.Money(ShopCatalog.SalePrice(ShopCatalog.Index(target.ProductId))):"") : "Nézz egy termékre vagy egy interakciós pontra";
         var hud = MvpShopController.Instance.GetComponent<MvpShopHud>();

@@ -61,6 +61,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             foreach (var label in FindObjectsByType<ShopShelfPriceLabel>(FindObjectsInactive.Include)) label.Refresh();
             AimWarehouseShelf();
         }
+        else if (scenario == "warehouse-storage")
+        {
+            foreach (var product in FindObjectsByType<ShopProduct>().Where(p => p.CurrentSlot != null && p.CurrentSlot.IsStockShelf))
+                product.RemoveFromWorld();
+            Shop.OrderSupply(0,2); Shop.OrderSupply(1,1); Shop.Tick(8.1f);
+            AimStorageDock(Shop.Warehouse.Dock(0));
+        }
         else if (scenario == "movement")
         {
             var floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -191,6 +198,8 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action.StartsWith("aim-storage-") && int.TryParse(action.Substring(12),out int dockIndex)) AimStorageDock(Shop.Warehouse.Dock(dockIndex));
+        if (action == "aim-storage-lower") AimStorageDock(LowerStorageDock());
         if (action == "aim-warehouse-shelf") AimWarehouseShelf();
         if (action == "order-shelf-delivery") { Shop.OrderSupply(0, 2); Shop.ManualTick = false; }
         if (action == "aim-stock-shelf")
@@ -290,6 +299,30 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Aim(dock.position + Vector3.up * .15f, 1.45f, new Vector3(1.2f, 0, .8f).normalized);
     }
 
+    private Transform LowerStorageDock() => Shop.Warehouse.StorageDocks
+        .First(d => d.parent == Shop.Warehouse.Dock(0) && d.position.y < Shop.Warehouse.Dock(0).position.y-.2f);
+
+    private void AimStorageDock(Transform dock)
+    {
+        var body = Player.GetComponent<CharacterController>();
+        body.enabled = false;
+        Vector3 target = dock.position + Vector3.up*.18f - dock.forward*.24f;
+        Vector3 eye = target - dock.forward*1.45f;
+        // Stay in the real aisle; the left-hand drink rack blocks a straight approach.
+        eye.x = Mathf.Clamp(eye.x,-4.65f,-3.05f);
+        eye.y = 1.70f;
+        Vector3 horizontal = Vector3.ProjectOnPlane(target-eye, Vector3.up);
+        Player.transform.rotation = Quaternion.LookRotation(horizontal);
+        Player.transform.position = eye - Player.transform.rotation*View.transform.localPosition;
+        float pitch = Mathf.Atan2(eye.y-target.y,horizontal.magnitude)*Mathf.Rad2Deg;
+        View.transform.localRotation = Quaternion.Euler(pitch,0,0);
+        typeof(FirstPersonController).GetField("pitch",Private).SetValue(Player.GetComponent<FirstPersonController>(),pitch);
+        body.enabled = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Physics.SyncTransforms();
+        Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f,.5f,0)));
+    }
+
     private void AimCoffeeDisplay()
     {
         Shop.ClosePanel();
@@ -359,6 +392,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public string cardDisplayAmount, cardDisplayStatus, device;
         public string retailShelfLabel, warehouseShelfLabel, supplyPrompt;
         public int cartonQuantity, warehouseGoods, retailGoods;
+        public string[] storageLabels;
+        public string lowerStorageLabel;
+        public int[] storageTypes;
+        public int storagePlaces, heldCartonType;
         public Rect[] cashDenominations, cashKeys;
         public int[] cashCounts;
         public int[] offeredCoins;
@@ -445,6 +482,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.supplyPrompt = g.Warehouse.Dock(0).GetComponent<ShopStation>().Prompt;
         state.cartonQuantity = Player.HeldCarton != null ? Player.HeldCarton.Quantity : -1;
         state.warehouseGoods = g.WarehouseCount(0);
+        state.storagePlaces = g.Warehouse.StorageDocks.Count;
+        state.storageLabels = Enumerable.Range(0,ShopCatalog.Count).Select(i => g.Warehouse.Dock(i).Find("Brand dock label").GetComponent<TextMesh>().text).ToArray();
+        state.storageTypes = Enumerable.Range(0,ShopCatalog.Count).Select(i => g.Warehouse.CartonAt(g.Warehouse.Dock(i))?.ProductType ?? -1).ToArray();
+        state.lowerStorageLabel = LowerStorageDock().Find("Brand dock label").GetComponent<TextMesh>().text;
+        state.heldCartonType = Player.HeldCarton != null ? Player.HeldCarton.ProductType : -1;
         state.retailGoods = g.StockCount(0);
         state.cameraFov = View.fieldOfView;
         state.cashDue = g.Devices.RegisterVisuals.DisplayDue;

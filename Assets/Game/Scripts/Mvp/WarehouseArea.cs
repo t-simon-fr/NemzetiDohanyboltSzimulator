@@ -11,7 +11,72 @@ public sealed class WarehouseArea : MonoBehaviour
     private readonly List<WarehouseCarton> cartons = new List<WarehouseCarton>();
     private WarehouseCarton[] current = new WarehouseCarton[ShopCatalog.Count];
     private MvpShopController shop;
-    private TextMesh[] shelfLabels;
+    private List<Transform> storageDocks;
+
+    public IReadOnlyList<Transform> StorageDocks { get { EnsureStorageDocks(); return storageDocks; } }
+
+    private void EnsureStorageDocks()
+    {
+        if (storageDocks != null || docks == null) return;
+        storageDocks = docks.Where(dock => dock != null).ToList();
+        // Every authored shelf board is usable, including rows without a former brand dock.
+        foreach (var rack in docks)
+        {
+            var boards = rack.GetComponentsInChildren<BoxCollider>()
+                .Where(board => board.name.StartsWith("Warehouse shelf ") || board.name == "Warehouse top shelf").ToArray();
+            foreach (var board in boards)
+            {
+                if (storageDocks.Any(dock => Vector3.Distance(dock.position, board.transform.position) < .05f)) continue;
+                var dock = new GameObject("Warehouse storage cell").transform;
+                dock.SetParent(rack, true);
+                dock.SetPositionAndRotation(board.transform.position, rack.rotation);
+                dock.gameObject.AddComponent<ShopStation>().Configure(Shop, ShopStationKind.Supplies);
+                var labelPlate = rack.Find("Brand shelf label plate");
+                if (labelPlate != null)
+                {
+                    var plate = Instantiate(labelPlate.gameObject, dock, false);
+                    foreach (var collider in plate.GetComponents<Collider>()) { collider.enabled = false; Destroy(collider); }
+                }
+                ProductVisuals.Text(dock, "Brand dock label", "", new Vector3(0,-.055f,-.357f), Quaternion.identity, .042f, Color.black);
+                storageDocks.Add(dock);
+            }
+        }
+        foreach (var dock in storageDocks)
+        {
+            var selection = dock.gameObject.AddComponent<BoxCollider>();
+            selection.isTrigger = true;
+            selection.center = Vector3.up * .19f;
+            selection.size = new Vector3(.72f,.32f,.58f);
+        }
+    }
+
+    public bool IsStorageDock(Transform dock) => dock != null && StorageDocks.Contains(dock);
+
+    public Transform DockOnShelf(Transform column, Vector3 point) => StorageDocks
+        .Where(dock => Vector3.ProjectOnPlane(dock.position-column.position, Vector3.up).sqrMagnitude < .0025f)
+        .OrderBy(dock => (dock.position-point).sqrMagnitude).FirstOrDefault();
+
+    public WarehouseCarton CartonAt(Transform dock)
+    {
+        if (!IsStorageDock(dock)) return null;
+        return cartons.FirstOrDefault(carton => carton != null && carton.gameObject.activeInHierarchy && !carton.IsHeld &&
+            Vector3.Distance(carton.transform.position, dock.TransformPoint(Vector3.up * .055f)) < .12f);
+    }
+
+    public bool TryDock(WarehouseCarton carton, Transform dock)
+    {
+        if (carton == null || !cartons.Contains(carton) || !carton.IsHeld || !IsStorageDock(dock) || CartonAt(dock) != null) return false;
+        carton.AttachToDock(dock);
+        if (current[carton.ProductType] == null) current[carton.ProductType] = carton;
+        RefreshLabels();
+        return true;
+    }
+
+    private Transform FreeDock(int preferred)
+    {
+        if (CartonAt(docks[preferred]) == null) return docks[preferred];
+        return StorageDocks.FirstOrDefault(dock => CartonAt(dock) == null);
+    }
     private float nextLabelRefresh;
 
     private void Start() => RefreshLabels();
@@ -25,21 +90,15 @@ public sealed class WarehouseArea : MonoBehaviour
     public void RefreshLabels()
     {
         if (docks == null) return;
-        if (shelfLabels == null)
-            shelfLabels = docks.Select(dock => dock != null ? dock.Find("Brand dock label")?.GetComponent<TextMesh>() : null).ToArray();
-        for (int i = 0; i < docks.Length; i++)
+        foreach (var dock in StorageDocks)
         {
-            if (shelfLabels[i] == null) continue;
-            var dock = docks[i];
-            var types = cartons.Where(carton => carton != null && carton.gameObject.activeInHierarchy && !carton.IsHeld && carton.Quantity > 0)
-                .Where(carton =>
-                {
-                    Vector3 point = dock.InverseTransformPoint(carton.transform.position);
-                    return Mathf.Abs(point.x) < .35f && Mathf.Abs(point.z) < .25f && Mathf.Abs(point.y - .055f) < .12f;
-                }).Select(carton => carton.ProductType).Distinct();
-            shelfLabels[i].text = string.Join(" / ", types.Select(type => ShopCatalog.Names[type]));
+            var label = dock.Find("Brand dock label")?.GetComponent<TextMesh>();
+            if (label == null) continue;
+            var carton = CartonAt(dock);
+            label.text = carton != null && carton.Quantity > 0 ? ShopCatalog.Names[carton.ProductType] : "";
         }
     }
+
     public int DiscardedCartons { get; private set; }
     public MvpShopController Shop => shop != null ? shop : (shop=GetComponent<MvpShopController>());
     public Transform Dock(int type) => docks[type];
@@ -57,11 +116,13 @@ public sealed class WarehouseArea : MonoBehaviour
                 if(current[i]==null)
                 {
                     var box=new GameObject("Carton - "+ShopCatalog.Names[i]);
-                    box.transform.SetParent(docks[i],false);
+                    var dock = FreeDock(i);
+                    box.transform.SetParent(dock != null ? dock : looseCardboardPoint, false);
                     box.transform.localPosition=Vector3.up*.055f;
                     var carton=box.AddComponent<WarehouseCarton>();
                     carton.Configure(this,i,cardboard,packingTape,productMaterials[i]);
                     cartons.Add(carton);current[i]=carton;
+                    if (dock == null) PlaceLoose(carton);
                 }
                 current[i].AdjustQuantity(delta);
             }
@@ -81,24 +142,19 @@ public sealed class WarehouseArea : MonoBehaviour
     {if(current[carton.ProductType]==carton)current[carton.ProductType]=null;}
     public void PutBack(WarehouseCarton carton)
     {
-        int type=carton.ProductType;
-        if(current[type]==null)
-        {
-            current[type]=carton;carton.AttachToDock(docks[type]);
-        }
-        else
-        {
-            var dock=docks[type];
-            foreach(float height in new[]{.605f,-.495f})
-            {
-                Vector3 point=dock.TransformPoint(Vector3.up*height);
-                if(cartons.Any(c=>c!=null&&c!=carton&&!c.IsHeld&&Vector3.Distance(c.transform.position,point)<.2f))continue;
-                carton.DropLoose(dock,point);return;
-            }
-            int loose=cartons.Count(c=>c!=null&&c.transform.parent==looseCardboardPoint);
-            carton.DropLoose(looseCardboardPoint,looseCardboardPoint.position+Vector3.up*(.02f+loose*.30f));
-        }
+        var source = carton.PickupDock;
+        if (!IsStorageDock(source)) source = docks[carton.ProductType];
+        if (TryDock(carton, source)) return;
+        // A delivery may have occupied the source during carrying: never overwrite it.
+        PlaceLoose(carton);
     }
+
+    private void PlaceLoose(WarehouseCarton carton)
+    {
+        int loose = cartons.Count(c => c != null && c != carton && c.transform.parent == looseCardboardPoint && !c.IsHeld);
+        carton.DropLoose(looseCardboardPoint, looseCardboardPoint.position + Vector3.up * (.02f + loose * .30f));
+    }
+
     public void Dispose(WarehouseCarton carton)
     {
         if(carton==null||carton.Quantity!=0||!cartons.Contains(carton))return;

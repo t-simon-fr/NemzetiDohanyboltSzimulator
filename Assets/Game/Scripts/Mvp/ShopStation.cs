@@ -12,6 +12,11 @@ public sealed class ShopStation : MonoBehaviour
     public bool IsSupplies=>kind==ShopStationKind.Supplies;
     public bool IsPanicButton=>kind==ShopStationKind.PanicButton;
     public bool IsCoffeeControl=>kind==ShopStationKind.CoffeeControl;
+    private WarehouseCarton SupplyCarton => GetComponent<WarehouseCarton>() ?? shop.Warehouse.CartonAt(transform);
+    private Transform StorageDock => shop.Warehouse.IsStorageDock(transform) ? transform :
+        GetComponent<WarehouseCarton>() != null && shop.Warehouse.IsStorageDock(transform.parent) ? transform.parent : null;
+    public string CartonPlacementPrompt => StorageDock != null && shop.Warehouse.CartonAt(StorageDock) == null
+        ? "E / bal kattintás – Doboz lerakása az üres raktári helyre" : "Ez a raktári hely foglalt";
     public string Prompt
     {
         get
@@ -25,8 +30,7 @@ public sealed class ShopStation : MonoBehaviour
             if(kind==ShopStationKind.Till)return "E – Kassza / fizetés";
             if(kind==ShopStationKind.Exit)return shop.CanEndDay ? "E – Hazamegyek: nap lezárása" : "E – Bejárati ajtó";
             if(kind==ShopStationKind.Door)return shop.Phase==ShopPhase.Preparing ? "E – Tábla megfordítása: NYITVA" : shop.Phase==ShopPhase.Open ? "E – Tábla megfordítása: ZÁRVA" : "ZÁRVA • A napot az ajtónál fejezheted be";
-            var carton = GetComponent<WarehouseCarton>();
-            if (carton == null && productType >= 0) carton = shop.Warehouse.Carton(productType);
+            var carton = SupplyCarton;
             if (carton == null) return "";
             return carton.Quantity > 0 ? "E – Doboz felvétele" : "E – Üres kartondoboz felvétele";
         }
@@ -51,16 +55,19 @@ public sealed class ShopStation : MonoBehaviour
         else if(kind==ShopStationKind.Door){if(shop.Phase==ShopPhase.Preparing)shop.OpenShop();else shop.RequestClose();}
         else if(player.HeldCarton!=null)
         {
-            if(productType<0 || player.HeldCarton.ProductType==productType)player.ReturnCarton();
-            else shop.Notify("Ez másik márka dobozhelye. Keresd a "+ShopCatalog.Names[player.HeldCarton.ProductType]+" feliratot.");
+            if (!player.TryPlaceCarton(StorageDock)) shop.Notify("Ez a raktári hely foglalt. Keress egy üres helyet.");
         }
-        else if(player.HasHeldProduct)shop.ReturnSupply(player,productType);
+        else if(player.HasHeldProduct)
+        {
+            var carton = SupplyCarton;
+            if (carton != null) shop.ReturnSupply(player, carton.ProductType, carton);
+            else shop.Notify("Ide kartondobozt tehetsz. Az egyedi árut a saját termék dobozába rakhatod vissza.");
+        }
         else
         {
-            var carton=GetComponent<WarehouseCarton>();
-            if(carton==null && productType>=0)carton=shop.Warehouse.Carton(productType);
+            var carton=SupplyCarton;
             if(carton!=null)player.TryHoldCarton(carton);
-            else shop.Notify(productType>=0&&shop.PendingQuantity(productType)>0 ? "Ez a márka még úton van. Várd meg a szállítást!" : "Nincs doboz ezen a polcon. Rendelj a monitor Rendelések alkalmazásában.");
+            else shop.Notify("Ez a raktári hely üres. Ide bármelyik kartondobozt leteheted.");
         }
     }
     public void Cycle(){if(IsSupplies&&productType<0)shop.CycleSupply();}
