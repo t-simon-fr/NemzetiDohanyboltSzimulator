@@ -47,7 +47,8 @@ public static class IngredientPickupChecks
             }
             check(shop.Activities.CoffeeSupplies==10&&shop.Activities.MilkSupplies==10&&shop.Activities.ReadyCoffee==0&&shop.Activities.ReadyMilk==0,"Each paid coffee and milk serving transfers exactly once");
             shop.Activities.UseCoffeeMachine();
-            check(shop.Activities.CoffeeSupplies==9&&shop.Activities.MilkSupplies==10,"Another machine action brews normally instead of duplicating a consumed refill");
+            check(shop.Devices.FocusKind==ShopDeviceKind.Coffee&&shop.Activities.BrewRemaining==0&&shop.Activities.CoffeeSupplies==10,"Empty-handed machine use opens menu without brewing or duplicating refill");
+            shop.ClosePanel();
             check(shop.OrderSupply(0,1),"Buy carton to preserve empty-cell interaction");shop.Tick(8.1f);
             var carton=shop.Warehouse.Carton(0);check(player.TryHoldCarton(carton),"Carry normal warehouse carton after ingredient handling");
             var dock=shop.Warehouse.Dock(1);var target=dock.TransformPoint(Vector3.up*.18f);

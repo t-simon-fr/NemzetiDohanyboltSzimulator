@@ -60,7 +60,7 @@ public sealed class ShopFeatureTarget : MonoBehaviour
 {
     public ShopFeatureKind Kind;
     public float Cleaning { get; private set; }
-    public string Prompt=>Kind==ShopFeatureKind.CoffeeMachine?"1: rövid • 2: hosszú • 3: latte • E: főzés / felvétel / feltöltés":"Felmosóval tartsd nyomva a bal egérgombot • "+Mathf.RoundToInt(Cleaning/1.5f*100)+"%";
+    public string Prompt=>Kind==ShopFeatureKind.CoffeeMachine?"E / bal kattintás: kávégép menüje • Alapanyaggal: feltöltés":"Felmosóval tartsd nyomva a bal egérgombot • "+Mathf.RoundToInt(Cleaning/1.5f*100)+"%";
     public void Scrub(float dt)
     {
         if(Kind!=ShopFeatureKind.Spill)return;Cleaning+=Mathf.Clamp(dt,0,.1f);
