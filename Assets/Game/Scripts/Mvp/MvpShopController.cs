@@ -153,6 +153,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         delivery.SetManualPlacementRule(product=>ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)));
         Scanner = new GameObject("Checkout barcode scanner").AddComponent<ShopBarcodeScanner>();
         Scanner.Configure(this);
+        gameObject.AddComponent<ShopTrafikIdentity>().Configure(this);
         ResetDemo();gameObject.AddComponent<ShopMenu>().Configure(this);
     }
     private void Update()
@@ -171,7 +172,7 @@ public sealed partial class MvpShopController : MonoBehaviour
                 else if (!ShopMenu.Active&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape)) ClosePanel();
             }
             else if (Devices != null && Devices.Focused)
-            { if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape)) ClosePanel(); }
+            { if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape) && !(Devices.ComputerApp==ShopComputerApp.Prices && Pricing.CancelEdit())) ClosePanel(); }
             else if (Cursor.lockState == CursorLockMode.Locked)
             {
                 if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.B)) OpenSupplier();
@@ -594,4 +595,3 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public void ClosePanel() { if (Phase != ShopPhase.Summary) SetModal(ShopModal.None); }
 }
-

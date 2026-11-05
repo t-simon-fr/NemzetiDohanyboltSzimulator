@@ -410,6 +410,66 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'mop'); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); await sleep(2200);
       await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); s = await state(); check(s.tool === 'Mop' && s.dirt === 0, 'Mop retains held left-click cleaning'); await capture('mop-cleaned');
     }
+    if (selected === 'visual-refresh') {
+      const control=async id=>{const s=await state();const i=s.computerControlIds.indexOf(id);if(i<0)throw Error('Missing computer target '+id);return s.computerControls[i];};
+      const press=async id=>clickRect(await control(id));
+      const fill=async(rect,text)=>{
+        await clickRect(rect);
+        await send('Input.dispatchKeyEvent',{type:'keyDown',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await send('Input.dispatchKeyEvent',{type:'keyUp',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await key('Backspace','Backspace',8);
+        await send('Input.dispatchKeyEvent',{type:'char',text:String(text),unmodifiedText:String(text)});await sleep(300);
+      };
+      await probe('Prepare','visual-refresh');let s=await state();
+      await capture('desktop');
+      await press('OpenApp:1');s=await state();const cash=s.balance;
+      await fill(s.cartFields[0],'2');s=await state();
+      check(s.cartQuantities[0]===2&&s.balance===cash,'Typed order quantity stays a draft until purchase');
+      await clickRect(s.cartSubmit);s=await state();
+      check(s.pendingCart[0]===2&&s.balance===cash-3000&&s.drawer===s.balance,'New order screen buys exact typed cart once');await capture('orders');
+      await press('Desktop:0');await press('OpenApp:2');s=await state();const funds=s.balance;
+      await press('Expand:0');s=await state();check(s.upgradesOwned[0]&&s.balance===funds-24000,'New upgrade list buys real shop expansion');
+      await press('CoffeeMachineUpgrade:0');s=await state();check(s.upgradesOwned[2]&&s.balance===funds-40000,'New upgrade list buys physical coffee machine');await capture('upgrades');
+      await press('Desktop:0');await press('OpenApp:6');s=await state();const before=s.balance;
+      check(s.priceProducts.every(id=>id.startsWith('cig_')),'Tobacco category excludes drinks');
+      await fill(await control('Price:Edit'),'2400');s=await state();
+      check(s.selectedPrice===2200&&s.priceDraft==='2400','Actual typing does not commit price prematurely');
+      await enter();s=await state();check(s.selectedPrice===2400&&s.balance===before,'Enter commits valid typed price without charging');
+      await fill(await control('Price:Edit'),'2500');await key('Escape','Escape',27);s=await state();
+      check(s.device==='Monitor'&&s.selectedPrice===2400&&!s.priceEditing,'Escape cancels price edit and keeps computer open');
+      await fill(await control('Price:Edit'),'2401');await enter();s=await state();
+      check(s.selectedPrice===2400&&s.priceError.length>0,'Invalid five-forint increment is rejected inline');await capture('price-invalid');
+      await key('Escape','Escape',27);await press('Price:Plus');s=await state();check(s.selectedPrice===2500,'Mouse plus changes price by100');
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Shift',code:'ShiftLeft',windowsVirtualKeyCode:16,modifiers:8});
+      await press('Price:Minus');
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Shift',code:'ShiftLeft',windowsVirtualKeyCode:16});s=await state();
+      check(s.selectedPrice===2495,'Shift mouse minus changes price by5');
+      await fill(await control('Price:Edit'),'2600');await press('Price:Category:1');s=await state();
+      check(s.priceCategory===1&&s.priceProducts.length===3&&!s.priceProducts.includes('beer'),'Leaving price field commits and switches to soft drinks');
+      await press('Price:Category:2');s=await state();check(s.priceProducts.join(',')==='kevert,beer','Alcohol category isolates the two alcoholic products');
+      await press('Price:Category:3');s=await state();check(s.priceProducts.length===3&&s.priceProducts.includes('latte'),'Coffee category is enabled after actual machine purchase');
+      await press('Price:Category:0');s=await state();check(s.selectedPrice===2600,'Blur-committed tobacco price survives category round trip');await capture('prices');
+      for(const [app,name] of [[3,'coffee'],[4,'cameras'],[5,'games']]) {
+        await press('Desktop:0');await press('OpenApp:'+app);s=await state();check(s.computerApp===({3:'Coffee',4:'Cameras',5:'Games'})[app],'Actual desktop click opens '+name);
+        if(app===3){const money=s.balance;await press('Coffee:Milk');s=await state();check(s.balance===money-1500,'Coffee app orders real milk supplies');await press('Coffee:Recipe:11');check((await state()).recipe===11,'Coffee app selects physical latte recipe');}
+        if(app===4){await press('Camera:1');await press('Camera:0');}
+        await capture(name);
+      }
+      await press('Game:Memory');s=await state();check(s.computerControlIds.filter(id=>id.startsWith('Memory:')).length===16,'Actual game launcher opens sixteen memory cards');
+      await press('Memory:0');await capture('memory');await press('Game:Menu');
+      await press('Desktop:0');await press('OpenApp:2');await press('Arrange:0');s=await state();
+      check(s.arranging,'Actual arrangement action opens unobstructed top-down editor');await capture('arrangement');await key('Escape','Escape',27);
+      await probe('Prepare','visual-refresh');
+      await viewport(1920,1080);
+      for(let app=0;app<=6;app++) {
+        if(app>0)await press('OpenApp:'+app);
+        s=await state();check(s.computerControls.every(r=>r.x>=0&&r.y>=0&&r.x+r.width<=width&&r.y+r.height<=height),'All visible controls fit large viewport app'+app);
+        await capture('app-'+app+'-large');
+        if(app>0)await press('Desktop:0');
+      }
+      await probe('Action','design-exterior');await capture('exterior-large');
+      await probe('Action','design-interior');await capture('interior-large');
+    }
     if (selected === 'requests-batch') {
       const worldClick=async()=>{
         await send('Input.dispatchMouseEvent',{type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(90);
@@ -762,4 +822,3 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
     console.log('REPORT ' + output); ws?.close(); browser?.kill(); server?.close();
   }
 })();
-

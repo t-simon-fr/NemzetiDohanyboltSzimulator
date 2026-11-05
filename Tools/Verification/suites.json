@@ -36,7 +36,10 @@
       "tool-storage",
       "fixture-lighting",
       "walkable-entrance",
-      "scanner-placement"
+      "scanner-placement",
+      "price-editor",
+      "computer-ui",
+      "identity-visuals"
     ]
   },
   "suites": {
@@ -194,6 +197,21 @@
       "file": "Tools/Checks/IngredientPickupChecks.cs",
       "purpose": "Physical coffee/milk targeting through storage triggers, solid occlusion, exact refill and preserved carton placement",
       "entry": "IngredientPickupChecks.Run"
+    },
+    "price-editor": {
+      "entry": "VisualRefreshChecks.Prices",
+      "file": "Tools/Checks/VisualRefreshChecks.cs",
+      "purpose": "Price drafts, categories and money invariants"
+    },
+    "computer-ui": {
+      "entry": "VisualRefreshChecks.Computer",
+      "file": "Tools/Checks/VisualRefreshChecks.cs",
+      "purpose": "Computer controls, fit and business actions"
+    },
+    "identity-visuals": {
+      "entry": "VisualRefreshChecks.Identity",
+      "file": "Tools/Checks/VisualRefreshChecks.cs",
+      "purpose": "Runtime branding and nonblocking visual geometry"
     }
   },
   "historicalExcluded": {
