@@ -243,7 +243,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         {
             string notice=orderFeedback;
             if(lastOrderSucceeded&&lastOrderType>=0&&shop.PendingQuantity(lastOrderType)==0)notice="Megérkezett: "+ShopCatalog.ShortNames[lastOrderType]+" • a raktárban átvehető.";
-            if(string.IsNullOrEmpty(notice))notice="Válassz mennyiséget, majd kattints a termékre a rendeléshez.";
+            if(string.IsNullOrEmpty(notice))notice="Add meg a termékenkénti darabszámot, majd rendeld meg egyben a kosarat.";
             monitorNotice.text=notice.Length>105?notice.Substring(0,102)+"...":notice;
         }
         else

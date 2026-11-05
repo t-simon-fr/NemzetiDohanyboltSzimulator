@@ -53,7 +53,7 @@ public sealed partial class ShopDevices
             valid &= quantity >= 0 && quantity <= ShopCatalog.MaxOrderQuantity;
             if (quantity > 0) total += (long)ShopCatalog.Costs[type]*quantity;
             GUI.Label(new Rect(2,y,width-235,40),ShopCatalog.ShortNames[type]+"\n"+ShopCatalog.Money(ShopCatalog.Costs[type])+" / db",label);
-            if (GUI.Button(new Rect(width-230,y+4,32,30),"−",button)) SetCartQuantity(type,Mathf.Max(0,quantity)-1);
+            if (GUI.Button(new Rect(width-230,y+4,32,30),"-",button)) SetCartQuantity(type,Mathf.Max(0,quantity)-1);
             GUI.SetNextControlName("CartQuantity"+type);
             cartInputs[type] = GUI.TextField(new Rect(width-193,y+4,48,30),cartInputs[type],3);
             if (GUI.Button(new Rect(width-140,y+4,32,30),"+",button)) SetCartQuantity(type,Mathf.Max(0,quantity)+1);

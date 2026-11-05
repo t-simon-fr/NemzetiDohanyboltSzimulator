@@ -132,7 +132,15 @@ public sealed class PlayerInteractor : MonoBehaviour
         if (station != null && station.IsPanicButton) { station.Use(this); return; }
         if (station != null && station.IsCoffeeControl && !HasHeldItem) { station.Use(this); return; }
         if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&(!HasHeldItem||heldTool!=null&&heldTool.Kind==ShopToolKind.CoffeeRefill)){MvpShopController.Instance.Activities.UseCoffeeMachine();return;}
-        if(heldTool!=null)return;
+        if(heldTool!=null)
+        {
+            if (heldTool.Kind==ShopToolKind.ContrabandBox && targetSlot!=null && MvpShopController.Instance.CounterStorage.Slots.Contains(targetSlot))
+            {
+                if (heldTool.GetComponent<ShopContrabandBox>().Unpack(MvpShopController.Instance.CounterStorage)) ConsumeHeldTool();
+                else MvpShopController.Instance.Notify("Nincs elég szabad hely a teljes doboznak.");
+            }
+            return;
+        }
         if(!HasHeldItem&&targetTool!=null){TryHoldTool(targetTool);return;}
         if (heldCarton != null)
         {
@@ -171,6 +179,8 @@ public sealed class PlayerInteractor : MonoBehaviour
                     station = supply;
                     break;
                 }
+                if (heldTool!=null && heldTool.Kind==ShopToolKind.ContrabandBox && slot!=null)
+                { targetSlot=slot; break; }
                 if ((heldProduct!=null||heldCarton!=null) && slot != null)
                 { targetSlot=slot;canPlace=heldCarton!=null?heldCarton.CanPlace(slot):heldProduct.TryGetPlacement(slot,out _);break; }
                 continue;

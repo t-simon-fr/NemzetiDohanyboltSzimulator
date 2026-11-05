@@ -1,0 +1,164 @@
+{
+  "started": "2026-11-05T12:09:51.625Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Cart opens empty before the 08:00 shift",
+      "passed": true
+    },
+    {
+      "label": "Actual quantity fields accept distinct typed values without purchasing",
+      "passed": true
+    },
+    {
+      "label": "One mouse confirmation submits every cart row and exact total",
+      "passed": true
+    },
+    {
+      "label": "Actual E scans one held product before transferring it to the customer",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up the warehouse broom",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up the mounted bat",
+      "passed": true
+    },
+    {
+      "label": "Holding the mouse sweeps the actual stain clean",
+      "passed": true
+    },
+    {
+      "label": "Merchant states a bounded actual shipment quantity",
+      "passed": true
+    },
+    {
+      "label": "Mouse purchases one box with exact announced quantity and cost",
+      "passed": true
+    },
+    {
+      "label": "Actual E carries the whole shipment",
+      "passed": true
+    },
+    {
+      "label": "Actual E unpacks the whole shipment into the two-row shelf",
+      "passed": true
+    },
+    {
+      "label": "Actual E opens own coffee machine display",
+      "passed": true
+    },
+    {
+      "label": "Physical touchscreen selects latte",
+      "passed": true
+    },
+    {
+      "label": "Machine starts real brew and displays ingredient/progress state",
+      "passed": true
+    },
+    {
+      "label": "Busy physical recipe key cannot change drink or consume twice",
+      "passed": true
+    },
+    {
+      "label": "Escape exits machine without opening pause menu",
+      "passed": true
+    },
+    {
+      "label": "Pause freezes real ongoing brew",
+      "passed": true
+    },
+    {
+      "label": "Resuming pause restores active world context",
+      "passed": true
+    },
+    {
+      "label": "Machine finishes after leaving view and reports actual ready latte",
+      "passed": true
+    },
+    {
+      "label": "Physical take gives actual cup without same-click replacement",
+      "passed": true
+    },
+    {
+      "label": "Physical touchscreen brews actual coffee",
+      "passed": true
+    },
+    {
+      "label": "Physical take collects coffee",
+      "passed": true
+    },
+    {
+      "label": "Physical touchscreen brews actual coffee_long",
+      "passed": true
+    },
+    {
+      "label": "Physical take collects coffee_long",
+      "passed": true
+    },
+    {
+      "label": "Three physical coffee recipes preserve exact stock and money",
+      "passed": true
+    },
+    {
+      "label": "Machine display explains latte milk shortage",
+      "passed": true
+    },
+    {
+      "label": "Disabled physical brew does not consume stock",
+      "passed": true
+    },
+    {
+      "label": "Machine display continuously reports coffee shortage",
+      "passed": true
+    },
+    {
+      "label": "Number key does not bypass menu recipe selection",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-cart-typed.png",
+    "1920x1080-cart-submitted-large.png",
+    "1280x720-scanner-ready.png",
+    "1920x1080-scanner-transferred-large.png",
+    "1280x720-warehouse-broom.png",
+    "1280x720-wall-bat.png",
+    "1280x720-broom-swept.png",
+    "1280x720-night-offer.png",
+    "1280x720-night-box.png",
+    "1280x720-private-two-rows.png",
+    "1920x1080-private-two-rows-large.png",
+    "1280x720-coffee-display-ready.png",
+    "1280x720-coffee-display-brewing.png",
+    "1280x720-coffee-display-latte.png",
+    "1920x1080-coffee-display-no-milk-large.png",
+    "1920x1080-coffee-display-no-coffee-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23230247,
+    "seconds": 462.8567802,
+    "error": "",
+    "completedUtc": "2026-11-05T12:07:57.814Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "b42c0b847edcfda4efed35d836d3f70230122e1c0af444457288e8f9c4b437e2",
+      "AcceptanceWebGL.framework.js.unityweb": "a6208176613c1e221aef9aa51c4b694cabcc90482df775fd1135551cee638a29",
+      "AcceptanceWebGL.loader.js": "f732fd2443e34715561e4026744977e7e438373dab510820cb86d053a1f5a342",
+      "AcceptanceWebGL.wasm.unityweb": "6f9171e23ae70512b229e8fc8cdf7a88f5cf728e65e08bc1d4eef3de858c07f0"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-05T12:10:59.773Z",
+  "capturedStateCount": 79
+}

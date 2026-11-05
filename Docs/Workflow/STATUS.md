@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #53–#59: az új feature-csomag implementálva, Unityben, helyi WebGL-ben és vizuálisan ellenőrizve. **650 Unity-állítás / 26 csoport, 30 közös és 6 végső rendelőellenőrzés, 0 böngészőhiba**. PR #62–#68, [közös jelentés és képek](../Acceptance/2026-11-05-feature-batch/REPORT.md). Pagesre nincs publikálva. A #60 és #61 spike nem része ennek a csomagnak.
+
 **Aktuális Pages-kiadás (2026-11-05):** a #43 szabad raktári kartonhelyek kiadva minden korábbi fejlesztéssel. Forrás `ec97eb9`, publish `9e8db97`. [Élő játék](https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/?v=ec97eb9), [kiadási jelentés](../Acceptance/2026-11-05-warehouse-pages/REPORT.md). A felhasználó kérésére a korábbi sikeres helyi ellenőrzésre támaszkodtunk; új játékpróba nélkül publikáltunk. A GitHub Pages állapota built. A lenti korábbi készültségi és kiadási megjegyzések történetiek.
 
 - #47–#49: terminál automatikus bezárása sikeres fizetés után, zárt üres boltban minden fejlesztés vásárolható, raktári tej/kávé csomagfelvétel javítva. **621 sikeres Unity-állítás / 25 csoport**, tényleges natív E/egér/Enter és közös helyi WebGL-próba, 0 böngészőhiba; mindkét felbontás átnézve. [Közös jelentés](../Acceptance/2026-11-05-closing-fixes/REPORT.md), PR #50 / #51 / #52. Pagesre még nincs kiadva.

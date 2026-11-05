@@ -1,0 +1,54 @@
+{
+  "started": "2026-11-05T12:17:51.667Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Cart opens empty before the 08:00 shift",
+      "passed": true
+    },
+    {
+      "label": "Actual quantity fields accept distinct typed values without purchasing",
+      "passed": true
+    },
+    {
+      "label": "Mouse plus increases only the chosen product",
+      "passed": true
+    },
+    {
+      "label": "Mouse minus decreases only the chosen product",
+      "passed": true
+    },
+    {
+      "label": "One mouse confirmation submits every cart row and exact total",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-cart-typed.png",
+    "1920x1080-cart-submitted-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23230403,
+    "seconds": 252.0769593,
+    "error": "",
+    "completedUtc": "2026-11-05T12:16:17.646Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "66170568a0f6a785b24e76b21f413bfcfe3b5c19c01479e4387e447fa4ac69ae",
+      "AcceptanceWebGL.framework.js.unityweb": "5f52ea5f7f4be3cdf79e55cd470b3cdfe93298ddcf32b771234462e249f08b1b",
+      "AcceptanceWebGL.loader.js": "4d886add6fc5efa1e7b50d570c74681aecbb3eefdfff905331a5282cbad859ab",
+      "AcceptanceWebGL.wasm.unityweb": "85a3993e9e1066e9d98b637d7f55f6bc7ec4b447d045b40c0438fdfb141a848b"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-05T12:18:14.894Z",
+  "capturedStateCount": 9
+}
