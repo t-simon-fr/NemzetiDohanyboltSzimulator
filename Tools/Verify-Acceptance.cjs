@@ -217,6 +217,39 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await viewport(1280, 720);
     }
 
+    if (!selected || selected === 'warehouse-storage') {
+      await probe('Prepare', 'warehouse-storage'); let s = await state();
+      const cash = s.balance;
+      check(s.storagePlaces > 9 && s.storageTypes[0] === 0 && s.storageTypes[1] === 1, 'Real shipments occupy physical storage; previously unassigned rows are usable');
+      await key('e', 'KeyE', 69); s = await state();
+      check(s.heldCartonType === 0 && s.cartonQuantity === 2 && !s.storageLabels[0], 'Actual E picks carton and clears vacated source');
+      await probe('Action', 'aim-storage-2'); await key('e', 'KeyE', 69); s = await state();
+      check(s.heldCartonType === -1 && s.storageTypes[2] === 0 && s.storageLabels[2] === 'Lucky Stroke', 'Actual E places carton on another former brand dock');
+      await capture('warehouse-relocated');
+      await probe('Action', 'aim-storage-0'); await key('e', 'KeyE', 69); s = await state();
+      check(s.heldCartonType === -1 && s.storageTypes[2] === 0, 'Vacant source cannot remotely pick up relocated carton');
+      await probe('Action', 'aim-storage-2'); await click(width/2,height/2); s = await state();
+      check(s.heldCartonType === 0 && s.cartonQuantity === 2 && !s.storageLabels[2], 'Actual mouse click picks the physically relocated carton');
+      await probe('Action', 'aim-storage-1'); await key('e', 'KeyE', 69); s = await state();
+      check(s.heldCartonType === 0 && s.storageTypes[1] === 1, 'Occupied storage rejects E without replacing its different-brand carton');
+      await probe('Action', 'aim-storage-lower'); await key('e', 'KeyE', 69); s = await state();
+      check(s.heldCartonType === -1 && s.lowerStorageLabel === 'Lucky Stroke', 'Actual E places carton on formerly unusable lower shelf row');
+      await viewport(1920,1080); await capture('warehouse-lower-relocated');
+      await probe('Action', 'aim-storage-lower'); await click(width/2,height/2); s = await state();
+      check(s.heldCartonType === 0 && !s.lowerStorageLabel, 'Mouse can retrieve carton from lower shelf row');
+      await probe('Action', 'aim-stock-shelf'); await key('e', 'KeyE', 69); s = await state();
+      check(s.cartonQuantity === 1 && s.warehouseGoods === 1 && s.retailGoods === 1, 'Relocated carton still unpacks exactly one finite product');
+      await probe('Action', 'aim-storage-2'); await click(width/2,height/2); s = await state();
+      check(s.heldCartonType === -1 && s.storageTypes[2] === 0, 'Mouse places part-filled carton at chosen empty warehouse dock');
+      await probe('Action', 'aim-stock-shelf'); await key('e', 'KeyE', 69); s = await state();
+      check(s.held === 'cig_red', 'Actual E picks the stocked unit for carton return');
+      await probe('Action', 'aim-storage-2'); await key('e', 'KeyE', 69); s = await state();
+      check(!s.held && s.warehouseGoods === 2 && s.retailGoods === 0 && s.storageTypes[2] === 0, 'Unit return uses actual carton contents instead of dock original brand');
+      check(s.balance === cash && s.storageTypes[1] === 1, 'All keyboard and mouse relocation preserves exact cash and other carton');
+      await capture('warehouse-returned-large');
+      await viewport(1280,720); await capture('warehouse-returned');
+    }
+
     if (!selected || selected === 'shelf-labels') {
       await probe('Prepare', 'shelf-labels'); let s = await state();
       check(!s.warehouseShelfLabel && !s.retailShelfLabel && !s.supplyPrompt, 'Empty shelves have blank labels and no pickup prompt');

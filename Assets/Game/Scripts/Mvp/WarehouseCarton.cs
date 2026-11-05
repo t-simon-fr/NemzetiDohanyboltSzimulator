@@ -5,6 +5,7 @@ public sealed class WarehouseCarton : MonoBehaviour
     public int ProductType { get; private set; }
     public bool IsHeld { get; private set; }
     public bool IsDocked { get; private set; }
+    public Transform PickupDock { get; private set; }
     public int Quantity { get; private set; }
     public void AdjustQuantity(int delta) { Quantity=Mathf.Max(0,Quantity+delta);Refresh(); }
     public bool CanPlace(ProductSlot slot) => Quantity>0 && slot!=null && slot.CanStock(ShopCatalog.Ids[ProductType], ProductSize, out _);
@@ -51,12 +52,13 @@ public sealed class WarehouseCarton : MonoBehaviour
     public bool PickUp(Transform hand)
     {
         if(IsHeld||hand==null)return false;
+        PickupDock = area.IsStorageDock(transform.parent) ? transform.parent : null;
         area.Release(this);IsDocked=false;IsHeld=true;ShopLoosePhysics.Freeze(gameObject);
         foreach(var c in colliders)if(c!=null)c.enabled=false;
         transform.SetParent(hand,true);transform.localPosition=new Vector3(-.20f,-.24f,.32f);transform.localRotation=Quaternion.identity;
         Refresh();return true;
     }
-    public void ReturnToStorage(){if(IsHeld){IsHeld=false;area.PutBack(this);}}
+    public void ReturnToStorage(){if(IsHeld)area.PutBack(this);}
     public void AttachToDock(Transform dock)
     {
         ShopLoosePhysics.Freeze(gameObject);IsHeld=false;IsDocked=true;transform.SetParent(dock,false);transform.localPosition=Vector3.up*.055f;transform.localRotation=Quaternion.identity;
