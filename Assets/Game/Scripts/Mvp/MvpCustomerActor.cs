@@ -35,9 +35,13 @@ public sealed class MvpCustomerActor : MonoBehaviour
     private List<Vector3> route;
     private int routeIndex, routeVersion = -1;
     private Vector3 routeGoal;
-    public void Initialize(int person,int product,int visit)
+    public void Initialize(int person,int product,int visit,int[] order=null)
     {
-        Person=person;Product=product;var game=MvpShopController.Instance;int count=game.SingleProductVisits?1:1+visit%3;OrderTypes=Enumerable.Range(0,count).Select(i=>i==0?product:(product+i)%game.AvailableProducts).ToArray();UnitPrices=OrderTypes.Select(ShopCatalog.SalePrice).ToArray();AcceptsPrices=OrderTypes.Select((t,i)=>ShopPricing.Accepts(t,UnitPrices[i],visit,game.Day)).All(x=>x);int price=TotalPrice;
+        var game = MvpShopController.Instance;
+        OrderTypes = order ?? game.CreateCustomerOrder(product,visit);
+        if (OrderTypes.Length == 0) throw new System.ArgumentException("Customer requires an available order.");
+        Person=person;Product=OrderTypes[0];product=Product;
+        UnitPrices=OrderTypes.Select(ShopCatalog.SalePrice).ToArray();AcceptsPrices=OrderTypes.Select((t,i)=>ShopPricing.Accepts(t,UnitPrices[i],visit,game.Day)).All(x=>x);int price=TotalPrice;
         Tender=visit%3==1?price:price>2000?Mathf.CeilToInt(price/5000f)*5000:price>500?Mathf.CeilToInt(price/1000f)*1000:500;
         UsesCard=!game.SingleProductVisits&&visit%4==3;
         UsesCoins=!UsesCard&&price<=1000 && visit%4<=2;

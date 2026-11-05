@@ -61,6 +61,14 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             foreach (var label in FindObjectsByType<ShopShelfPriceLabel>(FindObjectsInactive.Include)) label.Refresh();
             AimWarehouseShelf();
         }
+        else if (scenario == "stock-orders")
+        {
+            foreach (var product in FindObjectsByType<ShopProduct>()) product.RemoveFromWorld();
+            Shop.Ledger.TrySellCard(60000,0); Shop.SyncCashDrawer(); Shop.TryExpand();
+            Shop.OrderSupply(6,3); Shop.Tick(8.1f);
+            Visit(0,6);
+            Aim(Shop.DeliverySlot.transform.position + Vector3.up*.1f);
+        }
         else if (scenario == "warehouse-storage")
         {
             foreach (var product in FindObjectsByType<ShopProduct>().Where(p => p.CurrentSlot != null && p.CurrentSlot.IsStockShelf))
@@ -198,6 +206,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action == "take-stock-order")
+        {
+            Shop.TakeSupply(Player,6);
+            Aim(Shop.DeliverySlot.transform.position + Vector3.up*.1f);
+        }
         if (action.StartsWith("aim-storage-") && int.TryParse(action.Substring(12),out int dockIndex)) AimStorageDock(Shop.Warehouse.Dock(dockIndex));
         if (action == "aim-storage-lower") AimStorageDock(LowerStorageDock());
         if (action == "aim-warehouse-shelf") AimWarehouseShelf();

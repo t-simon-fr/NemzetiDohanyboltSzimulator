@@ -217,6 +217,22 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await viewport(1280, 720);
     }
 
+    if (!selected || selected === 'stock-orders') {
+      await probe('Prepare','stock-orders'); let s=await state();
+      const cash=s.balance;
+      check(s.orderLines.length===1 && s.orderLines[0].Type===6 && s.orderLines[0].Required===1, 'Actual customer requests only the energy drink genuinely purchased into the otherwise empty shop');
+      check(!s.unavailable && s.stage==='Order', 'Warehouse-only goods are requestable without a false shortage');
+      await capture('stock-order-warehouse');
+      await probe('Action','take-stock-order'); s=await state();
+      check(s.held==='energy' && s.balance===cash, 'Take the actual paid energy drink for the generated request');
+      await key('e','KeyE',69); s=await state();
+      check(!s.held && s.stage==='Payment' && s.received===1, 'Actual E delivery satisfies the stock-selected customer order');
+      check(s.orderLines[0].Delivered===1 && s.balance===cash, 'Order UI follows real delivery without booking an unpaid sale');
+      await capture('stock-order-delivered');
+      await viewport(1920,1080); await capture('stock-order-delivered-large');
+      await viewport(1280,720);
+    }
+
     if (!selected || selected === 'warehouse-storage') {
       // Pointer-locked world clicks must not move the cursor and rotate the camera.
       const worldClick = async () => {
