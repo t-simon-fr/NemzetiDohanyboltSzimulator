@@ -63,6 +63,7 @@ public sealed partial class ShopDevices
     public bool HandleDeviceKey(DeviceKey key,bool shift=false)
     {
         if(!Focused||shop==null)return false;
+        if (FocusKind == ShopDeviceKind.Monitor && ComputerApp == ShopComputerApp.Orders) return HandleCartKey(key);
         bool enter=key==DeviceKey.Enter||key==DeviceKey.NumpadEnter;
         if(FocusKind==ShopDeviceKind.Terminal || FocusKind==ShopDeviceKind.Till&&shop.CardPayment)
         {
@@ -137,6 +138,7 @@ public sealed partial class ShopDevices
     private void OnGUI()
     {
         if(!Focused || ShopMenu.Active)return;GUI.depth=-100;
+        DrawOrderCart();
         if(keyboardOutline&&keyboardTargetId!=null)
         {
             var target=KeyboardTargets().FirstOrDefault(t=>t.Id==keyboardTargetId);

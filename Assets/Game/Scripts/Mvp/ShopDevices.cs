@@ -180,7 +180,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     public void OpenApp(ShopComputerApp app)
     {
         ResetKeyboardFocus();ComputerApp=app;if(desktopPage==null)return;
-        desktopPage.gameObject.SetActive(app==ShopComputerApp.Desktop);orderPage.gameObject.SetActive(app==ShopComputerApp.Orders);furnishingPage.gameObject.SetActive(app==ShopComputerApp.Furnishing);
+        desktopPage.gameObject.SetActive(app==ShopComputerApp.Desktop);orderPage.gameObject.SetActive(false);furnishingPage.gameObject.SetActive(app==ShopComputerApp.Furnishing);
         featurePage.gameObject.SetActive(app==ShopComputerApp.Coffee||app==ShopComputerApp.Cameras||app==ShopComputerApp.Games||app==ShopComputerApp.Prices);
         buildingPage.gameObject.SetActive(app!=ShopComputerApp.Desktop);
         appTitle.text=app==ShopComputerApp.Desktop?"ASZTAL":app==ShopComputerApp.Orders?"TERMÉKRENDELÉS":app==ShopComputerApp.Furnishing?"ÜZLETFEJLESZTÉS":app==ShopComputerApp.Coffee?"KÁVÉ":app==ShopComputerApp.Cameras?"KAMERÁK":app==ShopComputerApp.Prices?"ÁRAK":"JÁTÉKOK";
@@ -216,6 +216,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     }
     public void ResetComputer()
     {
+        System.Array.Fill(cartInputs,"0");
         orderQuantity=3;lastOrderType=-1;lastOrderSucceeded=false;orderFeedback="";furnishingFeedback="";OpenApp(ShopComputerApp.Desktop);
     }
     public void RefreshMonitor()
