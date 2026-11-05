@@ -1,6 +1,6 @@
 # Új feature-csomag – 2026-11-05
 
-Issue-k: #53–#59. PR-ek: #62–#68. Pages-publikálás nem része a kérésnek.
+Issue-k: #53–#59. PR-ek: #62–#68. A feature-megvalósítás eredménye; későbbi külön kérésre [Pagesre is publikálva](../2026-11-05-feature-pages/REPORT.md).
 
 ## Eredmény
 
