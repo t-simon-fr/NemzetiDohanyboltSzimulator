@@ -65,7 +65,7 @@ public static class ArrangementChecks
             shop.SingleProductVisits = true;
             typeof(MvpShopController).GetMethod("SpawnCustomer",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance)
                 .Invoke(shop,new object[]{ShopCatalog.Index("water"),false});
-            typeof(MvpShopController).GetProperty("Spawned").SetValue(shop,shop.TotalVisitors);
+            shop.AutomaticArrivals=false;
             for (int i = 0; i < 3000 && shop.ActiveCustomer == null; i++) shop.Tick(.1f);
             check(shop.ActiveCustomer != null && shop.ActiveCustomer.BasketItem == product,
                 "Real NPC navigates to rotated shelf, picks its product and reaches counter");

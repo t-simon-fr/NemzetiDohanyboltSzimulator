@@ -43,6 +43,8 @@ public sealed partial class MvpShopController : MonoBehaviour
     public float Elapsed { get; private set; }
     public float ClockElapsed { get; private set; }
     public int Spawned { get; private set; }
+    // Fixtures can own their explicitly spawned visits without changing the live arrival policy.
+    public bool AutomaticArrivals { get; set; } = true;
     public int Missed { get; private set; }
     public int QueueCount => queue.Count;
     public int SelectedSupply { get; private set; }
@@ -194,10 +196,14 @@ public sealed partial class MvpShopController : MonoBehaviour
         if (Modal != ShopModal.None || (Devices != null && Devices.Focused && !liveMonitor) || Phase == ShopPhase.Preparing) return;
         AdvanceFleeing(dt);
         if (Phase == ShopPhase.Open) Elapsed += dt;
-        if (Phase == ShopPhase.Open && Spawned < TotalVisitors && (Security == null || !Security.Locked))
+        if (Phase == ShopPhase.Open && AutomaticArrivals && (Security == null || !Security.Locked))
         {
             spawnTimer -= dt;
-            if (spawnTimer <= 0f && queue.Count < 3) { SpawnCustomer(); spawnTimer = Spawned >= 3 && Spawned <= 5 ? 12f : 22f; }
+            if (spawnTimer <= 0f && queue.Count < 3)
+            {
+                SpawnCustomer();
+                spawnTimer = UnityEngine.Random.Range(12f,28f);
+            }
         }
         for (int i = departing.Count - 1; i >= 0; i--)
         {
@@ -434,7 +440,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         Arrangement?.ResetLayout();
         AfterHours?.ResetEvenings();Pricing?.ResetPrices();GetComponent<ShopNextUpgrades>()?.ResetUpgrades();
-        SingleProductVisits=false;receivedOrder.Clear();
+        SingleProductVisits=false;AutomaticArrivals=true;receivedOrder.Clear();
         if (stockRoot == null) return;
         if (player != null) player.CancelHeld();
         foreach (MvpCustomerActor actor in queue.Concat(departing).Concat(fleeing)) if (actor != null) { actor.ReturnBasket(); actor.gameObject.SetActive(false); Destroy(actor.gameObject); }

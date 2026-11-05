@@ -27,6 +27,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
 
     private void Visit(int visit, int type)
     {
+        Shop.AutomaticArrivals = false;
         Shop.OpenShop();
         Set(Shop, "Spawned", visit);
         typeof(MvpShopController).GetMethod("SpawnCustomer", Private).Invoke(Shop, new object[] { type, false });

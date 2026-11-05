@@ -48,7 +48,7 @@ public static class DoorStorageChecks
             g.SingleProductVisits=true;
             g.OpenShop();
             typeof(MvpShopController).GetMethod("SpawnCustomer",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).Invoke(g,new object[]{ShopCatalog.Contraband,false});
-            typeof(MvpShopController).GetProperty("Spawned").SetValue(g,g.TotalVisitors);
+            g.AutomaticArrivals=false;
             for(int i=0;i<2000&&g.ActiveCustomer==null;i++)g.Tick(.1f);
             check(g.ActiveCustomer!=null&&g.ActiveCustomer.Product==ShopCatalog.Contraband,"Real customer requests private stock");
             check(player.TryHold(item),"Retrieve requested private pack");
