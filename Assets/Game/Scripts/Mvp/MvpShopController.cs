@@ -41,6 +41,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public int PriceRefusals {get;private set;}
     public int Day { get; private set; } = 1;
     public float Elapsed { get; private set; }
+    public float ClockElapsed { get; private set; }
     public int Spawned { get; private set; }
     public int Missed { get; private set; }
     public int QueueCount => queue.Count;
@@ -174,6 +175,8 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         if (Ledger == null || Phase == ShopPhase.Summary || Arrangement != null && Arrangement.Active) return;
         dt = Mathf.Max(0f, dt);
+        if (Phase == ShopPhase.Open || Phase == ShopPhase.Closing || Phase == ShopPhase.AfterHours)
+            ClockElapsed += dt;
         if(Phase==ShopPhase.AfterHours){Activities?.Tick(dt);return;}
         for (int i = shipments.Count - 1; i >= 0; i--)
         {
@@ -418,7 +421,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         ResetCardTerminal();
         Security?.ReleaseEntrance();
-        Phase = ShopPhase.Preparing; Stage = ServiceStage.None; Spawned = 0; Missed = 0; Elapsed = 0f;
+        Phase = ShopPhase.Preparing; Stage = ServiceStage.None; Spawned = 0; Missed = 0; Elapsed = 0f; ClockElapsed = 0f;
         StolenToday=0;CaughtToday=0;PriceRefusals=0;
         receivedOrder.Clear();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.";
         SetModal(ShopModal.None);

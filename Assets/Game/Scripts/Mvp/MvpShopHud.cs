@@ -44,7 +44,7 @@ public sealed class MvpShopHud : MonoBehaviour
         string phase = shop.Phase == ShopPhase.Preparing ? "FELKÉSZÜLÉS" : shop.Phase == ShopPhase.Open ? "NYITVA" : shop.Phase == ShopPhase.AfterHours ? "ZÁRÁS UTÁN" : "ZÁRUNK";
         ShopUi.Label(new Rect(40, 38, 298, 22), shop.Day + ". NAP  /  " + phase, 16, true, true);
         ShopUi.Label(new Rect(40, 69, 194, 30), ShopCatalog.Money(shop.Ledger.Cash), 24, true, true);
-        ShopUi.Label(new Rect(245, 73, 95, 24), ShopUiState.Clock(shop.Elapsed), 18, false, true);
+        ShopUi.Label(new Rect(245, 73, 95, 24), ShopUiState.Clock(shop.ClockElapsed), 18, false, true);
         string task = shop.Security.Locked ? "A bejárat reteszelve. A vészgombbal oldhatod fel." :
             shop.Phase == ShopPhase.Preparing ? "Nyitás az ajtó táblájának megfordításával." :
             shop.Phase == ShopPhase.AfterHours ? "A napot az ajtó alsó részénél zárhatod le." :
