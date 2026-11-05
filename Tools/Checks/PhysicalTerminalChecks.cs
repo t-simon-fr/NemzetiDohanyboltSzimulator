@@ -27,6 +27,11 @@ public static class PhysicalTerminalChecks
         try
         {
             fixture.Prepare("card");
+            shop.Devices.Release();
+            var originalPosition=camera.transform.localPosition;
+            var originalRotation=camera.transform.localRotation;
+            float originalFov=camera.fieldOfView;
+            shop.Devices.Focus(ShopDeviceKind.Terminal);
             terminal.Refresh();
             check(shop.Devices.FocusKind == ShopDeviceKind.Terminal && !shop.Devices.RegisterDrawer.IsOpen, "Card checkout focuses physical terminal with closed drawer");
             check(terminal.Controls.Count == 14 && terminal.Controls.Count(c => c.Kind == WorldControlKind.CardDigit) == 10, "Ten physical numeric keys and four action keys");
@@ -44,6 +49,7 @@ public static class PhysicalTerminalChecks
             check(shop.CardAmount == "123" && terminal.DisplayAmount == "123 Ft", "Ray-targeted numeric keys update actual screen and shared amount");
             click(WorldControlKind.CardConfirm, 0);
             check(shop.Ledger.Cash == balance && shop.Ledger.Sales == 0 && terminal.DisplayStatus == "HIBÁS ÖSSZEG", "Wrong physical submission shows error without money movement");
+            check(shop.Devices.FocusKind == ShopDeviceKind.Terminal && ShopInputGate.Blocked, "Incorrect payment keeps terminal open for correction");
             click(WorldControlKind.CardUndo, 0);
             check(shop.CardAmount == "12", "Physical correction removes last digit");
             shop.Devices.HandleDeviceKey(Key.Digit3);
@@ -58,8 +64,10 @@ public static class PhysicalTerminalChecks
             click(WorldControlKind.CardConfirm, 0);
             check(shop.Ledger.Cash == balance + 2200 && shop.Drawer.Total == shop.Ledger.Cash && shop.Ledger.Sales == 1, "Physical approval settles and reconciles exactly once");
             check(terminal.DisplayStatus == "SIKERES FIZETÉS" && terminal.DisplayAmount == ShopCatalog.Money(2200), "Approved amount remains visible on physical screen");
-            check(shop.Devices.FocusKind == ShopDeviceKind.Terminal && ShopInputGate.Blocked, "Success remains focused without click-through into world");
-            click(WorldControlKind.CardConfirm, 0);
+            check(!shop.Devices.Focused && !ShopInputGate.Blocked && Cursor.lockState == CursorLockMode.Locked, "Success automatically returns to normal world input");
+            check(Vector3.Distance(camera.transform.localPosition,originalPosition)<.001f && Quaternion.Angle(camera.transform.localRotation,originalRotation)<.01f && Mathf.Abs(camera.fieldOfView-originalFov)<.01f, "Successful payment restores original camera position rotation and lens");
+            check(ShopInputGate.WorldActionConsumed, "Payment input cannot click through into restored world view");
+            terminal.Find(WorldControlKind.CardConfirm, 0).Activate(shop);
             check(shop.Ledger.Sales == 1 && shop.Ledger.Cash == balance + 2200, "Repeated physical approval cannot double charge");
             fixture.Prepare("card"); terminal.Refresh();
             check(shop.CardAmount == "" && terminal.DisplayAmount == "0 Ft" && shop.CardStatus != CardTerminalStatus.Approved, "Fresh transaction clears previous entry and approval");
