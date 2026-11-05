@@ -1,6 +1,6 @@
 # Elfogadási ellenőrzések
 
-Aktuális publikált csomag: [#39–#40 falrés és pultalátétek — Pages](2026-11-05-geometry/REPORT.md). Előző kiadás: [minden merged fejlesztés #37-ig](2026-11-04-pages/REPORT.md).
+Aktuális publikált csomag: [#43 szabad raktári kartonhelyek — Pages](2026-11-05-warehouse-pages/REPORT.md). Előző kiadás: [#39–#40 falrés és pultalátétek](2026-11-05-geometry/REPORT.md). Előző kiadás: [minden merged fejlesztés #37-ig](2026-11-04-pages/REPORT.md).
 
 Aktuális fejlesztés: [#43 szabad raktári kartonhelyek](2026-11-05-warehouse-storage/REPORT.md). Előző fejlesztés: [#37 kéznézet és interakció](2026-11-04-customer-hand/REPORT.md). Előző csomag: [#35 hivatalos forint](2026-11-04-forint/REPORT.md). Előző csomag: [#33 saját kassza](2026-11-04-modern-register/REPORT.md). Előző csomag: [#31 polccímkék](2026-11-04-shelf-labels/REPORT.md). Előző csomag: [#23–#25 mozgás és fizikai eszközök](2026-11-04-device-controls/REPORT.md). Függőségek: [#22 egységes trafik UI](2026-11-04-ui/REPORT.md), [#20–#21 ajtótábla és pult alatti készlet](2026-11-04-door-storage/REPORT.md), [#15 alaprajz és átrendezés](2026-11-04-layout/REPORT.md). Előző csomagok: [#13 ajtó és műszak](2026-11-04/REPORT.md), [#2–#8](2026-11-03/REPORT.md).
 

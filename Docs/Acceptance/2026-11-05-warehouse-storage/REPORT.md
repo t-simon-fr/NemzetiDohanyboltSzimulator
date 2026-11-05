@@ -11,7 +11,7 @@ Cartons can be placed on any empty warehouse storage place, regardless of the fo
 
 Reviewer: Codex, 2026-11-05. Result: **implemented, native/interaction/visual verified, local WebGL verified**. Fixtures provide purchased stock and initial player aim; the browser executes real keyboard/mouse actions. The first fixture attempt overlapped the neighboring rack and aimed through the label plate; the final fixture uses the actual aisle and visible front of the chosen row. The final successful run uses the source identified above.
 
-**Not published to Pages**: this request authorized the repair; the live Pages release remains `1770ce1` / runtime `3dfa6c4`.
+**Subsequently published to Pages** at the user's explicit request: [release record](../2026-11-05-warehouse-pages/REPORT.md). The user requested reusing the completed local verification without repeating tests.
 
 ![Lower shelf after actual E placement](native-lower.png)
 
