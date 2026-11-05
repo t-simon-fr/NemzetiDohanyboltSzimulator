@@ -23,6 +23,28 @@ A felhasználó kérése alapján a gyorsan kipróbálható eredmény és az ar�
 
 A releváns pénz-, készlet- és állapotellenőrzés, a látható változások tényleges játékpróbája és a külön publikálási engedély továbbra is szükséges.
 
+### 2.2. Feladattípus és előre kiválasztott ellenőrzés
+
+Mielőtt módosítasz, rögzíts röviden öt dolgot az issue-ban vagy munkatervben: játékosi/fejlesztői eredmény, engedélyezett scope, érintett fájlok és invariánsok, célzott ellenőrzés, készültségi feltétel. Az ötlet elfogadása és új scope implementálásának engedélyezése külön döntés; a már engedélyezett batch végrehajtását nem kell újra jóváhagyatni.
+
+| Típus | Szükséges kör | Ami csak indokolt esetben kell |
+|---|---|---|
+| Dokumentáció / tervezési spike | Diff-review és `Tools/Review-Docs.ps1 -Path <fájlok>` | Távoli forrásellenőrzés, ha a döntés tényleg külső állítástól függ. Unity/WebGL nem kell. |
+| Fejlesztői eszköz / workflow | Parse/önellenőrzés és az érintett eszköz egy valós használata | Unity-runner módosításánál célzott natív integráció; runtime-változás nélkül WebGL nem kell. |
+| Játékmeneti módosítás / refaktor | Fordítás és a kiválasztott suite-ok, pénz/készlet/állapot esetek | Stabil runtime-csomagnál egy közös integráció, WebGL-célplatformon megfelelő helyi böngészős próba. |
+| Látható UI / modell / interakció | Előbb tényleges natív interakció és egy képre épülő finomítási kör | Végleges forrásból WebGL, majd platformfüggő betűkészlet/shader/input review. Valós eltérés indokol új buildet. |
+| Engedélyezett kiadás | Shipping build probe nélkül, cache-verzió, push, az adott Pages commit built státusza | A felhasználó kérése szerint a sikeres helyi QA után publikáláskor nem ismétlünk játék-/böngészőtesztet. |
+
+Az ellenőrző registry a `Tools/Verification/suites.json`. `Tools/Verify-Project.ps1 -Suite ledger,coffee-display -PlanOnly` csak kiírja a két kiválasztott suite tervét, Unity és reportkönyvtár létrehozása nélkül. A `-PlanOnly` elhagyásával a közös, fordítást és hibakezelést megőrző runner pontosan ezeket futtatja. Több suite-nál PowerShell tömbátadást használj. A `-Profile smoke` és `-Profile checkout` változatlan belépési pont.
+
+Az új jelentések rögzítik a fordítás, az egyes suite-ok és a teljes futás idejét. Ne következtess gyorsulásra pusztán kisebb assertionszámból; a build/link és az emberi/AI várakozás külön költség. A teljes forráslenyomat Tools-fájlokat is tartalmaz: ha csak a böngészős runner vagy egy felirat változott, a korábbi bizonyítékot baseline-ként, a diffet és a friss célzott próbát külön rögzítsd. Régi futást ne nevezz friss teljes sikernek.
+
+Alapértelmezésben egy agent dolgozik, és egy tulajdonos vezérli a Unity-t. Alügynök csak meglévő felhasználói vagy magasabb szintű felhatalmazással használható; legyen külön feladat, fájltulajdon és integrációs felelős. Független kódírás külön worktree-t kaphat, közös Unity-projektben párhuzamos Play/build nem indulhat. Ugyanannak az agentnek a diff-review-ja nem független review.
+
+Termékviselkedési bizonytalanságnál kérdezz korán, közben az önálló részekkel haladj. Körülbelül percenként röviden jelezd a valódi előrelépést, fennmaradó kérdést vagy buildállapotot. Folytatáskor elég az issue, ág/commit, érintett fájlok, legutóbbi bizonyíték és következő konkrét lépés; ne másold a teljes beszélgetést a repóba. A kész munkát állítsd le az elfogadási feltételeknél, PR/merge és státuszrendezés után.
+
+A döntések és a bevezetési pilot: [AI workflow spike](Workflow/AI_WORKFLOW.md). A játék refaktorának terve: [modularizáció](Architecture/MODULARIZATION.md).
+
 ## 3. Egységes ellenőrzés
 
 Unityben a ShopPrototype projekt legyen megnyitva. Mentsd a munkádat; a futtató kilép a Play módból, fordít, majd új Play példányon tesztel, végül kilép. A futtató nem ment vagy generál jelenetet.
@@ -59,7 +81,7 @@ Az alábbi mezők külön bizonyítékok, nem automatikusan egymást követő pi
 | Unityben ellenőrizve | friss fordítás + releváns sikeres futás, profil és forráslenyomat |
 | Vizuálisan ellenőrizve | átnézett képek + végigpróbált interakció + reviewer megjegyzése |
 | WebGL-ben ellenőrizve | ugyanebből a forrásból készült build + böngészős próba + console eredmény |
-| Publikálva | engedély + deploy commit + élő URL és élő ellenőrzés |
+| Publikálva | engedély + shipping forrás/cache-verzió + deploy commit + élő URL + az adott commit GitHub Pages built státusza; az ismételt játékpróba kihagyása a felhasználó kérésére rögzítve |
 
 Látható funkció issue-ját az elfogadási feltételek, Unity-próba és vizuális próba után zárjuk. Ha WebGL-t érint vagy ez a célplatform, a helyi böngészős próbát is várjuk meg. A publikálás külön kiadási döntés; nem szükséges minden funkcióhoz. A forrás módosítása érvényteleníti a változtatással érintett korábbi bizonyítékot.
 

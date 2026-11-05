@@ -26,4 +26,18 @@ foreach($profile in $registry.profiles.PSObject.Properties) {
         if(!$suite -or !(Test-Path (Join-Path $root $suite.file)) -or !$suite.entry -or !$suite.purpose) { throw "Invalid suite: $id" }
     }
 };$passed++
+$selected=@(Resolve-VerificationSuites -Registry $registry -Suite @('coffee-display','ledger','coffee-display'))
+if (($selected -join ',') -ne 'coffee-display,ledger') { throw 'Targeted suite order or deduplication changed.' };$passed++
+$default=@(Resolve-VerificationSuites -Registry $registry -Profile smoke)
+if (($default -join ',') -ne ($registry.profiles.smoke -join ',')) { throw 'Default profile compatibility lost.' };$passed++
+Require-Throws { Resolve-VerificationSuites -Registry $registry -Suite @('ledger','does-not-exist') }
+Require-Throws { Resolve-VerificationSuites -Registry $registry -Suite @(' ') }
+Require-Throws { Resolve-VerificationSuites -Registry $registry -Profile 'does-not-exist' }
+$empty=[pscustomobject]@{profiles=[pscustomobject]@{empty=@()};suites=$registry.suites}
+Require-Throws { Resolve-VerificationSuites -Registry $empty -Profile empty }
+$document=Join-Path $root 'Docs/Workflow/mock.md'
+$valid=@(Get-DocumentationLinkFailures -Root $root -DocumentPath $document -Content '[repo](../../AGENTS.md#rules) [web](https://example.invalid/) [anchor](#rules)')
+if ($valid.Count -ne 0) { throw 'Valid relative documentation links were rejected.' };$passed++
+$broken=@(Get-DocumentationLinkFailures -Root $root -DocumentPath $document -Content '[missing](missing.md) [escape](../../../outside.md)')
+if ($broken.Count -ne 2) { throw 'Missing or escaping documentation links were accepted.' };$passed++
 Write-Host "Workflow runner: $passed checks passed."

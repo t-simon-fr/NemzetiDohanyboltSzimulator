@@ -38,4 +38,34 @@ function Invoke-UnityCommand {
     return Assert-PipelineResponse -Response $response -Context $Command
 }
 
-Export-ModuleMember -Function Assert-PipelineResponse,Get-SourceIdentity,Invoke-UnityCommand
+function Resolve-VerificationSuites {
+    param([Parameter(Mandatory)]$Registry, [string]$Profile='smoke', [string[]]$Suite=@())
+    $selection = if ($Suite.Count -gt 0) { $Suite } else {
+        if ($Registry.profiles.PSObject.Properties.Name -notcontains $Profile) { throw "Unknown verification profile: $Profile" }
+        $Registry.profiles.$Profile
+    }
+    $seen=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($id in $selection) {
+        if ([string]::IsNullOrWhiteSpace($id) -or $Registry.suites.PSObject.Properties.Name -notcontains $id) { throw "Unknown verification suite: $id" }
+        if ($seen.Add($id)) { Write-Output $id }
+    }
+    if ($seen.Count -eq 0) { throw 'No verification suites selected.' }
+}
+
+function Get-DocumentationLinkFailures {
+    param([Parameter(Mandatory)][string]$Root, [Parameter(Mandatory)][string]$DocumentPath, [AllowEmptyString()][string]$Content)
+    $prefix=[IO.Path]::GetFullPath($Root).TrimEnd([IO.Path]::DirectorySeparatorChar)+[IO.Path]::DirectorySeparatorChar
+    $directory=[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($DocumentPath))
+    foreach ($match in [regex]::Matches($Content,'\]\((?<target>[^)]+)\)')) {
+        $target=$match.Groups['target'].Value.Trim().Trim('<','>')
+        if ($target -match '^[a-zA-Z][a-zA-Z0-9+.-]*:' -or $target.StartsWith('#')) { continue }
+        $target=[Uri]::UnescapeDataString(($target -split '#',2)[0])
+        if ([string]::IsNullOrWhiteSpace($target)) { continue }
+        $resolved=[IO.Path]::GetFullPath([IO.Path]::Combine($directory,$target))
+        if (!$resolved.StartsWith($prefix,[StringComparison]::OrdinalIgnoreCase) -or !(Test-Path -LiteralPath $resolved)) {
+            Write-Output "$DocumentPath -> $target"
+        }
+    }
+}
+
+Export-ModuleMember -Function Assert-PipelineResponse,Get-SourceIdentity,Invoke-UnityCommand,Resolve-VerificationSuites,Get-DocumentationLinkFailures
