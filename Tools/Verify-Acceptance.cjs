@@ -410,7 +410,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'mop'); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); await sleep(2200);
       await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); s = await state(); check(s.tool === 'Mop' && s.dirt === 0, 'Mop retains held left-click cleaning'); await capture('mop-cleaned');
     }
-    if (selected === 'new-features') {
+    if (selected === 'new-features' || selected === 'cart-only') {
       await viewport(1280,720);
       await probe('Prepare','feature-cart'); let s=await state(); const balance=s.balance;
       check(s.clock==='08:00' && s.cartQuantities.every(q=>q===0),'Cart opens empty before the 08:00 shift');
@@ -420,9 +420,14 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       };
       await fill(s.cartFields[0],2); await fill((await state()).cartFields[1],3); s=await state();
       check(s.cartQuantities[0]===2 && s.cartQuantities[1]===3 && s.balance===balance,'Actual quantity fields accept distinct typed values without purchasing');
+      await click(s.cartFields[0].x+53+16,s.cartFields[0].y+15);
+      check((await state()).cartQuantities[0]===3,'Mouse plus increases only the chosen product');
+      await click(s.cartFields[0].x-37+16,s.cartFields[0].y+15); s=await state();
+      check(s.cartQuantities[0]===2 && s.cartQuantities[1]===3,'Mouse minus decreases only the chosen product');
       await capture('cart-typed'); await clickRect(s.cartSubmit); s=await state();
       check(s.pendingCart[0]===2 && s.pendingCart[1]===3 && s.balance===balance-7800 && s.balance===s.drawer,'One mouse confirmation submits every cart row and exact total');
       await viewport(1920,1080); await capture('cart-submitted-large'); await viewport(1280,720);
+      if (selected !== 'cart-only') {
       await probe('Prepare','feature-scanner'); s=await state(); const scans=s.scannerCount;
       await capture('scanner-ready'); await key('e','KeyE',69); s=await state();
       check(s.scannerCount===scans+1 && s.scannerProduct==='cig_red' && s.stage==='Payment' && !s.held,'Actual E scans one held product before transferring it to the customer');
@@ -438,11 +443,14 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.tradeOpen && quantity>=1 && quantity<=10,'Merchant states a bounded actual shipment quantity'); await capture('night-offer');
       await click(640,450); s=await state();
       check(s.boxedQuantity===quantity && s.balance===nightCash-quantity*700,'Mouse purchases one box with exact announced quantity and cost');
-      await click(640,505); await probe('Action','aim-night-box'); await capture('night-box'); await key('e','KeyE',69);
+      await click(640,505); await probe('Action','aim-night-box');
+      await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:640,y:530}); await sleep(300);
+      await capture('night-box'); await key('e','KeyE',69);
       check((await state()).tool==='ContrabandBox','Actual E carries the whole shipment');
       await probe('Action','aim-private-storage'); await key('e','KeyE',69); s=await state();
       check(s.privateStock===quantity && !s.tool,'Actual E unpacks the whole shipment into the two-row shelf');
       await probe('Action','view-private-storage'); await capture('private-two-rows'); await viewport(1920,1080); await capture('private-two-rows-large'); await viewport(1280,720);
+      }
     }
     if (!selected || selected === 'coffee-display' || selected === 'new-features') {
       await viewport(1280, 720);

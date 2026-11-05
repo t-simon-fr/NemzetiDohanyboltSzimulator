@@ -152,7 +152,7 @@ public sealed partial class ShopDevices
         if (FocusKind == ShopDeviceKind.Terminal || FocusKind == ShopDeviceKind.Coffee) return;
         string hint=FocusKind==ShopDeviceKind.Till?"1–6: bankjegy • Shift+1–6: érme • Enter: fizetés • Backspace: javítás • Del: törlés • Esc: vissza":FocusKind==ShopDeviceKind.Coins?"Tab / nyilak: választás • Space: érme • Enter: átvétel • Backspace: vissza • Del: törlés":"Tab / nyilak: választás • Enter / Space: jóváhagyás • Backspace: vissza • Esc: kilépés";
         if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Desktop)hint="1: árurendelés • 2: fejlesztés • 3: kávé • 4: kamerák • 5: játékok • 6: árak • "+hint;
-        if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Orders)hint="Termékenként + / − vagy darabszám • Enter: teljes kosár megrendelése • Esc: kilépés";
+        if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Orders)hint="Termékenként + / - vagy darabszám • Enter: teljes kosár megrendelése • Esc: kilépés";
         var style=ShopUi.Text(Mathf.Clamp(Screen.width/90,12,18),false,true,TextAnchor.MiddleCenter);
         Rect bar = new Rect(12,FocusKind==ShopDeviceKind.Coins?12:Screen.height-58,Screen.width-24,46);
         ShopUi.Panel(bar,true);
