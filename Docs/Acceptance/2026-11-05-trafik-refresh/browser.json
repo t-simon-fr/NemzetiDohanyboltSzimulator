@@ -1,0 +1,171 @@
+{
+  "started": "2026-11-05T19:29:42.363Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Empty category exposes no hidden editor and shortcuts cannot change another product",
+      "passed": true
+    },
+    {
+      "label": "Typed order quantity stays a draft until purchase",
+      "passed": true
+    },
+    {
+      "label": "New order screen buys exact typed cart once",
+      "passed": true
+    },
+    {
+      "label": "New upgrade list buys real shop expansion",
+      "passed": true
+    },
+    {
+      "label": "New upgrade list buys physical coffee machine",
+      "passed": true
+    },
+    {
+      "label": "Tobacco category excludes drinks",
+      "passed": true
+    },
+    {
+      "label": "Actual typing does not commit price prematurely",
+      "passed": true
+    },
+    {
+      "label": "Enter commits valid typed price without charging",
+      "passed": true
+    },
+    {
+      "label": "Escape cancels price edit and keeps computer open",
+      "passed": true
+    },
+    {
+      "label": "Invalid five-forint increment is rejected inline",
+      "passed": true
+    },
+    {
+      "label": "Mouse plus changes price by100",
+      "passed": true
+    },
+    {
+      "label": "Shift mouse minus changes price by5",
+      "passed": true
+    },
+    {
+      "label": "Leaving price field commits and switches to soft drinks",
+      "passed": true
+    },
+    {
+      "label": "Alcohol category isolates the two alcoholic products",
+      "passed": true
+    },
+    {
+      "label": "Coffee category is enabled after actual machine purchase",
+      "passed": true
+    },
+    {
+      "label": "Blur-committed tobacco price survives category round trip",
+      "passed": true
+    },
+    {
+      "label": "Actual desktop click opens coffee",
+      "passed": true
+    },
+    {
+      "label": "Coffee app orders real milk supplies",
+      "passed": true
+    },
+    {
+      "label": "Coffee app selects physical latte recipe",
+      "passed": true
+    },
+    {
+      "label": "Actual desktop click opens cameras",
+      "passed": true
+    },
+    {
+      "label": "Actual desktop click opens games",
+      "passed": true
+    },
+    {
+      "label": "Actual game launcher opens sixteen memory cards",
+      "passed": true
+    },
+    {
+      "label": "Actual arrangement action opens unobstructed top-down editor",
+      "passed": true
+    },
+    {
+      "label": "All visible controls fit large viewport app0",
+      "passed": true
+    },
+    {
+      "label": "All visible controls fit large viewport app1",
+      "passed": true
+    },
+    {
+      "label": "All visible controls fit large viewport app2",
+      "passed": true
+    },
+    {
+      "label": "All visible controls fit large viewport app3",
+      "passed": true
+    },
+    {
+      "label": "All visible controls fit large viewport app4",
+      "passed": true
+    },
+    {
+      "label": "All visible controls fit large viewport app5",
+      "passed": true
+    },
+    {
+      "label": "All visible controls fit large viewport app6",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-desktop.png",
+    "1280x720-orders.png",
+    "1280x720-upgrades.png",
+    "1280x720-price-invalid.png",
+    "1280x720-prices.png",
+    "1280x720-coffee.png",
+    "1280x720-cameras.png",
+    "1280x720-games.png",
+    "1280x720-memory.png",
+    "1280x720-arrangement.png",
+    "1920x1080-app-0-large.png",
+    "1920x1080-app-1-large.png",
+    "1920x1080-app-2-large.png",
+    "1920x1080-app-3-large.png",
+    "1920x1080-app-4-large.png",
+    "1920x1080-app-5-large.png",
+    "1920x1080-app-6-large.png",
+    "1920x1080-exterior-large.png",
+    "1920x1080-interior-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23250718,
+    "seconds": 266.0907506,
+    "error": "",
+    "completedUtc": "2026-11-05T19:27:21.085Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "69cf9aea4bba41819d3b005b6d22e641ad98f41319e070c4513356f1bdb0122d",
+      "AcceptanceWebGL.framework.js.unityweb": "0d88f732a4b92b97c3956eae20777e657b0653aa3ad454f4894f51c79ebd629b",
+      "AcceptanceWebGL.loader.js": "ed5f7e4b44fc6bd99073c344e7e61ba9da8d5ac4ade4f6c3fbb1b20f446ba389",
+      "AcceptanceWebGL.wasm.unityweb": "45815c70127e0ce0495874d4d83f5139e179170316767a17e703a5a555900fe9"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-05T19:30:53.988Z",
+  "capturedStateCount": 89
+}

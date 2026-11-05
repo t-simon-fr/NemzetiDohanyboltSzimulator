@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "price-editor",
+    "computer-ui",
+    "identity-visuals",
+    "floor-plan",
+    "arrangement"
+  ],
+  "startedUtc": "2026-11-05T18:44:27.2809109Z",
+  "source": {
+    "commit": "e00076a93c842bc5223d0f77a943f659bf41794d",
+    "sourceFingerprint": "531cdc1a6bd6d51995b7cea52e05b53638368a0ad2522d6647f2065170378277",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "failed": 0,
+      "passed": 30,
+      "seconds": 0.810101,
+      "entry": "VisualRefreshChecks.Prices",
+      "id": "price-editor"
+    },
+    {
+      "failed": 0,
+      "passed": 12,
+      "seconds": 0.2117018,
+      "entry": "VisualRefreshChecks.Computer",
+      "id": "computer-ui"
+    },
+    {
+      "failed": 0,
+      "passed": 9,
+      "seconds": 0.1305983,
+      "entry": "VisualRefreshChecks.Identity",
+      "id": "identity-visuals"
+    },
+    {
+      "failed": 0,
+      "passed": 16,
+      "seconds": 0.1669187,
+      "entry": "FloorPlanChecks.Run",
+      "id": "floor-plan"
+    },
+    {
+      "failed": 0,
+      "passed": 31,
+      "seconds": 0.3134425,
+      "entry": "ArrangementChecks.Run",
+      "id": "arrangement"
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.1205859,
+  "finishedUtc": "2026-11-05T18:44:34.4843403Z",
+  "totalSeconds": 7.2121525
+}
