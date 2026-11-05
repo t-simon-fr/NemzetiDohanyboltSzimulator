@@ -1,16 +1,22 @@
 [CmdletBinding()]
-param([ValidateSet('smoke','checkout')][string]$Profile='smoke',[ValidateRange(10,600)][int]$CompileTimeoutSeconds=120)
+param([ValidateSet('smoke','checkout')][string]$Profile='smoke',[string[]]$Suite=@(),[switch]$PlanOnly,[ValidateRange(10,600)][int]$CompileTimeoutSeconds=120)
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
 $root=Split-Path $PSScriptRoot -Parent
 Import-Module (Join-Path $PSScriptRoot 'Workflow.Common.psm1') -Force
+$registry=Get-Content (Join-Path $PSScriptRoot 'Verification/suites.json') -Raw | ConvertFrom-Json
+$selected=@(Resolve-VerificationSuites -Registry $registry -Profile $Profile -Suite $Suite)
+if ($PlanOnly) {
+    @($selected | ForEach-Object { @{id=$_;file=$registry.suites.$_.file;entry=$registry.suites.$_.entry;purpose=$registry.suites.$_.purpose} }) | ConvertTo-Json -Depth 5
+    exit 0
+}
+$timer=[Diagnostics.Stopwatch]::StartNew()
 $run=Join-Path $root ('Builds/Verification/'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss-fff'))
 New-Item -ItemType Directory -Path $run -Force | Out-Null
-$report=[ordered]@{schemaVersion=1;profile=$Profile;startedUtc=[DateTime]::UtcNow.ToString('o');source=$null;compilation='pending';tests=@();result='failed';error=$null}
+$report=[ordered]@{schemaVersion=1;profile=$(if($Suite.Count){'targeted'}else{$Profile});selectedSuites=$selected;startedUtc=[DateTime]::UtcNow.ToString('o');source=$null;compilation='pending';tests=@();result='failed';error=$null}
 $startedPlay=$false
 try {
     $report.source=Get-SourceIdentity $root
-    $registry=Get-Content (Join-Path $PSScriptRoot 'Verification/suites.json') -Raw | ConvertFrom-Json
     Invoke-UnityCommand $root 'editor.playmode stop' | Out-Null
     # This request can be dropped by the successful domain reload; status polling is authoritative.
     $compileStarted=[DateTime]::UtcNow
@@ -30,6 +36,7 @@ try {
     }
     if(!$compiled) { throw 'Unity compilation did not complete before timeout.' }
     $report.compilation='passed'
+    $report.compileSeconds=([DateTime]::UtcNow-$compileStarted).TotalSeconds
     # Native state prevents an old managed assembly from masquerading as a successful fresh compile.
     $truth=Invoke-UnityCommand $root 'script eval' @{code='return new { compiling=UnityEditor.EditorApplication.isCompiling, failed=UnityEditor.EditorUtility.scriptCompilationFailed, scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene().path };'}
     if($truth.result.compiling -or $truth.result.failed) { throw 'Unity is still compiling or has compile errors.' }
@@ -37,11 +44,12 @@ try {
     Invoke-UnityCommand $root 'editor.playmode start' | Out-Null
     $startedPlay=$true
     Invoke-UnityCommand $root 'script eval' @{code='var g=MvpShopController.Instance; if(g==null)throw new System.Exception("Shop controller not ready");g.GetComponent<ShopMenu>().Resume();return true;'} | Out-Null
-    foreach($id in $registry.profiles.$Profile) {
-        $suite=$registry.suites.$id
-        $value=Invoke-UnityCommand $root 'script run' @{file=$suite.file;entry=$suite.entry;args=@()}
+    foreach($id in $selected) {
+        $suiteDefinition=$registry.suites.$id
+        $suiteTimer=[Diagnostics.Stopwatch]::StartNew()
+        $value=Invoke-UnityCommand $root 'script run' @{file=$suiteDefinition.file;entry=$suiteDefinition.entry;args=@()}
         if($null -eq $value.result -or $value.result.PSObject.Properties.Name -notcontains 'failed' -or $value.result.failed -ne 0 -or $value.result.passed -le 0) { throw "Suite $id returned no successful assertion report." }
-        $report.tests+=@{id=$id;entry=$suite.entry;passed=$value.result.passed;failed=$value.result.failed}
+        $report.tests+=@{id=$id;entry=$suiteDefinition.entry;passed=$value.result.passed;failed=$value.result.failed;seconds=$suiteTimer.Elapsed.TotalSeconds}
         Write-Host "$id : $($value.result.passed) passed"
     }
     $after=Get-SourceIdentity $root
@@ -51,6 +59,7 @@ try {
 finally {
     if($startedPlay) { try { Invoke-UnityCommand $root 'editor.playmode stop' | Out-Null } catch { $report.result='failed';$report.error='Could not exit Play mode: '+$_.Exception.Message } }
     $report.finishedUtc=[DateTime]::UtcNow.ToString('o')
+    $report.totalSeconds=$timer.Elapsed.TotalSeconds
     $report | ConvertTo-Json -Depth 15 | Set-Content -LiteralPath (Join-Path $run 'report.json') -Encoding utf8
     Write-Host "Report: $run/report.json"
 }

@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-05T12:47:11.8314856Z",
+  "selfChecks": {
+    "passed": 15,
+    "seconds": 0.288828
+  },
+  "plan": [
+    {
+      "id": "ledger",
+      "entry": "LedgerChecks.Run",
+      "purpose": "Money invariants",
+      "file": "Tools/Checks/LedgerChecks.cs"
+    },
+    {
+      "id": "coffee-display",
+      "entry": "CoffeeDisplayChecks.Run",
+      "purpose": "Physical coffee recipes, live state, ingredient conservation, disabled busy actions, real cup and input consumption",
+      "file": "Tools/Checks/CoffeeDisplayChecks.cs"
+    }
+  ],
+  "targeted": {
+    "report": "2026-11-05-targeted-runner.json",
+    "totalSeconds": 2.848792,
+    "compileSeconds": 0.0668564,
+    "passed": 49.0,
+    "suites": [
+      "ledger",
+      "coffee-display"
+    ]
+  },
+  "docsPilot": {
+    "seconds": 0.0478131,
+    "reviewer": "Codex",
+    "documents": 4,
+    "webglBuilds": 0,
+    "unityCalls": 0,
+    "issue": 60,
+    "result": "passed",
+    "independentReview": false
+  },
+  "correction": "Initial real runner pilot found a PowerShell Suite/suite name collision. Metadata variable renamed; targeted execution repeated.",
+  "webgl": "N/A: documentation and tooling only; no game runtime changed"
+}

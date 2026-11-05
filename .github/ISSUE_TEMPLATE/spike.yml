@@ -1,0 +1,24 @@
+name: Spike
+description: Körülhatárolt vizsgálat, konkrét döntéssel vagy pilottal
+title: "[Spike] "
+labels: [spike]
+body:
+  - type: textarea
+    id: decision
+    attributes:
+      label: Milyen döntést készít elő?
+      description: A probléma, a jelenlegi bizonyíték és a kívánt eredmény.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Hatókör és lezárási feltételek
+      description: Vizsgált területek, vállalt munkacsomag, mi kerül külön follow-up taskba.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Eredmény és ellenőrzés
+      value: "- [ ] Kódra / adatra támaszkodó rövid felmérés\n- [ ] Döntés, alternatívák és kockázatok\n- [ ] Konkrét terv vagy engedélyezett pilot\n- [ ] Arányos ellenőrzés, N/A szakaszok indoklása\n- [ ] Szükséges follow-up issue-k létrehozva"
