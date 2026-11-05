@@ -76,7 +76,7 @@ public sealed partial class ShopDevices
             for(int i=0;i<shop.AvailableProducts;i++) {
                 int type=i;float y=ComputerBody.y+48+i*62-cartScroll.y;
                 if(y<ComputerBody.y+48||y+50>ComputerBody.y+388)continue;
-                targets.Add(new ShopKeyboardTarget("Cart:Minus:"+i,"−",new Rect(ComputerBody.x+796,y+6,48,44),()=>SetCartQuantity(type,CartQuantity(type)-1)));
+                targets.Add(new ShopKeyboardTarget("Cart:Minus:"+i,"-",new Rect(ComputerBody.x+796,y+6,48,44),()=>SetCartQuantity(type,CartQuantity(type)-1)));
                 targets.Add(new ShopKeyboardTarget("Cart:Plus:"+i,"+",new Rect(ComputerBody.x+962,y+6,48,44),()=>SetCartQuantity(type,CartQuantity(type)+1)));
             }
         }
@@ -87,6 +87,8 @@ public sealed partial class ShopDevices
     private void DrawComputer()
     {
         var old = GUI.matrix;
+        var oldCursor=GUI.skin.settings.cursorColor;
+        GUI.skin.settings.cursorColor=ShopComputerTheme.Brown;
         var rect = ComputerScreenRect;
         GUI.matrix = Matrix4x4.TRS(rect.position, Quaternion.identity,
             new Vector3(rect.width / ComputerWidth, rect.height / ComputerHeight, 1));
@@ -125,7 +127,7 @@ public sealed partial class ShopDevices
             ShopUi.Fill(new Rect(0, 636, ComputerWidth, 44), ShopComputerTheme.Green);
             ShopComputerTheme.Label(new Rect(24, 636, 800, 44), ComputerApp == ShopComputerApp.Desktop ? "TobaccOS" : "TobaccOS   /   " + AppNames[(int)ComputerApp], 19, true, true);
         }
-        finally { GUI.matrix = old; GUI.enabled = true; }
+        finally { GUI.matrix = old; GUI.enabled = true; GUI.skin.settings.cursorColor=oldCursor; }
     }
 
     private void DrawComputerUpgrades()

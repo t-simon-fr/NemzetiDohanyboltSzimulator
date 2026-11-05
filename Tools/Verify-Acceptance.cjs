@@ -66,7 +66,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       const value = JSON.parse(event.data);
       if (value.id) {
         const p = pending.get(value.id); if (!p) return;
-        clearTimeout(p.timer); pending.delete(value.id); value.error ? p.reject(value.error) : p.resolve(value.result);
+        clearTimeout(p.timer); pending.delete(value.id); value.error ? p.reject(Error(JSON.stringify(value.error))) : p.resolve(value.result);
       } else if (value.method === 'Runtime.consoleAPICalled') {
         const text = value.params.args.map(a => a.value ?? a.description ?? '').join(' ');
         messages.push({ type: value.params.type, text });
@@ -427,7 +427,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
         await send('Input.dispatchKeyEvent',{type:'keyDown',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
         await send('Input.dispatchKeyEvent',{type:'keyUp',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
         await key('Backspace','Backspace',8);
-        await send('Input.dispatchKeyEvent',{type:'char',text:String(text),unmodifiedText:String(text)});await sleep(300);
+        for(const character of String(text))await send('Input.dispatchKeyEvent',{type:'char',text:character,unmodifiedText:character});await sleep(300);
       };
       await probe('Prepare','visual-refresh');let s=await state();
       await capture('desktop');
