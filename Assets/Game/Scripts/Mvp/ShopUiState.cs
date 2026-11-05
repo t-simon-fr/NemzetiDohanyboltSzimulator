@@ -18,7 +18,11 @@ public sealed class ShopUiState
     }
     public string Notice(float now) => now < messageUntil ? message ?? "" : "";
 
-    public static string Clock(float elapsed) => TimeSpan.FromSeconds(Mathf.Max(0, elapsed)).ToString(@"mm\:ss");
+    public static string Clock(float elapsed)
+    {
+        int minutes = Mathf.Min(23 * 60 + 59, 8 * 60 + Mathf.FloorToInt(Mathf.Max(0, elapsed)));
+        return (minutes / 60).ToString("00") + ":" + (minutes % 60).ToString("00");
+    }
     public static ShopOrderLine[] Order(MvpShopController shop)
     {
         if (shop.ActiveCustomer == null) return Array.Empty<ShopOrderLine>();
