@@ -34,10 +34,16 @@
       "feature-batch",
       "continuous-arrivals",
       "tool-storage",
-      "fixture-lighting"
+      "fixture-lighting",
+      "walkable-entrance"
     ]
   },
   "suites": {
+    "walkable-entrance": {
+      "file": "Tools/Checks/WalkableEntranceChecks.cs",
+      "entry": "WalkableEntranceChecks.Run",
+      "purpose": "Physical exit and re-entry, proximity door, purchased lock and explicit single-charge day end"
+    },
     "fixture-lighting": {
       "file": "Tools/Checks/FixtureLightingChecks.cs",
       "entry": "FixtureLightingChecks.Run",

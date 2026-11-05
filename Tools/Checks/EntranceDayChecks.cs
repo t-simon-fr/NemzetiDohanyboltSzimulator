@@ -20,8 +20,8 @@ public static class EntranceDayChecks
             check(shop.Modal == ShopModal.None && !ShopInputGate.Blocked, "Preparation starts without a modal");
             shop.Tick(60);
             check(shop.Elapsed == 0 && shop.Spawned == 0, "Preparation does not start clock or visits");
-            check(shop.Entrance.PlayerBoundary.enabled && !shop.Entrance.PlayerBoundary.isTrigger,
-                "Player boundary remains solid independently of the moving door leaf");
+            check(shop.Entrance.PlayerBoundary.enabled && shop.Entrance.PlayerBoundary.isTrigger,
+                "Doorway remains targetable without an invisible player wall");
             check(!shop.TryEndDay(), "Cannot end an unopened day");
             var sign = GameObject.Find("Open Close Sign").GetComponent<ShopStation>();
             sign.Use(player);
@@ -44,6 +44,7 @@ public static class EntranceDayChecks
             body.enabled = false;
             player.transform.position = shop.AfterHours.Merchant.position + Vector3.right;
             body.enabled = true;
+            ShopCheckFixtures.Fund(shop,10000);
             int beforeTrade = shop.Ledger.Cash;
             int offered = shop.AfterHours.OfferedQuantity;
             check(shop.AfterHours.OpenTrade() && shop.AfterHours.BuyBundle() &&
