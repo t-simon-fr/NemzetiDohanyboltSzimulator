@@ -722,7 +722,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.spoken = g.Dialogue;
         state.grounded = Player.GetComponent<FirstPersonController>().IsGrounded;
         state.verticalSpeed = Player.GetComponent<FirstPersonController>().VerticalSpeed;
-        Debug.Log("ACCEPTANCE_STATE:" + JsonUtility.ToJson(state));
+        // WebGL's log transport truncates large individual messages. Keep complete
+        // JSON across bounded chunks instead of silently losing a snapshot.
+        string json=JsonUtility.ToJson(state);
+        const int chunkSize=3000;
+        int count=(json.Length+chunkSize-1)/chunkSize;
+        for(int i=0;i<count;i++)
+            Debug.Log("ACCEPTANCE_CHUNK:"+i+"/"+count+":"+json.Substring(i*chunkSize,Mathf.Min(chunkSize,json.Length-i*chunkSize)));
     }
 }
 #endif

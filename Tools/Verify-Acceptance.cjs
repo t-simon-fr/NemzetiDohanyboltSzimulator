@@ -61,6 +61,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       pending.set(key, { resolve, reject, timer });
       ws.send(JSON.stringify({ id: key, method, params }));
     });
+    let snapshotParts=[];
     ws.onmessage = event => {
       const value = JSON.parse(event.data);
       if (value.id) {
@@ -69,6 +70,14 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       } else if (value.method === 'Runtime.consoleAPICalled') {
         const text = value.params.args.map(a => a.value ?? a.description ?? '').join(' ');
         messages.push({ type: value.params.type, text });
+        const chunk=text.match(/^ACCEPTANCE_CHUNK:(\d+)\/(\d+):([\s\S]*)/);
+        if(chunk){
+          const index=Number(chunk[1]),count=Number(chunk[2]);if(index===0)snapshotParts=[];
+          snapshotParts[index]=chunk[3].replace(/\n$/,'');
+          if(index+1===count&&snapshotParts.filter(p=>p!==undefined).length===count){
+            try{lastState=JSON.parse(snapshotParts.join(''));report.states.push(lastState);}catch{}
+          }
+        }
         const at = text.indexOf('ACCEPTANCE_STATE:');
         if (at >= 0) { try { lastState = JSON.parse(text.slice(at + 17)); report.states.push(lastState); } catch {} }
       } else if (value.method === 'Runtime.exceptionThrown') report.errors.push(value.params.exceptionDetails);

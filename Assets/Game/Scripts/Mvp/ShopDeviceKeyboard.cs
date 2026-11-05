@@ -65,7 +65,7 @@ public sealed partial class ShopDevices
     {
         if(!Focused||shop==null)return false;
         if (FocusKind == ShopDeviceKind.Monitor && ComputerApp == ShopComputerApp.Orders) { if(cartEditing)return false; if(HandleCartKey(key))return true; }
-        if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Prices&&shop.Pricing.HandleEditorKey(key,shift))return true;
+        if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Prices&&key!=DeviceKey.Escape&&shop.Pricing.HandleEditorKey(key,shift))return true;
         bool enter=key==DeviceKey.Enter||key==DeviceKey.NumpadEnter;
         if(FocusKind==ShopDeviceKind.Terminal || FocusKind==ShopDeviceKind.Till&&shop.CardPayment)
         {
