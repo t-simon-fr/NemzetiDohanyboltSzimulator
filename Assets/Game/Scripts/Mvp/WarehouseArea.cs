@@ -31,6 +31,12 @@ public sealed class WarehouseArea : MonoBehaviour
                 dock.SetParent(rack, true);
                 dock.SetPositionAndRotation(board.transform.position, rack.rotation);
                 dock.gameObject.AddComponent<ShopStation>().Configure(Shop, ShopStationKind.Supplies);
+                var labelPlate = rack.Find("Brand shelf label plate");
+                if (labelPlate != null)
+                {
+                    var plate = Instantiate(labelPlate.gameObject, dock, false);
+                    foreach (var collider in plate.GetComponents<Collider>()) { collider.enabled = false; Destroy(collider); }
+                }
                 ProductVisuals.Text(dock, "Brand dock label", "", new Vector3(0,-.055f,-.357f), Quaternion.identity, .042f, Color.black);
                 storageDocks.Add(dock);
             }

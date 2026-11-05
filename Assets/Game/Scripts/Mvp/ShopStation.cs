@@ -60,7 +60,7 @@ public sealed class ShopStation : MonoBehaviour
         else if(player.HasHeldProduct)
         {
             var carton = SupplyCarton;
-            if (carton != null) shop.ReturnSupply(player, carton.ProductType);
+            if (carton != null) shop.ReturnSupply(player, carton.ProductType, carton);
             else shop.Notify("Ide kartondobozt tehetsz. Az egyedi árut a saját termék dobozába rakhatod vissza.");
         }
         else

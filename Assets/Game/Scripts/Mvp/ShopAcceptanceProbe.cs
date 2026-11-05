@@ -306,8 +306,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     {
         var body = Player.GetComponent<CharacterController>();
         body.enabled = false;
-        Vector3 target = dock.position + Vector3.up*.18f;
-        Vector3 eye = target - dock.forward*1.1f;
+        Vector3 target = dock.position + Vector3.up*.18f - dock.forward*.24f;
+        Vector3 eye = target - dock.forward*1.45f;
+        // Stay in the real aisle; the left-hand drink rack blocks a straight approach.
+        eye.x = Mathf.Clamp(eye.x,-4.65f,-3.05f);
         eye.y = 1.70f;
         Vector3 horizontal = Vector3.ProjectOnPlane(target-eye, Vector3.up);
         Player.transform.rotation = Quaternion.LookRotation(horizontal);

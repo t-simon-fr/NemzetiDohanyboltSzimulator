@@ -57,6 +57,10 @@ public static class WarehouseStorageChecks
             check(delivered.transform.parent != lower && warehouse.CartonAt(delivered.transform.parent) == delivered, "Delivery remains separate from former carried source");
             player.CancelHeld();
             check(warehouse.CartonAt(lower) == first && first.Quantity == 3 && shop.WarehouseCount(0) == 5, "Delivery plus cancellation conserve both same-brand cartons");
+            var returned = Object.FindObjectsByType<ShopProduct>().First(p => p.ProductId == ShopCatalog.Ids[0]);
+            check(player.TryHold(returned), "Pick unit to return into one of two same-brand cartons");
+            lower.GetComponent<ShopStation>().Use(player);
+            check(!player.HasHeldItem && first.Quantity == 4 && delivered.Quantity == 2 && shop.WarehouseCount(0) == 6, "Return increments the targeted physical carton, never the other same-brand carton");
 
             var retail = Object.FindObjectsByType<ProductSlot>().Where(s => s.IsStockShelf && s.Occupant != null).Take(2).ToArray();
             foreach (var slot in retail) slot.Occupant.RemoveFromWorld();
@@ -75,7 +79,15 @@ public static class WarehouseStorageChecks
             var poses = new[] { first, other, delivered }.Select(c => c.transform.position).ToArray();
             shop.OpenShop(); shop.RequestClose(); shop.Tick(.1f); shop.NextDay();
             check(new[] { first, other, delivered }.Select((c,i) => c.transform.position == poses[i]).All(x => x), "Next day preserves relocated physical cartons");
-            check(shop.WarehouseCount(0) == 5 && shop.WarehouseCount(1) == 1, "Next day preserves exact relocated inventory");
+            check(shop.WarehouseCount(0) == 6 && shop.WarehouseCount(1) == 1, "Next day preserves exact relocated inventory");
+            shop.ResetDemo(); ShopCheckFixtures.Fund(shop, 10000);
+            check(shop.OrderSupply(0,1), "Buy carton for occupied-source cancellation");
+            shop.Tick(8.1f); var carried = warehouse.Carton(0);
+            check(player.TryHoldCarton(carried) && shop.OrderSupply(0,1), "Order replacement while original source is vacated");
+            shop.Tick(8.1f); var replacement = warehouse.Carton(0);
+            check(replacement != carried && warehouse.CartonAt(warehouse.Dock(0)) == replacement, "Delivery may use the now vacant source");
+            player.CancelHeld();
+            check(!player.HasHeldItem && !carried.IsHeld && !carried.IsDocked && carried.Quantity == 1 && replacement.Quantity == 1 && shop.WarehouseCount(0) == 2, "Cancellation safely retains both cartons when source was occupied during carrying");
             shop.ResetDemo(); warehouse.RefreshLabels();
             check(docks.All(d => warehouse.CartonAt(d) == null && label(d) == ""), "New game clears every physical carton place and label");
             check(warehouse.StorageDocks.Count == docks.Length, "Reset does not duplicate runtime storage places");

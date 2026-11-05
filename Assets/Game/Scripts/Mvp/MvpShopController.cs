@@ -513,15 +513,18 @@ public sealed partial class MvpShopController : MonoBehaviour
         if (!interactor.TryHold(product)) { warehouse[SelectedSupply]++; product.RemoveFromWorld(); Warehouse?.SyncBoxes(); return; }
         Message = "Kézben: " + product.DisplayName + ". A zöld keretek jelzik a megfelelő helyeket. E – lerakás; a doboznál E – visszarakás.";
     }
-    public bool ReturnSupply(PlayerInteractor interactor,int brand=-1)
+    public bool ReturnSupply(PlayerInteractor interactor,int brand=-1,WarehouseCarton targetCarton=null)
     {
         ShopProduct product = interactor.HeldProduct;
         int type = product == null ? -1 : ShopCatalog.Index(product.ProductId);
         if (type < 0 || type>=ShopCatalog.Count || Phase == ShopPhase.Summary) return false;
         if (brand>=0 && brand!=type) { Message="Ez másik márka doboza. Keresd a "+ShopCatalog.Names[type]+" feliratot.";return false; }
+        if (targetCarton != null && (targetCarton.ProductType != type || targetCarton.IsHeld || !targetCarton.gameObject.activeInHierarchy)) return false;
         if (warehouse[type] + PendingQuantity(type) >= 24) { Message = "Ebből a termékből megtelt a szállítódoboz."; return false; }
         if (!interactor.RemoveHeld(product)) return false;
-        warehouse[type]++; SelectedSupply = type; Warehouse?.SyncBoxes();
+        warehouse[type]++;
+        if (targetCarton != null) targetCarton.AdjustQuantity(1);
+        SelectedSupply = type; Warehouse?.SyncBoxes();
         Message = "Visszatéve a dobozba: " + ShopCatalog.Names[type] + ".";
         return true;
     }
