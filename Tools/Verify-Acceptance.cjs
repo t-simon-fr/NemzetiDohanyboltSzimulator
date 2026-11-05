@@ -431,6 +431,10 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       };
       await probe('Prepare','visual-refresh');let s=await state();
       await capture('desktop');
+      await press('OpenApp:6');await press('Price:Category:2');s=await state();const hiddenPrice=s.selectedPrice;
+      await key('+','NumpadAdd',107);s=await state();
+      check(s.priceProducts.length===0&&!s.computerControlIds.includes('Price:Edit')&&s.selectedPrice===hiddenPrice,'Empty category exposes no hidden editor and shortcuts cannot change another product');
+      await press('Desktop:0');
       await press('OpenApp:1');s=await state();const cash=s.balance;
       await fill(s.cartFields[0],'2');s=await state();
       check(s.cartQuantities[0]===2&&s.balance===cash,'Typed order quantity stays a draft until purchase');

@@ -88,6 +88,7 @@ public sealed partial class ShopPricing
 
     public void StepEditor(int direction, bool fine)
     {
+        if(VisibleTypes.Length==0)return;
         if (!CommitEdit()) return;
         AdjustSelected(Math.Sign(direction) * (fine ? 5 : 100));
         draft = Price(SelectedType).ToString();

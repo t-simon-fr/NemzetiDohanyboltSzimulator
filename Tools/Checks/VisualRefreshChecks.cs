@@ -29,6 +29,11 @@ public static class VisualRefreshChecks
             p.SetDraft("2600");p.HandleEditorKey(Key.Tab,false);check(p.Price(0)==2600&&!p.Editing,"Leaving field with Tab commits once");
             p.ChooseProduct(1);check(p.SelectedType==1&&p.Draft=="2300","Selecting another product shows its own price");
             p.ChooseCategory(ShopPriceCategory.Alcohol);check(p.VisibleTypes.Length==0,"Locked stock has no phantom category products");
+            int unchanged=p.Price(p.SelectedType);p.StepEditor(1,false);
+            check(p.Price(p.SelectedType)==unchanged,"Empty category cannot change a hidden product through shortcuts");
+            g.Devices.Focus(ShopDeviceKind.Monitor);g.Devices.OpenApp(ShopComputerApp.Prices);p.ChooseCategory(ShopPriceCategory.Alcohol);
+            check(!g.Devices.KeyboardTargets().Any(t=>t.Id=="Price:Edit"||t.Id=="Price:Plus"),"Empty category exposes no hidden editor targets");
+            g.ClosePanel();
             ShopCheckFixtures.Fund(g,100000);g.TryExpand();g.Activities.BuyCoffeeMachine();
             foreach(ShopPriceCategory category in Enum.GetValues(typeof(ShopPriceCategory)))
             {
