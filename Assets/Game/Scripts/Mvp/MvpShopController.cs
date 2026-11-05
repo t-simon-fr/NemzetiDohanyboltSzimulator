@@ -71,6 +71,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ShopSecurity Security { get; private set; }
     public ShopEntrance Entrance { get; private set; }
     public ShopFloorPlan FloorPlan { get; private set; }
+    public ShopInteriorLighting InteriorLighting { get; private set; }
     public ShopNavigation Navigation { get; private set; }
     public ShopArrangement Arrangement { get; private set; }
     public ShopCounterStorage CounterStorage { get; private set; }
@@ -130,6 +131,8 @@ public sealed partial class MvpShopController : MonoBehaviour
         stock.AddRange(FindObjectsByType<ShopProduct>().Where(p => p.gameObject.scene == gameObject.scene));
         FloorPlan = gameObject.AddComponent<ShopFloorPlan>();
         FloorPlan.Configure(this, player);
+        InteriorLighting=gameObject.AddComponent<ShopInteriorLighting>();
+        InteriorLighting.Configure(this);
         CounterStorage = gameObject.AddComponent<ShopCounterStorage>();
         CounterStorage.Configure(this);
         Security = GetComponent<ShopSecurity>();

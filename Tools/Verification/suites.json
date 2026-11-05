@@ -33,10 +33,16 @@
       "ingredient-pickup",
       "feature-batch",
       "continuous-arrivals",
-      "tool-storage"
+      "tool-storage",
+      "fixture-lighting"
     ]
   },
   "suites": {
+    "fixture-lighting": {
+      "file": "Tools/Checks/FixtureLightingChecks.cs",
+      "entry": "FixtureLightingChecks.Run",
+      "purpose": "Fixture-positioned real lights, illuminated tubes, removed stale fill and after-hours persistence"
+    },
     "tool-storage": {
       "file": "Tools/Checks/ToolStorageChecks.cs",
       "entry": "ToolStorageChecks.Run",
