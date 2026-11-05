@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public sealed class ShopPricing:MonoBehaviour
+public sealed partial class ShopPricing:MonoBehaviour
 {
     private MvpShopController shop;
     private int[] prices;
     private int selected;
     public void Configure(MvpShopController owner){shop=owner;ResetPrices();}
-    public void ResetPrices(){prices=(int[])ShopCatalog.Prices.Clone();selected=0;}
+    public void ResetPrices(){prices=(int[])ShopCatalog.Prices.Clone();selected=0;ResetEditor();}
     public int Price(int type)=>prices[type];
     public int[] AvailableTypes=>Enumerable.Range(0,shop.AvailableProducts).Concat(shop.Activities.CoffeeOwned?new[]{ShopCatalog.Coffee,ShopCatalog.LongCoffee,ShopCatalog.Latte}:Array.Empty<int>()).Concat(shop.StockCount(ShopCatalog.Contraband)>0?new[]{ShopCatalog.Contraband}:Array.Empty<int>()).ToArray();
     public int SelectedType=>AvailableTypes.Contains(selected)?selected:0;
@@ -27,25 +28,27 @@ public sealed class ShopPricing:MonoBehaviour
         return (long)price*100<=(long)ShopCatalog.Prices[type]*budgetPercent;
     }
     public int DemandPercent(int type)=>Enumerable.Range(0,5).Count(v=>Accepts(type,prices[type],v,1))*20;
-    public void SelectNext(int direction){var types=AvailableTypes;int i=Array.IndexOf(types,SelectedType);selected=types[(i+direction+types.Length)%types.Length];}
+    public void SelectNext(int direction){var types=AvailableTypes;int i=Array.IndexOf(types,SelectedType);ChooseProduct(types[(i+direction+types.Length)%types.Length]);}
     public void AdjustSelected(int delta){int t=SelectedType;TrySetPrice(t,Mathf.Clamp(prices[t]+delta,Minimum(t),Maximum(t)));}
     public void AddKeyboardTargets(List<ShopKeyboardTarget> targets,Rect r)
     {
         if(shop.Devices.ComputerApp!=ShopComputerApp.Prices)return;
-        Action<string,string,Rect,Action> add=(id,label,bounds,action)=>targets.Add(new ShopKeyboardTarget("Price:"+id,label,new Rect(r.x+bounds.x,r.y+bounds.y,bounds.width,bounds.height),action));
-        add("Previous","Előző",new Rect(10,8,70,30),()=>SelectNext(-1));add("Next","Következő",new Rect(r.width-100,8,90,30),()=>SelectNext(1));
-        var deltas=new[]{-100,-5,5,100};for(int i=0;i<4;i++){int d=deltas[i];add(d.ToString(),(d>0?"+":"")+d+" Ft",new Rect(10+i*(r.width-20)/4,143,(r.width-28)/4,32),()=>AdjustSelected(d));}
-        add("Reset","Alapár",new Rect(10,182,r.width-20,30),()=>TrySetPrice(SelectedType,ShopCatalog.Prices[SelectedType]));
-    }
-    void OnGUI()
-    {
-        if(shop==null||ShopMenu.Active||shop.Devices.FocusKind!=ShopDeviceKind.Monitor||shop.Devices.ComputerApp!=ShopComputerApp.Prices)return;
-        var r=shop.Devices.AppRect;var style=ShopUi.Text(Mathf.Clamp((int)(r.width/40),13,20),false,false,TextAnchor.MiddleCenter);
-        ShopUi.Panel(r);int type=SelectedType;
-        GUI.Label(new Rect(r.x+82,r.y+6,r.width-184,32),ShopCatalog.Names[type],style);
-        GUI.Label(new Rect(r.x+10,r.y+45,r.width-20,65),"Eladási ár: "+ShopCatalog.Money(prices[type])+"\nBeszerzés: "+ShopCatalog.Money(ShopCatalog.Costs[type])+" • Alapár: "+ShopCatalog.Money(ShopCatalog.Prices[type]),style);
-        GUI.Label(new Rect(r.x+10,r.y+108,r.width-20,32),"Becsült ár-elfogadás: "+DemandPercent(type)+"%",style);
-        var targets=new List<ShopKeyboardTarget>();AddKeyboardTargets(targets,r);foreach(var t in targets)if(GUI.Button(t.Bounds,t.Label,ShopUi.ButtonStyle(Mathf.Clamp((int)(r.width/60),12,18))))t.Activate();
-        GUI.Label(new Rect(r.x+10,r.yMax-47,r.width-20,44),"+ / −: 100 Ft • Shift: 5 Ft. A már leadott rendelés ára rögzített.",style);
+        for (int i=0;i<4;i++) {
+            int category=i;
+            targets.Add(new ShopKeyboardTarget("Price:Category:"+i,CategoryNames[i],new Rect(r.x+i*r.width/4,r.y,r.width/4-8,44),()=>ChooseCategory((ShopPriceCategory)category)));
+        }
+        float x=r.x+r.width*.32f+32;
+        float fw=Mathf.Min(300,r.width-r.width*.32f-32-200);
+        targets.Add(new ShopKeyboardTarget("Price:Edit","Ár szerkesztése",new Rect(x+74,r.y+168,fw,62),BeginEdit));
+        targets.Add(new ShopKeyboardTarget("Price:Minus","−",new Rect(x,r.y+168,60,62),()=>StepEditor(-1,Keyboard.current!=null&&Keyboard.current.shiftKey.isPressed)));
+        targets.Add(new ShopKeyboardTarget("Price:Plus","+",new Rect(x+74+fw+58,r.y+168,60,62),()=>StepEditor(1,Keyboard.current!=null&&Keyboard.current.shiftKey.isPressed)));
+        targets.Add(new ShopKeyboardTarget("Price:Reset","Alapár",new Rect(x,r.y+330,260,44),()=>{CancelEdit();TrySetPrice(SelectedType,ShopCatalog.Prices[SelectedType]);}));
+        var visible=VisibleTypes;
+        for(int i=0;i<visible.Length;i++) {
+            int type=visible[i];
+            float y=r.y+60+i*68-productScroll.y;
+            if(y<r.y+60||y+60>r.yMax)continue;
+            targets.Add(new ShopKeyboardTarget("Price:Product:"+type,ShopCatalog.ShortNames[type],new Rect(r.x,y,r.width*.32f-28,60),()=>ChooseProduct(type)));
+        }
     }
 }

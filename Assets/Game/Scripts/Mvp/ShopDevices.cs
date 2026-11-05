@@ -16,32 +16,24 @@ public sealed partial class ShopDevices : MonoBehaviour
     private Vector3 cameraPosition;
     private Quaternion cameraRotation;
     private float cameraFieldOfView;
-    private TextMesh monitorText, appTitle, furnishingStatus;
-    private TextMesh shopStatusText, orderQuantityText, monitorNotice;
-    private TextMesh panicUpgradeLabel,coffeeUpgradeLabel,fridgeUpgradeLabel;
-    private Transform featurePage;
+    private TextMesh monitorText, appTitle;
+    private TextMesh shopStatusText;
     public Rect AppRect
     {
         get
         {
-            var a=view.WorldToScreenPoint(monitor.TransformPoint(new Vector3(-.87f,.27f,.04f)));
-            var b=view.WorldToScreenPoint(monitor.TransformPoint(new Vector3(.87f,-.35f,.04f)));
-            return new Rect(Mathf.Min(a.x,b.x),Screen.height-Mathf.Max(a.y,b.y),Mathf.Abs(a.x-b.x),Mathf.Abs(a.y-b.y));
+            return ComputerToScreen(ComputerBody);
         }
     }
     private string furnishingFeedback="";
-    private Transform catalogHelp;
-    private readonly List<GameObject> orderCards = new List<GameObject>();
-    private readonly List<TextMesh> orderPrices = new List<TextMesh>();
     private readonly List<Material> screenMaterials = new List<Material>();
     private Material screenBackground, screenCard, screenAccent, screenBar;
     private int orderQuantity = 3, lastOrderType = -1;
     private bool lastOrderSucceeded;
     private string orderFeedback = "";
     public int OrderQuantity => orderQuantity;
-    private Transform desktopPage, orderPage, furnishingPage, buildingPage;
+    private Transform desktopPage;
     public ShopComputerApp ComputerApp { get; private set; }
-    private readonly List<TextMesh> stockLabels = new List<TextMesh>();
     private readonly List<TMP_Text> moneyLabels = new List<TMP_Text>();
     private readonly List<GameObject> selectedVisuals = new List<GameObject>();
     private readonly List<GameObject> cashStacks = new List<GameObject>();
@@ -103,88 +95,37 @@ public sealed partial class ShopDevices : MonoBehaviour
         var body=Box(group.transform,"Button",Vector3.zero,new Vector3(width,height,.018f),material??screenCard);
         Control(body,kind,value);Label(group.transform,text,Vector3.forward*.018f,.025f);return group;
     }
-    private void DesktopIcon(Transform page,string name,float x,ShopComputerApp app,string symbol,float y=.11f)
-    {
-        var group=MonitorButton(page,"",new Vector3(x,y,.02f),WorldControlKind.OpenApp,(int)app,.52f,.19f);
-        group.name=name;
-        ScreenPanel(group.transform,"Application icon",new Vector3(0,.035f,.020f),new Vector3(.10f,.065f,.008f),screenAccent);
-        Label(group.transform,symbol,new Vector3(0,.035f,.03f),.027f);
-        Label(group.transform,name,new Vector3(0,-.052f,.028f),.022f);
-    }
     private void BuildMonitor()
     {
-        screenBackground=ScreenMaterial("TobaccOS background",ShopUi.Green);
-        screenCard=ScreenMaterial("TobaccOS card",new Color(.22f,.33f,.27f));
-        screenAccent=ScreenMaterial("TobaccOS accent",ShopUi.Red);
-        screenBar=ScreenMaterial("TobaccOS header",new Color(.07f,.14f,.10f));
+        screenBackground=ScreenMaterial("TobaccOS background",ShopComputerTheme.Brown);
+        screenCard=ScreenMaterial("TobaccOS card",new Color(.36f,.23f,.16f));
+        screenAccent=ScreenMaterial("TobaccOS accent",ShopComputerTheme.Green);
+        screenBar=ScreenMaterial("TobaccOS header",ShopComputerTheme.Green);
         ScreenPanel(monitor,"TobaccOS screen",new Vector3(0,0,.001f),new Vector3(1.80f,1.02f,.006f),screenBackground);
         ScreenPanel(monitor,"TobaccOS title bar",new Vector3(0,.445f,.010f),new Vector3(1.80f,.12f,.006f),screenBar);
-        Label(monitor,"TobaccOS",new Vector3(.61f,.445f,.024f),.044f);
-        appTitle=Label(monitor,"ASZTAL",new Vector3(-.23f,.445f,.024f),.032f);
-        monitorText=Label(monitor,"",new Vector3(.45f,.326f,.02f),.023f);
-        shopStatusText=Label(monitor,"",new Vector3(-.45f,.326f,.02f),.021f);
-        desktopPage=Page("Computer Desktop");orderPage=Page("Orders App");furnishingPage=Page("Furnishing App");
-        Label(desktopPage,"Minden műszak itt kezdődik.",new Vector3(0,.24f,.025f),.029f);
-        DesktopIcon(desktopPage,"ÁRURENDELÉS",.58f,ShopComputerApp.Orders,"ÁRU");
-        DesktopIcon(desktopPage,"ÜZLETFEJLESZTÉS",0,ShopComputerApp.Furnishing,"BOLT");
-        DesktopIcon(desktopPage,"KÁVÉ",-.58f,ShopComputerApp.Coffee,"CAFÉ");
-        DesktopIcon(desktopPage,"KAMERÁK",.36f,ShopComputerApp.Cameras,"CCTV",-.14f);
-        DesktopIcon(desktopPage,"JÁTÉKOK",-.36f,ShopComputerApp.Games,"PLAY",-.14f);
-        featurePage=Page("TobaccOS Activities");
-        MonitorButton(desktopPage,"ÁRAK • 6",new Vector3(0,-.29f,.02f),WorldControlKind.OpenApp,(int)ShopComputerApp.Prices,1.15f,.07f,screenAccent);
-        orderQuantityText=Label(orderPage,"",new Vector3(.46f,.24f,.027f),.024f);
-        MonitorButton(orderPage,"-",new Vector3(.02f,.24f,.020f),WorldControlKind.ChangeOrderQuantity,-1,.14f,.06f,screenAccent);
-        MonitorButton(orderPage,"+",new Vector3(-.16f,.24f,.020f),WorldControlKind.ChangeOrderQuantity,1,.14f,.06f,screenAccent);
-        Label(orderPage,"SZÁLLÍTÁS: 8 MP",new Vector3(-.57f,.24f,.027f),.019f);
-        for(int type=0;type<ShopCatalog.Count;type++) BuildProductCard(type);
-        catalogHelp=new GameObject("Delivery help").transform;catalogHelp.SetParent(orderPage,false);
-        ScreenPanel(catalogHelp,"Delivery help background",new Vector3(0,-.285f,.01f),new Vector3(1.72f,.12f,.006f),screenBar);
-        Label(catalogHelp,"A rendelés a raktárba érkezik.\nA dobozból egyesével töltheted fel a polcokat.",new Vector3(0,-.285f,.024f),.023f);
-        Label(furnishingPage,"ÜZLETFEJLESZTÉS",new Vector3(0,.25f,.025f),.037f);
-        furnishingStatus=Label(furnishingPage,"",new Vector3(0,.16f,.025f),.024f);
-        MonitorButton(furnishingPage,"ÖNKISZOLGÁLÓ BŐVÍTÉS • "+ShopCatalog.Money(ShopLayout.ExpansionPrice),new Vector3(0,.06f,.02f),WorldControlKind.Expand,0,1.72f,.07f,screenAccent);
-        MonitorButton(furnishingPage,"CIGARETTAPOLC • 9 HELY • "+ShopCatalog.Money(ShopLayout.ExtraShelfPrice),new Vector3(0,-.02f,.02f),WorldControlKind.ExtraShelf,0,1.72f,.07f);
-        var panicUpgrade=MonitorButton(furnishingPage,"",new Vector3(0,-.10f,.02f),WorldControlKind.PanicButtonUpgrade,0,1.72f,.07f);
-        panicUpgrade.name="Panic button upgrade";
-        panicUpgradeLabel=panicUpgrade.GetComponentInChildren<TextMesh>();
-        coffeeUpgradeLabel=MonitorButton(furnishingPage,"KÁVÉGÉP • "+ShopCatalog.Money(ShopActivities.CoffeeMachinePrice),new Vector3(0,-.18f,.02f),WorldControlKind.CoffeeMachineUpgrade,0,1.72f,.07f).GetComponentInChildren<TextMesh>();
-        fridgeUpgradeLabel=MonitorButton(furnishingPage,"",new Vector3(0,-.26f,.02f),WorldControlKind.FridgeUpgrade,0,1.72f,.065f).GetComponentInChildren<TextMesh>();
-        MonitorButton(furnishingPage,"ÜZLET ÁTRENDEZÉSE",new Vector3(0,-.34f,.02f),WorldControlKind.Arrange,0,1.72f,.065f,screenAccent);
-        ScreenPanel(monitor,"TobaccOS status bar",new Vector3(0,-.391f,.010f),new Vector3(1.80f,.048f,.006f),screenBar);
-        monitorNotice=Label(monitor,"",new Vector3(0,-.39f,.023f),.023f);
-        buildingPage=Page("Computer Navigation");
-        MonitorButton(buildingPage,"ASZTAL",new Vector3(.45f,-.465f,.02f),WorldControlKind.Desktop,0,.84f,.065f);
-        MonitorButton(monitor,"KILÉPÉS • Esc",new Vector3(-.45f,-.465f,.02f),WorldControlKind.Exit,0,.84f,.065f);
-        OpenApp(ShopComputerApp.Desktop);
-    }
-    private void BuildProductCard(int type)
-    {
-        var root=new GameObject("Product card - "+ShopCatalog.Ids[type]);root.transform.SetParent(orderPage,false);
-        root.transform.localPosition=new Vector3(.58f-(type%3)*.58f,.12f-(type/3)*.185f,.020f);
-        var body=Box(root.transform,"Order "+ShopCatalog.ShortNames[type],Vector3.zero,new Vector3(.55f,.17f,.016f),screenCard);Control(body,WorldControlKind.Order,type);
-        var prefab=ProductVisuals.LoadModel(type);
-        if(prefab!=null)
-        {
-            var thumbnail=Instantiate(prefab,root.transform,false);thumbnail.name="Product preview";
-            thumbnail.transform.localPosition=new Vector3(.21f,0,.044f);thumbnail.transform.localRotation=Quaternion.Euler(0,180,0);
-            thumbnail.transform.localScale=ProductVisuals.Size(type)*(.105f/ProductVisuals.Size(type).y);
-            foreach(var collider in thumbnail.GetComponentsInChildren<Collider>()){collider.enabled=false;Destroy(collider);}
-            foreach(var renderer in thumbnail.GetComponentsInChildren<Renderer>())renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+        appTitle=Label(monitor,"TobaccOS",new Vector3(.52f,.445f,.024f),.042f);
+        monitorText=Label(monitor,"",new Vector3(-.35f,.445f,.024f),.026f);
+        shopStatusText=Label(monitor,"",new Vector3(0,-.45f,.024f),.025f);
+        desktopPage=Page("Computer Desktop");
+        for(int i=1;i<=6;i++) {
+            var p=new Vector3(.47f-(i-1)%2*.94f,.22f-(i-1)/2*.21f,.02f);
+            MonitorButton(desktopPage,AppNames[i],p,WorldControlKind.OpenApp,i,.84f,.16f);
         }
-        Label(root.transform,ShopCatalog.Names[type],new Vector3(-.04f,.045f,.031f),.019f);
-        orderPrices.Add(Label(root.transform,"",new Vector3(-.04f,0,.031f),.020f));
-        stockLabels.Add(Label(root.transform,"",new Vector3(-.04f,-.047f,.031f),.019f));
-        orderCards.Add(root);
-        root.SetActive(type<shop.AvailableProducts);
+        var red=ScreenMaterial("TobaccOS tricolor red",ShopComputerTheme.Red);
+        var cream=ScreenMaterial("TobaccOS tricolor cream",ShopComputerTheme.Paper);
+        ScreenPanel(monitor,"Tricolor red",new Vector3(0,.378f,.018f),new Vector3(1.8f,.008f,.004f),red);
+        ScreenPanel(monitor,"Tricolor white",new Vector3(0,.369f,.018f),new Vector3(1.8f,.008f,.004f),cream);
+        ScreenPanel(monitor,"Tricolor green",new Vector3(0,.360f,.018f),new Vector3(1.8f,.008f,.004f),screenBar);
+        OpenApp(ShopComputerApp.Desktop);
     }
     public void OpenApp(ShopComputerApp app)
     {
-        ResetKeyboardFocus();ComputerApp=app;if(desktopPage==null)return;
-        desktopPage.gameObject.SetActive(app==ShopComputerApp.Desktop);orderPage.gameObject.SetActive(false);furnishingPage.gameObject.SetActive(app==ShopComputerApp.Furnishing);
-        featurePage.gameObject.SetActive(app==ShopComputerApp.Coffee||app==ShopComputerApp.Cameras||app==ShopComputerApp.Games||app==ShopComputerApp.Prices);
-        buildingPage.gameObject.SetActive(app!=ShopComputerApp.Desktop);
-        appTitle.text=app==ShopComputerApp.Desktop?"ASZTAL":app==ShopComputerApp.Orders?"TERMÉKRENDELÉS":app==ShopComputerApp.Furnishing?"ÜZLETFEJLESZTÉS":app==ShopComputerApp.Coffee?"KÁVÉ":app==ShopComputerApp.Cameras?"KAMERÁK":app==ShopComputerApp.Prices?"ÁRAK":"JÁTÉKOK";
-        RefreshMonitor();refreshMonitorFrame=Time.frameCount+1;
+        shop.Pricing?.CancelEdit();
+        ResetKeyboardFocus();
+        cartEditing=false;
+        ComputerApp=app;
+        if(app==ShopComputerApp.Cameras)shop.Activities.RenderCamera(shop.Activities.SelectedCamera);
+        RefreshMonitor();
     }
     public void ChangeOrderQuantity(int delta)
     {
@@ -222,35 +163,8 @@ public sealed partial class ShopDevices : MonoBehaviour
     public void RefreshMonitor()
     {
         if(shop==null||shop.Ledger==null||monitorText==null)return;
-        monitorText.text="Kassza: "+ShopCatalog.Money(shop.Ledger.Cash);
-        shopStatusText.text=shop.Day+". műszak • "+(shop.Layout.Expanded?"Bővített bolt":"Kezdőbolt");
-        orderQuantityText.text="Mennyiség: "+orderQuantity+" db";
-        furnishingStatus.text=(shop.Layout.Expanded?"Önkiszolgáló rész: megnyitva":"Önkiszolgáló rész: zárva")+"\n"+(shop.Layout.ExtraShelfOwned?"Kiegészítő polc: megvásárolva":"Kiegészítő polc: nincs");
-        if(coffeeUpgradeLabel!=null)coffeeUpgradeLabel.text=shop.Activities!=null&&shop.Activities.CoffeeOwned ? "KÁVÉGÉP • MEGVÁSÁROLVA" : "KÁVÉGÉP • "+ShopCatalog.Money(ShopActivities.CoffeeMachinePrice);
-        if(fridgeUpgradeLabel!=null)fridgeUpgradeLabel.text=shop.GetComponent<ShopNextUpgrades>()?.FridgeOwned == true ? "HŰTŐ • MEGVÁSÁROLVA" : "HŰTŐ • "+ShopCatalog.Money(ShopNextUpgrades.FridgePrice);
-        if(panicUpgradeLabel!=null)panicUpgradeLabel.text=shop.Security!=null&&shop.Security.Owned ? "VÉSZGOMB • MEGVÁSÁROLVA" : "VÉSZGOMB • "+ShopCatalog.Money(ShopSecurity.PurchasePrice);
-        for(int type=0;type<orderCards.Count;type++)
-        {
-            orderCards[type].SetActive(type<shop.AvailableProducts);
-            if(type>=shop.AvailableProducts)continue;
-            int cost=ShopCatalog.Costs[type]*orderQuantity;
-            orderPrices[type].text=orderQuantity+" db • "+ShopCatalog.Money(cost);
-            orderPrices[type].color=cost<=shop.Ledger.AvailableFunds?new Color(.55f,.93f,.81f):new Color(1f,.66f,.51f);
-            stockLabels[type].text="Polc "+shop.StockCount(type)+" • Raktár "+shop.WarehouseCount(type)+" • Úton "+shop.PendingQuantity(type);
-        }
-        catalogHelp.gameObject.SetActive(shop.AvailableProducts==ShopCatalog.CigaretteCount);
-        if(ComputerApp==ShopComputerApp.Orders)
-        {
-            string notice=orderFeedback;
-            if(lastOrderSucceeded&&lastOrderType>=0&&shop.PendingQuantity(lastOrderType)==0)notice="Megérkezett: "+ShopCatalog.ShortNames[lastOrderType]+" • a raktárban átvehető.";
-            if(string.IsNullOrEmpty(notice))notice="Add meg a termékenkénti darabszámot, majd rendeld meg egyben a kosarat.";
-            monitorNotice.text=notice.Length>105?notice.Substring(0,102)+"...":notice;
-        }
-        else
-        {
-            string notice=ComputerApp==ShopComputerApp.Prices?"Árváltozás csak az újonnan érkezőkre érvényes.":ComputerApp==ShopComputerApp.Desktop?"TobaccOS • Kis bolt. Nagy történetek.":string.IsNullOrEmpty(furnishingFeedback)?"A fejlesztések a meglévő boltodat bővítik.":furnishingFeedback;
-            monitorNotice.text=notice.Length>105?notice.Substring(0,102)+"...":notice;
-        }
+        monitorText.text=ShopCatalog.Money(shop.Ledger.Cash);
+        shopStatusText.text=shop.Day+". műszak   "+ShopUiState.Clock(shop.ClockElapsed);
     }
     private void OnFontTextureRebuilt(Font font)
     {
@@ -344,6 +258,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         string selection=string.Join(",",ShopCatalog.Denominations.Select(shop.SelectedPieces));
         if(lastSelection!=selection){lastSelection=selection;RefreshTray();}
         PollDeviceKeyboard();
+        if(FocusKind==ShopDeviceKind.Monitor)return;
         if(ShopInputGate.WorldActionConsumed||!Focused||!Application.isFocused||Mouse.current==null||!Mouse.current.leftButton.wasPressedThisFrame)return;
         if(Keyboard.current!=null&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))return;
         Ray ray=view.ScreenPointToRay(Mouse.current.position.ReadValue());

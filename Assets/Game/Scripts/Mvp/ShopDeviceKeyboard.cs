@@ -23,6 +23,7 @@ public sealed partial class ShopDevices
     private void ResetKeyboardFocus(){keyboardTargetId=null;keyboardOutline=false;}
     public List<ShopKeyboardTarget> KeyboardTargets()
     {
+        if(ComputerShellActive)return ComputerKeyboardTargets();
         var targets=new List<ShopKeyboardTarget>();if(!Focused||shop==null||view==null)return targets;
         Transform root=FocusKind==ShopDeviceKind.Monitor?monitor:FocusKind==ShopDeviceKind.Coins?shop.Activities.CustomerHand:FocusKind==ShopDeviceKind.Terminal?Terminal.transform:FocusKind==ShopDeviceKind.Coffee?shop.Activities.CoffeeDisplay.transform:tillAssembly;
         if(root!=null)
@@ -63,7 +64,8 @@ public sealed partial class ShopDevices
     public bool HandleDeviceKey(DeviceKey key,bool shift=false)
     {
         if(!Focused||shop==null)return false;
-        if (FocusKind == ShopDeviceKind.Monitor && ComputerApp == ShopComputerApp.Orders) return HandleCartKey(key);
+        if (FocusKind == ShopDeviceKind.Monitor && ComputerApp == ShopComputerApp.Orders) { if(cartEditing)return false; if(HandleCartKey(key))return true; }
+        if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Prices&&shop.Pricing.HandleEditorKey(key,shift))return true;
         bool enter=key==DeviceKey.Enter||key==DeviceKey.NumpadEnter;
         if(FocusKind==ShopDeviceKind.Terminal || FocusKind==ShopDeviceKind.Till&&shop.CardPayment)
         {
@@ -138,7 +140,7 @@ public sealed partial class ShopDevices
     private void OnGUI()
     {
         if(!Focused || ShopMenu.Active)return;GUI.depth=-100;
-        DrawOrderCart();
+        if(ComputerShellActive){DrawComputer();return;}
         if(keyboardOutline&&keyboardTargetId!=null)
         {
             var target=KeyboardTargets().FirstOrDefault(t=>t.Id==keyboardTargetId);
