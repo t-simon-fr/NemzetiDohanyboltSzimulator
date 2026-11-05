@@ -1,0 +1,36 @@
+{
+  "url": "https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/?v=3dfa6c4",
+  "started": "2026-11-05T06:31:20.684Z",
+  "captures": [
+    "1280x720-menu.png",
+    "1280x720-started.png",
+    "1280x720-pause.png",
+    "1280x720-computer.png",
+    "1920x1080-world.png"
+  ],
+  "errors": [],
+  "actions": [
+    "Start by actual menu click",
+    "Pause/resume and open TobaccOS by keyboard"
+  ],
+  "loadedResources": [
+    {
+      "url": "https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/Build/WebGL.loader.js?v=3dfa6c4",
+      "bytes": 17386
+    },
+    {
+      "url": "https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/Build/WebGL.framework.js.unityweb?v=3dfa6c4",
+      "bytes": 75303
+    },
+    {
+      "url": "https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/Build/WebGL.wasm.unityweb?v=3dfa6c4",
+      "bytes": 9801347
+    },
+    {
+      "url": "https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/Build/WebGL.data.unityweb?v=3dfa6c4",
+      "bytes": 13212439
+    }
+  ],
+  "result": "passed",
+  "finished": "2026-11-05T06:31:34.541Z"
+}

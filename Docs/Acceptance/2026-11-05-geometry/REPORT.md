@@ -11,10 +11,22 @@ The starter divider wall is continuous across its previous 10 cm opening, with c
 
 Reviewer: Codex, 2026-11-05. Inspected the actual native Game view (1918×911), top view, wall close view and both shipping-browser sizes. Gray/blue footprints are separated, labels remain on their intended surfaces, and the starter wall has no vertical opening. Interaction and visual result: **passed**.
 
-Pages publication is explicitly authorized by the user; deployment and live verification pending at this evidence commit.
+Published at the user's explicit request: **[Play the live release](https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/?v=3dfa6c4)**.
+
+- PRs [#41](https://github.com/t-simon-fr/NemzetiDohanyboltSzimulator/pull/41) and [#42](https://github.com/t-simon-fr/NemzetiDohanyboltSzimulator/pull/42) merged in dependency order; main merge `37df35d1ddc68ee235dca3861dd0ca89d1230015` has the exact tested feature-branch tree. Runtime content is unchanged from `3dfa6c4`.
+- Pages commit: `1770ce140d15715bb096007c36dcd8c92402ef20`, `gh-pages` in the WebGL repository; GitHub Pages build confirmed built.
+- Live shipping browser: Start by mouse, pause/resume and TobaccOS by keyboard, 1280×720 and 1920×1080, **0 console/runtime/HTTP errors**. [Live report](live-player.json). Captures at both sizes were inspected: the gray and blue mats remain separate and the wall renders continuously.
+- Served HTML, loader, framework, data and WASM each match the local shipping release byte-for-byte by **SHA-256**. [Live asset verification](live-assets.json). Versioned build URLs use `?v=3dfa6c4`.
+
+Final result: **published and live-verified**. These visual fixes received fresh native and shipping-player checks; the previous release's full acceptance-player suite is historical and is not claimed as a new run.
 
 ![Counter top with separate mats](native-counter-top.png)
 
 ![Continuous starter wall](native-wall-seam.png)
 
 ![Local shipping player](local-1280x720-started.png)
+
+
+![Live player](live-1280x720-started.png)
+
+![Large live view](live-1920x1080-world.png)
