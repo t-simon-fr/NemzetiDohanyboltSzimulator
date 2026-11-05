@@ -1,0 +1,54 @@
+{
+  "started": "2026-11-05T08:41:00.621Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Actual customer requests only the energy drink genuinely purchased into the otherwise empty shop",
+      "passed": true
+    },
+    {
+      "label": "Warehouse-only goods are requestable without a false shortage",
+      "passed": true
+    },
+    {
+      "label": "Take the actual paid energy drink for the generated request",
+      "passed": true
+    },
+    {
+      "label": "Actual E delivery satisfies the stock-selected customer order",
+      "passed": true
+    },
+    {
+      "label": "Order UI follows real delivery without booking an unpaid sale",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-stock-order-warehouse.png",
+    "1280x720-stock-order-delivered.png",
+    "1920x1080-stock-order-delivered-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23185350,
+    "seconds": 457.0280102,
+    "error": "",
+    "completedUtc": "2026-11-05T08:40:57.808Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "6e8962ca87bce4c94c817287686d291811437cd416017fab0de6531ba854ce6d",
+      "AcceptanceWebGL.framework.js.unityweb": "4195fa6f3ba27bf44d1ac20eada5a1728846e7d57eb3063e6cf146c19a5c2578",
+      "AcceptanceWebGL.loader.js": "be7a950ad751dceb96c61cc279d567c7437a9a24c439fbb40489b0ff178d1915",
+      "AcceptanceWebGL.wasm.unityweb": "4ed219a16cf3dcf7c28a171081a8b9a6083c902b6e0bbf75cb0c0088383a707b"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-05T08:41:20.038Z"
+}

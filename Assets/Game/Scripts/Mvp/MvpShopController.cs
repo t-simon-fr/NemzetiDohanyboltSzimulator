@@ -233,16 +233,19 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     private void SpawnCustomer(int forcedProduct=-1,bool forceThief=false)
     {
-        int visit = Spawned++;
+        int visit = Spawned;
+        int type = Layout != null && Layout.Expanded && visit % 2 == 1 ? ShopCatalog.CigaretteCount + ((visit + Day - 1) % (ShopCatalog.Count - ShopCatalog.CigaretteCount)) : ShopCatalog.VisitProducts[visit % TotalVisitors];
+        if(!SingleProductVisits&&StockCount(ShopCatalog.Contraband)>0&&visit%4==1)type=ShopCatalog.Contraband;
+        if(forcedProduct>=0)type=forcedProduct;
+        if(forcedProduct<0&&Activities.CoffeeOwned&&visit%4==2)type=SingleProductVisits?ShopCatalog.Coffee:ShopCatalog.Coffee+(visit/4+Day-1)%3;
+        int[] order = CreateCustomerOrder(type, visit);
+        if (order.Length == 0) return;
+        Spawned++;
         GameObject clone = Instantiate(customerTemplate, actorRoot);
         clone.SetActive(false);
         var legacy = clone.GetComponent<CustomerOrderController>(); if (legacy != null) legacy.enabled = false;
         MvpCustomerActor actor = clone.AddComponent<MvpCustomerActor>();
-        int type = Layout != null && Layout.Expanded && visit % 2 == 1 ? ShopCatalog.CigaretteCount + ((visit + Day - 1) % (ShopCatalog.Count - ShopCatalog.CigaretteCount)) : ShopCatalog.VisitProducts[visit];
-        if(!SingleProductVisits&&StockCount(ShopCatalog.Contraband)>0&&visit%4==1)type=ShopCatalog.Contraband;
-        if(forcedProduct>=0)type=forcedProduct;
-        if(forcedProduct<0&&Activities.CoffeeOwned&&visit%4==2)type=SingleProductVisits?ShopCatalog.Coffee:ShopCatalog.Coffee+(visit/4+Day-1)%3;
-        actor.Initialize((visit + Day - 1) % 4, type, visit);
+        actor.Initialize((visit + Day - 1) % 4, order[0], visit, order);
         if(forceThief)actor.SetTheftIntent();clone.SetActive(true); queue.Add(actor);
     }
     private void OnDelivery(ShopProduct product)
@@ -336,11 +339,12 @@ public sealed partial class MvpShopController : MonoBehaviour
     public bool IsRequestedTypeUnavailable(int type)
     {
         if (active == null) return false;
-        int needed = active.OrderTypes.Count(t => t == type) - StockCount(type);
+        int needed = active.OrderTypes.Count(t => t == type) - StockCount(type) - (type < ShopCatalog.Count ? WarehouseCount(type) : 0);
+        if (ShopCatalog.IsCoffee(type) && Activities.BrewRemaining > 0 && Activities.SelectedRecipe == type) needed--;
         if (needed <= 0) return false;
         if (!ShopCatalog.IsCoffee(type)) return true;
-        return !Activities.CoffeeOwned || Activities.CoffeeSupplies < needed ||
-            type == ShopCatalog.Latte && Activities.MilkSupplies < needed;
+        return !Activities.CoffeeOwned || Activities.CoffeeSupplies + Activities.ReadyCoffee < needed ||
+            type == ShopCatalog.Latte && Activities.MilkSupplies + Activities.ReadyMilk < needed;
     }
     public bool HasUnavailableRequest => active != null && active.OrderTypes.Any(IsRequestedTypeUnavailable);
     public bool OfferAlternative()

@@ -27,7 +27,8 @@
       "customer-hand",
       "wall-seam",
       "counter-mats",
-      "warehouse-storage"
+      "warehouse-storage",
+      "stock-aware-orders"
     ]
   },
   "suites": {
@@ -140,6 +141,11 @@
       "entry": "WarehouseStorageChecks.Run",
       "file": "Tools/Checks/WarehouseStorageChecks.cs",
       "purpose": "Physical carton places, arbitrary relocation, occupancy, deliveries, labels and finite inventory"
+    },
+    "stock-aware-orders": {
+      "entry": "StockAwareOrderChecks.Run",
+      "file": "Tools/Checks/StockAwareOrderChecks.cs",
+      "purpose": "On-hand assortment, non-reserving waiting orders, finite baskets, warehouse and shared coffee ingredients"
     }
   },
   "historicalExcluded": {
