@@ -196,7 +196,12 @@ public sealed class PlayerInteractor : MonoBehaviour
                 if ((heldProduct!=null||heldCarton!=null) && slot != null)
                 {
                     if(heldProduct!=null && !slot.CanPlaceManually(heldProduct))continue;
-                    targetSlot=slot;canPlace=heldCarton!=null?heldCarton.CanPlace(slot):heldProduct.TryGetPlacement(slot,out _);break;
+                    targetSlot=slot;canPlace=heldCarton!=null?heldCarton.CanPlace(slot):heldProduct.TryGetPlacement(slot,out _);
+                    // A selection volume is not an obstacle. A nearer place
+                    // that cannot accept the item must not hide a visible free
+                    // place behind it; a real solid hit still ends the search.
+                    if(canPlace)break;
+                    continue;
                 }
                 continue;
             }

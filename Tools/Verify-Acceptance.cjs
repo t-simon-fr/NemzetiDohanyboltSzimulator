@@ -418,7 +418,9 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await viewport(1280,720);
       await probe('Prepare','requests-arrivals');await probe('Action','advance-requests-arrivals');let s=await state();
       check(s.requestsSpawned>8 && s.phase==='Open','Open shop receives visits beyond the old fixed daily limit');await capture('continuous-arrivals');
-      const visitors=s.requestsSpawned;
+      // Test the real sign input with a clear entrance. The arrival simulation
+      // can retain a departing actor directly in front of the sign while paused.
+      await probe('Prepare','requests-arrivals');const visitors=(await state()).requestsSpawned;
       await probe('Action','aim-sign-stable');await key('e','KeyE',69);s=await state();
       check(s.phase==='Closing' || s.phase==='AfterHours','Actual sign interaction closes ongoing arrivals');
       await probe('Action','drain-shop');await probe('Action','advance-requests-arrivals');s=await state();

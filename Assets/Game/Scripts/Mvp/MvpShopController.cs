@@ -296,7 +296,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";
     }
     private bool PreparedIsValid()=>active!=null&&receivedOrder.Count==active.OrderTypes.Length&&receivedOrder.All(p=>p!=null&&p.gameObject.activeSelf&&!p.IsHeld&&p.CurrentSlot!=null&&(p.CurrentSlot.name.StartsWith("Order receipt")||p.CurrentSlot==Activities.BasketSlot));
-    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+Counter.transform.rotation*new Vector3(index==2?.24f:0,0,index==0?0:-.22f);
+    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+Counter.transform.rotation*new Vector3(index==2?-.24f:0,0,index==0?0:-.22f);
     private bool CollectOrderItem(ShopProduct product)
     {
         receivedOrder.RemoveAll(p=>p==null||p.IsHeld||p.CurrentSlot==null||(!p.CurrentSlot.name.StartsWith("Order receipt")&&p.CurrentSlot!=Activities.BasketSlot));
@@ -594,3 +594,4 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public void ClosePanel() { if (Phase != ShopPhase.Summary) SetModal(ShopModal.None); }
 }
+

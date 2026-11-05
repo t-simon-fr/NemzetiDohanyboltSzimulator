@@ -46,8 +46,10 @@ public static class ScannerPlacementChecks
             {
                 cups[i]=g.CreateCoffee(i==2?ShopCatalog.Latte:ShopCatalog.Coffee);
                 check(player.TryHold(cups[i]),"Carry prepared cup "+i);
-                aim(g.Activities.CustomerHandoverSlots[i]);
-                check(player.CanPlaceHeld && player.TryPlaceHeld(),"Serve cup directly in free customer-zone place "+i);
+                var target=g.Activities.CustomerHandoverSlots[i].transform.position+Vector3.up*.20f;
+                var eye=target+Vector3.left*1.1f;eye.y=Mathf.Max(target.y+.3f,1.75f);
+                Physics.SyncTransforms();player.RefreshTarget(new Ray(eye,(target-eye).normalized));
+                check(player.TargetSlot==g.Activities.CustomerHandoverSlots[i] && player.CanPlaceHeld && player.TryPlaceHeld(),"Oblique targeting passes earlier selection volumes and serves a separate cup "+i+" target="+(player.TargetSlot==null?"null":player.TargetSlot.name)+" hits="+string.Join(",",Physics.RaycastAll(new Ray(eye,(target-eye).normalized),2.5f,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Collide).OrderBy(h=>h.distance).Select(h=>h.collider.name+":"+h.distance.ToString("F2"))));
             }
             check(g.Stage==ServiceStage.Payment && g.MissingOrderTypes.Length==0 && cups.Select(cup=>cup.CurrentSlot).Distinct().Count()==3,"Three cups reach three independent receipt places and enable checkout");
             check(g.Scanner.ScanCount==scans,"Coffee service never pretends to scan a barcode");
@@ -56,3 +58,6 @@ public static class ScannerPlacementChecks
         finally{player.CancelHeld();g.ClosePanel();g.ResetDemo();g.ManualTick=false;}
     }
 }
+
+
+

@@ -278,7 +278,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         if (action == "aim-customer-zone") Aim(Shop.Activities.BasketSlot.transform.position+Vector3.up*.1f,1.2f);
         if (action == "aim-scanner") Aim(Shop.DeliverySlot.transform.position+Vector3.up*.05f,1.2f);
         if (action.StartsWith("aim-coffee-handover-") && int.TryParse(action.Substring("aim-coffee-handover-".Length),out int coffeePlace) && coffeePlace>=0 && coffeePlace<3)
-            Aim(Shop.Activities.CustomerHandoverSlots[coffeePlace].transform.position+Vector3.up*.08f,1.1f);
+            Aim(Shop.Activities.CustomerHandoverSlots[coffeePlace].transform.position+Vector3.up*.20f,1.1f,Vector3.left);
         if (action == "aim-broom-rack") Aim(Shop.Activities.Mop.Rack.transform.TransformPoint(Vector3.up*.55f),1.1f,new Vector3(-1,0,-.6f).normalized);
         if (action == "aim-bat-rack") Aim(Shop.Activities.Bat.Rack.transform.TransformPoint(Vector3.up*.45f),1.1f,Vector3.forward);
         if (action == "fixture-lights-off") foreach(var light in Shop.InteriorLighting.Lights)light.enabled=false;

@@ -56,7 +56,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         {
             var slot=new GameObject("Customer handover input "+i).AddComponent<ProductSlot>();
             slot.transform.SetParent(BasketSlot.transform.parent,false);
-            slot.transform.position=BasketSlot.transform.position+shop.Counter.transform.rotation*new Vector3(i==2?.24f:0,0,i==0?0:-.22f);
+            slot.transform.position=BasketSlot.transform.position+shop.Counter.transform.rotation*new Vector3(i==2?-.24f:0,0,i==0?0:-.22f);
             slot.Configure(new Vector3(.20f,.4f,.20f));
             slot.SetManualPlacementRule(product=>ShopCatalog.Index(product.ProductId)>=0&&!ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)));
             CustomerHandoverSlots[i]=slot;
@@ -415,3 +415,4 @@ public sealed partial class ShopActivities : MonoBehaviour
         if(BasketSlot!=null)Destroy(BasketSlot.gameObject);if(worldRoot!=null)Destroy(worldRoot.gameObject);
     }
 }
+
