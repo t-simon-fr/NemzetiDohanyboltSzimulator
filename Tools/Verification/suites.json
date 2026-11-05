@@ -28,7 +28,8 @@
       "wall-seam",
       "counter-mats",
       "warehouse-storage",
-      "stock-aware-orders"
+      "stock-aware-orders",
+      "after-hours-upgrades"
     ]
   },
   "suites": {
@@ -146,6 +147,11 @@
       "entry": "StockAwareOrderChecks.Run",
       "file": "Tools/Checks/StockAwareOrderChecks.cs",
       "purpose": "On-hand assortment, non-reserving waiting orders, finite baskets, warehouse and shared coffee ingredients"
+    },
+    "after-hours-upgrades": {
+      "entry": "AfterHoursUpgradeChecks.Run",
+      "purpose": "All five closed-shop developments, exact prices, occupancy guards, finalized-day rejection and next-day persistence",
+      "file": "Tools/Checks/AfterHoursUpgradeChecks.cs"
     }
   },
   "historicalExcluded": {

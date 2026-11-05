@@ -61,6 +61,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             foreach (var label in FindObjectsByType<ShopShelfPriceLabel>(FindObjectsInactive.Include)) label.Refresh();
             AimWarehouseShelf();
         }
+        else if (scenario == "after-hours-upgrades")
+        {
+            Shop.Ledger.TrySellCard(200000,0);Shop.SyncCashDrawer();
+            Shop.OpenShop();Shop.RequestClose();Shop.Tick(.1f);
+            Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Furnishing);
+        }
         else if (scenario == "stock-orders")
         {
             foreach (var product in FindObjectsByType<ShopProduct>()) product.RemoveFromWorld();
@@ -409,6 +415,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public string lowerStorageLabel;
         public int[] storageTypes;
         public int storagePlaces, heldCartonType;
+        public bool canDevelop;
+        public bool[] upgradesOwned;
+        public Vector3[] upgradeButtons;
+        public int[] upgradeCosts;
         public Rect[] cashDenominations, cashKeys;
         public int[] cashCounts;
         public int[] offeredCoins;
@@ -500,6 +510,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.storageTypes = Enumerable.Range(0,ShopCatalog.Count).Select(i => g.Warehouse.CartonAt(g.Warehouse.Dock(i))?.ProductType ?? -1).ToArray();
         state.lowerStorageLabel = LowerStorageDock().Find("Brand dock label").GetComponent<TextMesh>().text;
         state.heldCartonType = Player.HeldCarton != null ? Player.HeldCarton.ProductType : -1;
+        state.canDevelop = g.CanDevelopShop;
+        state.upgradesOwned = new[]{g.Layout.Expanded,g.Layout.ExtraShelfOwned,g.Activities.CoffeeOwned,g.GetComponent<ShopNextUpgrades>().FridgeOwned,g.Security.Owned};
+        state.upgradeCosts = new[]{ShopLayout.ExpansionPrice,ShopLayout.ExtraShelfPrice,ShopActivities.CoffeeMachinePrice,ShopNextUpgrades.FridgePrice,ShopSecurity.PurchasePrice};
+        state.upgradeButtons = new[]{WorldControlKind.Expand,WorldControlKind.ExtraShelf,WorldControlKind.CoffeeMachineUpgrade,WorldControlKind.FridgeUpgrade,WorldControlKind.PanicButtonUpgrade}
+            .Select(kind=>FindObjectsByType<ShopWorldControl>().FirstOrDefault(c=>c.Kind==kind&&c.isActiveAndEnabled))
+            .Select(c=>c!=null?View.WorldToScreenPoint(c.GetComponent<Collider>().bounds.center):Vector3.zero).ToArray();
         state.retailGoods = g.StockCount(0);
         state.cameraFov = View.fieldOfView;
         state.cashDue = g.Devices.RegisterVisuals.DisplayDue;

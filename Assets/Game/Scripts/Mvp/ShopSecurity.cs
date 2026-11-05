@@ -78,7 +78,7 @@ public sealed class ShopSecurity : MonoBehaviour
     public bool TryPurchase()
     {
         if (Owned) { shop.Notify("A vészgombot már megvásároltad."); return false; }
-        if (shop.Phase!=ShopPhase.Preparing) { shop.Notify("Vészgombot nyitás előtt vásárolhatsz."); return false; }
+        if (!shop.CanDevelopShop) { shop.Notify("Vészgombot nyitás előtt vagy zárás után, üres boltban vásárolhatsz."); return false; }
         if (!shop.Ledger.TryImprove(PurchasePrice))
         { shop.Notify("Nincs elég elkölthető pénz a vészgombra: "+ShopCatalog.Money(PurchasePrice)+"."); return false; }
         shop.SyncCashDrawer();
