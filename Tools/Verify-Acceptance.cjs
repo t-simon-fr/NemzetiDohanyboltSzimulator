@@ -452,7 +452,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.position.z> -4.1 && s.phase==='AfterHours','Actual S walks back through the open doorway');
       await probe('Action','aim-door');await key('e','KeyE',69);s=await state();
       check(s.phase==='Summary' && s.balance===cash-300,'Explicit E at doorway finishes the closed day exactly once');await capture('explicit-day-end');
-      await probe('Prepare','requests-coffee-order');s=await state();const coffeeCash=s.balance,coffeeScans=s.scannerCount;
+      await probe('Prepare','requests-coffee-order');s=await state();const coffeeCash=s.balance,coffeeScans=s.scannerCount,coffeeSales=s.sales;
       for(let i=0;i<3;i++){
         await probe('Action','aim-coffee-display');await key('e','KeyE',69);s=await state();
         await clickRect(s.coffeeButtons[i]);await clickRect((await state()).coffeeButtons[3]);
@@ -465,7 +465,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.stage==='Payment' && s.scannerCount===coffeeScans && s.coffee===0 && s.milk===0,'Three prepared coffees reach payment without barcode scans or lost ingredients');await capture('three-coffees-served');
       await viewport(1920,1080);await capture('three-coffees-served-large');await viewport(1280,720);
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
-      check(s.sales===1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
+      check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
     }
     if (selected === 'new-features' || selected === 'cart-only') {
       await viewport(1280,720);
@@ -762,3 +762,4 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
     console.log('REPORT ' + output); ws?.close(); browser?.kill(); server?.close();
   }
 })();
+
