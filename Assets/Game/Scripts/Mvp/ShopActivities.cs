@@ -47,7 +47,8 @@ public sealed partial class ShopActivities : MonoBehaviour
         coffee=Mat("Coffee",new Color(.12f,.055f,.018f));skin=Mat("Customer palm",new Color(.73f,.54f,.39f));dirt=Mat("Floor stain",new Color(.18f,.13f,.055f));
         var spare=shop.DeliverySlot.transform.parent.Find("Counter Slot 1");BasketSlot=spare!=null?spare.GetComponent<ProductSlot>():new GameObject("Customer basket handover").AddComponent<ProductSlot>();BasketSlot.transform.SetParent(shop.DeliverySlot.transform.parent,false);
         BasketSlot.transform.localPosition=new Vector3(.47f,.012f,-.01f);BasketSlot.Configure(new Vector3(.35f,.4f,.33f));
-        Box(BasketSlot.transform,"Customer basket mat",new Vector3(-.13f,-.006f,-.13f),new Vector3(.58f,.006f,.58f),metal);
+        // The visible mat follows its actual placement slot and leaves the blue tray clear.
+        Box(BasketSlot.transform,"Customer basket mat",new Vector3(0,-.006f,0),new Vector3(.40f,.006f,.38f),metal);
         ProductVisuals.Text(BasketSlot.transform,"Basket handover label","VÁSÁRLÓ TERMÉKEI",new Vector3(0,.004f,.18f),Quaternion.Euler(90,180,0),.022f,Color.white);
         BuildCoffeeMachine();BuildTools();
         BuildCamera("Bejárat",new Vector3(-1.9f,2.65f,-4.12f),new Vector3(.3f,1.1f,-2.7f));
