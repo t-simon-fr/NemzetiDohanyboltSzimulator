@@ -1,0 +1,17 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-11-05",
+  "result": "passed",
+  "sourceCommit": "3dfa6c4",
+  "sourceFingerprint": "c4c710c2c8debc2b9ce72d61bcb72487370fb568467d57ef11934aeea988e948",
+  "nativeViewport": "1918x911",
+  "inputSteps": [
+    "Aim actual player at visible basket slot; queue E key state through Unity Input System; verify held item moved to basket and cash=6000",
+    "Retrieve same item; queue left mouse button state; verify held item moved to basket and cash=6000"
+  ],
+  "imageReview": [
+    "Top view: separate gray and blue footprints, label stays on gray mat, countertop perimeter clear",
+    "Wall view: no vertical opening or exterior light leak at the starter divider join"
+  ],
+  "limits": "Input System device states exercise the actual player Update path; fixture positions player and provides product. Native 18 wall and 11 mat checks separately cover physical collision, expansion/reset and inventory invariants."
+}

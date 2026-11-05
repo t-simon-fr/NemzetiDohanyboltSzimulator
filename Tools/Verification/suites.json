@@ -25,7 +25,8 @@
       "modern-register",
       "forint-visuals",
       "customer-hand",
-      "wall-seam"
+      "wall-seam",
+      "counter-mats"
     ]
   },
   "suites": {
@@ -128,6 +129,11 @@
       "file": "Tools/Checks/WallSeamChecks.cs",
       "entry": "WallSeamChecks.Run",
       "purpose": "Physical full-height seam closure, fixed boundary, expansion removal and reset"
+    },
+    "counter-mats": {
+      "file": "Tools/Checks/CounterMatChecks.cs",
+      "entry": "CounterMatChecks.Run",
+      "purpose": "Disjoint visible mats, matching slots, countertop containment, physical placement and cancellation"
     }
   },
   "historicalExcluded": {

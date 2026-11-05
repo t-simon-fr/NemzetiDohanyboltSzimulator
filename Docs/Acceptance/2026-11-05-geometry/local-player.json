@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8877/",
+  "started": "2026-11-05T06:27:48.349Z",
+  "captures": [
+    "1280x720-menu.png",
+    "1280x720-started.png",
+    "1280x720-pause.png",
+    "1280x720-computer.png",
+    "1920x1080-world.png"
+  ],
+  "errors": [],
+  "actions": [
+    "Start by actual menu click",
+    "Pause/resume and open TobaccOS by keyboard"
+  ],
+  "loadedResources": [
+    {
+      "url": "http://127.0.0.1:8877/Build/WebGL.loader.js?v=3dfa6c4",
+      "bytes": 49079
+    },
+    {
+      "url": "http://127.0.0.1:8877/Build/WebGL.framework.js.unityweb?v=3dfa6c4",
+      "bytes": 75303
+    },
+    {
+      "url": "http://127.0.0.1:8877/Build/WebGL.wasm.unityweb?v=3dfa6c4",
+      "bytes": 9801347
+    },
+    {
+      "url": "http://127.0.0.1:8877/Build/WebGL.data.unityweb?v=3dfa6c4",
+      "bytes": 13212439
+    }
+  ],
+  "result": "passed",
+  "finished": "2026-11-05T06:28:03.518Z"
+}
