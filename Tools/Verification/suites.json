@@ -30,10 +30,16 @@
       "warehouse-storage",
       "stock-aware-orders",
       "after-hours-upgrades",
-      "ingredient-pickup"
+      "ingredient-pickup",
+      "feature-batch"
     ]
   },
   "suites": {
+    "feature-batch": {
+      "file": "Tools/Checks/FeatureBatchChecks.cs",
+      "entry": "FeatureBatchChecks.Run",
+      "purpose": "Clock, atomic supplier cart, night offer variation, boxed goods and new tool homes"
+    },
     "ledger": {
       "file": "Tools/Checks/LedgerChecks.cs",
       "entry": "LedgerChecks.Run",

@@ -54,7 +54,29 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "shelf-labels")
+        if (scenario == "feature-cart")
+        {
+            Shop.Ledger.TrySellCard(100000,0); Shop.SyncCashDrawer();
+            Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Orders);
+        }
+        else if (scenario == "feature-night")
+        {
+            Shop.Ledger.TrySellCard(50000,0); Shop.SyncCashDrawer();
+            Set(Shop,"Phase",ShopPhase.AfterHours); Shop.AfterHours.Enter();
+            Aim(Shop.AfterHours.Merchant.position+Vector3.up*1.3f,1.25f);
+        }
+        else if (scenario == "feature-tools")
+        {
+            Aim(Shop.Activities.Mop.transform.position+Vector3.up*.6f,1.15f);
+        }
+        else if (scenario == "feature-scanner")
+        {
+            Shop.SingleProductVisits=true; Visit(0,0);
+            var product=FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[0]&&p.CurrentSlot!=null&&p.CurrentSlot.IsStockShelf);
+            Player.TryHold(product);
+            Aim(Shop.DeliverySlot.transform.position+Vector3.up*.05f,1.2f);
+        }
+        else if (scenario == "shelf-labels")
         {
             foreach (var product in FindObjectsByType<ShopProduct>().Where(product => product.CurrentSlot != null && product.CurrentSlot.IsStockShelf))
                 product.RemoveFromWorld();
@@ -274,6 +296,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.Tick(.1f);
             Aim(Shop.Entrance.Position + Vector3.up * .95f);
         }
+        if (action == "aim-night-box" && Shop.AfterHours.DeliveryBox!=null) Aim(Shop.AfterHours.DeliveryBox.transform.position+Vector3.up*.13f,1.1f);
+        if (action == "aim-private-storage") Aim(Shop.CounterStorage.Slots[0].transform.position+Vector3.up*.1f,1f);
+        if (action == "view-private-storage") Aim(Shop.CounterStorage.Slots[5].transform.position+Vector3.up*.1f,1.4f);
+        if (action == "aim-bat") { Player.CancelHeld(); Aim(Shop.Activities.Bat.transform.position+Vector3.up*.4f,1.1f,Vector3.forward); }
         if (action == "aim-sign") Aim(Shop.Entrance.Sign.position);
         if (action == "aim-door") Aim(Shop.Entrance.Position + Vector3.up * .95f);
         if (action == "view-entrance") Aim(Shop.Entrance.Position + Vector3.up * .95f, 1.65f);
@@ -404,6 +430,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Serializable]
     private sealed class State
     {
+        public int offeredQuantity, boxedQuantity, scannerCount;
+        public int[] cartQuantities, pendingCart;
+        public Rect[] cartFields;
+        public Rect cartSubmit;
+        public bool tradeOpen;
+        public string clock, scannerProduct;
         public string stage, phase, modal, message, entered, held, cup, order, interactionKey, tool;
         public bool menu, blocked, unavailable, entranceOpen, canEndDay, applicationFocused, cursorLocked;
         public int balance, drawer, sales, missing, received, recipe, milk, coffee, day, missed, dirt;
@@ -478,6 +510,20 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             applicationFocused = Application.isFocused, cursorLocked = Cursor.lockState == CursorLockMode.Locked,
             receipts = receipts.Select(p => p.transform.position).ToArray()
         };
+        state.clock=ShopUiState.Clock(g.ClockElapsed);
+        state.offeredQuantity=g.AfterHours.OfferedQuantity;
+        state.boxedQuantity=g.AfterHours.DeliveryBox!=null?g.AfterHours.DeliveryBox.Quantity:0;
+        state.tradeOpen=g.AfterHours.TradeOpen;
+        state.scannerCount=g.Scanner.ScanCount;
+        state.scannerProduct=g.Scanner.LastProductId;
+        state.cartQuantities=Enumerable.Range(0,ShopCatalog.Count).Select(g.Devices.CartQuantity).ToArray();
+        state.pendingCart=Enumerable.Range(0,ShopCatalog.Count).Select(g.PendingQuantity).ToArray();
+        if (g.Devices.Focused && g.Devices.FocusKind==ShopDeviceKind.Monitor)
+        {
+            var rect=g.Devices.AppRect;
+            state.cartFields=Enumerable.Range(0,2).Select(i=>new Rect(rect.x+6+rect.width-193,rect.y+8+i*43,48,30)).ToArray();
+            state.cartSubmit=new Rect(rect.x+rect.width*.5f,rect.y+rect.height-78,rect.width*.48f-10,32);
+        }
         state.arranging = g.Arrangement.Active;
         state.dragging = g.Arrangement.Dragging;
         state.previewValid = g.Arrangement.PreviewValid;
