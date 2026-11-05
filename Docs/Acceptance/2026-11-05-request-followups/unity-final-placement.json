@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "scanner-placement",
+    "warehouse-storage",
+    "ingredient-pickup",
+    "tool-storage",
+    "counter-mats"
+  ],
+  "startedUtc": "2026-11-05T17:26:12.2376213Z",
+  "source": {
+    "commit": "acf7742eb2b7b9ba5da373bea40d68e157b02e77",
+    "sourceFingerprint": "813f16c16b7631116a5b8da63907beec52e7b1e63aee750a70988f30ad6a2f0a",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "passed": 17,
+      "failed": 0,
+      "entry": "ScannerPlacementChecks.Run",
+      "id": "scanner-placement",
+      "seconds": 0.8097607
+    },
+    {
+      "passed": 38,
+      "failed": 0,
+      "entry": "WarehouseStorageChecks.Run",
+      "id": "warehouse-storage",
+      "seconds": 0.2662145
+    },
+    {
+      "passed": 21,
+      "failed": 0,
+      "entry": "IngredientPickupChecks.Run",
+      "id": "ingredient-pickup",
+      "seconds": 0.1477046
+    },
+    {
+      "passed": 20,
+      "failed": 0,
+      "entry": "ToolStorageChecks.Run",
+      "id": "tool-storage",
+      "seconds": 0.1705134
+    },
+    {
+      "passed": 12,
+      "failed": 0,
+      "entry": "CounterMatChecks.Run",
+      "id": "counter-mats",
+      "seconds": 0.2082187
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0657188,
+  "finishedUtc": "2026-11-05T17:26:19.3801668Z",
+  "totalSeconds": 7.1547132
+}

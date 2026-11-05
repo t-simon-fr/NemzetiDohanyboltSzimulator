@@ -15,6 +15,9 @@ public sealed class ProductSlot : MonoBehaviour
     public void RestrictExclusivelyTo(string id) { allowedProductId = id; exclusiveType = true; }
     private LineRenderer placementHint;
     private static Material hintMaterial;
+    private System.Predicate<ShopProduct> manualPlacementRule;
+    public void SetManualPlacementRule(System.Predicate<ShopProduct> rule) => manualPlacementRule=rule;
+    public bool CanPlaceManually(ShopProduct product) => product!=null && (manualPlacementRule==null || manualPlacementRule(product));
     public Vector3 HintCenter => transform.TransformPoint(Vector3.up * .16f);
     public void ShowPlacementHint(bool show, bool selected, bool valid)
     {

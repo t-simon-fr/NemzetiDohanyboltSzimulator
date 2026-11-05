@@ -98,7 +98,7 @@ public sealed class PlayerInteractor : MonoBehaviour
             if(!canPlace||!heldCarton.TryPlaceOne(targetSlot))return false;
             canPlace=false;targetSlot=null;UpdatePlacementHints();return true;
         }
-        if (heldProduct == null || !canPlace || !heldProduct.TryPlace(targetSlot)) return false;
+        if (heldProduct == null || !canPlace || targetSlot==null || !targetSlot.CanPlaceManually(heldProduct) || !heldProduct.TryPlace(targetSlot)) return false;
         heldProduct=null; UpdatePlacementHints(); return true;
     }
 
@@ -194,7 +194,15 @@ public sealed class PlayerInteractor : MonoBehaviour
                 if (heldTool!=null && heldTool.Kind==ShopToolKind.ContrabandBox && slot!=null)
                 { targetSlot=slot; break; }
                 if ((heldProduct!=null||heldCarton!=null) && slot != null)
-                { targetSlot=slot;canPlace=heldCarton!=null?heldCarton.CanPlace(slot):heldProduct.TryGetPlacement(slot,out _);break; }
+                {
+                    if(heldProduct!=null && !slot.CanPlaceManually(heldProduct))continue;
+                    targetSlot=slot;canPlace=heldCarton!=null?heldCarton.CanPlace(slot):heldProduct.TryGetPlacement(slot,out _);
+                    // A selection volume is not an obstacle. A nearer place
+                    // that cannot accept the item must not hide a visible free
+                    // place behind it; a real solid hit still ends the search.
+                    if(canPlace)break;
+                    continue;
+                }
                 continue;
             }
             station=hit.collider.GetComponentInParent<ShopStation>();
@@ -213,7 +221,7 @@ public sealed class PlayerInteractor : MonoBehaviour
                 if (!LookingAtSupplies && targetBin==null && (station==null || !station.IsPanicButton))
                 {
                     targetSlot=product != null ? product.CurrentSlot : NearestSlotOnSurface(hit,ray.origin);
-                    canPlace=heldCarton!=null?heldCarton.CanPlace(targetSlot):heldProduct.TryGetPlacement(targetSlot,out _);
+                    canPlace=heldCarton!=null?heldCarton.CanPlace(targetSlot):targetSlot!=null&&targetSlot.CanPlaceManually(heldProduct)&&heldProduct.TryGetPlacement(targetSlot,out _);
                 }
             }
             else if (heldCarton==null && product != null && product.enabled && !product.IsHeld) target=product;
@@ -241,7 +249,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         {
             if (slot==null) continue;
             bool selected=slot==targetSlot;
-            bool show=visible && (heldProduct!=null||heldCarton!=null) && slot.isActiveAndEnabled &&
+            bool show=visible && (heldProduct!=null||heldCarton!=null) && slot.isActiveAndEnabled && (heldProduct==null||slot.CanPlaceManually(heldProduct)) &&
                 (selected || (heldCarton!=null ? heldCarton.Quantity>0&&slot.CanAcceptStock(ShopCatalog.Ids[heldCarton.ProductType]) : slot.CanAccept(heldProduct)));
             slot.ShowPlacementHint(show,selected,!selected||canPlace);
         }
@@ -285,6 +293,8 @@ public sealed class PlayerInteractor : MonoBehaviour
         }
         GUI.color = previousColor;
         string placementPrompt = canPlace ? "E – Lerakás a kijelölt helyre" :
+            heldProduct!=null && targetSlot!=null && !targetSlot.CanPlaceManually(heldProduct)
+                ? (ShopCatalog.IsCigarette(ShopCatalog.Index(heldProduct.ProductId)) ? "A cigarettát a vonalkódolvasóra tedd" : "Az italt a vásárlói zóna egyik üres helyére tedd") :
             targetSlot != null && !targetSlot.AcceptsType(heldProduct) ? "Ez a hely másik termékhez tartozik" :
             targetSlot != null && !targetSlot.CanAccept(heldProduct) ? "Ez a termékhely foglalt" :
             targetSlot != null ? "Az áru nem fér el ezen a helyen" : "Nézz egy kijelölt, üres polc- vagy pulthelyre";

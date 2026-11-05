@@ -26,6 +26,7 @@ public static class CounterMatChecks
             check(Mathf.Abs(localCenter.x) < .001f && Mathf.Abs(localCenter.z) < .001f, "Visible customer mat is centered on the real product slot");
             var trigger = basket.GetComponent<BoxCollider>().bounds;
             check(trigger.min.x >= a.min.x && trigger.max.x <= a.max.x && trigger.min.z >= a.min.z && trigger.max.z <= a.max.z, "Placement footprint stays inside its visible mat");
+            check(shop.Activities.CustomerHandoverSlots.All(slot=>{var bounds=slot.GetComponent<BoxCollider>().bounds;return bounds.min.x>=a.min.x&&bounds.max.x<=a.max.x&&bounds.min.z>=a.min.z&&bounds.max.z<=a.max.z;}),"All customer handover places stay within the mat");
             var mesh = top.GetComponent<MeshFilter>().sharedMesh.bounds;
             bool inside = true;
             foreach (float x in new[] { a.min.x, a.max.x })
@@ -35,16 +36,17 @@ public static class CounterMatChecks
                     inside &= point.x > mesh.min.x + .025f && point.x < mesh.max.x - .025f && point.z > mesh.min.z + .025f && point.z < mesh.max.z - .025f;
                 }
             check(inside, "Customer mat stays inside the beveled countertop edges");
-            var product = shop.CreateCoffee(0);
-            check(player.TryHold(product), "Actual cigarette can be held for placement");
+            var product = shop.CreateCoffee(ShopCatalog.Coffee);
+            var input = shop.Activities.CustomerHandoverSlots[0];
+            check(player.TryHold(product), "Actual prepared coffee can be held for placement");
             Physics.SyncTransforms();
             player.RefreshTarget(new Ray(basket.HintCenter + Vector3.up*.65f,Vector3.down));
-            check(player.TargetSlot == basket && player.CanPlaceHeld, "Real physical ray targets the visible customer mat");
-            check(player.TryPlaceHeld() && basket.Occupant == product, "Existing use action places onto the customer mat");
-            check(product.CurrentSlot == basket && !player.HasHeldItem && shop.Ledger.Cash == cash, "Placement conserves actual product and cash");
+            check(player.TargetSlot == input && player.CanPlaceHeld, "Real physical ray targets a coffee place on the visible customer mat");
+            check(player.TryPlaceHeld() && input.Occupant == product, "Existing use action places prepared coffee onto the customer mat");
+            check(product.CurrentSlot == input && !player.HasHeldItem && shop.Ledger.Cash == cash, "Placement conserves actual product and cash");
             check(player.TryHold(product), "Placed product remains retrievable");
             player.CancelHeld();
-            check(product.CurrentSlot == basket && !product.IsHeld && basket.Occupant == product, "Cancellation safely restores the same mat and product");
+            check(product.CurrentSlot == input && !product.IsHeld && input.Occupant == product, "Cancellation safely restores the same mat and product");
             product.RemoveFromWorld();
             fixture.Prepare("ui-order");
             fixture.Action("deliver-ui-one");

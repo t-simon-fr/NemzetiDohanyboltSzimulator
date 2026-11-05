@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #77–#81: folyamatos véletlenszerű vevőérkezés, cigaretta csak a leolvasóra, három külön italátadóhely, sarokba támasztott és visszarakható seprű/ütő, lámpatestekhez kötött világítás és kijárható bejárat. **717 Unity-állítás / 31 csoport, 26 helyi WebGL-ellenőrzés, 0 böngészőhiba**; képek és tényleges interakció átnézve. [Közös jelentés](../Acceptance/2026-11-05-request-followups/REPORT.md), PR #82–#86. Pagesre még nincs kiadva.
+
 - #60 és #61: [architektúra-felmérés és refaktorterv](../Architecture/MODULARIZATION.md), illetve [bevezetett AI-workflow és pilot](AI_WORKFLOW.md). Follow-up refaktorok: #69–#74, javasolt első lépés #69. A workflow-hoz célzott suite-választás, Unity nélküli tervkimenet, futásidő-mérés és helyi dokumentációs linkellenőrző készült. 15 eszköz-önellenőrzés, 49 célzott Unity-állítás és 4 dokumentum linkellenőrzése sikeres; [bizonyíték](Evidence/2026-11-05-ai-pilot.json). A játék runtime-ja és a Pages-kiadás nem változott.
 
 - #53–#59: az új feature-csomag implementálva, Unityben, helyi WebGL-ben és vizuálisan ellenőrizve. **650 Unity-állítás / 26 csoport, 30 közös és 6 végső rendelőellenőrzés, 0 böngészőhiba**. PR #62–#68 mainre mergelve, [közös jelentés és képek](../Acceptance/2026-11-05-feature-batch/REPORT.md). Pagesre publikálva; lásd a kiadási jelentést. A #60 és #61 spike nem része ennek a csomagnak.
@@ -87,3 +89,4 @@ Workflow: [WORKFLOW.md](../WORKFLOW.md). Böngészős előfeltételek: [Acceptan
 
 - Természetes, játékos felőli kamera világ szerinti felfelé iránnyal, a játékos felé olvasható pénzdarabokkal. Tenyér/ujjak/pénz célzására E vagy bal kattintás nyitja az aprópénzválogatást; a nyitó kattintás nem választ ki pénzt. Teljes kameravisszaállítás, hatótáv/foglalt kéz/eltűnő kéz védelme ellenőrizve.
 - Unity: 469 sikeres állítás; helyi WebGL: 9 kézinterakciós + 12 aprópénzes + 15 készpénzes ellenőrzés, 0 konzolhiba. Vizuális és tényleges interakciós próba passed mindkét felbontáson. [Jelentés és képek](../Acceptance/2026-11-04-customer-hand/REPORT.md). Pagesre nem került ki.
+

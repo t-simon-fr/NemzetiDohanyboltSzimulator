@@ -30,6 +30,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     public float BrewRemaining=>brewRemaining;
     public ProductSlot CoffeeOutput { get; private set; }
     public ProductSlot BasketSlot { get; private set; }
+    public ProductSlot[] CustomerHandoverSlots { get; private set; }
     public ShopCoinOffer CoinOffer { get; private set; }
     public Transform CustomerHand=>hand;
     public ShopHandTool Bat=>bat;
@@ -46,9 +47,20 @@ public sealed partial class ShopActivities : MonoBehaviour
         metal=Mat("Brushed steel",new Color(.45f,.49f,.51f));ivory=Mat("Coffee porcelain",new Color(.90f,.87f,.78f));dark=Mat("Activities charcoal",new Color(.045f,.065f,.07f));
         coffee=Mat("Coffee",new Color(.12f,.055f,.018f));skin=Mat("Customer palm",new Color(.73f,.54f,.39f));dirt=Mat("Floor stain",new Color(.18f,.13f,.055f));
         var spare=shop.DeliverySlot.transform.parent.Find("Counter Slot 1");BasketSlot=spare!=null?spare.GetComponent<ProductSlot>():new GameObject("Customer basket handover").AddComponent<ProductSlot>();BasketSlot.transform.SetParent(shop.DeliverySlot.transform.parent,false);
-        BasketSlot.transform.localPosition=new Vector3(.47f,.012f,-.01f);BasketSlot.Configure(new Vector3(.35f,.4f,.33f));
+        BasketSlot.transform.localPosition=new Vector3(.66f,.012f,-.01f);BasketSlot.Configure(new Vector3(.35f,.4f,.33f));
         // The visible mat follows its actual placement slot and leaves the blue tray clear.
-        Box(BasketSlot.transform,"Customer basket mat",new Vector3(0,-.006f,0),new Vector3(.40f,.006f,.38f),metal);
+        Box(BasketSlot.transform,"Customer basket mat",new Vector3(0,-.006f,0),new Vector3(.74f,.006f,.66f),metal);
+        BasketSlot.SetManualPlacementRule(_=>false);
+        CustomerHandoverSlots=new ProductSlot[3];
+        for(int i=0;i<CustomerHandoverSlots.Length;i++)
+        {
+            var slot=new GameObject("Customer handover input "+i).AddComponent<ProductSlot>();
+            slot.transform.SetParent(BasketSlot.transform.parent,false);
+            slot.transform.position=BasketSlot.transform.position+shop.Counter.transform.rotation*new Vector3(i==2?-.24f:0,0,i==0?0:-.22f);
+            slot.Configure(new Vector3(.20f,.4f,.20f));
+            slot.SetManualPlacementRule(product=>ShopCatalog.Index(product.ProductId)>=0&&!ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)));
+            CustomerHandoverSlots[i]=slot;
+        }
         ProductVisuals.Text(BasketSlot.transform,"Basket handover label","VÁSÁRLÓ TERMÉKEI",new Vector3(0,.004f,.18f),Quaternion.Euler(90,180,0),.022f,Color.white);
         BuildCoffeeMachine();BuildTools();
         BuildCamera("Bejárat",new Vector3(-1.9f,2.65f,-4.12f),new Vector3(.3f,1.1f,-2.7f));
@@ -403,3 +415,4 @@ public sealed partial class ShopActivities : MonoBehaviour
         if(BasketSlot!=null)Destroy(BasketSlot.gameObject);if(worldRoot!=null)Destroy(worldRoot.gameObject);
     }
 }
+
