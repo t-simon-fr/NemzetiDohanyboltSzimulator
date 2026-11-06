@@ -61,8 +61,8 @@ public sealed partial class ShopActivities
                     ShopComputerTheme.Label(new Rect(28, 40, 1000, 60), "Kávégép az Üzletfejlesztésben · 16 000 Ft", 26);
                     return;
                 }
-                ShopComputerTheme.Label(new Rect(24, 24, 700, 62), $"Kávé   {CoffeeSupplies} adag   ·   úton {pendingCoffee}", 26, true);
-                ShopComputerTheme.Label(new Rect(24, 118, 700, 62), $"Tej   {MilkSupplies} adag   ·   úton {pendingMilk}", 26, true);
+                ShopComputerTheme.Label(new Rect(24, 24, 700, 62), $"La Vazze kávé   {CoffeeSupplies} adag   ·   úton {pendingCoffee}", 26, true);
+                ShopComputerTheme.Label(new Rect(24, 118, 700, 62), $"Albro tej   {MilkSupplies} adag   ·   úton {pendingMilk}", 26, true);
                 ShopUi.Fill(new Rect(24, 214, r.width - 48, 1), ShopComputerTheme.Rule);
                 ShopComputerTheme.Label(new Rect(24, 232, 700, 36), "Kiválasztott recept", 22);
                 ShopComputerTheme.Label(new Rect(24, 412, r.width - 48, 40), "A gépet a raktárból, kézzel töltheted fel.", 19);

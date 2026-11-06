@@ -548,6 +548,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public Vector3[] upgradeButtons;
         public int[] upgradeCosts;
         public string ingredientTarget;
+        public string ingredientBrand, heldIngredientBrand;
         public int ingredientCoffee,ingredientMilk,readyCoffee,readyMilk;
         public Rect[] cashDenominations, cashKeys;
         public int[] cashCounts;
@@ -675,6 +676,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         var targetTool=typeof(PlayerInteractor).GetField("targetTool",Private).GetValue(Player) as ShopHandTool;
         var targetPackage=targetTool!=null?targetTool.GetComponent<ShopIngredientPackage>():null;
         state.ingredientTarget=targetPackage!=null?(targetPackage.Milk>0?"milk":"coffee"):"";
+        state.ingredientBrand = targetPackage != null ? targetPackage.Brand : "";
+        var heldIngredient = Player.HeldTool != null ? Player.HeldTool.GetComponent<ShopIngredientPackage>() : null;
+        state.heldIngredientBrand = heldIngredient != null ? heldIngredient.Brand : "";
         state.ingredientCoffee=g.Activities.CoffeeSupplies;state.ingredientMilk=g.Activities.MilkSupplies;
         state.readyCoffee=g.Activities.ReadyCoffee;state.readyMilk=g.Activities.ReadyMilk;
         state.upgradesOwned = new[]{g.Layout.Expanded,g.Layout.ExtraShelfOwned,g.Activities.CoffeeOwned,g.GetComponent<ShopNextUpgrades>().FridgeOwned,g.Security.Owned};

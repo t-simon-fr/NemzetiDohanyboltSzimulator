@@ -25,7 +25,9 @@ public sealed class ShopHandTool : MonoBehaviour
             if (Kind == ShopToolKind.ContrabandBox) return "Dnyipro doboz • "+GetComponent<ShopContrabandBox>().Quantity+" db • E a pult alatti polcon: bepakolás";
             if (Kind!=ShopToolKind.CoffeeRefill) return Kind==ShopToolKind.Bat?"Baseballütő":"Seprű";
             var package=GetComponent<ShopIngredientPackage>();
-            return (package!=null&&package.Milk>0?"Tej":"Kávéalapanyag")+" • E a gépen: feltöltés";
+            return (package != null && package.Milk > 0 ? "Tej" : "Kávéalapanyag")
+                + (package != null ? " • " + package.Brand : "")
+                + " • E / bal kattintás a gépen: feltöltés";
         }
     }
     private Transform originalParent;
@@ -39,6 +41,11 @@ public sealed class ShopHandTool : MonoBehaviour
     private void LateUpdate()
     {
         if (!IsHeld) return;
+        if (Kind == ShopToolKind.CoffeeRefill)
+        {
+            transform.localRotation = Quaternion.Euler(8, -18, -5);
+            return;
+        }
         swing = Mathf.Max(0, swing - Time.deltaTime);
         float duration = Kind == ShopToolKind.Mop ? .55f : .24f;
         float angle = swing > 0 ? Mathf.Sin((duration-swing)/duration*Mathf.PI) : 0;
@@ -61,7 +68,10 @@ public sealed class ShopHandTool : MonoBehaviour
     {
         if(IsHeld||hand==null)return false;RememberHome();ShopLoosePhysics.Freeze(gameObject);
         foreach(var collider in colliders)if(collider!=null)collider.enabled=false;
-        transform.SetParent(hand,true);transform.localPosition=new Vector3(.04f,-.16f,.06f);transform.localRotation=Quaternion.Euler(-30,0,-18);IsHeld=true;return true;
+        transform.SetParent(hand,true);transform.localPosition=new Vector3(.04f,-.16f,.06f);
+        transform.localRotation = Kind == ShopToolKind.CoffeeRefill
+            ? Quaternion.Euler(8, -18, -5) : Quaternion.Euler(-30,0,-18);
+        IsHeld=true;return true;
     }
     public void Drop(Vector3 position,Vector3 velocity)
     {
@@ -81,7 +91,7 @@ public sealed class ShopFeatureTarget : MonoBehaviour
 {
     public ShopFeatureKind Kind;
     public float Cleaning { get; private set; }
-    public string Prompt=>Kind==ShopFeatureKind.CoffeeMachine?"E / bal kattintás: kávégép menüje • Alapanyaggal: feltöltés":"Seprűvel tartsd nyomva a bal egérgombot • "+Mathf.RoundToInt(Cleaning/1.5f*100)+"%";
+    public string Prompt=>Kind==ShopFeatureKind.CoffeeMachine?"E / bal kattintás: kávégép • Alapanyaggal: feltöltés":"Seprűvel tartsd nyomva a bal egérgombot • "+Mathf.RoundToInt(Cleaning/1.5f*100)+"%";
     public void Scrub(float dt)
     {
         if(Kind!=ShopFeatureKind.Spill)return;Cleaning+=Mathf.Clamp(dt,0,.1f);

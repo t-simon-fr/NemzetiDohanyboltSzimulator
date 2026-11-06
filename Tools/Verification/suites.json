@@ -45,7 +45,8 @@
       "refactor-checkout",
       "refactor-coffee",
       "refactor-day-focus",
-      "refactor-lifecycle"
+      "refactor-lifecycle",
+      "ingredient-packaging"
     ]
   },
   "suites": {
@@ -248,6 +249,11 @@
       "entry": "RefactorChecks.Lifecycle",
       "purpose": "Enable/disable subscriptions, singleton, nested focus cleanup and native resource lifetime",
       "file": "Tools/Checks/RefactorChecks.cs"
+    },
+    "ingredient-packaging": {
+      "entry": "IngredientPackagingChecks.Run",
+      "file": "Tools/Checks/IngredientPackagingChecks.cs",
+      "purpose": "Shared branded packaging geometry, readable print resources, carry/drop poses and exact refill conservation"
     }
   },
   "historicalExcluded": {
