@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "entrance-day",
+    "feature-batch"
+  ],
+  "startedUtc": "2026-11-06T20:31:25.8855645Z",
+  "source": {
+    "commit": "b6b9512eefa0578e4ccc02f55ee225a808885429",
+    "sourceFingerprint": "92180be3e5b211b3987e1571a18618c2a48125e4dd9a6ca9c1d1fbf462efaf6e",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "entry": "EntranceDayChecks.Run",
+      "failed": 0,
+      "seconds": 0.2566853,
+      "id": "entrance-day",
+      "passed": 15
+    }
+  ],
+  "result": "failed",
+  "error": "script run execution failed: {\"diagnostics\":[],\"compileMs\":64,\"executeMs\":75,\"assemblyName\":\"PipelineRunScript_FeatureBatchChecks_30322468bafd46db8b13fa1293b49c30\",\"success\":false,\"error\":\"Runtime Error\",\"errorDetails\":\"Exception: First evening offer creates a paid physical box; trade=True; oldBox=True; activeBox=False; quantity=1; funds=56000; message=Előbb pakold be az előző dobozt a pult alá.\\n  at FeatureBatchChecks+<>c__DisplayClass0_0.<Run>b__0 (System.Boolean ok, System.String name) [0x00020] in D:\\\\Projects\\\\nemzeti-dohanybolt-sim\\\\NemzetiDohanyboltSzimulator\\\\Tools\\\\Checks\\\\FeatureBatchChecks.cs:11 \\r\\n  at FeatureBatchChecks.Run () [0x00533] in D:\\\\Projects\\\\nemzeti-dohanybolt-sim\\\\NemzetiDohanyboltSzimulator\\\\Tools\\\\Checks\\\\FeatureBatchChecks.cs:43 \\r\\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\\r\\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <a8858c8db8794c73aac95c6a07c9f981>:0 \"}",
+  "compileSeconds": 0.0891191,
+  "finishedUtc": "2026-11-06T20:31:28.2979749Z",
+  "totalSeconds": 2.4213997
+}

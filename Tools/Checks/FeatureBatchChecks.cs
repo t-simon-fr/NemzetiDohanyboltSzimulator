@@ -35,11 +35,17 @@ public static class FeatureBatchChecks
             check(!g.OrderBasket(expensive)&&g.PendingQuantity(0)==0&&g.PendingQuantity(1)==0&&g.Ledger.Cash==cash,"Insufficient cash leaves every order line unchanged");
             var offers=Enumerable.Range(1,60).Select(day=>ShopAfterHours.QuantityForEvening(1234,day)).ToArray();
             check(offers.Contains(0)&&offers.Any(q=>q>0)&&offers.Distinct().Count()>3&&offers.All(q=>q>=0&&q<=10),"Night schedule includes absent evenings and bounded varying amounts");
+            // The Editor pipeline can run multiple synchronous suites before an end-of-frame.
+            // ResetDemo has already deactivated this old fixture and scheduled Destroy;
+            // finish that test-only cleanup before asserting a new evening purchase.
+            var staleBox = g.AfterHours.DeliveryBox;
+            if (staleBox != null && !staleBox.gameObject.activeSelf) Object.DestroyImmediate(staleBox.gameObject);
             ShopCheckFixtures.Fund(g,50000);
             typeof(MvpShopController).GetProperty("Phase").SetValue(g,ShopPhase.AfterHours);g.AfterHours.Enter();
             body.enabled=false;player.transform.position=g.AfterHours.Merchant.position+Vector3.right;body.enabled=true;
             int quantity=g.AfterHours.OfferedQuantity;cash=g.Ledger.Cash;
-            check(g.AfterHours.OpenTrade()&&g.AfterHours.BuyBundle(),"First evening offer creates a paid physical box");
+            bool tradeOpened = g.AfterHours.OpenTrade();
+            check(tradeOpened && g.AfterHours.BuyBundle(), "First evening offer creates a paid physical box; trade=" + tradeOpened + "; oldBox=" + (g.AfterHours.DeliveryBox != null) + "; activeBox=" + (g.AfterHours.DeliveryBox != null && g.AfterHours.DeliveryBox.gameObject.activeSelf) + "; quantity=" + quantity + "; funds=" + g.Ledger.AvailableFunds + "; message=" + g.Message);
             check(g.Ledger.Cash==cash-quantity*700 && g.StockCount(ShopCatalog.Contraband)==quantity,"Night quantity and exact purchase money agree");
             check(!g.AfterHours.BuyBundle(),"An evening cannot be purchased twice");g.AfterHours.CloseTrade();
             var box=g.AfterHours.DeliveryBox;

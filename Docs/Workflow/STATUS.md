@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #128: Fejlesztések/Bútorok menü, átrendezőbe épített katalógus és ismételt tervezés, mentéskori egyszeri fizetés, átdolgozott rács és közös 5 cm-es illesztés. **1080 natív állítás / 46 suite**, 17 vásárlási és 15 készletes átrendezési WebGL-ellenőrzés, 0 konzolhiba. A 720p/1080p felület átnézve. [Jelentés](../Acceptance/furniture-planning/REPORT.md). Pagesre nincs kiadva.
+
 - #123: négy üzlet- és négy független raktárszint, vásárolható moduláris polcok és raktári állvány, közös átrendező. **1043 állításos / 45 suite baseline, 173 végső célzott állítás; 36 bővítési és 15 készletes átrendezési WebGL-ellenőrzés**, 0 konzolhiba. 720p/1080p képek átnézve. [Jelentés](../Acceptance/expansion/REPORT.md), [méretek és alaprajz](../Architecture/Expansion/README.md). Pagesre nincs kiadva.
 
 - #125: Dnyipro csomagolás és kötözött karton frissítve. 49 célzott Unity-állítás és 5 helyi WebGL-ellenőrzés, 0 konzolhiba; 720p/1080p képek átnézve. [Jelentés](../Acceptance/dnyipro/REPORT.md). Pagesre nincs kiadva.

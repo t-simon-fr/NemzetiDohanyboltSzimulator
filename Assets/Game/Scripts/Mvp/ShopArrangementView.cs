@@ -12,12 +12,13 @@ public sealed partial class ShopArrangement
     private ShopFurniturePose preview;
     private bool dragging, previewValid;
     private string previewReason = "";
-    private GUIStyle editorTitle, editorText, editorButton, planLabel;
+    private GUIStyle planLabel;
     private Vector2 furnitureScroll;
     private float Sidebar => Mathf.Clamp(Screen.width * .25f, 260, 360);
     public string SelectedFurnitureId => selected == null ? "" : selected.Id;
     public bool Dragging => dragging;
     public bool PreviewValid => previewValid;
+    public Vector3 PreviewPosition => preview.Position;
     public string PreviewFeedback => previewReason;
 
     partial void BeginView()
@@ -28,6 +29,7 @@ public sealed partial class ShopArrangement
         arrangementCamera.orthographic = true;
         arrangementCamera.orthographicSize = 4.4f;
         selected = null;
+        shopping = false;
         dragging = false;
         hidden.Clear();
         foreach (var renderer in FindObjectsByType<Renderer>())
@@ -55,6 +57,7 @@ public sealed partial class ShopArrangement
     public void Select(ShopFurniture item)
     {
         if (!Active || !draft.ContainsKey(item)) return;
+        DiscardPurchaseGhost();
         selected = item;
         preview = draft[item];
         dragging = true;
@@ -65,35 +68,41 @@ public sealed partial class ShopArrangement
     {
         var poses = new Dictionary<ShopFurniture, ShopFurniturePose>(draft) { [selected] = preview };
         previewValid = Validate(poses, out previewReason);
+        if (purchaseGhost != null && PurchaseUnavailable(purchaseKind) != "")
+        {
+            previewValid = false;
+            previewReason = PurchaseUnavailable(purchaseKind);
+        }
     }
 
     private void Update()
     {
         if (!Active) return;
-        arrangementCamera.rect = new Rect(Sidebar / Screen.width, 0, 1 - Sidebar / Screen.width, 1);
+        arrangementCamera.rect = new Rect(0, 90f / Screen.height, 1 - Sidebar / Screen.width, 1 - 148f / Screen.height);
         arrangementCamera.orthographicSize = Mathf.Max(4.4f, (Rect.MinMaxRect(shop.Layout.WarehouseArea.xMin,-4.3f,shop.Layout.ShopArea.xMax,1.9f).width + 1) / arrangementCamera.aspect * .5f);
         if (!Application.isFocused || Keyboard.current == null) return;
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            if (dragging) { dragging = false; preview = draft[selected]; }
+            if (purchaseGhost != null) DiscardPurchaseGhost();
+            else if (dragging) { dragging = false; preview = draft[selected]; }
             else Cancel();
             return;
         }
-        if (selected != null && (Keyboard.current.qKey.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame))
+        if (selected != null && (Keyboard.current.qKey.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.rKey.wasPressedThisFrame))
         {
             int turn = Keyboard.current.qKey.wasPressedThisFrame ? -1 : 1;
-            preview = new ShopFurniturePose(preview.Position, preview.QuarterTurns + turn);
+            preview = SnapPose(selected, new ShopFurniturePose(preview.Position, preview.QuarterTurns + turn));
             dragging = true;
             ValidatePreview();
         }
         if (!dragging || Mouse.current == null) return;
         Vector2 pointer = Mouse.current.position.ReadValue();
-        if (pointer.x <= Sidebar || pointer.y >= Screen.height - 58) return;
+        if (pointer.x >= Screen.width - Sidebar || pointer.y >= Screen.height - 58 || pointer.y <= 90) return;
         var plane = new Plane(Vector3.up, Vector3.zero);
         Ray ray = arrangementCamera.ScreenPointToRay(pointer);
         if (!plane.Raycast(ray, out float distance)) return;
         Vector3 position = ray.GetPoint(distance);
-        position = new Vector3(Mathf.Round(position.x * 20) / 20, selected.DefaultPose.Position.y, Mathf.Round(position.z * 20) / 20);
+        position = SnapPose(selected, new ShopFurniturePose(position, preview.QuarterTurns)).Position;
         if ((position - preview.Position).sqrMagnitude < .001f) return;
         preview = new ShopFurniturePose(position, preview.QuarterTurns);
         ValidatePreview();
@@ -120,76 +129,115 @@ public sealed partial class ShopArrangement
         Fill(new Rect(rect.xMax-2,rect.y,2,rect.height),color);
     }
 
+    public List<ShopKeyboardTarget> EditorControls()
+    {
+        var targets = new List<ShopKeyboardTarget>();
+        float x = Screen.width - Sidebar + 12, width = Sidebar - 24;
+        targets.Add(new ShopKeyboardTarget("Editor:Owned", "Saját bútorok", new Rect(x, 72, width * .5f - 3, 40), () => { shopping = false; furnitureScroll = Vector2.zero; }));
+        targets.Add(new ShopKeyboardTarget("Editor:Catalog", "Vásárlás", new Rect(x + width * .5f + 3, 72, width * .5f - 3, 40), () => { shopping = true; furnitureScroll = Vector2.zero; }));
+        if (shopping)
+        {
+            for (int i = 0; i < CatalogNames.Length; i++)
+            {
+                int kind = i;
+                float y = 122 + i * 90 - furnitureScroll.y;
+                if (y < 122 || y + 50 > Screen.height - 310) continue;
+                targets.Add(new ShopKeyboardTarget("Editor:Buy:" + kind, CatalogNames[kind] + "\n" + ShopCatalog.Money(CatalogPrice(kind)),
+                    new Rect(x, y, width - 20, 50), () => StartPurchase(kind), PurchaseUnavailable(kind) == ""));
+            }
+        }
+        // The fixed actions stay reachable even with a long, scrolling furniture list.
+        targets.Add(new ShopKeyboardTarget("Editor:Save", PlannedCount > 0 ? "Vásárlás és mentés" : "Elrendezés mentése",
+            new Rect(Screen.width - 400, Screen.height - 62, 240, 46), () => Save()));
+        targets.Add(new ShopKeyboardTarget("Editor:Cancel", "Mégse", new Rect(Screen.width - 148, Screen.height - 62, 136, 46), Cancel));
+        if (selected != null)
+        {
+            targets.Add(new ShopKeyboardTarget("Editor:Rotate", "Forgatás • R", new Rect(x, Screen.height - 220, width, 38), () => {
+                preview = SnapPose(selected, new ShopFurniturePose(preview.Position, preview.QuarterTurns + 1));
+                dragging = true;
+                ValidatePreview();
+            }));
+            if (IsPlanned(selected)) targets.Add(new ShopKeyboardTarget("Editor:Remove", "Törlés a tervből", new Rect(x, Screen.height - 176, width, 38), () => RemovePlanned(selected)));
+        }
+        return targets;
+    }
+
     private void OnGUI()
     {
         if (!Active || arrangementCamera == null) return;
         GUI.depth = -500;
-        if (editorTitle == null)
+        var text = ShopComputerTheme.Text(16);
+        var title = ShopComputerTheme.Text(21, true);
+        if (planLabel == null) planLabel = new GUIStyle(ShopComputerTheme.Text(14, true, true)) {
+            alignment = TextAnchor.MiddleCenter, wordWrap = false, clipping = TextClipping.Clip
+        };
+        Rect area = Rect.MinMaxRect(shop.Layout.WarehouseArea.xMin, -4.3f, shop.Layout.ShopArea.xMax, 1.9f);
+        Outline(OnPlan(area), new Color(.5f, .8f, .75f));
+        DrawGrid(shop.Layout.ShopArea);
+        DrawGrid(shop.Layout.WarehouseArea);
+        foreach (Rect reserved in Protected) Fill(OnPlan(reserved), new Color(.5f, .25f, .16f, .2f));
+        foreach (var pair in draft) DrawPlanFurniture(pair.Key, pair.Key == selected && dragging ? preview : pair.Value, pair.Key == selected && dragging);
+        if (purchaseGhost != null) DrawPlanFurniture(purchaseGhost, preview, true);
+
+        Fill(new Rect(0, 0, Screen.width, 58), ShopComputerTheme.Green);
+        GUI.Label(new Rect(20, 10, Screen.width - 240, 38), "TobaccOS / Üzlet átrendezése", ShopComputerTheme.Text(23, true, true));
+        GUI.Label(new Rect(Screen.width - 220, 10, 200, 38), ShopCatalog.Money(shop.Ledger.AvailableFunds), ShopComputerTheme.Text(21, true, true));
+        Fill(new Rect(Screen.width - Sidebar, 58, Sidebar, Screen.height - 148), ShopComputerTheme.Paper);
+        float left = Screen.width - Sidebar + 12;
+        if (shopping)
         {
-            editorTitle = ShopUi.Text(22,true,true);
-            editorText = ShopUi.Text(16,false,true);
-            editorButton = ShopUi.ButtonStyle(16);
-            planLabel = new GUIStyle(editorText) { alignment=TextAnchor.MiddleCenter, fontStyle=FontStyle.Bold, fontSize=14, wordWrap=false, clipping=TextClipping.Clip };
+            var viewport = new Rect(left, 122, Sidebar - 24, Screen.height - 432);
+            furnitureScroll = GUI.BeginScrollView(viewport, furnitureScroll, new Rect(0, 0, Sidebar - 44, CatalogNames.Length * 90));
+            for (int i = 0; i < CatalogNames.Length; i++)
+            {
+                string unavailable = PurchaseUnavailable(i);
+                GUI.Label(new Rect(0, i * 90 + 54, Sidebar - 52, 34), unavailable == "" ? CatalogDetails[i] : unavailable, ShopComputerTheme.Text(14));
+            }
+            GUI.EndScrollView();
         }
-        Rect area = Rect.MinMaxRect(shop.Layout.WarehouseArea.xMin,-4.3f,shop.Layout.ShopArea.xMax,1.9f);
-        Rect screenArea = OnPlan(area);
-        Outline(screenArea, new Color(.5f,.8f,.75f));
-        // Half-metre guide lines; placement still snaps to a quarter metre.
-        for (float x = -2; x < area.xMax; x += .5f)
+        else
         {
-            Rect line = OnPlan(new Rect(x,area.yMin,.008f,area.height));
-            Fill(line,new Color(.8f,.9f,.85f,.16f));
+            GUILayout.BeginArea(new Rect(left, 122, Sidebar - 24, Screen.height - 432));
+            furnitureScroll = GUILayout.BeginScrollView(furnitureScroll);
+            foreach (var item in draft.Keys.ToArray())
+                if (GUILayout.Button(item.Title + (IsPlanned(item) ? " • ÚJ" : ""), ShopComputerTheme.Button(selected == item, 17), GUILayout.Height(44))) Select(item);
+            GUILayout.EndScrollView();
+            GUILayout.EndArea();
         }
-        for (float z = -4; z < area.yMax; z += .5f)
-            Fill(OnPlan(new Rect(area.xMin,z,area.width,.008f)),new Color(.8f,.9f,.85f,.16f));
-        foreach (Rect reserved in Protected) Fill(OnPlan(reserved),new Color(.5f,.25f,.16f,.2f));
-        if (shop.Layout.Expanded)
-            for (float z = -4.3f; z < 1.8f; z += .4f)
-                Fill(OnPlan(new Rect(2.5f,z,.025f,.2f)),new Color(.9f,.8f,.45f,.8f));
-        foreach (var pair in draft)
+        GUI.Label(new Rect(left, Screen.height - 310, Sidebar - 24, 82), dragging ? previewReason : Feedback, text);
+        if (selected != null) GUI.Label(new Rect(left, Screen.height - 132, Sidebar - 24, 32), selected.Title, text);
+        Fill(new Rect(0, Screen.height - 90, Screen.width, 90), ShopComputerTheme.Paper);
+        GUI.Label(new Rect(18, Screen.height - 85, Screen.width - 36, 24),
+            "Új bútorok: " + PlannedCount + " db   ·   Összesen: " + ShopCatalog.Money(PlannedCost) + "   ·   Marad: " + ShopCatalog.Money(RemainingFunds), title);
+        GUI.Label(new Rect(18, Screen.height - 51, Screen.width - 430, 42), "Rács: 5 cm · Kattintás: lerakás · R: forgatás · Esc: vissza", text);
+        foreach (var target in EditorControls())
         {
-            bool ghost = pair.Key == selected && dragging;
-            Rect rect = OnPlan(pair.Key.BoundsAt(ghost ? preview : pair.Value));
-            Color color = ghost ? previewValid ? new Color(.15f,.75f,.35f,.85f) : new Color(.85f,.2f,.15f,.9f) : new Color(.1f,.42f,.45f,.9f);
-            Fill(rect,color);
-            Outline(rect,Color.white);
-            GUI.Label(rect,pair.Key.InWarehouse?"R":pair.Key.Id=="drinks-fridge"?"H":"P",planLabel);
+            GUI.enabled = target.Enabled;
+            if (GUI.Button(target.Bounds, target.Label, ShopComputerTheme.Button(target.Id == "Editor:Save" || target.Id == "Editor:Buy:" + purchaseKind || target.Id == (shopping ? "Editor:Catalog" : "Editor:Owned"), 17)))
+            {
+                target.Activate();
+                GUIUtility.ExitGUI();
+            }
+            GUI.enabled = true;
         }
-        Fill(new Rect(Sidebar+12,12,Screen.width-Sidebar-24,42),ShopUi.Green);
-        GUI.Label(new Rect(Sidebar+24,18,Screen.width-Sidebar-48,32),"ÜZLET ÁTRENDEZÉSE • Előnézet",editorTitle);
-        Fill(new Rect(0,0,Sidebar,Screen.height),ShopUi.Green);
-        GUILayout.BeginArea(new Rect(16,16,Sidebar-32,Screen.height-32));
-        GUILayout.Label("BERENDEZÉS",editorTitle);
-        GUILayout.Label("A bolt szünetel. A pult, ajtók és a feltöltési útvonal fix.",editorText);
-        GUILayout.Space(12);
-        if (draft.Count == 0) GUILayout.Label("Még nincs átrendezhető berendezés. Az önkiszolgáló bővítéssel nyílik meg az első polc.",editorText);
-        furnitureScroll=GUILayout.BeginScrollView(furnitureScroll,GUILayout.MaxHeight(Screen.height*.38f));
-        foreach (var item in draft.Keys)
-            if (GUILayout.Button(item.Title + (selected==item ? " • KIJELÖLVE" : ""),editorButton,GUILayout.Height(44))) Select(item);
-        GUILayout.EndScrollView();
-        GUILayout.Space(12);
-        GUILayout.Label("Egér: pozíció\nBal kattintás: lerakás\nQ / E: forgatás\nJobb kattintás / Esc: előnézet elvetése\nRács: 0,05 m",editorText);
-        if (selected != null)
-        {
-            GUILayout.Space(8);
-            GUILayout.Label(selected.Title + " • " + preview.QuarterTurns*90 + "°",editorText);
-        }
-        GUILayout.FlexibleSpace();
-        GUILayout.Label(dragging ? previewReason : Feedback,editorText);
-        GUILayout.Space(12);
-        GUI.enabled = !dragging;
-        if (GUILayout.Button("ELRENDEZÉS MENTÉSE",editorButton,GUILayout.Height(44))) Save();
-        GUI.enabled = true;
-        if (GUILayout.Button("MÉGSE • eredeti elrendezés",editorButton,GUILayout.Height(44))) Cancel();
-        GUILayout.EndArea();
         if (!Active) return;
         var input = Event.current;
-        if (input.type != EventType.MouseDown || input.mousePosition.x <= Sidebar || input.mousePosition.y < 58) return;
-        if (input.button == 1 && dragging) { dragging=false; preview=draft[selected]; input.Use(); return; }
+        if (input.type != EventType.MouseDown || input.mousePosition.x >= Screen.width - Sidebar || input.mousePosition.y < 58 || input.mousePosition.y >= Screen.height - 90) return;
+        if (input.button == 1 && dragging)
+        {
+            if (purchaseGhost != null) DiscardPurchaseGhost();
+            else { dragging = false; preview = draft[selected]; }
+            input.Use();
+            return;
+        }
         if (input.button != 0) return;
         if (dragging)
         {
-            if (previewValid && TryPlace(selected,preview)) dragging=false;
+            if (previewValid)
+            {
+                if (purchaseGhost != null) PlacePurchase(preview);
+                else if (TryPlace(selected, preview)) dragging = false;
+            }
         }
         else
         {
@@ -197,5 +245,35 @@ public sealed partial class ShopArrangement
                 if (OnPlan(pair.Key.BoundsAt(pair.Value)).Contains(input.mousePosition)) { Select(pair.Key); break; }
         }
         input.Use();
+    }
+
+    private void DrawPlanFurniture(ShopFurniture item, ShopFurniturePose pose, bool ghost)
+    {
+        Rect rect = OnPlan(item.BoundsAt(pose));
+        Color color = ghost ? previewValid ? new Color(.15f, .65f, .3f, .65f) : new Color(.85f, .2f, .15f, .8f) :
+            IsPlanned(item) ? new Color(.36f, .48f, .2f, .8f) : new Color(.1f, .42f, .45f, .9f);
+        Fill(rect, color);
+        Outline(rect, Color.white);
+        GUI.Label(rect, ghost && purchaseGhost != null ? ShopCatalog.Money(CatalogPrice(purchaseKind)) :
+            (item.InWarehouse ? "R" : item.Id == "drinks-fridge" ? "H" : "P") + (IsPlanned(item) ? " +" : ""), planLabel);
+    }
+
+    private void DrawGrid(Rect room)
+    {
+        float pixelsPerMetre = OnPlan(new Rect(0, 0, 1, 1)).width;
+        for (int axis = 0; axis < 2; axis++)
+        {
+            float min = axis == 0 ? room.xMin : room.yMin;
+            float max = axis == 0 ? room.xMax : room.yMax;
+            for (int tick = Mathf.CeilToInt(min / GridStep); tick <= Mathf.FloorToInt(max / GridStep); tick++)
+            {
+                bool major = tick % 10 == 0, medium = tick % 2 == 0;
+                if (!major && pixelsPerMetre * (medium ? .1f : GridStep) < (medium ? 6 : 8)) continue;
+                float value = tick * GridStep;
+                Rect line = OnPlan(axis == 0 ? new Rect(value, room.yMin, 0, room.height) : new Rect(room.xMin, value, room.width, 0));
+                if (axis == 0) line.width = 1; else line.height = 1;
+                Fill(line, new Color(.92f, .95f, .87f, major ? .24f : medium ? .07f : .03f));
+            }
+        }
     }
 }

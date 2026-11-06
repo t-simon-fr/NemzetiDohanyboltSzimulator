@@ -4,6 +4,14 @@ using UnityEngine;
 
 public sealed partial class ShopArrangement : MonoBehaviour
 {
+    public const float GridStep = .05f;
+    public static ShopFurniturePose SnapPose(ShopFurniture item, ShopFurniturePose pose)
+    {
+        pose.Position.x = Mathf.Round(pose.Position.x / GridStep) * GridStep;
+        pose.Position.z = Mathf.Round(pose.Position.z / GridStep) * GridStep;
+        pose.Position.y = item.DefaultPose.Position.y;
+        return pose;
+    }
     private MvpShopController shop;
     private PlayerInteractor player;
     private readonly List<ShopFurniture> furniture = new List<ShopFurniture>();
@@ -65,9 +73,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
     public bool TryPlace(ShopFurniture item, ShopFurniturePose pose)
     {
         if (!Active || !draft.ContainsKey(item)) return false;
-        pose.Position.x = Mathf.Round(pose.Position.x / .05f) * .05f;
-        pose.Position.z = Mathf.Round(pose.Position.z / .05f) * .05f;
-        pose.Position.y = item.DefaultPose.Position.y;
+        pose = SnapPose(item, pose);
         var candidate = new Dictionary<ShopFurniture, ShopFurniturePose>(draft) { [item] = pose };
         if (!Validate(candidate, out string reason)) { Feedback = reason; return false; }
         draft = candidate;
@@ -135,6 +141,13 @@ public sealed partial class ShopArrangement : MonoBehaviour
     public bool Save()
     {
         if (!Active) return false;
+        if (dragging && purchaseGhost == null && selected != null && !TryPlace(selected, preview)) return false;
+        int cost = PlannedCost;
+        if (cost > 0 && (!shop.CanDevelopShop || cost > shop.Ledger.AvailableFunds || shop.Ledger.Closed))
+        {
+            Feedback = "Nincs elég elkölthető pénz a teljes tervre. Törölj új bútorokat a tervből.";
+            return false;
+        }
         if (!Validate(draft, out string reason))
         {
             Feedback = reason;
@@ -144,8 +157,6 @@ public sealed partial class ShopArrangement : MonoBehaviour
         try
         {
             foreach (var pair in draft) pair.Key.Apply(pair.Value);
-            Physics.SyncTransforms();
-            shop.Navigation.Rebuild();
         }
         catch
         {
@@ -153,6 +164,16 @@ public sealed partial class ShopArrangement : MonoBehaviour
             shop.Navigation.Rebuild();
             throw;
         }
+        if (cost > 0 && !shop.Ledger.TryImprove(cost))
+        {
+            foreach (var pair in original) pair.Key.Apply(pair.Value);
+            Feedback = "A vásárlás nem sikerült. A tervet megőriztük.";
+            return false;
+        }
+        CommitPlannedPurchases();
+        Physics.SyncTransforms();
+        shop.Navigation.Rebuild();
+        if (cost > 0) shop.SyncCashDrawer();
         End();
         shop.Notify("Az új üzletelrendezés elmentve. A következő napra is megmarad.");
         return true;
@@ -161,6 +182,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
     public void Cancel() { if (Active) End(); }
     private void End()
     {
+        ClearPlannedPurchases();
         EndView();
         Active = false;
         draft = null;
@@ -179,6 +201,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
     private void OnDestroy()
     {
         if (!Active) return;
+        ClearPlannedPurchases();
         EndView();
         pause.Exit();
         Active = false;
