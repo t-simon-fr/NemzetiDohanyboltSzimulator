@@ -1,0 +1,48 @@
+{
+  "started": "2026-11-06T06:53:57.418Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Actual desktop click opens upgrade screen",
+      "passed": true
+    },
+    {
+      "label": "Hover cannot trigger an upgrade purchase",
+      "passed": true
+    },
+    {
+      "label": "Hover preserves application and selected state",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-hover-label.png",
+    "1280x720-hover-button.png",
+    "1920x1080-hover-label-large.png",
+    "1920x1080-hover-header-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23250541,
+    "seconds": 282.2112659,
+    "error": "",
+    "completedUtc": "2026-11-06T06:53:13.573Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "c574aa53d6c0f76379c6ebbe6c7ea6b3d2257a183eeb28600d979ab49ed14754",
+      "AcceptanceWebGL.framework.js.unityweb": "f7654b8cd432f63fa3b7a998f4178b195503274b33d94bf34fe61f884ea8a3b7",
+      "AcceptanceWebGL.loader.js": "f125733629fee909e9a5b5c45ef3e5c20573cf8e894d7fbf1172bad8f9dfb507",
+      "AcceptanceWebGL.wasm.unityweb": "518e53fcce260ba77c3ccdfaef745bb7d619e57397aded4279d6af9340ccada3"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-06T06:54:18.593Z",
+  "capturedStateCount": 11
+}
