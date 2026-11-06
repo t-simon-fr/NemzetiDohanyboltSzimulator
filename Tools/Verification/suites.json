@@ -41,7 +41,8 @@
       "computer-ui",
       "identity-visuals",
       "refactor-purchasing",
-      "refactor-inventory"
+      "refactor-inventory",
+      "refactor-checkout"
     ]
   },
   "suites": {
@@ -224,6 +225,11 @@
       "entry": "RefactorChecks.Inventory",
       "file": "Tools/Checks/RefactorChecks.cs",
       "purpose": "Single-owner quantities, shipment timing and rollback invariants"
+    },
+    "refactor-checkout": {
+      "entry": "RefactorChecks.Checkout",
+      "purpose": "Explicit receipt ownership, repeated goods, removed items and once-only settlement",
+      "file": "Tools/Checks/RefactorChecks.cs"
     }
   },
   "historicalExcluded": {
