@@ -189,10 +189,6 @@ public sealed class ShopTrafikIdentity : MonoBehaviour
         }
         var counter = shop.Counter.transform;
         Box(counter, "Trafik counter trim", new Vector3(0, .22f, -.435f), new Vector3(3.30f, .025f, .012f), cream);
-        // Compact non-interactive lighter case at the rear counter end, away from checkout slots.
-        Box(root, "Trafik lighter case base", new Vector3(-.30f, 1.18f, -.87f), new Vector3(.65f, .035f, .46f), brown);
-        for (int i = 0; i < 6; i++)
-            Box(root, "Trafik display lighter", new Vector3(-.54f + i * .09f, 1.25f, -.87f), new Vector3(.045f, .12f, .03f), i % 2 == 0 ? red : green);
         foreach(var label in gameObject.scene.GetRootGameObjects().SelectMany(t=>t.GetComponentsInChildren<TextMesh>(true))) {
             if(label.text.Contains("türelmet"))label.text="ÖNKISZOLGÁLÓ";
             if(label.text.ToUpperInvariant().Contains("KIS BOLT. NAGY"))label.text="";

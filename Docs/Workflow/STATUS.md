@@ -4,6 +4,8 @@ A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi rés
 
 **Aktuális Pages-kiadás:** a main összes fejlesztése #92-ig publikálva. Forrás `01f105f`, publish `cb628dd`. A pontos commit Pages-státusza **built**. [Élő játék](https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/?v=01f105f), [kiadási jelentés](../Acceptance/trafik-refresh-pages/REPORT.md). Az alábbi korábbi kiadási megjegyzések történetiek.
 
+- #98: az öngyújtók és a tartó is eltávolítva. **13 célzott natív és 4 helyi WebGL-ellenőrzés**, 0 konzolhiba; két felbontás képei átnézve. [Jelentés](../Acceptance/remove-lighter-display/REPORT.md), PR #99. Pagesre még nincs kiadva.
+
 - #94 és #96: szabad raktárnyílás, az öngyújtós vitrin üvege eltávolítva. **13 célzott natív és 4 helyi WebGL-ellenőrzés**, 0 konzolhiba; két felbontás képei átnézve. [Közös jelentés](../Acceptance/stockroom-and-display-fixes/REPORT.md), PR #95/#97. Pagesre még nincs kiadva.
 
 - #92: TobaccOS hover-kontraszt javítva: világos felületen sötétbarna, sötét felületen krém felirat minden állapotban. **12 célzott natív és 4 helyi WebGL-ellenőrzés**, 0 konzolhiba; két felbontás képei átnézve. [Jelentés](../Acceptance/hover-contrast/REPORT.md), PR #93. Pagesre még nincs kiadva.
