@@ -27,3 +27,5 @@ Az alaprajzi SVG a szabad elrendezést szemlélteti. A kezdő boltban a B altern
 
 
 Vizuálisan átnézett végső nézetek: [kezdő alaprajz](1280x720-plan-0-0.png), [7 m-es bolt / hosszabb raktár](1280x720-plan-1-1.png), [9 m / széles raktár](1920x1080-plan-2-2-large.png), [11 m / nagy raktár](1920x1080-plan-3-3-large.png), [raktári állvány mentése](1280x720-warehouse-rack-saved.png), [bútorvásárlás](1920x1080-upgrades-large.png), [készletes polc mentése](1280x720-arrangement-saved.png), [hűtő és polc átrendezve](1920x1080-arrangement-large.png). 720p/1080p nézetekben minden fő vezérlő elérhető, a teljes nevek az oldalsávban olvashatók, a rövid tervjelek nem tördelődnek. A négy szint játékosnézete is átnézve, a végső validálási tolerancia nem változtatott a látványon. Eredmény: **passed**. Pages-publikálás külön kérésre.
+
+A tartós böngészős JSON-bizonyítékok minden ellenőrzést, hibát, időpontot, buildhash-t és képlistát megtartanak; az ismétlődő állapotpillanatképekből csak az utolsót tartalmazzák. A teljes nyers futások helyi Builds/Verification artifactként megmaradnak.
