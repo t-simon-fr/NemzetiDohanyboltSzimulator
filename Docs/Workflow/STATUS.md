@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #92: TobaccOS hover-kontraszt javítva: világos felületen sötétbarna, sötét felületen krém felirat minden állapotban. **12 célzott natív és 4 helyi WebGL-ellenőrzés**, 0 konzolhiba; két felbontás képei átnézve. [Jelentés](../Acceptance/hover-contrast/REPORT.md), PR #93. Pagesre még nincs kiadva.
+
 - #87–#89: falusi trafik külső/belső arculat és minimalista TobaccOS hat alkalmazással; kategóriás, gépelhető ármező, két −/+ gomb, Enter/Esc, Shift és üreskategória-védelem. **766 állításos natív baseline, 98 végső érintett és 44 friss inputellenőrzés; 31 WebGL-ellenőrzés, 0 konzolhiba**. PR #90/#91, [közös jelentés és képek](../Acceptance/2026-11-05-trafik-refresh/REPORT.md), [jóváhagyott referenciák](../Design/TrafikRefresh/README.md). Pagesre még nincs kiadva.
 
 - #77–#81: folyamatos véletlenszerű vevőérkezés, cigaretta csak a leolvasóra, három külön italátadóhely, sarokba támasztott és visszarakható seprű/ütő, lámpatestekhez kötött világítás és kijárható bejárat. **717 Unity-állítás / 31 csoport, 26 helyi WebGL-ellenőrzés, 0 böngészőhiba**; képek és tényleges interakció átnézve. [Közös jelentés](../Acceptance/2026-11-05-request-followups/REPORT.md), PR #82–#86. Pagesre még nincs kiadva.

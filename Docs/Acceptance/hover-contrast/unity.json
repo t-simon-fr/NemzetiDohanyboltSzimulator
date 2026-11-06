@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "computer-ui"
+  ],
+  "startedUtc": "2026-11-06T06:48:21.0600322Z",
+  "source": {
+    "commit": "ce8ae5f3ca9b9f5f01b96c3388ae2aa8e26c05cf",
+    "sourceFingerprint": "71ebbaed6bb9ce77062f74daac2139e2a6e10d5197eb905b6267771bf958f2f7",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "id": "computer-ui",
+      "entry": "VisualRefreshChecks.Computer",
+      "seconds": 0.7595763,
+      "failed": 0,
+      "passed": 12
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0892999,
+  "finishedUtc": "2026-11-06T06:48:27.7203079Z",
+  "totalSeconds": 6.6700071
+}

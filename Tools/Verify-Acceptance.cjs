@@ -419,6 +419,20 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'mop'); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); await sleep(2200);
       await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); s = await state(); check(s.tool === 'Mop' && s.dirt === 0, 'Mop retains held left-click cleaning'); await capture('mop-cleaned');
     }
+    if (selected === 'hover-contrast') {
+      await probe('Prepare','visual-refresh');let s=await state();
+      const app=s.computerControlIds.indexOf('OpenApp:2');await clickRect(s.computerControls[app]);s=await state();
+      const cash=s.balance;
+      check(s.computerApp==='Furnishing','Actual desktop click opens upgrade screen');
+      const move=async(x,y)=>{await send('Input.dispatchMouseEvent',{type:'mouseMoved',x,y});await sleep(350);};
+      const label=async()=>{const t=await state();return {x:t.computerScreen.x+200*t.computerScreen.width/1200,y:t.computerScreen.y+230*t.computerScreen.height/680};};
+      let point=await label();await move(point.x,point.y);await capture('hover-label');
+      s=await state();let button=s.computerControls[s.computerControlIds.indexOf('Expand:0')];await move(button.x+button.width/2,button.y+button.height/2);await capture('hover-button');
+      check((await state()).balance===cash,'Hover cannot trigger an upgrade purchase');
+      await viewport(1920,1080);point=await label();await move(point.x,point.y);await capture('hover-label-large');
+      s=await state();await move(s.computerScreen.x+150*s.computerScreen.width/1200,s.computerScreen.y+20*s.computerScreen.height/680);await capture('hover-header-large');
+      check((await state()).computerApp==='Furnishing','Hover preserves application and selected state');
+    }
     if (selected === 'visual-refresh') {
       const control=async id=>{const s=await state();const i=s.computerControlIds.indexOf(id);if(i<0)throw Error('Missing computer target '+id);return s.computerControls[i];};
       const press=async id=>clickRect(await control(id));

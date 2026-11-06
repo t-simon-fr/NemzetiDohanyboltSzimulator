@@ -2,7 +2,9 @@
 
 Aktuális Pages-kiadás: [#53–#59 új feature-csomag](2026-11-05-feature-pages/REPORT.md).
 
-Legfrissebb fejlesztés: [#87–#89 trafik arculat és minimalista TobaccOS](2026-11-05-trafik-refresh/REPORT.md): 766 állításos natív baseline, 98 és 44 friss célzott ellenőrzés, 31 WebGL-próba, 0 konzolhiba. Pagesre még nincs kiadva.
+Legfrissebb javítás: [#92 TobaccOS hover-kontraszt](hover-contrast/REPORT.md): 12 célzott natív és 4 WebGL-ellenőrzés, 0 konzolhiba; két felbontás átnézve. Pagesre még nincs kiadva.
+
+Korábbi fejlesztés: [#87–#89 trafik arculat és minimalista TobaccOS](2026-11-05-trafik-refresh/REPORT.md): 766 állításos natív baseline, 98 és 44 friss célzott ellenőrzés, 31 WebGL-próba, 0 konzolhiba. Pagesre még nincs kiadva.
 
 Korábbi fejlesztés: [#77–#81 új issue-pontosítások](2026-11-05-request-followups/REPORT.md): 717 Unity-állítás, 26 helyi WebGL-ellenőrzés, 0 böngészőhiba. Pagesre még nincs kiadva.
 

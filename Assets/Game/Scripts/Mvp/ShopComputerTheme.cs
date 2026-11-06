@@ -22,7 +22,9 @@ public static class ShopComputerTheme
                 fontSize = size, fontStyle = bold ? FontStyle.Bold : FontStyle.Normal,
                 alignment = alignment, wordWrap = true, padding = new RectOffset()
             };
-            style.normal.textColor = light ? Paper : Brown;
+            foreach (var state in new[] { style.normal, style.hover, style.active, style.focused,
+                style.onNormal, style.onHover, style.onActive, style.onFocused })
+                state.textColor = light ? Paper : Brown;
             styles[key] = style;
         }
         return style;
@@ -35,6 +37,7 @@ public static class ShopComputerTheme
         {
             style = new GUIStyle(ShopUi.ButtonStyle(size, primary));
             style.normal.textColor = primary ? Paper : Brown;
+            style.hover.textColor = primary ? Paper : Brown;
             style.normal.background = Swatch(primary ? Green : new Color(.88f, .85f, .77f));
             style.hover.background = Swatch(primary ? new Color(.14f, .35f, .24f) : new Color(.82f, .79f, .70f));
             style.focused.background = Swatch(Brown);
