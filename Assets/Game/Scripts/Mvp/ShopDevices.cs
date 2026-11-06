@@ -13,9 +13,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     [SerializeField] private CashRegisterDrawer registerDrawer;
     private MvpShopController shop;
     private Camera view;
-    private Vector3 cameraPosition;
-    private Quaternion cameraRotation;
-    private float cameraFieldOfView;
+    private readonly ShopDeviceFocus focus = new ShopDeviceFocus();
     private TextMesh monitorText, appTitle;
     private TextMesh shopStatusText;
     public Rect AppRect
@@ -40,7 +38,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     private string lastSelection = "";
     private int refreshMonitorFrame=-1;
     private Material bodyMaterial;
-    public ShopDeviceKind FocusKind { get; private set; }
+    public ShopDeviceKind FocusKind => focus.Kind;
     public bool Focused => FocusKind != ShopDeviceKind.None;
     public Vector3 MonitorPosition => monitor.position;
     public CashRegisterDrawer RegisterDrawer => registerDrawer;
@@ -203,9 +201,8 @@ public sealed partial class ShopDevices : MonoBehaviour
         if(view==null||shop==null||shop.HasHeldProduct)return;
         if (kind == ShopDeviceKind.Coins && (shop.Activities.CustomerHand == null ||
             shop.Activities.CoinOffer == null || !shop.CoinPayment || shop.Stage != ServiceStage.Payment)) return;
-        if(Focused)Release();
-        cameraPosition=view.transform.localPosition;cameraRotation=view.transform.localRotation;cameraFieldOfView=view.fieldOfView;
-        ResetKeyboardFocus();FocusKind=kind;ShopInputGate.Blocked=true;Cursor.lockState=CursorLockMode.None;Cursor.visible=true;
+        if(Focused)Release(false);
+        ResetKeyboardFocus();focus.Enter(kind, view);
         if(kind==ShopDeviceKind.Monitor)
         {
             OpenApp(ShopComputerApp.Desktop);
@@ -235,13 +232,13 @@ public sealed partial class ShopDevices : MonoBehaviour
             RegisterVisuals.Focus(view);
         }
     }
-    public void Release()
+    public void Release(bool restoreCursor = true)
     {
         if(!Focused)return;
         if (FocusKind == ShopDeviceKind.Coins) shop.Activities.SetCustomerHandFocused(false);
-        if(view!=null){view.transform.localPosition=cameraPosition;view.transform.localRotation=cameraRotation;view.fieldOfView=cameraFieldOfView;}
+        
         if(registerDrawer!=null)registerDrawer.SetOpen(false);
-        FocusKind=ShopDeviceKind.None;ShopInputGate.Blocked=false;
+        focus.Exit(restoreCursor);
     }
     private void Update()
     {

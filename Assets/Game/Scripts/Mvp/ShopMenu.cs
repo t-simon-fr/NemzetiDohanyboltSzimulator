@@ -24,36 +24,25 @@ public sealed class ShopMenu : MonoBehaviour
     public Rect InteractionBindingRect => new Rect(744, 158 + 4 * 40 - scroll.y, 148, 34);
     public bool SettingsOpen => settings;
     private MvpShopController shop;
-    private bool settings, started, oldGate, oldVisible;
-    private float previousScale = 1;
+    private bool settings, started;
+    private readonly ShopPauseScope pause = new ShopPauseScope();
     private Key waiting;
     private Vector2 scroll;
-    private CursorLockMode oldLock;
     private string feedback = "";
 
     public void Configure(MvpShopController value) { shop = value; Open(); }
     public void Open()
     {
         if (Active) return;
-        oldGate = ShopInputGate.Blocked;
-        oldLock = Cursor.lockState;
-        oldVisible = Cursor.visible;
-        previousScale = Time.timeScale;
+        pause.Enter();
         Active = true;
-        Time.timeScale = 0;
-        ShopInputGate.Blocked = true;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
     public void Resume()
     {
         Active = false;
         settings = false;
         waiting = Key.None;
-        Time.timeScale = previousScale;
-        ShopInputGate.Blocked = oldGate;
-        Cursor.lockState = oldGate ? oldLock : CursorLockMode.Locked;
-        Cursor.visible = oldGate && oldVisible;
+        pause.Exit();
     }
     private void Update()
     {
@@ -143,7 +132,7 @@ public sealed class ShopMenu : MonoBehaviour
     private void OnDestroy()
     {
         if (!Active) return;
-        Time.timeScale = previousScale;
+        pause.Exit();
         Active = false;
         ShopInputGate.Blocked = false;
     }

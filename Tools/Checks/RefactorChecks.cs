@@ -3,6 +3,45 @@ using System.Linq;
 
 public static class RefactorChecks
 {
+    public static object DayAndFocus()
+    {
+        int passed = 0;
+        void Check(bool valid, string name) { if (!valid) throw new Exception(name); passed++; }
+        var day = new ShopDayCycle(); day.Prepare(); day.TickClock(100);
+        Check(day.ClockElapsed == 0 && !day.CanEnd(true), "Preparation clock waits for the opening sign");
+        Check(day.Open() && !day.Open(), "Opening transition is accepted once");
+        day.TickClock(65); day.TickService(30);
+        Check(day.ClockElapsed == 65 && day.Elapsed == 30, "Clock and actively serviced time have separate responsibilities");
+        Check(day.Close() && !day.Close() && !day.Stay(false), "Closing rejects repeat close and occupied evening transition");
+        Check(day.CanDevelop(true, true) && !day.CanDevelop(true, false), "Closing upgrades require an empty shop");
+        Check(day.Stay(true) && day.CanEnd(true), "Empty closed shop permits evening and explicit exit");
+        day.TickClock(10); day.TickService(10);
+        Check(day.ClockElapsed == 75 && day.Elapsed == 30, "Evening clock advances without serving new arrivals");
+        day.Finish(); day.TickClock(100);
+        Check(day.ClockElapsed == 75 && !day.CanDevelop(true, true), "Summary freezes clock and construction");
+        day.Prepare();
+        Check(day.ClockElapsed == 0 && day.Elapsed == 0, "Next preparation clears both clocks");
+        var g = MvpShopController.Instance;
+        var menu = g.GetComponent<ShopMenu>();
+        var view = UnityEngine.Camera.main;
+        var position = view.transform.localPosition; var rotation = view.transform.localRotation; float fov = view.fieldOfView;
+        float scale = UnityEngine.Time.timeScale;
+        try
+        {
+            g.Devices.Focus(ShopDeviceKind.Monitor);
+            menu.Open();
+            Check(ShopMenu.Active && UnityEngine.Time.timeScale == 0 && ShopInputGate.Blocked, "Menu owns pause while nested over a device");
+            menu.Resume();
+            Check(g.Devices.FocusKind == ShopDeviceKind.Monitor && ShopInputGate.Blocked && UnityEngine.Time.timeScale == scale, "Closing nested menu restores the device focus and prior time scale");
+            g.ClosePanel();
+            Check(!ShopInputGate.Blocked && g.Devices.FocusKind == ShopDeviceKind.None, "Device exit restores world input");
+            Check(UnityEngine.Vector3.Distance(position, view.transform.localPosition) < .001f && UnityEngine.Quaternion.Angle(rotation, view.transform.localRotation) < .01f && Math.Abs(fov - view.fieldOfView) < .001f, "Focus exit restores camera pose and field of view");
+            Check(ShopInputGate.WorldActionConsumed, "Closing UI consumes the transition frame to prevent a world action leak");
+        }
+        finally { menu.Resume(); g.ClosePanel(); UnityEngine.Time.timeScale = scale; }
+        return new { passed, failed = 0 };
+    }
+
     public static object Coffee()
     {
         int passed = 0;

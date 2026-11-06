@@ -43,7 +43,8 @@
       "refactor-purchasing",
       "refactor-inventory",
       "refactor-checkout",
-      "refactor-coffee"
+      "refactor-coffee",
+      "refactor-day-focus"
     ]
   },
   "suites": {
@@ -236,6 +237,11 @@
       "entry": "RefactorChecks.Coffee",
       "file": "Tools/Checks/RefactorChecks.cs",
       "purpose": "Pure brewing, shared ingredients, delivery timing and blocked-output refunds"
+    },
+    "refactor-day-focus": {
+      "file": "Tools/Checks/RefactorChecks.cs",
+      "purpose": "Day transitions and nested UI focus, camera, time and input restoration",
+      "entry": "RefactorChecks.DayAndFocus"
     }
   },
   "historicalExcluded": {
