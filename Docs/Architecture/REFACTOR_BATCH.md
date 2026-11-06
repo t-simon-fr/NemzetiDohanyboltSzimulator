@@ -43,3 +43,25 @@ Sorrend: #69 → #70 → #71 → #72 → #73 → #74, külön commitok és függ
 - A shared world-font runtime anyag és statikus font-esemény a shop megsemmisítésekor elengedődik. Az eszköz font-eseménye enable/disable párban kapcsolódik.
 - A scanner saját hangklipjét és anyagait már elengedte; a pénzvizuál saját mesh/material tulajdona, az egyéb berendezések meglévő OnDestroy-takarítása megmaradt. Az importált kasszamodell, font, textúra és keycap mesh kölcsönzött asset, nem törölhető runtime tulajdon.
 - Assembly/GUID/namespace költöztetés, scene-regenerálás, input enum és PlayerPrefs migráció nem történt. Stripping/link.xml módosítás nem szükséges: az új modellekre közvetlen runtime hivatkozások mutatnak.
+
+## Nap- és fókuszátmenetek
+
+| Kiindulás | Esemény / feltétel | Eredmény |
+|---|---|---|
+| Felkészülés | A játékos megfordítja az ajtótáblát | Nyitva; az óra 08:00-ról indul. |
+| Nyitva | Tábla ZÁRVA állásba kerül | Zárás; új vevő nem érkezik, a bent lévők kiszolgálhatók. |
+| Zárás | Minden vevő/tolvaj távozott, nincs kézben áru | Esti maradás; az óra tovább halad, a bolt fejleszthető. |
+| Zárás vagy esti maradás | Üres bolt, üres kéz, explicit ajtóhasználat a közelben | Összesítés; a függő szállítás megérkezik, a napi könyv lezárul. |
+| Összesítés | Következő nap, nem negatív kassza | Nap + 1, felkészülés és 08:00; a készlet és megvett fejlesztések megmaradnak. |
+| Összesítés | Negatív kassza | Az összesítés marad; új játék szükséges. |
+| Bármely állapot | Új játék | Első nap, kezdőkészlet/egyenleg, modulállapotok és fejlesztések alaphelyzetben. |
+
+A napmodell órája és a vevők kiszolgálási ideje külön léptethető, a meglévő működés szerint. A kézi nyitás/zárás nem kapott új automatikus határidőt.
+
+| Fókusz | Tulajdonos és visszaállítás |
+|---|---|
+| Normál világ | Szabad mozgás, zárolt/eltakart kurzor. |
+| Eszköz | ShopDeviceFocus birtokolja a kamera-pillanatképet és a világinput tiltását. Kilépés helyreállítja a kamerát, és elfogyasztja az átmeneti képkocka világakcióját. Eszközváltás/átrendezőre váltás közben a kurzor nem kap átmeneti pointer-lock kérést. |
+| Menü | ShopPauseScope rögzíti az előző időskálát, tiltást és kurzort, Time.timeScale=0; visszatérés az előző eszköz- vagy világfókuszt állítja helyre. |
+| Átrendező | Saját szünet-scope és kamera-pillanatkép; mentés/megszakítás visszaállítja a nézetet és az időt, a lezárt UI nem indít ugyanabban a képkockában világakciót. |
+| Komponens letiltása | Menü, átrendező és eszközfókusz elengedése; a singleton és az átadó-események lekapcsolása. Újraengedélyezés visszaköti őket, bootstrap-duplikáció nélkül. |
