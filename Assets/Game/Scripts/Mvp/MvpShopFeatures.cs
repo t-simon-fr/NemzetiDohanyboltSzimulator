@@ -7,7 +7,7 @@ public enum CardTerminalStatus { Ready, Entry, Error, Approved }
 public sealed partial class MvpShopController
 {
     private readonly List<MvpCustomerActor> fleeing=new List<MvpCustomerActor>();
-    public ShopActivities Activities { get; private set; }
+    public ShopActivities Activities { get; internal set; }
     public int StolenToday { get; private set; }
     public int CaughtToday { get; private set; }
     public int FleeingCount=>fleeing.Count;

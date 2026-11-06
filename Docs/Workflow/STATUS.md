@@ -4,6 +4,8 @@ A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi rés
 
 **Aktuális Pages-kiadás:** az összes main-fejlesztés #98-ig publikálva. Forrás `b6f8868`, publish `facb53a`. A pontos commit Pages-státusza **built**. [Élő játék](https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/?v=b6f8868), [kiadási jelentés](../Acceptance/visual-fixes-pages/REPORT.md). Az alábbi korábbi kiadási megjegyzések történetiek.
 
+- #69–#74: a hat moduláris refaktor elkészült: beszerzés, készlet/szállítás, checkout, kávégép, nap/fókusz, bootstrap/erőforrás-élettartam. **852 natív állítás / 40 csoport**, közös WebGL-build, **123 különböző sikeres böngészős ellenőrzés**, 0 konzolhiba. [Közös jelentés](../Acceptance/modular-refactor/REPORT.md), [modulhatárok](../Architecture/REFACTOR_BATCH.md), PR #100–#105. A futtató három régi UI-célzási hibája javítva, a sikeres részeket megtartottuk. Pagesre még nincs kiadva.
+
 - #98: az öngyújtók és a tartó is eltávolítva. **13 célzott natív és 4 helyi WebGL-ellenőrzés**, 0 konzolhiba; két felbontás képei átnézve. [Jelentés](../Acceptance/remove-lighter-display/REPORT.md), PR #99. Pagesre publikálva; lásd a fenti kiadási jelentést.
 
 - #94 és #96: szabad raktárnyílás, az öngyújtós vitrin üvege eltávolítva. **13 célzott natív és 4 helyi WebGL-ellenőrzés**, 0 konzolhiba; két felbontás képei átnézve. [Közös jelentés](../Acceptance/stockroom-and-display-fixes/REPORT.md), PR #95/#97. Pagesre publikálva; lásd a fenti kiadási jelentést.
@@ -14,7 +16,7 @@ A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi rés
 
 - #77–#81: folyamatos véletlenszerű vevőérkezés, cigaretta csak a leolvasóra, három külön italátadóhely, sarokba támasztott és visszarakható seprű/ütő, lámpatestekhez kötött világítás és kijárható bejárat. **717 Unity-állítás / 31 csoport, 26 helyi WebGL-ellenőrzés, 0 böngészőhiba**; képek és tényleges interakció átnézve. [Közös jelentés](../Acceptance/2026-11-05-request-followups/REPORT.md), PR #82–#86. Pagesre még nincs kiadva.
 
-- #60 és #61: [architektúra-felmérés és refaktorterv](../Architecture/MODULARIZATION.md), illetve [bevezetett AI-workflow és pilot](AI_WORKFLOW.md). Follow-up refaktorok: #69–#74, javasolt első lépés #69. A workflow-hoz célzott suite-választás, Unity nélküli tervkimenet, futásidő-mérés és helyi dokumentációs linkellenőrző készült. 15 eszköz-önellenőrzés, 49 célzott Unity-állítás és 4 dokumentum linkellenőrzése sikeres; [bizonyíték](Evidence/2026-11-05-ai-pilot.json). A játék runtime-ja és a Pages-kiadás nem változott.
+- #60 és #61: [architektúra-felmérés és refaktorterv](../Architecture/MODULARIZATION.md), illetve [bevezetett AI-workflow és pilot](AI_WORKFLOW.md). A #69–#74 follow-up refaktorok azóta elkészültek; lásd a fenti közös jelentést. A workflow-hoz célzott suite-választás, Unity nélküli tervkimenet, futásidő-mérés és helyi dokumentációs linkellenőrző készült. 15 eszköz-önellenőrzés, 49 célzott Unity-állítás és 4 dokumentum linkellenőrzése sikeres; [bizonyíték](Evidence/2026-11-05-ai-pilot.json). A játék runtime-ja és a Pages-kiadás nem változott.
 
 - #53–#59: az új feature-csomag implementálva, Unityben, helyi WebGL-ben és vizuálisan ellenőrizve. **650 Unity-állítás / 26 csoport, 30 közös és 6 végső rendelőellenőrzés, 0 böngészőhiba**. PR #62–#68 mainre mergelve, [közös jelentés és képek](../Acceptance/2026-11-05-feature-batch/REPORT.md). Pagesre publikálva; lásd a kiadási jelentést. A #60 és #61 spike nem része ennek a csomagnak.
 

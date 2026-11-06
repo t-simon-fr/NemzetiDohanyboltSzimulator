@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 
 // Runtime migration preserves the authored scene and its materials/fixtures.
@@ -10,13 +9,13 @@ public sealed class ShopFloorPlan : MonoBehaviour
     public static readonly Vector3 StaffExit = new Vector3(-1.35f, 0, .15f);
     public static readonly Vector3 CustomerPassage = new Vector3(.9f, 0, .15f);
     public static Rect PurchasedArea(bool expanded) => Rect.MinMaxRect(-2.4f, -4.3f, expanded ? 6.4f : 2.4f, 1.8f);
-    private Transform[] authored;
+    public ShopSceneBindings Bindings { get; private set; }
 
-    public Transform Find(string title) => authored.FirstOrDefault(t => t != null && t.name == title);
+    public Transform Find(string title) => Bindings.Find(title);
 
     public void Configure(MvpShopController shop, PlayerInteractor player)
     {
-        authored = gameObject.scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Transform>(true)).ToArray();
+        Bindings = new ShopSceneBindings(gameObject.scene);
         Find("Counter Assembly").SetPositionAndRotation(new Vector3(-.35f, .55f, -2.25f), Quaternion.Euler(0, -90, 0));
         Find("Cigarette rack").SetPositionAndRotation(new Vector3(-2.18f, 0, -2.2f), Quaternion.Euler(0, -90, 0));
         Find("Extra Cigarette Shelf").SetPositionAndRotation(new Vector3(1.25f, 0, 1.48f), Quaternion.identity);

@@ -5,8 +5,7 @@ using UnityEngine;
 // Runtime art pass: authored scene assets, stock and collision stay owned by their systems.
 public sealed class ShopTrafikIdentity : MonoBehaviour
 {
-    private readonly List<Material> owned = new List<Material>();
-    private readonly List<Mesh> meshes = new List<Mesh>();
+    private readonly ShopRuntimeResources resources = new ShopRuntimeResources();
     private Transform root;
     private Mesh roofMesh;
     private Transform rightGutter,rightDrain,chimney,chimneyCap;
@@ -56,7 +55,7 @@ public sealed class ShopTrafikIdentity : MonoBehaviour
     {
         var material = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = title, color = color };
         material.SetFloat("_Smoothness", .12f);
-        owned.Add(material);
+        resources.Own(material);
         return material;
     }
 
@@ -136,7 +135,7 @@ public sealed class ShopTrafikIdentity : MonoBehaviour
         mesh.triangles = new[] { 0,3,1, 1,3,4, 1,4,2, 2,4,5, 0,1,2, 3,5,4 };
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
-        meshes.Add(mesh);roofMesh=mesh;
+        resources.Own(mesh);roofMesh=mesh;
         var roof = new GameObject("Trafik pitched roof");
         roof.transform.SetParent(root, false);
         roof.AddComponent<MeshFilter>().sharedMesh = mesh;
@@ -215,7 +214,6 @@ public sealed class ShopTrafikIdentity : MonoBehaviour
 
     private void OnDestroy()
     {
-        foreach (var material in owned) if (material != null) Destroy(material);
-        foreach (var mesh in meshes) if (mesh != null) Destroy(mesh);
+        resources.Dispose();
     }
 }

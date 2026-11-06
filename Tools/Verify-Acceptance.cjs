@@ -12,6 +12,13 @@ const report = { started: new Date().toISOString(), viewport: null, checks: [], 
 let server, browser, ws, width = 1280, height = 720, lastState, captureFailure;
 const messages = [];
 const selected = process.argv.find(a => a.startsWith('--case='))?.split('=')[1];
+const refactorCases = new Set(["cash-register","hand-interaction","warehouse-storage","physical-terminal","triple","requests-batch","cart-only","coffee-display","menu","arrangement","summary"]);
+const refactorUiCases = new Set(['cart-only', 'coffee-display', 'menu', 'arrangement', 'summary']);
+const batchCase = name => {
+  if (selected === 'refactor-batch') return refactorCases.has(name);
+  if (selected === 'refactor-ui') return refactorUiCases.has(name);
+  return selected === 'refactor-arrangement' && ['arrangement', 'summary'].includes(name);
+};
 const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); console.log((ok ? 'PASS ' : 'FAIL ') + label); if (!ok) throw Error(label); };
 
 (async () => {
@@ -138,7 +145,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
     await clickRect((await state()).menuStart);
     check(!(await state()).menu, 'Main menu starts by mouse');
 
-    if (!selected || selected === 'cash-register') {
+    if (!selected || (selected === 'cash-register' || batchCase('cash-register'))) {
       const amount = text => Number(text.replace(/[^0-9]/g, ''));
       const normalFov = (await state()).cameraFov;
       await probe('Prepare', 'cash'); await sleep(500); let s = await state();
@@ -171,7 +178,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.device === 'None' && !s.menu && s.cameraFov === normalFov, 'Escape leaves register and restores original lens');
     }
 
-    if (!selected || selected === 'hand-interaction') {
+    if (!selected || (selected === 'hand-interaction' || batchCase('hand-interaction'))) {
       await probe('Prepare', 'hand-interaction'); let s = await state();
       const balance = s.balance, normalFov = s.cameraFov;
       check(s.device === 'None' && s.lookingAtHand && s.handPrompt.includes('Aprópénz'), 'Normal view targets the actual offered palm with a useful prompt');
@@ -279,7 +286,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await viewport(1280,720);
     }
 
-    if (!selected || selected === 'warehouse-storage') {
+    if (!selected || (selected === 'warehouse-storage' || batchCase('warehouse-storage'))) {
       // Pointer-locked world clicks must not move the cursor and rotate the camera.
       const worldClick = async () => {
         await send('Input.dispatchMouseEvent', { type:'mousePressed', x:width/2, y:height/2, button:'left', clickCount:1 }); await sleep(100);
@@ -365,7 +372,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'summary'); await hold([sprint, forward, jump], 900); s = await state();
       check(s.position.z > -4.4 && s.phase === 'AfterHours', 'Sprint and jump cannot cross real shop entrance boundary');
     }
-    if (!selected || selected === 'physical-terminal' || selected === 'closing-fixes') {
+    if (!selected || (selected === 'physical-terminal' || batchCase('physical-terminal')) || selected === 'closing-fixes') {
       await probe('Prepare', 'card'); let s = await state(); const balance = s.balance;
       check(s.device === 'Terminal', 'Card checkout focuses actual terminal');
       for (let digit = 0; digit < 10; digit++) {
@@ -402,7 +409,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await enter(); s = await state(); check(s.sales === 1 && s.balance === opening + 2200 && s.drawer === s.balance, 'Exact card input credits unified physical drawer');
       await enter(); check((await state()).sales === 1, 'Repeated Enter cannot double charge'); await capture('card-paid');
     }
-    if (!selected || selected === 'triple') {
+    if (!selected || (selected === 'triple' || batchCase('triple'))) {
       await probe('Prepare', 'triple'); const s = await state();
       check(s.received === 3 && s.missing === 0 && s.stage === 'Payment', 'Three identical cigarettes recognized');
       check(s.receipts.every((p, i) => s.receipts.every((q, j) => i === j || Math.hypot(p.x - q.x, p.z - q.z) > .2)), 'Three identical items have separate positions'); await capture('triple');
@@ -511,7 +518,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','design-exterior');await capture('exterior-large');
       await probe('Action','design-interior');await capture('interior-large');
     }
-    if (selected === 'requests-batch') {
+    if ((selected === 'requests-batch' || batchCase('requests-batch'))) {
       const worldClick=async()=>{
         await send('Input.dispatchMouseEvent',{type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(90);
         await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(300);
@@ -568,24 +575,27 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
       check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
     }
-    if (selected === 'new-features' || selected === 'cart-only') {
+    if (selected === 'new-features' || (selected === 'cart-only' || batchCase('cart-only'))) {
       await viewport(1280,720);
       await probe('Prepare','feature-cart'); let s=await state(); const balance=s.balance;
       check(s.clock==='08:00' && s.cartQuantities.every(q=>q===0),'Cart opens empty before the 08:00 shift');
       const fill = async (rect,value) => {
-        await clickRect(rect); await key('Backspace','Backspace',8);
+        await clickRect(rect);
+        await send('Input.dispatchKeyEvent',{type:'keyDown',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await send('Input.dispatchKeyEvent',{type:'keyUp',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await key('Backspace','Backspace',8);
         await send('Input.dispatchKeyEvent',{type:'char',text:String(value),unmodifiedText:String(value)}); await sleep(300);
       };
       await fill(s.cartFields[0],2); await fill((await state()).cartFields[1],3); s=await state();
       check(s.cartQuantities[0]===2 && s.cartQuantities[1]===3 && s.balance===balance,'Actual quantity fields accept distinct typed values without purchasing');
-      await click(s.cartFields[0].x+53+16,s.cartFields[0].y+15);
+      await clickRect(s.computerControls[s.computerControlIds.indexOf('Cart:Plus:0')]);
       check((await state()).cartQuantities[0]===3,'Mouse plus increases only the chosen product');
-      await click(s.cartFields[0].x-37+16,s.cartFields[0].y+15); s=await state();
+      s=await state(); await clickRect(s.computerControls[s.computerControlIds.indexOf('Cart:Minus:0')]); s=await state();
       check(s.cartQuantities[0]===2 && s.cartQuantities[1]===3,'Mouse minus decreases only the chosen product');
       await capture('cart-typed'); await clickRect(s.cartSubmit); s=await state();
       check(s.pendingCart[0]===2 && s.pendingCart[1]===3 && s.balance===balance-7800 && s.balance===s.drawer,'One mouse confirmation submits every cart row and exact total');
       await viewport(1920,1080); await capture('cart-submitted-large'); await viewport(1280,720);
-      if (selected !== 'cart-only') {
+      if (selected !== 'cart-only' && selected !== 'refactor-batch' && selected !== 'refactor-ui') {
       await probe('Prepare','feature-scanner'); s=await state(); const scans=s.scannerCount;
       await capture('scanner-ready'); await key('e','KeyE',69); s=await state();
       check(s.scannerCount===scans+1 && s.scannerProduct==='cig_red' && s.stage==='Payment' && !s.held,'Actual E scans one held product before transferring it to the customer');
@@ -610,7 +620,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','view-private-storage'); await capture('private-two-rows'); await viewport(1920,1080); await capture('private-two-rows-large'); await viewport(1280,720);
       }
     }
-    if (!selected || selected === 'coffee-display' || selected === 'new-features') {
+    if (!selected || (selected === 'coffee-display' || batchCase('coffee-display')) || selected === 'new-features') {
       await viewport(1280, 720);
       await probe('Prepare', 'coffee-display'); await key('e', 'KeyE', 69); let s = await state();
       check(s.device === 'Coffee' && s.coffeeScreenStatus === 'KÉSZENLÉT', 'Actual E opens own coffee machine display');
@@ -678,7 +688,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await key('t', 'KeyT', 84); s = await state(); check(s.modal === 'None' && s.order.includes('Marlbroke') && s.sales === 0, 'Inline reply accepts available alternative without charging');
       await probe('Prepare', 'refuse'); await capture('dialogue-multi-item'); await key('t', 'KeyT', 84); s = await state(); check(s.missed === 1 && !s.order && s.sales === 0, 'Customer refuses substitution and leaves without charge');
     }
-    if (!selected || selected === 'menu') {
+    if (!selected || (selected === 'menu' || batchCase('menu'))) {
       await probe('Prepare', 'pickup'); await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); let s = await state();
       check(s.menu && s.timeScale === 0 && s.blocked, 'Escape pauses world and input');
       const position = s.position, pausedElapsed = s.elapsed; await key('w', 'KeyW', 87); await sleep(500); s = await state(); check(Math.abs(position.z - s.position.z) < .01 && !s.held && s.elapsed === pausedElapsed, 'Pause blocks clock, movement and world interaction'); await capture('pause');
@@ -722,14 +732,15 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await clickRect((await state()).menuBack); await clickRect((await state()).menuStart);
       check(!(await state()).menu, 'Settings back and menu resume work by mouse at large viewport');
     }
-    if (!selected || selected === 'arrangement') {
+    if (!selected || (selected === 'arrangement' || batchCase('arrangement'))) {
+      await viewport(1280, 720);
       await probe('Prepare', 'arrangement');
       let s = await state();
       const money = s.balance, item = s.stockedItem;
       await capture('arrangement-monitor');
       const openEditor = async () => {
         const current = await state();
-        await click(current.arrangeButton.x, height - current.arrangeButton.y);
+        await clickRect(current.computerControls[current.computerControlIds.indexOf('Arrange:0')]);
         check((await state()).arranging, 'TobaccOS mouse button enters arrangement');
       };
       const movePointer = async point => {
@@ -848,7 +859,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(s.day === 2 && s.phase === 'Preparing' && s.modal === 'None' && s.elapsed === 0, 'Next day has no welcome modal and awaits sign');
       await capture('entrance-next-day');
     }
-    if (!selected || selected === 'summary') {
+    if (!selected || (selected === 'summary' || batchCase('summary'))) {
       await probe('Prepare', 'summary'); let s = await state(); check(s.phase === 'AfterHours' && s.modal === 'None', 'Closed shop stays playable'); await key('e', 'KeyE', 69); s = await state(); check(s.phase === 'Summary', 'Door interaction ends day'); await capture('summary');
       await enter(); s = await state(); check(s.day === 2 && s.phase === 'Preparing' && s.balance === s.drawer, 'Enter starts next day preserving drawer'); await capture('next-day');
     }

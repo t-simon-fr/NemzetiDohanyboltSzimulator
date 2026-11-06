@@ -1,0 +1,46 @@
+{
+  "started": "2026-11-06T09:21:06.295Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Cart opens empty before the 08:00 shift",
+      "passed": true
+    },
+    {
+      "label": "Actual quantity fields accept distinct typed values without purchasing",
+      "passed": true
+    },
+    {
+      "label": "Mouse plus increases only the chosen product",
+      "passed": false
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-failure.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23277959,
+    "seconds": 516.7458478,
+    "error": "",
+    "completedUtc": "2026-11-06T09:17:28.88Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "727743b1f0033183e0e1c85cdc01bf0c09d19c0411893084c69e44613d5a7ef3",
+      "AcceptanceWebGL.framework.js.unityweb": "3b9da4984f087250bca150c8b8cb258a705477e3537ca0b13cf8395c5502d9bc",
+      "AcceptanceWebGL.loader.js": "c70d2c2636fbfdc55c38f6b132fc00a5570d96844a20633a2bce836f9fca54d5",
+      "AcceptanceWebGL.wasm.unityweb": "9acb9316a1aec65a1596d999a6ff6b69e86c9c9165e3f17de721adcee9bee0a8"
+    }
+  },
+  "result": "failed",
+  "failure": "Error: Mouse plus increases only the chosen product\n    at check (D:\\Projects\\nemzeti-dohanybolt-sim\\NemzetiDohanyboltSzimulator\\Tools\\Verify-Acceptance.cjs:18:139)\n    at D:\\Projects\\nemzeti-dohanybolt-sim\\NemzetiDohanyboltSzimulator\\Tools\\Verify-Acceptance.cjs:588:7",
+  "finished": "2026-11-06T09:21:24.886Z",
+  "capturedStateCount": 7
+}

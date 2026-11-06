@@ -24,7 +24,8 @@ public sealed partial class ShopDevices : MonoBehaviour
         }
     }
     private string furnishingFeedback="";
-    private readonly List<Material> screenMaterials = new List<Material>();
+    private readonly ShopRuntimeResources resources = new ShopRuntimeResources();
+    private bool initialized;
     private Material screenBackground, screenCard, screenAccent, screenBar;
     private int orderQuantity = 3, lastOrderType = -1;
     private bool lastOrderSucceeded;
@@ -55,14 +56,15 @@ public sealed partial class ShopDevices : MonoBehaviour
     private void Start()
     {
         shop = GetComponent<MvpShopController>(); view = Camera.main;
-        bodyMaterial = Material(new Color(.045f,.06f,.07f));
+        bodyMaterial = resources.Own(Material(new Color(.045f,.06f,.07f)));
         MoneyVisuals = gameObject.AddComponent<ShopMoneyVisuals>();
         RegisterVisuals = gameObject.AddComponent<ShopRegisterVisuals>();
         RegisterVisuals.Configure(tillAssembly, registerDrawer, keypad, tillDisplay);
         BuildMonitor(); BuildDrawer(); RegisterVisuals.BuildKeys(keypad);
         Terminal = new GameObject("Bank card terminal").AddComponent<ShopCardTerminal>();
         Terminal.Configure(shop, tillAssembly);
-        Font.textureRebuilt+=OnFontTextureRebuilt;
+        initialized = true;
+        SubscribeFont();
     }
     private static Material Material(Color color) => new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = color };
     private GameObject Box(Transform parent, string name, Vector3 position, Vector3 scale, Material material)
@@ -81,7 +83,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     }
     private Material ScreenMaterial(string name,Color color)
     {
-        var m=new Material(Shader.Find("Universal Render Pipeline/Unlit")){name=name,color=color};screenMaterials.Add(m);return m;
+        var m=new Material(Shader.Find("Universal Render Pipeline/Unlit")){name=name,color=color};resources.Own(m);return m;
     }
     private GameObject ScreenPanel(Transform parent,string name,Vector3 position,Vector3 size,Material material)
     {
@@ -236,7 +238,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     {
         if(!Focused)return;
         if (FocusKind == ShopDeviceKind.Coins) shop.Activities.SetCustomerHandFocused(false);
-        
+
         if(registerDrawer!=null)registerDrawer.SetOpen(false);
         focus.Exit(restoreCursor);
     }
@@ -281,7 +283,9 @@ public sealed partial class ShopDevices : MonoBehaviour
                 Money(root.transform,v,Vector3.zero,.8f);selectedVisuals.Add(root);index++;
             }
     }
-    private void OnDisable()=>Release();
+    private void SubscribeFont() { Font.textureRebuilt -= OnFontTextureRebuilt; Font.textureRebuilt += OnFontTextureRebuilt; }
+    private void OnEnable() { if (initialized) SubscribeFont(); }
+    private void OnDisable() { Font.textureRebuilt -= OnFontTextureRebuilt; Release(); }
     private void OnDestroy()
-    { Font.textureRebuilt-=OnFontTextureRebuilt;if(bodyMaterial!=null)Destroy(bodyMaterial);foreach(var material in screenMaterials)if(material!=null)Destroy(material); }
+    { Font.textureRebuilt -= OnFontTextureRebuilt; resources.Dispose(); }
 }

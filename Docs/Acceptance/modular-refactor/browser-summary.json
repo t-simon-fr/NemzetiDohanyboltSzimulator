@@ -1,0 +1,11 @@
+{
+  "result": "passed",
+  "runtimeSource": "c3dfd3d1353914fe1aa7c2829423e3260786d895",
+  "successfulAssertions": 132,
+  "uniqueSuccessfulLabels": 123,
+  "runnerFailuresResolved": 3,
+  "unresolvedFailures": 0,
+  "consoleErrors": 0,
+  "identicalBuildAcrossRuns": true,
+  "policy": "Carry successful prefixes; repeat only failed UI inputs and remaining checks after runner-only fixes; runtime unchanged."
+}

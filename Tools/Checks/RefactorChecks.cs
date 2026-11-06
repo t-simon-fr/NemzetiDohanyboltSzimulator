@@ -3,6 +3,61 @@ using System.Linq;
 
 public static class RefactorChecks
 {
+    public static object Lifecycle()
+    {
+        int passed = 0;
+        void Check(bool valid, string name) { if (!valid) throw new Exception(name); passed++; }
+        var resources = new ShopRuntimeResources();
+        var mesh = resources.Own(new UnityEngine.Mesh());
+        resources.Own(mesh);
+        var texture = resources.Own(new UnityEngine.RenderTexture(16, 16, 0)); texture.Create();
+        resources.Own(UnityEngine.AudioClip.Create("Ownership test", 10, 1, 8000, false));
+        Check(resources.Count == 3, "Duplicate ownership does not double-register native resources");
+        resources.Dispose(); resources.Dispose();
+        Check(resources.Count == 0 && !texture.IsCreated(), "Disposal is idempotent and immediately releases render texture storage");
+        bool rejected = false;
+        try { resources.Own(mesh); } catch (ObjectDisposedException) { rejected = true; }
+        Check(rejected, "Disposed owner cannot silently acquire orphan resources");
+        var g = MvpShopController.Instance;
+        var slots = new[] { g.DeliverySlot, g.Activities.BasketSlot }.Concat(g.Activities.CustomerHandoverSlots).ToArray();
+        int CountBindings(ProductSlot slot)
+        {
+            var callback = typeof(ProductSlot).GetField("ProductPlaced", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(slot) as Delegate;
+            return callback == null ? 0 : callback.GetInvocationList().Count(handler => ReferenceEquals(handler.Target, g));
+        }
+        var floor = g.FloorPlan;
+        var counter = floor.Find("Counter Assembly"); string original = counter.name;
+        try
+        {
+            counter.name = "Temporarily renamed authored binding";
+            Check(floor.Find(original) == counter, "Cached scene reference survives an authored object's later rename");
+        }
+        finally { counter.name = original; }
+        try
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                g.enabled = false;
+                Check(MvpShopController.Instance == null && slots.All(slot => CountBindings(slot) == 0), "Disable releases singleton and all delivery subscriptions: " + i);
+                g.enabled = true;
+                Check(MvpShopController.Instance == g && slots.All(slot => CountBindings(slot) == 1), "Enable restores exactly one subscription per handover slot: " + i);
+            }
+            g.ResetDemo();
+            Check(slots.All(slot => CountBindings(slot) == 1) && g.GetComponents<ShopActivities>().Length == 1 && g.GetComponents<ShopFloorPlan>().Length == 1,
+                "New game preserves subscriptions without duplicating bootstrap components");
+            g.Devices.Focus(ShopDeviceKind.Monitor);
+            g.GetComponent<ShopMenu>().Open();
+            g.enabled = false; g.enabled = true;
+            Check(!ShopMenu.Active && !g.Devices.Focused && !ShopInputGate.Blocked && UnityEngine.Time.timeScale == 1,
+                "Disabling during nested UI releases focus, pause and input state");
+            g.Devices.enabled = false; g.Devices.enabled = true;
+            g.Devices.Focus(ShopDeviceKind.Monitor);
+            Check(g.Devices.Focused, "Re-enabled device adapter remains usable");
+        }
+        finally { g.enabled = true; g.Devices.enabled = true; g.GetComponent<ShopMenu>().Resume(); g.ClosePanel(); g.ResetDemo(); }
+        return new { passed, failed = 0 };
+    }
+
     public static object DayAndFocus()
     {
         int passed = 0;

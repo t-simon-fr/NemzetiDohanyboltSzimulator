@@ -1,0 +1,166 @@
+{
+  "started": "2026-11-06T09:22:37.504Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Cart opens empty before the 08:00 shift",
+      "passed": true
+    },
+    {
+      "label": "Actual quantity fields accept distinct typed values without purchasing",
+      "passed": true
+    },
+    {
+      "label": "Mouse plus increases only the chosen product",
+      "passed": true
+    },
+    {
+      "label": "Mouse minus decreases only the chosen product",
+      "passed": true
+    },
+    {
+      "label": "One mouse confirmation submits every cart row and exact total",
+      "passed": true
+    },
+    {
+      "label": "Actual E opens own coffee machine display",
+      "passed": true
+    },
+    {
+      "label": "Physical touchscreen selects latte",
+      "passed": true
+    },
+    {
+      "label": "Machine starts real brew and displays ingredient/progress state",
+      "passed": true
+    },
+    {
+      "label": "Busy physical recipe key cannot change drink or consume twice",
+      "passed": true
+    },
+    {
+      "label": "Escape exits machine without opening pause menu",
+      "passed": true
+    },
+    {
+      "label": "Pause freezes real ongoing brew",
+      "passed": true
+    },
+    {
+      "label": "Resuming pause restores active world context",
+      "passed": true
+    },
+    {
+      "label": "Machine finishes after leaving view and reports actual ready latte",
+      "passed": true
+    },
+    {
+      "label": "Physical take gives actual cup without same-click replacement",
+      "passed": true
+    },
+    {
+      "label": "Physical touchscreen brews actual coffee",
+      "passed": true
+    },
+    {
+      "label": "Physical take collects coffee",
+      "passed": true
+    },
+    {
+      "label": "Physical touchscreen brews actual coffee_long",
+      "passed": true
+    },
+    {
+      "label": "Physical take collects coffee_long",
+      "passed": true
+    },
+    {
+      "label": "Three physical coffee recipes preserve exact stock and money",
+      "passed": true
+    },
+    {
+      "label": "Machine display explains latte milk shortage",
+      "passed": true
+    },
+    {
+      "label": "Disabled physical brew does not consume stock",
+      "passed": true
+    },
+    {
+      "label": "Machine display continuously reports coffee shortage",
+      "passed": true
+    },
+    {
+      "label": "Number key does not bypass menu recipe selection",
+      "passed": true
+    },
+    {
+      "label": "Escape pauses world and input",
+      "passed": true
+    },
+    {
+      "label": "Pause blocks clock, movement and world interaction",
+      "passed": true
+    },
+    {
+      "label": "Settings rebind interaction through actual GUI",
+      "passed": true
+    },
+    {
+      "label": "Binding survives WebGL reload",
+      "passed": true
+    },
+    {
+      "label": "Persisted remapped key operates real pickup",
+      "passed": true
+    },
+    {
+      "label": "Settings restore defaults through GUI",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": false
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-cart-typed.png",
+    "1920x1080-cart-submitted-large.png",
+    "1280x720-coffee-display-ready.png",
+    "1280x720-coffee-display-brewing.png",
+    "1280x720-coffee-display-latte.png",
+    "1920x1080-coffee-display-no-milk-large.png",
+    "1920x1080-coffee-display-no-coffee-large.png",
+    "1280x720-pause.png",
+    "1280x720-settings.png",
+    "1280x720-settings-persisted.png",
+    "1920x1080-settings-large.png",
+    "1920x1080-arrangement-monitor.png",
+    "1920x1080-failure.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23277959,
+    "seconds": 516.7458478,
+    "error": "",
+    "completedUtc": "2026-11-06T09:17:28.88Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "727743b1f0033183e0e1c85cdc01bf0c09d19c0411893084c69e44613d5a7ef3",
+      "AcceptanceWebGL.framework.js.unityweb": "3b9da4984f087250bca150c8b8cb258a705477e3537ca0b13cf8395c5502d9bc",
+      "AcceptanceWebGL.loader.js": "c70d2c2636fbfdc55c38f6b132fc00a5570d96844a20633a2bce836f9fca54d5",
+      "AcceptanceWebGL.wasm.unityweb": "9acb9316a1aec65a1596d999a6ff6b69e86c9c9165e3f17de721adcee9bee0a8"
+    }
+  },
+  "result": "failed",
+  "failure": "Error: TobaccOS mouse button enters arrangement\n    at check (D:\\Projects\\nemzeti-dohanybolt-sim\\NemzetiDohanyboltSzimulator\\Tools\\Verify-Acceptance.cjs:18:139)\n    at openEditor (D:\\Projects\\nemzeti-dohanybolt-sim\\NemzetiDohanyboltSzimulator\\Tools\\Verify-Acceptance.cjs:739:9)\n    at async D:\\Projects\\nemzeti-dohanybolt-sim\\NemzetiDohanyboltSzimulator\\Tools\\Verify-Acceptance.cjs:745:7",
+  "finished": "2026-11-06T09:23:52.725Z",
+  "capturedStateCount": 83
+}

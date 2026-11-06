@@ -11,7 +11,7 @@ public sealed class ShopRegisterVisuals : MonoBehaviour
     public bool NeedsReframe(Camera camera) => Mathf.Abs(camera.aspect - framedAspect) > .01f;
     private TMP_FontAsset font;
     private Mesh keyMesh;
-    private readonly List<Material> materials = new List<Material>();
+    private readonly ShopRuntimeResources resources = new ShopRuntimeResources();
     private TMP_Text dueTitle, due, received, change, selected;
     public string DisplayDue => due.text;
     public string DisplayReceived => received.text;
@@ -88,7 +88,7 @@ public sealed class ShopRegisterVisuals : MonoBehaviour
     {
         var material = new Material(Shader.Find(unlit ? "Universal Render Pipeline/Unlit" : "Universal Render Pipeline/Lit")) { name = title, color = color };
         if (!unlit) material.SetFloat("_Smoothness", .2f);
-        materials.Add(material);
+        resources.Own(material);
         return material;
     }
 
@@ -171,6 +171,6 @@ public sealed class ShopRegisterVisuals : MonoBehaviour
 
     private void OnDestroy()
     {
-        foreach (var material in materials) if (material != null) Destroy(material);
+        resources.Dispose();
     }
 }

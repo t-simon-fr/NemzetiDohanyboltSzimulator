@@ -11,7 +11,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     private PlayerInteractor player;
     private Transform worldRoot,coffeeRoot,hand;
     private float coinViewYaw;
-    private readonly List<Material> materials=new List<Material>();
+    private readonly ShopRuntimeResources resources = new ShopRuntimeResources();
     private readonly List<Camera> cameras=new List<Camera>();
     private readonly List<RenderTexture> cameraImages=new List<RenderTexture>();
     private readonly List<ShopFeatureTarget> spills=new List<ShopFeatureTarget>();
@@ -70,7 +70,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         BuildCamera("Önkiszolgáló",new Vector3(6.15f,2.65f,1.55f),new Vector3(3.6f,1,-2.5f));
         ResetFeatures();
     }
-    private Material Mat(string name,Color color){var material=new Material(Shader.Find("Universal Render Pipeline/Lit")){name=name,color=color};materials.Add(material);return material;}
+    private Material Mat(string name,Color color){var material=new Material(Shader.Find("Universal Render Pipeline/Lit")){name=name,color=color};resources.Own(material);return material;}
     private static GameObject Shape(Transform parent,string name,Vector3 position,Vector3 scale,Material material,PrimitiveType type=PrimitiveType.Cube,bool collision=false)
     {
         var item=GameObject.CreatePrimitive(type);item.name=name;item.transform.SetParent(parent,false);item.transform.localPosition=position;item.transform.localScale=scale;item.GetComponent<Renderer>().sharedMaterial=material;
@@ -142,7 +142,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         model.transform.SetParent(parent,false);
         var mesh = new Mesh { name = "Original tapered baseball bat" };
         mesh.vertices = vertices; mesh.triangles = triangles.ToArray(); mesh.RecalculateNormals(); mesh.RecalculateBounds();
-        model.AddComponent<MeshFilter>().sharedMesh = mesh;
+        model.AddComponent<MeshFilter>().sharedMesh = resources.Own(mesh);
         model.AddComponent<MeshRenderer>().sharedMaterial = Mat("Bat varnished wood",new Color(.62f,.40f,.20f));
         for (int i = 0; i < 12; i++)
             Shape(parent,"Bat grip wrap",new Vector3(0,.06f+i*.014f,0),new Vector3(.018f,.004f,.018f),dark,PrimitiveType.Cylinder);
@@ -153,7 +153,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         Box(mount,"Camera housing",Vector3.zero,new Vector3(.21f,.12f,.27f),ivory);
         Shape(mount,"Camera lens",new Vector3(0,0,.15f),new Vector3(.085f,.035f,.085f),dark,PrimitiveType.Cylinder).transform.localRotation=Quaternion.Euler(90,0,0);
         var eye=new GameObject("CCTV view - "+name).AddComponent<Camera>();eye.transform.SetParent(mount,false);eye.transform.localPosition=Vector3.forward*.2f;eye.fieldOfView=78;eye.nearClipPlane=.05f;eye.farClipPlane=25;eye.enabled=false;
-        var rt=new RenderTexture(480,270,16){name="CCTV - "+name};rt.Create();eye.targetTexture=rt;cameras.Add(eye);cameraImages.Add(rt);
+        var rt=new RenderTexture(480,270,16){name="CCTV - "+name};rt.Create();resources.Own(rt);eye.targetTexture=rt;cameras.Add(eye);cameraImages.Add(rt);
     }
     public bool BuyCoffeeMachine()
     {
@@ -441,7 +441,9 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     private void OnDestroy()
     {
-        ClearHand();foreach(var rt in cameraImages){rt.Release();Destroy(rt);}foreach(var material in materials)if(material!=null)Destroy(material);
+        ClearHand();
+        foreach (var camera in cameras) if (camera != null) camera.targetTexture = null;
+        resources.Dispose();
         if(BasketSlot!=null)Destroy(BasketSlot.gameObject);if(worldRoot!=null)Destroy(worldRoot.gameObject);
     }
 }
