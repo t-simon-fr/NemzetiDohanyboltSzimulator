@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "feature-batch",
+    "door-storage"
+  ],
+  "startedUtc": "2026-11-06T17:09:55.7775255Z",
+  "source": {
+    "commit": "3dab399c959d6a78a47758c1e0b9e240bd457053",
+    "sourceFingerprint": "0f2537037678d7fc4167676fd0f32953c45aaf8853199494d19801d3453fddab",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "id": "feature-batch",
+      "failed": 0,
+      "passed": 22,
+      "seconds": 0.818038,
+      "entry": "FeatureBatchChecks.Run"
+    },
+    {
+      "id": "door-storage",
+      "failed": 0,
+      "passed": 27,
+      "seconds": 0.2790522,
+      "entry": "DoorStorageChecks.Run"
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0733676,
+  "finishedUtc": "2026-11-06T17:10:02.1580839Z",
+  "totalSeconds": 6.3920965
+}

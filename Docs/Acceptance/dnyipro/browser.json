@@ -1,0 +1,6118 @@
+{
+  "started": "2026-11-06T17:14:42.781Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Dnyipro merchant offers a real shipment",
+      "passed": true
+    },
+    {
+      "label": "Dnyipro carton purchase preserves exact stock and price",
+      "passed": true
+    },
+    {
+      "label": "E carries the redesigned carton",
+      "passed": true
+    },
+    {
+      "label": "E unpacks redesigned packs without stock loss",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-dnyipro-carton.png",
+    "1280x720-dnyipro-packs.png",
+    "1920x1080-dnyipro-packs-large.png"
+  ],
+  "states": [
+    {
+      "offeredQuantity": 0,
+      "boxedQuantity": 0,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "Preparing",
+      "modal": "None",
+      "message": "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": true,
+      "blocked": true,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": false,
+      "applicationFocused": true,
+      "cursorLocked": false,
+      "balance": 6000,
+      "drawer": 6000,
+      "sales": 0,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 0,
+      "position": {
+        "x": -1.399999976158142,
+        "y": 0.05000000074505806,
+        "z": -2.299999952316284
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": 573.408447265625,
+        "y": 157.8041229248047,
+        "z": 5.149999618530273
+      },
+      "badTarget": {
+        "x": 922.3568725585938,
+        "y": -32.94670867919922,
+        "z": 2.6500000953674316
+      },
+      "fridgeTarget": {
+        "x": 330.7655029296875,
+        "y": 190.68150329589844,
+        "z": 6.149998664855957
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 1577.67724609375,
+        "y": 596.13525390625,
+        "width": 62.587646484375,
+        "height": 27.2635498046875
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 1612.58154296875,
+        "y": 621.1775512695312,
+        "width": 66.28564453125,
+        "height": 29.23565673828125
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": false,
+      "verticalSpeed": 0,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 1537.021728515625,
+          "y": 621.1776123046875,
+          "width": 63.5093994140625,
+          "height": 29.235595703125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1414.62646484375,
+          "y": 551.0821533203125,
+          "width": 52.88916015625,
+          "height": 23.89398193359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1446.9122314453125,
+          "y": 551.0821533203125,
+          "width": 53.9520263671875,
+          "height": 23.89398193359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1479.19775390625,
+          "y": 551.0821533203125,
+          "width": 55.01513671875,
+          "height": 23.8939208984375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1441.46337890625,
+          "y": 572.8283081054688,
+          "width": 55.6990966796875,
+          "height": 25.49176025390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1474.867431640625,
+          "y": 572.8283081054688,
+          "width": 56.838623046875,
+          "height": 25.49176025390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1508.271484375,
+          "y": 572.8283081054688,
+          "width": 57.97802734375,
+          "height": 25.49176025390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1470.226318359375,
+          "y": 596.1353149414062,
+          "width": 58.786376953125,
+          "height": 27.26348876953125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1504.829345703125,
+          "y": 596.1353149414062,
+          "width": 60.0107421875,
+          "height": 27.26348876953125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1539.43212890625,
+          "y": 596.13525390625,
+          "width": 61.234619140625,
+          "height": 27.2635498046875
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 1514.881591796875,
+        "y": 551.0821533203125,
+        "width": 56.1903076171875,
+        "height": 23.8939208984375
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 1545.191650390625,
+        "y": 572.8282470703125,
+        "width": 59.2373046875,
+        "height": 25.4918212890625
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 6000,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": -138.708251953125,
+        "y": 428.7719421386719,
+        "width": 140.44940185546875,
+        "height": 15.168525695800781
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        4,
+        6,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "",
+      "cashReceived": "",
+      "cashChange": "",
+      "cashSelected": "",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    },
+    {
+      "offeredQuantity": 0,
+      "boxedQuantity": 0,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "Preparing",
+      "modal": "None",
+      "message": "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": false,
+      "blocked": false,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": false,
+      "applicationFocused": true,
+      "cursorLocked": true,
+      "balance": 6000,
+      "drawer": 6000,
+      "sales": 0,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -1.399999976158142,
+        "y": 0.05000000074505806,
+        "z": -2.299999952316284
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": 573.408447265625,
+        "y": 157.8041229248047,
+        "z": 5.149999618530273
+      },
+      "badTarget": {
+        "x": 922.3568725585938,
+        "y": -32.94670867919922,
+        "z": 2.6500000953674316
+      },
+      "fridgeTarget": {
+        "x": 330.7655029296875,
+        "y": 190.68150329589844,
+        "z": 6.149998664855957
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 1577.67724609375,
+        "y": 596.13525390625,
+        "width": 62.587646484375,
+        "height": 27.2635498046875
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 1612.58154296875,
+        "y": 621.1775512695312,
+        "width": 66.28564453125,
+        "height": 29.23565673828125
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.119999885559082,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 1537.021728515625,
+          "y": 621.1776123046875,
+          "width": 63.5093994140625,
+          "height": 29.235595703125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1414.62646484375,
+          "y": 551.0821533203125,
+          "width": 52.88916015625,
+          "height": 23.89398193359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1446.9122314453125,
+          "y": 551.0821533203125,
+          "width": 53.9520263671875,
+          "height": 23.89398193359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1479.19775390625,
+          "y": 551.0821533203125,
+          "width": 55.01513671875,
+          "height": 23.8939208984375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1441.46337890625,
+          "y": 572.8283081054688,
+          "width": 55.6990966796875,
+          "height": 25.49176025390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1474.867431640625,
+          "y": 572.8283081054688,
+          "width": 56.838623046875,
+          "height": 25.49176025390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1508.271484375,
+          "y": 572.8283081054688,
+          "width": 57.97802734375,
+          "height": 25.49176025390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1470.226318359375,
+          "y": 596.1353149414062,
+          "width": 58.786376953125,
+          "height": 27.26348876953125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1504.829345703125,
+          "y": 596.1353149414062,
+          "width": 60.0107421875,
+          "height": 27.26348876953125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1539.43212890625,
+          "y": 596.13525390625,
+          "width": 61.234619140625,
+          "height": 27.2635498046875
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 1514.881591796875,
+        "y": 551.0821533203125,
+        "width": 56.1903076171875,
+        "height": 23.8939208984375
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 1545.191650390625,
+        "y": 572.8282470703125,
+        "width": 59.2373046875,
+        "height": 25.4918212890625
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 6000,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": -138.708251953125,
+        "y": 428.7719421386719,
+        "width": 140.44940185546875,
+        "height": 15.168525695800781
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        4,
+        6,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "6 000 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    },
+    {
+      "offeredQuantity": 7,
+      "boxedQuantity": 0,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "AfterHours",
+      "modal": "None",
+      "message": "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": false,
+      "blocked": false,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": true,
+      "applicationFocused": true,
+      "cursorLocked": true,
+      "balance": 56000,
+      "drawer": 56000,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -5.300000190734863,
+        "y": 0.12999999523162842,
+        "z": 4.599999904632568
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": -219.24827575683594,
+        "y": 407.882080078125,
+        "z": 6.567392826080322
+      },
+      "badTarget": {
+        "x": 142.775390625,
+        "y": 443.2813415527344,
+        "z": 8.213945388793945
+      },
+      "fridgeTarget": {
+        "x": -846.6665649414062,
+        "y": 309.33758544921875,
+        "z": 4.215174674987793
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 260.9090881347656,
+        "y": 173.66876220703125,
+        "width": 5.2017822265625,
+        "height": 2.6160888671875
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 264.15069580078125,
+        "y": 175.724853515625,
+        "width": 5.1746826171875,
+        "height": 2.62188720703125
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.119999885559082,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 258.84625244140625,
+          "y": 176.28900146484375,
+          "width": 5.282958984375,
+          "height": 2.66131591796875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 246.29702758789062,
+          "y": 170.2545166015625,
+          "width": 5.4211883544921875,
+          "height": 2.66229248046875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 248.94500732421875,
+          "y": 170.02227783203125,
+          "width": 5.367095947265625,
+          "height": 2.6434326171875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 251.55758666992188,
+          "y": 169.79302978515625,
+          "width": 5.313934326171875,
+          "height": 2.6248779296875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 249.62997436523438,
+          "y": 172.36181640625,
+          "width": 5.392608642578125,
+          "height": 2.66839599609375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 252.25265502929688,
+          "y": 172.11578369140625,
+          "width": 5.33892822265625,
+          "height": 2.64935302734375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 254.84031677246094,
+          "y": 171.8729248046875,
+          "width": 5.2861785888671875,
+          "height": 2.63067626953125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 252.95555114746094,
+          "y": 174.46453857421875,
+          "width": 5.3641510009765625,
+          "height": 2.67437744140625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 255.5530548095703,
+          "y": 174.20465087890625,
+          "width": 5.3108673095703125,
+          "height": 2.65533447265625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 258.1158752441406,
+          "y": 173.9482421875,
+          "width": 5.258575439453125,
+          "height": 2.63653564453125
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 254.40487670898438,
+        "y": 169.54327392578125,
+        "width": 5.256256103515625,
+        "height": 2.6044921875
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 257.6604919433594,
+        "y": 171.60821533203125,
+        "width": 5.228912353515625,
+        "height": 2.6103515625
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 56000,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": 54.83864974975586,
+        "y": 160.3575897216797,
+        "width": 18.90591049194336,
+        "height": 3.375533103942871
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        2,
+        1,
+        0,
+        1,
+        1,
+        2,
+        4,
+        6,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "6 000 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    },
+    {
+      "offeredQuantity": 7,
+      "boxedQuantity": 0,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": true,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "AfterHours",
+      "modal": "None",
+      "message": "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": false,
+      "blocked": true,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": true,
+      "applicationFocused": true,
+      "cursorLocked": false,
+      "balance": 56000,
+      "drawer": 56000,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -5.300000190734863,
+        "y": 0.07999992370605469,
+        "z": 5.124999523162842
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": -161.06224060058594,
+        "y": 424.5442199707031,
+        "z": 7.044421672821045
+      },
+      "badTarget": {
+        "x": 170.0670166015625,
+        "y": 454.8437194824219,
+        "z": 8.690974235534668
+      },
+      "fridgeTarget": {
+        "x": -695.525634765625,
+        "y": 344.3709411621094,
+        "z": 4.692203521728516
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 281.9825439453125,
+        "y": 167.71759033203125,
+        "width": 4.7821044921875,
+        "height": 2.4473876953125
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 285.02264404296875,
+        "y": 169.6661376953125,
+        "width": 4.75823974609375,
+        "height": 2.45257568359375
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.200000047683716,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 280.2947692871094,
+          "y": 170.11846923828125,
+          "width": 4.851165771484375,
+          "height": 2.487060546875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 268.6623840332031,
+          "y": 164.3665771484375,
+          "width": 4.971710205078125,
+          "height": 2.487548828125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 271.0189514160156,
+          "y": 164.18450927734375,
+          "width": 4.925323486328125,
+          "height": 2.4710693359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 273.3457946777344,
+          "y": 164.0047607421875,
+          "width": 4.879730224609375,
+          "height": 2.45477294921875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 271.78289794921875,
+          "y": 166.361083984375,
+          "width": 4.946563720703125,
+          "height": 2.492919921875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 274.1172790527344,
+          "y": 166.16656494140625,
+          "width": 4.9005126953125,
+          "height": 2.47637939453125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 276.42218017578125,
+          "y": 165.974609375,
+          "width": 4.85528564453125,
+          "height": 2.4599609375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 274.89691162109375,
+          "y": 168.351318359375,
+          "width": 4.921539306640625,
+          "height": 2.4984130859375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 277.20916748046875,
+          "y": 168.14453125,
+          "width": 4.875823974609375,
+          "height": 2.48175048828125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 279.49224853515625,
+          "y": 167.94036865234375,
+          "width": 4.8309326171875,
+          "height": 2.46533203125
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 275.8836364746094,
+        "y": 163.80865478515625,
+        "width": 4.8302001953125,
+        "height": 2.43695068359375
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 278.9361877441406,
+        "y": 165.76507568359375,
+        "width": 4.806121826171875,
+        "height": 2.4422607421875
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 56000,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": 102.9450912475586,
+        "y": 152.831787109375,
+        "width": 16.019678115844727,
+        "height": 3.062054395675659
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        2,
+        1,
+        0,
+        1,
+        1,
+        2,
+        4,
+        6,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "56 000 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    },
+    {
+      "offeredQuantity": 7,
+      "boxedQuantity": 7,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon",
+        "dnyipro"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": true,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "AfterHours",
+      "modal": "None",
+      "message": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": false,
+      "blocked": true,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": true,
+      "applicationFocused": true,
+      "cursorLocked": false,
+      "balance": 51100,
+      "drawer": 51100,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -5.300000190734863,
+        "y": 0.07999992370605469,
+        "z": 5.124999523162842
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": -161.06224060058594,
+        "y": 424.5442199707031,
+        "z": 7.044421672821045
+      },
+      "badTarget": {
+        "x": 170.0670166015625,
+        "y": 454.8437194824219,
+        "z": 8.690974235534668
+      },
+      "fridgeTarget": {
+        "x": -695.525634765625,
+        "y": 344.3709411621094,
+        "z": 4.692203521728516
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 281.9825439453125,
+        "y": 167.71759033203125,
+        "width": 4.7821044921875,
+        "height": 2.4473876953125
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 285.02264404296875,
+        "y": 169.6661376953125,
+        "width": 4.75823974609375,
+        "height": 2.45257568359375
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.200000047683716,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 280.2947692871094,
+          "y": 170.11846923828125,
+          "width": 4.851165771484375,
+          "height": 2.487060546875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 268.6623840332031,
+          "y": 164.3665771484375,
+          "width": 4.971710205078125,
+          "height": 2.487548828125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 271.0189514160156,
+          "y": 164.18450927734375,
+          "width": 4.925323486328125,
+          "height": 2.4710693359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 273.3457946777344,
+          "y": 164.0047607421875,
+          "width": 4.879730224609375,
+          "height": 2.45477294921875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 271.78289794921875,
+          "y": 166.361083984375,
+          "width": 4.946563720703125,
+          "height": 2.492919921875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 274.1172790527344,
+          "y": 166.16656494140625,
+          "width": 4.9005126953125,
+          "height": 2.47637939453125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 276.42218017578125,
+          "y": 165.974609375,
+          "width": 4.85528564453125,
+          "height": 2.4599609375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 274.89691162109375,
+          "y": 168.351318359375,
+          "width": 4.921539306640625,
+          "height": 2.4984130859375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 277.20916748046875,
+          "y": 168.14453125,
+          "width": 4.875823974609375,
+          "height": 2.48175048828125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 279.49224853515625,
+          "y": 167.94036865234375,
+          "width": 4.8309326171875,
+          "height": 2.46533203125
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 275.8836364746094,
+        "y": 163.80865478515625,
+        "width": 4.8302001953125,
+        "height": 2.43695068359375
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 278.9361877441406,
+        "y": 165.76507568359375,
+        "width": 4.806121826171875,
+        "height": 2.4422607421875
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 51100,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": 102.9450912475586,
+        "y": 152.831787109375,
+        "width": 16.019678115844727,
+        "height": 3.062054395675659
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        2,
+        4,
+        7,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "51 100 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    },
+    {
+      "offeredQuantity": 7,
+      "boxedQuantity": 7,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon",
+        "dnyipro"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "AfterHours",
+      "modal": "None",
+      "message": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": false,
+      "blocked": false,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": true,
+      "applicationFocused": true,
+      "cursorLocked": true,
+      "balance": 51100,
+      "drawer": 51100,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -5.300000190734863,
+        "y": 0.12999999523162842,
+        "z": 5.549999713897705
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": -217.76634216308594,
+        "y": 702.6910400390625,
+        "z": 6.578738212585449
+      },
+      "badTarget": {
+        "x": 121.28456115722656,
+        "y": 739.5565795898438,
+        "z": 7.87363338470459
+      },
+      "fridgeTarget": {
+        "x": -685.1651000976562,
+        "y": 615.003173828125,
+        "z": 4.728888511657715
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 217.22679138183594,
+        "y": -152.727294921875,
+        "width": 6.1568756103515625,
+        "height": 3.58599853515625
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 221.3898468017578,
+        "y": -149.8837890625,
+        "width": 6.1111907958984375,
+        "height": 3.5830078125
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.0999999046325684,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 216.22421264648438,
+          "y": -149.1842041015625,
+          "width": 6.22509765625,
+          "height": 3.62860107421875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 200.888671875,
+          "y": -157.56658935546875,
+          "width": 6.4246826171875,
+          "height": 3.65960693359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 203.4813232421875,
+          "y": -157.856201171875,
+          "width": 6.367279052734375,
+          "height": 3.63751220703125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 206.04351806640625,
+          "y": -158.142333984375,
+          "width": 6.310760498046875,
+          "height": 3.615478515625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 205.1884765625,
+          "y": -154.6455078125,
+          "width": 6.37628173828125,
+          "height": 3.65655517578125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 207.7495574951172,
+          "y": -154.95159912109375,
+          "width": 6.3195037841796875,
+          "height": 3.634521484375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 210.28053283691406,
+          "y": -155.25396728515625,
+          "width": 6.2636260986328125,
+          "height": 3.61260986328125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 209.46739196777344,
+          "y": -151.73858642578125,
+          "width": 6.3282012939453125,
+          "height": 3.65350341796875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 211.99710083007812,
+          "y": -152.0609130859375,
+          "width": 6.272125244140625,
+          "height": 3.6314697265625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 214.49725341796875,
+          "y": -152.3795166015625,
+          "width": 6.216888427734375,
+          "height": 3.60980224609375
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 208.84066772460938,
+        "y": -158.45477294921875,
+        "width": 6.24932861328125,
+        "height": 3.5916748046875
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 213.0437469482422,
+        "y": -155.58416748046875,
+        "width": 6.2028961181640625,
+        "height": 3.58880615234375
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 51100,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": 22.16732406616211,
+        "y": -173.3876190185547,
+        "width": 10.466607093811035,
+        "height": 4.499996662139893
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        2,
+        4,
+        7,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "51 100 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    },
+    {
+      "offeredQuantity": 7,
+      "boxedQuantity": 7,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon",
+        "dnyipro"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "AfterHours",
+      "modal": "None",
+      "message": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "ContrabandBox",
+      "menu": false,
+      "blocked": false,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": false,
+      "applicationFocused": true,
+      "cursorLocked": true,
+      "balance": 51100,
+      "drawer": 51100,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -5.300000190734863,
+        "y": 0.07999986410140991,
+        "z": 5.190000057220459
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": -286.3560485839844,
+        "y": 742.2504272460938,
+        "z": 6.091633319854736
+      },
+      "badTarget": {
+        "x": 82.29209899902344,
+        "y": 783.8336791992188,
+        "z": 7.323145866394043
+      },
+      "fridgeTarget": {
+        "x": -806.4639282226562,
+        "y": 641.8358154296875,
+        "z": 4.33233118057251
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 178.389404296875,
+        "y": -214.01953125,
+        "width": 6.997528076171875,
+        "height": 4.08856201171875
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 183.10177612304688,
+        "y": -210.7613525390625,
+        "width": 6.940460205078125,
+        "height": 4.08294677734375
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.119999885559082,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 177.24639892578125,
+          "y": -210.0120849609375,
+          "width": 7.0765380859375,
+          "height": 4.13653564453125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 159.8503875732422,
+          "y": -219.65618896484375,
+          "width": 7.3236083984375,
+          "height": 4.1798095703125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 162.7978515625,
+          "y": -219.960693359375,
+          "width": 7.2547607421875,
+          "height": 4.1536865234375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 165.7093505859375,
+          "y": -220.26165771484375,
+          "width": 7.18695068359375,
+          "height": 4.12786865234375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 164.73167419433594,
+          "y": -216.3017578125,
+          "width": 7.2628021240234375,
+          "height": 4.17388916015625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 167.64102172851562,
+          "y": -216.62591552734375,
+          "width": 7.19476318359375,
+          "height": 4.1478271484375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 170.51486206054688,
+          "y": -216.94635009765625,
+          "width": 7.1278839111328125,
+          "height": 4.122314453125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 169.5854949951172,
+          "y": -212.96636962890625,
+          "width": 7.2025604248046875,
+          "height": 4.16827392578125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 172.45709228515625,
+          "y": -213.30987548828125,
+          "width": 7.1353759765625,
+          "height": 4.1422119140625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 175.29380798339844,
+          "y": -213.64923095703125,
+          "width": 7.0693206787109375,
+          "height": 4.11663818359375
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 168.8861846923828,
+        "y": -220.58984375,
+        "width": 7.1133880615234375,
+        "height": 4.099609375
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 173.65089416503906,
+        "y": -217.2957763671875,
+        "width": 7.0552520751953125,
+        "height": 4.09417724609375
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": false,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 51100,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": -47.198814392089844,
+        "y": -239.95086669921875,
+        "width": 10.895505905151367,
+        "height": 5.230687618255615
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        2,
+        4,
+        7,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "51 100 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    },
+    {
+      "offeredQuantity": 7,
+      "boxedQuantity": 7,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon",
+        "dnyipro"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "AfterHours",
+      "modal": "None",
+      "message": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "ContrabandBox",
+      "menu": false,
+      "blocked": false,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": false,
+      "applicationFocused": true,
+      "cursorLocked": true,
+      "balance": 51100,
+      "drawer": 51100,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -1.5799999237060547,
+        "y": 0.12999999523162842,
+        "z": -2.690000057220459
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": 510.38421630859375,
+        "y": 817.795654296875,
+        "z": 4.522031784057617
+      },
+      "badTarget": {
+        "x": 804.5733642578125,
+        "y": 621.2247314453125,
+        "z": 3.068936824798584
+      },
+      "fridgeTarget": {
+        "x": 219.68666076660156,
+        "y": 865.080322265625,
+        "z": 5.103269100189209
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 1289.91845703125,
+        "y": -48.51239013671875,
+        "width": 54.8994140625,
+        "height": 27.9383544921875
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 1290.16650390625,
+        "y": -22.760009765625,
+        "width": 54.931396484375,
+        "height": 27.8525390625
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.119999885559082,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 1222.5933837890625,
+          "y": -22.760009765625,
+          "width": 52.076904296875,
+          "height": 27.8525390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1189.866943359375,
+          "y": -99.95703125,
+          "width": 50.63427734375,
+          "height": 28.10968017578125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1221.9276123046875,
+          "y": -99.95703125,
+          "width": 51.9869384765625,
+          "height": 28.10968017578125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1253.9881591796875,
+          "y": -99.95703125,
+          "width": 53.339599609375,
+          "height": 28.10968017578125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1190.0765380859375,
+          "y": -74.2447509765625,
+          "width": 50.6630859375,
+          "height": 28.0240478515625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1222.1495361328125,
+          "y": -74.2447509765625,
+          "width": 52.0167236328125,
+          "height": 28.024169921875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1254.22216796875,
+          "y": -74.2447509765625,
+          "width": 53.37060546875,
+          "height": 28.0240478515625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1190.2862548828125,
+          "y": -48.51239013671875,
+          "width": 50.6920166015625,
+          "height": 27.93841552734375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1222.371337890625,
+          "y": -48.51239013671875,
+          "width": 52.046875,
+          "height": 27.93841552734375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1254.456298828125,
+          "y": -48.51239013671875,
+          "width": 53.401611328125,
+          "height": 27.9383544921875
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 1289.423583984375,
+        "y": -99.95703125,
+        "width": 54.83447265625,
+        "height": 28.10968017578125
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 1289.6710205078125,
+        "y": -74.2447509765625,
+        "width": 54.866943359375,
+        "height": 28.0240478515625
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": false,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 51100,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": -407.1401062011719,
+        "y": -299.04547119140625,
+        "width": 43.72629928588867,
+        "height": 25.62090492248535
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        2,
+        4,
+        7,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "51 100 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    },
+    {
+      "offeredQuantity": 7,
+      "boxedQuantity": 0,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon",
+        "dnyipro"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "AfterHours",
+      "modal": "None",
+      "message": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": false,
+      "blocked": false,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": true,
+      "applicationFocused": true,
+      "cursorLocked": true,
+      "balance": 51100,
+      "drawer": 51100,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -1.5799999237060547,
+        "y": 0.07999980449676514,
+        "z": -2.690000057220459
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": 509.2074279785156,
+        "y": 825.995849609375,
+        "z": 4.481345176696777
+      },
+      "badTarget": {
+        "x": 806.7846069335938,
+        "y": 630.7185668945312,
+        "z": 3.028250217437744
+      },
+      "fridgeTarget": {
+        "x": 216.3086700439453,
+        "y": 872.7188720703125,
+        "z": 5.062582492828369
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 7,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 1314.7001953125,
+        "y": -81.83624267578125,
+        "width": 58.17236328125,
+        "height": 29.1544189453125
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 1314.96728515625,
+        "y": -55.09197998046875,
+        "width": 58.2083740234375,
+        "height": 29.06182861328125
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.119999885559082,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 1244.816650390625,
+          "y": -55.09197998046875,
+          "width": 55.126953125,
+          "height": 29.06195068359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1210.81689453125,
+          "y": -135.2598876953125,
+          "width": 53.5672607421875,
+          "height": 29.3389892578125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1244.0992431640625,
+          "y": -135.2598876953125,
+          "width": 55.0269775390625,
+          "height": 29.33905029296875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1277.38134765625,
+          "y": -135.2598876953125,
+          "width": 56.487060546875,
+          "height": 29.33905029296875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1211.042724609375,
+          "y": -108.55902099609375,
+          "width": 53.59912109375,
+          "height": 29.24688720703125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1244.3382568359375,
+          "y": -108.55902099609375,
+          "width": 55.0601806640625,
+          "height": 29.24700927734375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1277.63330078125,
+          "y": -108.558837890625,
+          "width": 56.521728515625,
+          "height": 29.246826171875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1211.268798828125,
+          "y": -81.8363037109375,
+          "width": 53.631103515625,
+          "height": 29.15447998046875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1244.577392578125,
+          "y": -81.8363037109375,
+          "width": 55.0936279296875,
+          "height": 29.15447998046875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1277.8856201171875,
+          "y": -81.83624267578125,
+          "width": 56.5562744140625,
+          "height": 29.1544189453125
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 1314.16650390625,
+        "y": -135.2598876953125,
+        "width": 58.101318359375,
+        "height": 29.33905029296875
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 1314.433349609375,
+        "y": -108.558837890625,
+        "width": 58.136474609375,
+        "height": 29.246826171875
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 51100,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": -449.52423095703125,
+        "y": -353.35223388671875,
+        "width": 39.67927551269531,
+        "height": 28.1001033782959
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        2,
+        4,
+        7,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "51 100 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    },
+    {
+      "offeredQuantity": 7,
+      "boxedQuantity": 0,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Desktop",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon",
+        "dnyipro"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "AfterHours",
+      "modal": "None",
+      "message": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": false,
+      "blocked": false,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": true,
+      "applicationFocused": true,
+      "cursorLocked": true,
+      "balance": 51100,
+      "drawer": 51100,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -1.9800000190734863,
+        "y": 0.12999999523162842,
+        "z": -2.690000057220459
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": false,
+      "routeToShelf": false,
+      "selectedFurniture": "",
+      "arrangementFeedback": "",
+      "shelfPosition": {
+        "x": 5.949999809265137,
+        "y": 0,
+        "z": -1
+      },
+      "draftPosition": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fridgePosition": {
+        "x": 4.5,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": 535.1765747070312,
+        "y": 599.944580078125,
+        "z": 5.591563701629639
+      },
+      "badTarget": {
+        "x": 779.4300537109375,
+        "y": 465.26043701171875,
+        "z": 3.622356653213501
+      },
+      "fridgeTarget": {
+        "x": 303.7576599121094,
+        "y": 630.5359497070312,
+        "z": 6.379245758056641
+      },
+      "shelfTurns": 0,
+      "draftTurns": 0,
+      "shelfStock": 0,
+      "stockedItem": "",
+      "privateStock": 7,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "7 csomag Dnyipro dobozban az udvari asztalon. Vidd be a pult alatti polchoz.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 1097.5758056640625,
+        "y": 111.07305908203125,
+        "width": 32.9439697265625,
+        "height": 16.814453125
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 1101.427490234375,
+        "y": 126.36016845703125,
+        "width": 33.3472900390625,
+        "height": 17.04937744140625
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.119999885559082,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 1053.4705810546875,
+          "y": 126.36016845703125,
+          "width": 31.8843994140625,
+          "height": 17.0494384765625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1021.0675048828125,
+          "y": 81.26080322265625,
+          "width": 30.1126708984375,
+          "height": 16.3607177734375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1043.2861328125,
+          "y": 81.26080322265625,
+          "width": 30.77294921875,
+          "height": 16.3607177734375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1065.504638671875,
+          "y": 81.26080322265625,
+          "width": 31.43359375,
+          "height": 16.3607177734375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1024.22216796875,
+          "y": 96.04205322265625,
+          "width": 30.4638671875,
+          "height": 16.5849609375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1046.624755859375,
+          "y": 96.04205322265625,
+          "width": 31.135498046875,
+          "height": 16.5849609375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1069.027099609375,
+          "y": 96.04205322265625,
+          "width": 31.80712890625,
+          "height": 16.5849609375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1027.429443359375,
+          "y": 111.0731201171875,
+          "width": 30.822998046875,
+          "height": 16.814453125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1050.01904296875,
+          "y": 111.0731201171875,
+          "width": 31.505859375,
+          "height": 16.814453125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1072.6085205078125,
+          "y": 111.07305908203125,
+          "width": 32.18896484375,
+          "height": 16.814453125
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 1090.06201171875,
+        "y": 81.26080322265625,
+        "width": 32.1634521484375,
+        "height": 16.3607177734375
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 1093.7877197265625,
+        "y": 96.04205322265625,
+        "width": 32.5494384765625,
+        "height": 16.5849609375
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 51100,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": -66.57466888427734,
+        "y": -23.476455688476562,
+        "width": 68.45755004882812,
+        "height": 13.231447219848633
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        1,
+        2,
+        1,
+        1,
+        1,
+        2,
+        4,
+        7,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "51 100 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    }
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27100804,
+    "seconds": 255.3367625,
+    "error": "",
+    "completedUtc": "2026-11-06T17:14:35.956Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "4f215e7e00f709d7cdc426d5fbd04aef43fe8a423a90b77811678d23747fddac",
+      "AcceptanceWebGL.framework.js.unityweb": "61c464538f6ed3c02276c484722ef4c0859fdf48d96e6daef842542174b42e88",
+      "AcceptanceWebGL.loader.js": "d5c7ef35bac62de33df26705ec0139336a92791cf746dedf5abcbe456bdf9d61",
+      "AcceptanceWebGL.wasm.unityweb": "40d6cae852a37ae381f7c2bacb19aea1ce395152c2fdfd54179d299e634e1b20"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-06T17:15:04.225Z"
+}
