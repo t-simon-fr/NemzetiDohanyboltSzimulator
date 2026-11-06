@@ -6,11 +6,7 @@ using UnityEngine.InputSystem;
 public sealed partial class ShopArrangement
 {
     private Camera arrangementCamera;
-    private Vector3 savedCameraPosition;
-    private Quaternion savedCameraRotation;
-    private Rect savedCameraRect;
-    private bool savedOrthographic;
-    private float savedSize;
+    private ShopCameraSnapshot cameraSnapshot;
     private readonly Dictionary<Renderer, bool> hidden = new Dictionary<Renderer, bool>();
     private ShopFurniture selected;
     private ShopFurniturePose preview;
@@ -26,11 +22,7 @@ public sealed partial class ShopArrangement
     partial void BeginView()
     {
         arrangementCamera = player.GetComponentInChildren<Camera>();
-        savedCameraPosition = arrangementCamera.transform.localPosition;
-        savedCameraRotation = arrangementCamera.transform.localRotation;
-        savedCameraRect = arrangementCamera.rect;
-        savedOrthographic = arrangementCamera.orthographic;
-        savedSize = arrangementCamera.orthographicSize;
+        cameraSnapshot = new ShopCameraSnapshot(arrangementCamera);
         arrangementCamera.transform.SetPositionAndRotation(new Vector3(2, 12, -1.25f), Quaternion.Euler(90, 0, 0));
         arrangementCamera.orthographic = true;
         arrangementCamera.orthographicSize = 4.4f;
@@ -53,14 +45,8 @@ public sealed partial class ShopArrangement
     {
         foreach (var pair in hidden) if (pair.Key != null) pair.Key.enabled = pair.Value;
         hidden.Clear();
-        if (arrangementCamera != null)
-        {
-            arrangementCamera.transform.localPosition = savedCameraPosition;
-            arrangementCamera.transform.localRotation = savedCameraRotation;
-            arrangementCamera.orthographic = savedOrthographic;
-            arrangementCamera.orthographicSize = savedSize;
-            arrangementCamera.rect = savedCameraRect;
-        }
+        cameraSnapshot?.Restore();
+        cameraSnapshot = null;
         selected = null;
         dragging = false;
     }

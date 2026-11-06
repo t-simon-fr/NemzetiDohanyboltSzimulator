@@ -84,6 +84,13 @@ public static class ShopInputGate
     public static bool WorldActionConsumed => consumedFrame == Time.frameCount;
     public static void ConsumeWorldAction() => consumedFrame = Time.frameCount;
     public static bool Blocked { get; set; }
+    public static void SetBlocked(bool blocked, bool updateCursor = true)
+    {
+        Blocked = blocked;
+        if (!updateCursor) return;
+        Cursor.lockState = blocked ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = blocked;
+    }
 }
 
 public static class ShopPeople

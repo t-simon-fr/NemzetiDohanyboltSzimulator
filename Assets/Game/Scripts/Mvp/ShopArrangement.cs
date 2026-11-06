@@ -8,7 +8,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
     private PlayerInteractor player;
     private readonly List<ShopFurniture> furniture = new List<ShopFurniture>();
     private Dictionary<ShopFurniture, ShopFurniturePose> draft;
-    private float previousScale;
+    private readonly ShopPauseScope pause = new ShopPauseScope();
     public bool Active { get; private set; }
     public IReadOnlyList<ShopFurniture> Furniture => furniture;
     public string Feedback { get; private set; } = "";
@@ -51,14 +51,10 @@ public sealed partial class ShopArrangement : MonoBehaviour
         }
         // Keep the cursor unlocked when moving from the monitor into the editor.
         // ClosePanel would briefly request pointer lock in WebGL before releasing it.
-        shop.Devices.Release();
+        shop.Devices.Release(false);
         draft = Current();
-        previousScale = Time.timeScale;
+        pause.Enter();
         Active = true;
-        Time.timeScale = 0;
-        ShopInputGate.Blocked = true;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
         Feedback = "Válassz egy polcot vagy hűtőt. A pult és az ajtók fixek.";
         BeginView();
         return true;
@@ -151,7 +147,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
         EndView();
         Active = false;
         draft = null;
-        Time.timeScale = previousScale;
+        pause.Exit();
         shop.ClosePanel();
     }
     public void ResetLayout()
@@ -162,5 +158,12 @@ public sealed partial class ShopArrangement : MonoBehaviour
     }
     partial void BeginView();
     partial void EndView();
-    private void OnDestroy() { if (Active) { Time.timeScale = previousScale; ShopInputGate.Blocked = false; } }
+    private void OnDestroy()
+    {
+        if (!Active) return;
+        EndView();
+        pause.Exit();
+        Active = false;
+        ShopInputGate.SetBlocked(false);
+    }
 }
