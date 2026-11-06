@@ -427,10 +427,10 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(after.position.x < -2.6, 'Actual W input walks through the unobstructed stockroom opening');
       check(after.balance === before.balance && after.phase === before.phase, 'Doorway crossing preserves money and day state');
       await capture('warehouse-inside');
-      await probe('Action', 'view-lighter-display'); await capture('lighter-display-open');
-      await viewport(1920, 1080); await capture('lighter-display-open-large'); await viewport(1280, 720);
+      await probe('Action', 'view-lighter-display'); await capture('counter-cleared');
+      await viewport(1920, 1080); await capture('counter-cleared-large'); await viewport(1280, 720);
       await key('e', 'KeyE', 69);
-      check((await state()).device === 'Monitor', 'Actual E still focuses the monitor beside the uncovered lighter display');
+      check((await state()).device === 'Monitor', 'Actual E still focuses the monitor on the cleared counter');
     }
 
     if (selected === 'hover-contrast') {
