@@ -47,7 +47,9 @@
       "refactor-day-focus",
       "refactor-lifecycle",
       "ingredient-packaging",
-      "lottery-state"
+      "lottery-state",
+      "lottery-integration",
+      "lottery-numbers"
     ]
   },
   "suites": {
@@ -260,6 +262,16 @@
       "entry": "LotteryChecks.State",
       "file": "Tools/Checks/LotteryChecks.cs",
       "purpose": "Consignment, immutable tickets, atomic activation/payout/settlement, reserved stakes and once-only draws"
+    },
+    "lottery-integration": {
+      "file": "Tools/Checks/LotteryChecks.cs",
+      "entry": "LotteryChecks.Integration",
+      "purpose": "Real development, requests, physical barcode/cash checkout, cancelled tickets, return visit, payout and focus"
+    },
+    "lottery-numbers": {
+      "purpose": "Customer number validation, physical printing/card checkout, immutable next-day draw and persistent reserve",
+      "entry": "LotteryChecks.Numbers",
+      "file": "Tools/Checks/LotteryChecks.cs"
     }
   },
   "historicalExcluded": {
