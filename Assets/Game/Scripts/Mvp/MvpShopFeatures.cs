@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum CardTerminalStatus { Ready, Entry, Error, Approved }
@@ -41,7 +42,7 @@ public sealed partial class MvpShopController
     {
         if(Stage!=ServiceStage.Payment||!CardPayment||!PreparedIsValid())return false;
         if(!int.TryParse(CardAmount,out int entered)||entered!=active.TotalPrice){CardStatus=CardTerminalStatus.Error;Notify("Hibás összeg. Írd be a pontos fizetendő összeget.");return false;}
-        if(!Ledger.TrySellCard(active.TotalPrice,active.TotalCost))return false;
+        if(!checkout.TrySettle(() => Ledger.TrySellCard(active.TotalPrice,active.TotalCost)))return false;
         int paid = active.TotalPrice;
         ShopInputGate.ConsumeWorldAction();
         Drawer.CancelTender();SyncCashDrawer();ClearCardAmount();CompleteSale();
@@ -82,13 +83,13 @@ public sealed partial class MvpShopController
         var offer=Activities.CoinOffer;
         if(offer.Total!=active.TotalPrice){Notify("Pontosan a fizetendő összeget válaszd ki a vásárló érméiből.");return false;}
         int[] pieces=offer.Pieces();Drawer.OfferTenderPieces(pieces);
-        if(!Ledger.TrySell(offer.Price,active.TotalCost,offer.Price,0)){Drawer.CancelTender();return false;}
+        if(!checkout.TrySettle(() => Ledger.TrySell(offer.Price,active.TotalCost,offer.Price,0))){Drawer.CancelTender();return false;}
         Drawer.Settle(offer.Price,new int[ShopCatalog.Denominations.Length]);CompleteSale();return true;
     }
     private void CompleteSale()
     {
-        active.ReturnUnusedBasket(receivedOrder);foreach(var sold in receivedOrder.ToArray())if(sold!=null){var slot=sold.CurrentSlot;sold.AcceptDelivery();if(slot!=null&&slot.name.StartsWith("Order receipt"))Destroy(slot.gameObject);}
-        receivedOrder.Clear();prepared=null;active.SellBasket();
+        active.ReturnUnusedBasket(receivedOrder.ToArray());foreach(var sold in receivedOrder.ToArray())if(sold!=null){var slot=sold.CurrentSlot;sold.AcceptDelivery();if(checkout.OwnsReceipt(slot))checkout.RemoveReceipt(slot);}
+        checkout.ClearItems();prepared=null;active.SellBasket();
         Activities.ClearHand();Stage=ServiceStage.Thanks;thanksTimer=2.5f;
         Dialogue=ShopPeople.Thanks[active.Person];Message="Sikeres fizetés. A kassza és a készlet frissült.";
         SetModal(ShopModal.None);

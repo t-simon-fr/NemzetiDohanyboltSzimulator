@@ -32,7 +32,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public static MvpShopController Instance { get; private set; }
     public ShopPhase Phase { get; private set; }
     public ShopModal Modal { get; private set; }
-    public ServiceStage Stage { get; private set; }
+    public ServiceStage Stage { get => checkout.Stage; private set => checkout.Stage = value; }
     public ShopLedger Ledger { get; private set; }
     public ShopPricing Pricing {get;private set;}
     public ShopAfterHours AfterHours {get;private set;}
@@ -60,8 +60,9 @@ public sealed partial class MvpShopController : MonoBehaviour
         private set { message = value; MessageRevision++; }
     }
     public bool SingleProductVisits {get;set;}
-    private readonly List<ShopProduct> receivedOrder=new List<ShopProduct>();
-    public int[] MissingOrderTypes=>active==null?new int[0]:active.OrderTypes.GroupBy(t=>t).SelectMany(g=>Enumerable.Repeat(g.Key,Mathf.Max(0,g.Count()-receivedOrder.Count(p=>p!=null&&!p.IsHeld&&p.CurrentSlot!=null&&p.ProductId==ShopCatalog.Ids[g.Key])))).ToArray();
+    private readonly ShopCheckoutSession checkout = new ShopCheckoutSession();
+    private System.Collections.Generic.IReadOnlyList<ShopProduct> receivedOrder => checkout.Items;
+    public int[] MissingOrderTypes => checkout.Missing(active?.OrderTypes);
     public bool ManualTick { get; set; }
     public ShopCashDrawer Drawer { get; private set; }
     public ShopDevices Devices { get; private set; }
@@ -146,6 +147,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Arrangement = gameObject.AddComponent<ShopArrangement>();
         Arrangement.Configure(this, player);
         Navigation.Configure(this);
+        checkout.Configure(Activities.BasketSlot, delivery.transform.parent, ReceiptPosition);
         Activities.BasketSlot.ProductPlaced+=OnDelivery;
         foreach(var slot in Activities.CustomerHandoverSlots)slot.ProductPlaced+=OnDelivery;
         delivery.SetManualPlacementRule(product=>ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)));
@@ -291,24 +293,16 @@ public sealed partial class MvpShopController : MonoBehaviour
         Dialogue = "Tessék a pénz. A visszajárót azért megvárom.";
         Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";
     }
-    private bool PreparedIsValid()=>active!=null&&receivedOrder.Count==active.OrderTypes.Length&&receivedOrder.All(p=>p!=null&&p.gameObject.activeSelf&&!p.IsHeld&&p.CurrentSlot!=null&&(p.CurrentSlot.name.StartsWith("Order receipt")||p.CurrentSlot==Activities.BasketSlot));
-    private Vector3 ReceiptPosition(int index)=>Activities.BasketSlot.transform.position+Counter.transform.rotation*new Vector3(index==2?-.24f:0,0,index==0?0:-.22f);
+    private bool PreparedIsValid() => active != null && checkout.IsComplete(active.OrderTypes);
+    private Vector3 ReceiptPosition(int index) => Activities.BasketSlot.transform.position + Counter.transform.rotation * new Vector3(index == 2 ? -.24f : 0, 0, index == 0 ? 0 : -.22f);
     private bool CollectOrderItem(ShopProduct product)
     {
-        receivedOrder.RemoveAll(p=>p==null||p.IsHeld||p.CurrentSlot==null||(!p.CurrentSlot.name.StartsWith("Order receipt")&&p.CurrentSlot!=Activities.BasketSlot));
-        if(product!=null&&!receivedOrder.Contains(product))
-        {
-            int type=ShopCatalog.Index(product.ProductId);
-            if(active.OrderTypes.Count(t=>t==type)<=receivedOrder.Count(p=>p.ProductId==product.ProductId)){Notify("Ez a termék már a kosárban van.");return false;}
-            if(product.CurrentSlot==Activities.BasketSlot){receivedOrder.Add(product);return receivedOrder.Count==active.OrderTypes.Length;}
-            int freeIndex=Enumerable.Range(0,active.OrderTypes.Length).Where(i=>(i!=0||Activities.BasketSlot.Occupant==null)&&!receivedOrder.Any(p=>p.CurrentSlot!=null&&Vector3.Distance(p.CurrentSlot.transform.position,ReceiptPosition(i))<.02f)).DefaultIfEmpty(-1).First();
-            if(freeIndex<0){Notify("Tedd szabaddá a kosár pulthelyeit.");return false;}
-            if(freeIndex==0){if(!(product.IsHeld?product.TryPlace(Activities.BasketSlot):product.AssignInitialSlot(Activities.BasketSlot)))return false;if(!receivedOrder.Contains(product))receivedOrder.Add(product);return PreparedIsValid();}
-            var slot=new GameObject("Order receipt "+freeIndex).AddComponent<ProductSlot>();slot.transform.SetParent(delivery.transform.parent,false);slot.transform.position=ReceiptPosition(freeIndex);slot.Configure(new Vector3(.22f,.4f,.33f));slot.SetManualPlacementRule(_=>false);
-            if(!(product.IsHeld?product.TryPlace(slot):product.AssignInitialSlot(slot))){slot.gameObject.SetActive(false);Destroy(slot.gameObject);return false;}slot.RestrictTo("__receipt_locked");receivedOrder.Add(product);
-        }
-        if(receivedOrder.Count<active.OrderTypes.Length){Stage=ServiceStage.Order;Notify("Kosár: "+receivedOrder.Count+" / "+active.OrderTypes.Length+" termék. Kérés: "+active.OrderDescription);return false;}
-        return PreparedIsValid();
+        bool complete = checkout.Collect(product, active.OrderTypes, out string rejection);
+        if (rejection != null) { Notify(rejection); return false; }
+        if (complete) return true;
+        Stage = ServiceStage.Order;
+        Notify("Kosár: " + receivedOrder.Count + " / " + active.OrderTypes.Length + " termék. Kérés: " + active.OrderDescription);
+        return false;
     }
     public bool SubmitChange(int amount)
     {
@@ -318,7 +312,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         int type = active.Product;
         int[] pieces = ShopCatalog.Denominations.Select(SelectedPieces).ToArray();
         if (amount != ChangeSelected || !Drawer.CanSettle(active.Tender,pieces)) { Message = "A visszajárót a kassza rekeszeiből vedd ki."; return false; }
-        if (!Ledger.TrySell(active.TotalPrice, active.TotalCost, active.Tender, amount))
+        if (!checkout.TrySettle(() => Ledger.TrySell(active.TotalPrice, active.TotalCost, active.Tender, amount)))
         {
             Message = "Nem stimmel a visszajáró. Számold újra, vagy töröld a kiválasztott címleteket."; return false;
         }
@@ -394,13 +388,13 @@ public sealed partial class MvpShopController : MonoBehaviour
         active.ReturnBasket();
         foreach(var item in receivedOrder)
         {
-            if(item==null||item.IsHeld||item.CurrentSlot==null||(!item.CurrentSlot.name.StartsWith("Order receipt")&&item.CurrentSlot!=Activities.BasketSlot))continue;
+            if(item==null||item.IsHeld||item.CurrentSlot==null||!checkout.IsHandover(item.CurrentSlot))continue;
             var old=item.CurrentSlot;var free=FindObjectsByType<ProductSlot>().FirstOrDefault(s=>s.IsStockShelf&&s.CanAcceptStock(item.ProductId)&&s.Fits(item.transform.lossyScale));
-            if(free!=null){item.AssignInitialSlot(free);if(old!=Activities.BasketSlot)Destroy(old.gameObject);}else if(old!=Activities.BasketSlot){old.transform.position=Layout.EntryInside+Vector3.right*(receivedOrder.IndexOf(item)*.35f);item.AssignInitialSlot(old);}
+            if(free!=null){item.AssignInitialSlot(free);if(old!=Activities.BasketSlot)checkout.RemoveReceipt(old);}else if(old!=Activities.BasketSlot){old.transform.position=Layout.EntryInside+Vector3.right*(receivedOrder.ToList().IndexOf(item)*.35f);item.AssignInitialSlot(old);}
         }
-        CleanupReceipts();receivedOrder.Clear();Activities.ClearHand(); Drawer.CancelTender(); changeCoins.Clear(); queue.Remove(active); active.Leave(); departing.Add(active); active = null; prepared = null; Stage = ServiceStage.None;
+        CleanupReceipts();checkout.ClearItems();Activities.ClearHand(); Drawer.CancelTender(); changeCoins.Clear(); queue.Remove(active); active.Leave(); departing.Add(active); active = null; prepared = null; Stage = ServiceStage.None;
     }
-    private void CleanupReceipts(){foreach(var slot in delivery.transform.parent.GetComponentsInChildren<ProductSlot>(true))if(slot.name.StartsWith("Order receipt")&&slot.Occupant==null){slot.gameObject.SetActive(false);Destroy(slot.gameObject);}}
+    private void CleanupReceipts() => checkout.CleanupEmptyReceipts();
     private void FinishDay()
     {
         inventory.CompleteDeliveries();
@@ -442,14 +436,14 @@ public sealed partial class MvpShopController : MonoBehaviour
         Security?.ReleaseEntrance();
         Phase = ShopPhase.Preparing; Stage = ServiceStage.None; Spawned = 0; Missed = 0; Elapsed = 0f; ClockElapsed = 0f;
         StolenToday=0;CaughtToday=0;PriceRefusals=0;
-        receivedOrder.Clear();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.";
+        checkout.ClearItems();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.";
         SetModal(ShopModal.None);
     }
     public void ResetDemo()
     {
         Arrangement?.ResetLayout();
         AfterHours?.ResetEvenings();Pricing?.ResetPrices();GetComponent<ShopNextUpgrades>()?.ResetUpgrades();
-        SingleProductVisits=false;AutomaticArrivals=true;receivedOrder.Clear();
+        SingleProductVisits=false;AutomaticArrivals=true;checkout.ClearItems();
         if (stockRoot == null) return;
         if (player != null) player.CancelHeld();
         foreach (MvpCustomerActor actor in queue.Concat(departing).Concat(fleeing)) if (actor != null) { actor.ReturnBasket(); actor.gameObject.SetActive(false); Destroy(actor.gameObject); }

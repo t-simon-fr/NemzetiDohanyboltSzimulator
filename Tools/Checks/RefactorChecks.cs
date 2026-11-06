@@ -3,6 +3,44 @@ using System.Linq;
 
 public static class RefactorChecks
 {
+    public static object Checkout()
+    {
+        int passed = 0;
+        void Check(bool valid, string name) { if (!valid) throw new Exception(name); passed++; }
+        var session = new ShopCheckoutSession { Stage = ServiceStage.Payment };
+        int postings = 0;
+        Check(!session.TrySettle(() => false) && session.Stage == ServiceStage.Payment, "Failed settlement preserves payable session");
+        Check(session.TrySettle(() => { postings++; return true; }), "Successful posting completes session");
+        Check(!session.TrySettle(() => { postings++; return true; }) && postings == 1, "A second settlement cannot post again");
+        var root = new UnityEngine.GameObject("Checkout session test");
+        var products = new System.Collections.Generic.List<ShopProduct>();
+        try
+        {
+            var basket = root.AddComponent<ProductSlot>(); basket.Configure(new UnityEngine.Vector3(.35f, .4f, .33f));
+            root.transform.position = UnityEngine.Vector3.one * 1000;
+            session.Configure(basket, root.transform, index => root.transform.position + new UnityEngine.Vector3(index == 2 ? -.24f : 0, 0, index == 0 ? 0 : -.22f));
+            var requested = new[] { 0, 0, 0 };
+            for (int i = 0; i < 3; i++)
+            {
+                var product = MvpShopController.Instance.CreateCoffee(0); products.Add(product);
+                session.Collect(product, requested, out string rejection);
+                Check(rejection == null && session.Missing(requested).Length == 2 - i, "Repeated SKU counted exactly once: " + i);
+            }
+            Check(products.Select(p => p.CurrentSlot).Distinct().Count() == 3, "Three identical goods use distinct receipt slots");
+            foreach (var product in products) product.CurrentSlot.name = "Renamed receipt adapter";
+            Check(session.IsComplete(requested), "Receipt ownership is independent of GameObject names");
+            products[1].RemoveFromWorld();
+            Check(!session.IsComplete(requested) && session.Missing(requested).Length == 1, "Removed physical good invalidates payment immediately");
+        }
+        finally
+        {
+            foreach (var product in products) if (product != null) product.RemoveFromWorld();
+            session.CleanupEmptyReceipts();
+            UnityEngine.Object.Destroy(root);
+        }
+        return new { passed, failed = 0 };
+    }
+
     public static object Inventory()
     {
         int passed = 0;
