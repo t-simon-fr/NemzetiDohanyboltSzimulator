@@ -21,6 +21,8 @@ public sealed class ShopBootstrap
         shop.Activities.Configure(shop, player);
         shop.DeliverySlot.Configure(new Vector3(.4f, .4f, .4f));
         shop.gameObject.AddComponent<ShopNextUpgrades>().Configure(shop);
+        shop.Lottery = shop.gameObject.AddComponent<ShopLotteryRetailer>();
+        shop.Lottery.Configure(shop);
         shop.Pricing = shop.gameObject.AddComponent<ShopPricing>();
         shop.Pricing.Configure(shop);
         shop.AfterHours = shop.gameObject.AddComponent<ShopAfterHours>();

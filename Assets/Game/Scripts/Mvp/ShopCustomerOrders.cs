@@ -16,6 +16,7 @@ public sealed partial class MvpShopController
 
         bool Take(int type)
         {
+            if (ShopLotteryCatalog.IsTicket(type) && !ShopLotteryCatalog.IsTicket(preferred)) return false;
             if (remaining[type] > 0) { remaining[type]--; return true; }
             if (!ShopCatalog.IsCoffee(type) || coffee == 0 || type == ShopCatalog.Latte && milk == 0) return false;
             coffee--;
@@ -33,7 +34,7 @@ public sealed partial class MvpShopController
             }
 
         var order = new List<int>();
-        int count = SingleProductVisits ? 1 : 1 + visit % 3;
+        int count = SingleProductVisits || ShopLotteryCatalog.IsTicket(preferred) ? 1 : 1 + visit % 3;
         for (int line = 0; line < count; line++)
         {
             int start = line == 0 ? preferred : (order[0] + line) % AvailableProducts;

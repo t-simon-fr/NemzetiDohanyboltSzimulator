@@ -95,9 +95,9 @@ public sealed class MvpShopHud : MonoBehaviour
         GUILayout.EndScrollView();
         GUILayout.EndArea();
         top += listHeight + 12;
-        ShopUi.Label(new Rect(x + 16, top, inner, 28), "Összesen  " + ShopCatalog.Money(customer.TotalPrice), 20, true);
+        ShopUi.Label(new Rect(x + 16, top, inner, 28), customer.LotteryClaimId!=null?"Szelvényellenőrzés":"Összesen  " + ShopCatalog.Money(customer.TotalPrice), 20, true);
         string action = shop.Stage == ServiceStage.Order ?
-            (shop.HasUnavailableRequest ? "T: Másik árut ajánlok\nX: Nem tudom kiszolgálni" : "Tedd a kért árut az átadóhelyre.\nX: Nem tudom kiszolgálni") :
+            (customer.LotteryClaimId!=null?"Olvasd be a szelvényt a lottóponton.\nX: Most nem tudom kiszolgálni":shop.HasUnavailableRequest ? "T: Másik árut ajánlok\nX: Nem tudom kiszolgálni" : "Tedd a kért árut az átadóhelyre.\nX: Nem tudom kiszolgálni") :
             shop.Stage == ServiceStage.Payment ? (shop.CardPayment ? "Bankkártya  /  F: Terminál" : shop.CoinPayment ? "Aprópénz  /  F: Érmék átvétele" : "Készpénz  /  F: Kassza") : "A vásárló elköszön.";
         ShopUi.Label(new Rect(x + 16, top + 34, inner, 52), ShopUi.BoundText(action), 15);
     }
@@ -145,6 +145,14 @@ public sealed class MvpShopHud : MonoBehaviour
         GUILayout.Label("Működési költség: " + ShopCatalog.Money(shop.Ledger.OperatingCosts) + "  •  Kártyás bevétel: " + ShopCatalog.Money(shop.Ledger.CardRevenue), ShopUi.Text(16));
         GUILayout.Label("Lopáskár: " + ShopCatalog.Money(shop.Ledger.StockLoss) + "  •  Megállított tolvaj: " + shop.CaughtToday, ShopUi.Text(16));
         GUILayout.Label("Utánrendelés: " + ShopCatalog.Money(shop.Ledger.Purchases) + "  •  Beruházás: " + ShopCatalog.Money(shop.Ledger.Improvements), ShopUi.Text(16));
+        if(shop.Lottery.Owned)
+        {
+            var book=shop.Lottery.Book;
+            GUILayout.Label("SZERECSENJÁTÉK ZRT. / LOTTÓPONT",ShopUi.Text(14,true));
+            GUILayout.Label("Szelvényeladás: "+ShopCatalog.Money(book.DailySales)+" · Kifizetés: "+ShopCatalog.Money(book.DailyPayouts),ShopUi.Text(16));
+            GUILayout.Label("Bolti jutalék: "+ShopCatalog.Money(book.DailyCommission)+" · Üzemeltetői egyenleg: "+ShopCatalog.Money(book.Outstanding),ShopUi.Text(16));
+            GUILayout.Label("Elkülönített pénz: "+ShopCatalog.Money(book.Reserve)+" · Elkölthető: "+ShopCatalog.Money(shop.Ledger.AvailableFunds),ShopUi.Text(16));
+        }
         GUILayout.Space(12);
         GUILayout.Label("KÉSZLET  /  BOLT + RAKTÁR", ShopUi.Text(14, true));
         for (int i = 0; i < shop.AvailableProducts; i++)

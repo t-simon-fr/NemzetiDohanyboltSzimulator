@@ -24,6 +24,12 @@ public sealed partial class ShopDevices
     public List<ShopKeyboardTarget> KeyboardTargets()
     {
         if(ComputerShellActive)return ComputerKeyboardTargets();
+        if(FocusKind==ShopDeviceKind.Lottery)
+        {
+            var controls=shop.Lottery.Controls(ShopLotteryRetailer.TerminalBody);
+            foreach(var control in controls)control.Bounds=ShopUi.ScreenRect(control.Bounds);
+            return controls;
+        }
         var targets=new List<ShopKeyboardTarget>();if(!Focused||shop==null||view==null)return targets;
         Transform root=FocusKind==ShopDeviceKind.Monitor?monitor:FocusKind==ShopDeviceKind.Coins?shop.Activities.CustomerHand:FocusKind==ShopDeviceKind.Terminal?Terminal.transform:FocusKind==ShopDeviceKind.Coffee?shop.Activities.CoffeeDisplay.transform:tillAssembly;
         if(root!=null)
@@ -64,6 +70,8 @@ public sealed partial class ShopDevices
     public bool HandleDeviceKey(DeviceKey key,bool shift=false)
     {
         if(!Focused||shop==null)return false;
+        if((FocusKind==ShopDeviceKind.Lottery||FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Lottery)
+            &&shop.Lottery.EditingNumbers&&key!=DeviceKey.Escape)return false;
         if (FocusKind == ShopDeviceKind.Monitor && ComputerApp == ShopComputerApp.Orders) { if(cartEditing)return false; if(HandleCartKey(key))return true; }
         if(FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Prices&&key!=DeviceKey.Escape&&shop.Pricing.HandleEditorKey(key,shift))return true;
         bool enter=key==DeviceKey.Enter||key==DeviceKey.NumpadEnter;
@@ -141,6 +149,7 @@ public sealed partial class ShopDevices
     {
         if(!Focused || ShopMenu.Active)return;GUI.depth=-100;
         if(ComputerShellActive){DrawComputer();return;}
+        if(FocusKind==ShopDeviceKind.Lottery){shop.Lottery.DrawTerminal();return;}
         if(keyboardOutline&&keyboardTargetId!=null)
         {
             var target=KeyboardTargets().FirstOrDefault(t=>t.Id==keyboardTargetId);

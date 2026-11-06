@@ -52,6 +52,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public MvpCustomerActor ActiveCustomer => active;
     public ProductSlot DeliverySlot => delivery;
     public ShopBarcodeScanner Scanner { get; internal set; }
+    public ShopLotteryRetailer Lottery { get; internal set; }
     public string Dialogue { get; private set; } = "";
     private string message = "";
     public int MessageRevision { get; private set; }
@@ -146,7 +147,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     internal void InitializeCheckout()
     {
         checkout.Configure(Activities.BasketSlot, delivery.transform.parent, ReceiptPosition);
-        delivery.SetManualPlacementRule(product => ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)));
+        delivery.SetManualPlacementRule(product => ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)) || ShopLotteryCatalog.IsTicket(ShopCatalog.Index(product.ProductId)));
         BindDeliveryEvents();
     }
     private void BindDeliveryEvents()
@@ -199,6 +200,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         if (Ledger == null || Phase == ShopPhase.Summary || Arrangement != null && Arrangement.Active) return;
         dt = Mathf.Max(0f, dt);
+        Lottery?.Tick(dt);
         dayCycle.TickClock(dt);
         if(Phase==ShopPhase.AfterHours){Activities?.Tick(dt);return;}
         foreach (var arrival in inventory.Tick(dt))
@@ -236,7 +238,7 @@ public sealed partial class MvpShopController : MonoBehaviour
                 active = customer; Stage = ServiceStage.Order;
                 ResetCardTerminal();
                 if(!customer.AcceptsPrices){PriceRefusals++;Missed++;Notify(ShopPeople.Names[customer.Person]+": Ennyiért inkább nem kérem. Túl drága! Állíts kedvezőbb árat az Árak alkalmazásban.");DismissActive();i--;continue;}
-                Dialogue = ShopPeople.Order(active.Person, active.OrderTypes);
+                Dialogue = Lottery.Arrive(active);
                 if (active.BasketItem != null)
                 { if(Activities.PlaceBasket(active)){prepared=active.BasketItem;BeginPayment();} }
                 else
@@ -272,14 +274,19 @@ public sealed partial class MvpShopController : MonoBehaviour
         if(!SingleProductVisits&&StockCount(ShopCatalog.Contraband)>0&&visit%4==1)type=ShopCatalog.Contraband;
         if(forcedProduct>=0)type=forcedProduct;
         if(forcedProduct<0&&Activities.CoffeeOwned&&visit%4==2)type=SingleProductVisits?ShopCatalog.Coffee:ShopCatalog.Coffee+(visit/4+Day-1)%3;
-        int[] order = CreateCustomerOrder(type, visit);
-        if (order.Length == 0) return;
+        LotteryTicket returning = null;
+        if(forcedProduct<0&&!SingleProductVisits&&Lottery.Owned&&visit%4==1)
+            returning=Lottery.Book.ScheduleReturn(Day);
+        if(forcedProduct<0&&!SingleProductVisits&&returning==null&&visit%4==3)
+        {int lotteryType=Lottery.ChooseOrder(visit);if(lotteryType>=0)type=lotteryType;}
+        int[] order = returning!=null ? Array.Empty<int>() : CreateCustomerOrder(type, visit);
+        if (order.Length == 0 && returning==null) return;
         Spawned++;
         GameObject clone = Instantiate(customerTemplate, actorRoot);
         clone.SetActive(false);
         var legacy = clone.GetComponent<CustomerOrderController>(); if (legacy != null) legacy.enabled = false;
         MvpCustomerActor actor = clone.AddComponent<MvpCustomerActor>();
-        actor.Initialize((visit + Day - 1) % 4, order[0], visit, order);
+        actor.Initialize(returning!=null?returning.Owner:(visit + Day - 1) % 4, order.Length>0?order[0]:-1, visit, order, returning?.Id);
         if(forceThief)actor.SetTheftIntent();clone.SetActive(true); queue.Add(actor);
     }
     private void OnDelivery(ShopProduct product)
@@ -303,7 +310,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Dialogue = "Tessék a pénz. A visszajárót azért megvárom.";
         Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";
     }
-    private bool PreparedIsValid() => active != null && checkout.IsComplete(active.OrderTypes);
+    private bool PreparedIsValid() => active != null && active.LotteryClaimId == null && checkout.IsComplete(active.OrderTypes);
     private Vector3 ReceiptPosition(int index) => Activities.BasketSlot.transform.position + Counter.transform.rotation * new Vector3(index == 2 ? -.24f : 0, 0, index == 0 ? 0 : -.22f);
     private bool CollectOrderItem(ShopProduct product)
     {
@@ -322,7 +329,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         int type = active.Product;
         int[] pieces = ShopCatalog.Denominations.Select(SelectedPieces).ToArray();
         if (amount != ChangeSelected || !Drawer.CanSettle(active.Tender,pieces)) { Message = "A visszajárót a kassza rekeszeiből vedd ki."; return false; }
-        if (!checkout.TrySettle(() => Ledger.TrySell(active.TotalPrice, active.TotalCost, active.Tender, amount)))
+        if (!TrySettleSale(() => Ledger.TrySell(active.TotalPrice, active.TotalCost, active.Tender, amount)))
         {
             Message = "Nem stimmel a visszajáró. Számold újra, vagy töröld a kiválasztott címleteket."; return false;
         }
@@ -366,6 +373,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public bool IsRequestedTypeUnavailable(int type)
     {
         if (active == null) return false;
+        if (ShopLotteryCatalog.IsTicket(type)) return AvailableInventory(type) < active.OrderTypes.Count(t=>t==type);
         int needed = active.OrderTypes.Count(t => t == type) - StockCount(type) - (type < ShopCatalog.Count ? WarehouseCount(type) : 0);
         if (ShopCatalog.IsCoffee(type) && Activities.BrewRemaining > 0 && Activities.SelectedRecipe == type) needed--;
         if (needed <= 0) return false;
@@ -394,6 +402,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     private void DismissActive()
     {
+        Lottery?.CancelVisit(active);
         active.ReturnBasket();
         foreach(var item in receivedOrder)
         {
@@ -406,6 +415,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     private void CleanupReceipts() => checkout.CleanupEmptyReceipts();
     private void FinishDay()
     {
+        Lottery?.Book.Tick(8.1f);
         inventory.CompleteDeliveries();
         Warehouse?.SyncBoxes();
         ClosePanel(); Ledger.Close(300); SyncCashDrawer(); dayCycle.Finish(); SetModal(ShopModal.Summary);
@@ -441,6 +451,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     private void BeginPreparation()
     {
+        Lottery?.AdvanceDay();
         ResetCardTerminal();
         Security?.ReleaseEntrance();
         dayCycle.Prepare(); Stage = ServiceStage.None; Spawned = 0; Missed = 0;
@@ -461,6 +472,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         stock.Clear();CleanupReceipts(); inventory.Reset(); Warehouse?.ResetStorage();
         ClosePanel(); if (Layout != null) { Layout.SetExpanded(false); Layout.SetExtraShelf(false); }
         SelectedSupply = 0; Day = 1; Ledger = new ShopLedger(6000); Drawer = new ShopCashDrawer();
+        Lottery?.ResetLottery();
         for (int type = 0; type < ShopCatalog.CigaretteCount; type++)
         {
             int seeded = 0;
@@ -492,7 +504,18 @@ public sealed partial class MvpShopController : MonoBehaviour
     public int WarehouseCount(int type) => inventory.Stored(type);
     public int PendingQuantity(int type) => inventory.Pending(type);
     public float NextDelivery => inventory.NextDelivery;
-    public int AvailableInventory(int type) => StockCount(type) + WarehouseCount(type);
+    public int AvailableInventory(int type) => ShopLotteryCatalog.IsTicket(type) ? Lottery?.Available(type) ?? 0 : StockCount(type) + WarehouseCount(type);
+    public ShopProduct CreateLotteryProduct(int type)
+    {
+        if(!ShopLotteryCatalog.IsTicket(type))throw new ArgumentOutOfRangeException(nameof(type));
+        return CreateProduct(type);
+    }
+    private bool TrySettleSale(Func<bool> payment) => checkout.TrySettle(() => Lottery.SettleSale(active,receivedOrder,payment));
+    public void FinishLotteryVisit(string text)
+    {
+        if(active==null||active.LotteryClaimId==null||Stage!=ServiceStage.Order)return;
+        Stage=ServiceStage.Thanks;thanksTimer=2.5f;Dialogue=text;Notify(text);ClosePanel();
+    }
     public bool OrderSupply(int type) => OrderSupply(type,3);
     public bool OrderSupply(int type,int quantity)
     {
