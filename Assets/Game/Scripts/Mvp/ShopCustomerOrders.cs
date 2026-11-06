@@ -9,7 +9,7 @@ public sealed partial class MvpShopController
     {
         int types = ShopCatalog.Ids.Length;
         var remaining = Enumerable.Range(0, types)
-            .Select(type => StockCount(type) + (type < ShopCatalog.Count ? WarehouseCount(type) : 0)).ToArray();
+            .Select(AvailableInventory).ToArray();
         int coffee = Activities.CoffeeOwned ? Activities.CoffeeSupplies + Activities.ReadyCoffee : 0;
         int milk = Activities.CoffeeOwned ? Activities.MilkSupplies + Activities.ReadyMilk : 0;
         if (Activities.BrewRemaining > 0) remaining[Activities.SelectedRecipe]++;

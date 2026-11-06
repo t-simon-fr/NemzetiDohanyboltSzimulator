@@ -40,7 +40,8 @@
       "price-editor",
       "computer-ui",
       "identity-visuals",
-      "refactor-purchasing"
+      "refactor-purchasing",
+      "refactor-inventory"
     ]
   },
   "suites": {
@@ -218,6 +219,11 @@
       "purpose": "Atomic procurement quote and adapter invariants",
       "entry": "RefactorChecks.Purchasing",
       "file": "Tools/Checks/RefactorChecks.cs"
+    },
+    "refactor-inventory": {
+      "entry": "RefactorChecks.Inventory",
+      "file": "Tools/Checks/RefactorChecks.cs",
+      "purpose": "Single-owner quantities, shipment timing and rollback invariants"
     }
   },
   "historicalExcluded": {

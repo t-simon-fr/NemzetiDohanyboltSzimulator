@@ -97,13 +97,9 @@ public sealed partial class MvpShopController
 
     private bool TryPurchase(int[] quantities, out ShopPurchaseQuote quote)
     {
-        var pending = Enumerable.Range(0, ShopCatalog.Count).Select(PendingQuantity).ToArray();
-        quote = ShopPurchaseRules.Quote(quantities, ShopCatalog.Costs, AvailableProducts, warehouse, pending,
-            Ledger.AvailableFunds, Ledger.Closed || Phase == ShopPhase.Summary, ShopCatalog.MaxOrderQuantity, 24);
-        if (!quote.Accepted || !Ledger.TryBuy(quote.Total, 1)) return false;
-        for (int type = 0; type < quote.Count; type++)
-            if (quote.Quantity(type) > 0)
-                shipments.Add(new Shipment { Type = type, Quantity = quote.Quantity(type), Remaining = 8f });
+        quote = inventory.Quote(quantities, ShopCatalog.Costs, AvailableProducts,
+            Ledger.AvailableFunds, Ledger.Closed || Phase == ShopPhase.Summary, ShopCatalog.MaxOrderQuantity);
+        if (!inventory.TryPurchase(quote, total => Ledger.TryBuy(total, 1))) return false;
         SyncCashDrawer();
         return true;
     }

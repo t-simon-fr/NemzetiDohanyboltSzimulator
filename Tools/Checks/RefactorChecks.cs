@@ -3,6 +3,32 @@ using System.Linq;
 
 public static class RefactorChecks
 {
+    public static object Inventory()
+    {
+        int passed = 0;
+        void Check(bool valid, string name) { if (!valid) throw new Exception(name); passed++; }
+        var inventory = new ShopInventory(2);
+        var ledger = new ShopLedger(10000);
+        ShopPurchaseQuote Quote(int quantity) => inventory.Quote(new[] { quantity, 0 }, new[] { 100, 200 }, 2, ledger.Cash, false, 12);
+        Check(!inventory.TryPurchase(Quote(3), _ => false) && inventory.Pending(0) == 0, "Failed debit creates no shipment");
+        Check(inventory.TryPurchase(Quote(12), amount => ledger.TryBuy(amount, 1)) && inventory.Stored(0) == 0 && inventory.Pending(0) == 12, "Purchase creates pending, not arrived stock");
+        Check(inventory.Tick(-1).Count == 0 && inventory.NextDelivery == 8, "Negative time cannot advance delivery");
+        Check(inventory.Tick(7.9f).Count == 0, "Delivery waits the full eight seconds");
+        Check(inventory.Tick(.2f).Sum(a => a.Quantity) == 12 && inventory.Stored(0) == 12 && inventory.Pending(0) == 0, "Arrival transfers quantity exactly once");
+        Check(inventory.Tick(100).Count == 0 && inventory.Stored(0) == 12, "Later tick cannot deliver twice");
+        var stale = Quote(12);
+        Check(inventory.TryReturn(0) && !inventory.TryPurchase(stale, _ => throw new Exception("Must not debit a stale over-capacity quote")), "Capacity revalidated before debit");
+        Check(inventory.TryWithdraw(0) && inventory.Stored(0) == 12, "Withdrawal reduces stored quantity once");
+        inventory.RestoreWithdrawal(0);
+        Check(inventory.Stored(0) == 13, "Failed physical pickup restores its withdrawal");
+        Check(inventory.TryPurchase(Quote(2), amount => ledger.TryBuy(amount, 1)), "Second delivery scheduled");
+        inventory.CompleteDeliveries(); inventory.CompleteDeliveries();
+        Check(inventory.Stored(0) == 15 && inventory.Pending(0) == 0, "End-day delivery flush is idempotent");
+        inventory.Reset();
+        Check(inventory.Stored(0) == 0 && inventory.Pending(0) == 0 && !inventory.TryWithdraw(0), "Reset clears quantities and arrivals without underflow");
+        return new { passed, failed = 0 };
+    }
+
     public static object Purchasing()
     {
         int passed = 0;
