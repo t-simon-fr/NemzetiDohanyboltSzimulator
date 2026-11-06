@@ -93,4 +93,3 @@ Workflow: [WORKFLOW.md](../WORKFLOW.md). Böngészős előfeltételek: [Acceptan
 
 - Természetes, játékos felőli kamera világ szerinti felfelé iránnyal, a játékos felé olvasható pénzdarabokkal. Tenyér/ujjak/pénz célzására E vagy bal kattintás nyitja az aprópénzválogatást; a nyitó kattintás nem választ ki pénzt. Teljes kameravisszaállítás, hatótáv/foglalt kéz/eltűnő kéz védelme ellenőrizve.
 - Unity: 469 sikeres állítás; helyi WebGL: 9 kézinterakciós + 12 aprópénzes + 15 készpénzes ellenőrzés, 0 konzolhiba. Vizuális és tényleges interakciós próba passed mindkét felbontáson. [Jelentés és képek](../Acceptance/2026-11-04-customer-hand/REPORT.md). Pagesre nem került ki.
-
