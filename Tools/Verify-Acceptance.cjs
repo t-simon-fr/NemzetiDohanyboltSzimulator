@@ -657,6 +657,24 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
       check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
     }
+    if (selected === 'dnyipro') {
+      await viewport(1280,720);
+      await probe('Prepare','feature-night');
+      await key('e','KeyE',69);
+      let s=await state(); const cash=s.balance, quantity=s.offeredQuantity;
+      check(s.tradeOpen && quantity>0,'Dnyipro merchant offers a real shipment');
+      await click(640,450); s=await state();
+      check(s.boxedQuantity===quantity && s.balance===cash-quantity*700,'Dnyipro carton purchase preserves exact stock and price');
+      await click(640,505); await probe('Action','aim-night-box');
+      await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:640,y:530}); await sleep(300);
+      await capture('dnyipro-carton');
+      await key('e','KeyE',69);
+      check((await state()).tool==='ContrabandBox','E carries the redesigned carton');
+      await probe('Action','aim-private-storage'); await key('e','KeyE',69); s=await state();
+      check(s.privateStock===quantity && !s.tool,'E unpacks redesigned packs without stock loss');
+      await probe('Action','view-private-storage'); await capture('dnyipro-packs');
+      await viewport(1920,1080); await capture('dnyipro-packs-large');
+    }
     if (selected === 'new-features' || (selected === 'cart-only' || batchCase('cart-only'))) {
       await viewport(1280,720);
       await probe('Prepare','feature-cart'); let s=await state(); const balance=s.balance;
