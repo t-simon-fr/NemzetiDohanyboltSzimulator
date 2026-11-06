@@ -8,7 +8,7 @@ public sealed partial class ShopDevices
     public const float ComputerWidth = 1200, ComputerHeight = 680;
     public static readonly Rect ComputerBody = new Rect(24, 124, 1152, 478);
     public bool ComputerShellActive => FocusKind == ShopDeviceKind.Monitor;
-    private static readonly string[] AppNames = { "Asztal", "Árurendelés", "Üzletfejlesztés", "Kávégép", "Kamerák", "Játékok", "Árak", "Lottópont" };
+    private static readonly string[] AppNames = { "Asztal", "Árurendelés", "Üzletkezelés", "Kávégép", "Kamerák", "Játékok", "Árak", "Lottópont" };
 
     public Rect ComputerScreenRect
     {
@@ -49,22 +49,7 @@ public sealed partial class ShopDevices
         }
         if (ComputerApp == ShopComputerApp.Furnishing)
         {
-            Add("Furnishing:Page", furnishingPage==0?"Raktár / bútorok →":"← Fejlesztések",new Rect(ComputerBody.xMax-400,ComputerBody.yMax-54,390,48),()=>furnishingPage=1-furnishingPage);
-            if(furnishingPage==1) { AddExpansionControls(controls); return controls; }
-            string[] names = { "Önkiszolgáló bővítés", "Cigarettapolc · +9 hely", "Vészgomb", "Kávégép", "Hűtő", "Lottópont" };
-            int[] costs = { shop.Layout.NextShopPrice, ShopLayout.ExtraShelfPrice, ShopSecurity.PurchasePrice, ShopActivities.CoffeeMachinePrice, ShopNextUpgrades.FridgePrice, ShopLotteryCatalog.UpgradePrice };
-            bool[] owned = { shop.Layout.ShopLevel>=3, shop.Layout.ExtraShelfOwned, shop.Security.Owned, shop.Activities.CoffeeOwned, shop.GetComponent<ShopNextUpgrades>().FridgeOwned, shop.Lottery.Owned };
-            string[] ids = { "Expand:0", "ExtraShelf:0", "PanicButtonUpgrade:0", "CoffeeMachineUpgrade:0", "FridgeUpgrade:0", "Lottery:Upgrade" };
-            Action[] buy = { () => shop.TryExpand(), () => shop.BuyExtraShelf(), () => PurchasePanicButton(),
-                () => shop.Activities.BuyCoffeeMachine(), () => PurchaseFridge(), () => shop.Lottery.TryBuy() };
-            for (int i = 0; i < names.Length; i++)
-            {
-                float y = ComputerBody.y + 12 + i * 60;
-                if (y < ComputerBody.y || y + 50 > ComputerBody.yMax - 68) continue;
-                Add(ids[i], owned[i] ? "Megvásárolva" : "Megveszem", new Rect(ComputerBody.xMax - 226, y, 216, 48), buy[i],
-                    !owned[i] && shop.CanDevelopShop && shop.Ledger.AvailableFunds >= costs[i] && (i != 4 || shop.Layout.Expanded));
-            }
-            Add("Arrange:0", "Üzlet átrendezése", new Rect(ComputerBody.x, ComputerBody.yMax - 54, 310, 48), () => BeginArrangement(), shop.CanDevelopShop);
+            AddFurnishingControls(controls);
         }
         shop.Activities.AddComputerControls(controls, ComputerBody);
         if(ComputerApp==ShopComputerApp.Lottery)controls.AddRange(shop.Lottery.Controls(ComputerBody));
@@ -119,7 +104,8 @@ public sealed partial class ShopDevices
             else shop.Activities.DrawComputerContent(ComputerBody);
             foreach (var target in ComputerControls())
             {
-                bool selected = target.Id == keyboardTargetId && keyboardOutline;
+                bool selected = target.Id == keyboardTargetId && keyboardOutline ||
+                    target.Id == (furnishingPage == 0 ? "Furnishing:Developments" : "Furnishing:Furniture");
                 GUI.enabled = target.Enabled;
                 if (GUI.Button(target.Bounds, target.Label, ShopComputerTheme.Button(selected || target.Id.StartsWith("Coffee:Recipe:") &&
                     target.Id == "Coffee:Recipe:" + shop.Activities.SelectedRecipe || target.Id == "Camera:" + shop.Activities.SelectedCamera, ComputerApp == ShopComputerApp.Desktop ? 25 : 21)))
@@ -138,16 +124,7 @@ public sealed partial class ShopDevices
 
     private void DrawComputerUpgrades()
     {
-        if(furnishingPage==1) { DrawExpansionRows(); return; }
-        string[] names = { "Önkiszolgáló bővítés", "Cigarettapolc · +9 hely", "Vészgomb", "Kávégép", "Hűtő", "Lottópont" };
-        int[] prices = { shop.Layout.NextShopPrice, ShopLayout.ExtraShelfPrice, ShopSecurity.PurchasePrice, ShopActivities.CoffeeMachinePrice, ShopNextUpgrades.FridgePrice, ShopLotteryCatalog.UpgradePrice };
-        for (int i = 0; i < names.Length; i++)
-        {
-            float y = ComputerBody.y + 12 + i * 60;
-            ShopComputerTheme.Label(new Rect(ComputerBody.x + 18, y, 560, 48), names[i], 24);
-            ShopComputerTheme.Label(new Rect(ComputerBody.x + 620, y, 230, 48), ShopCatalog.Money(prices[i]), 22, true);
-            ShopUi.Fill(new Rect(ComputerBody.x + 18, y + 54, ComputerBody.width - 36, 1), ShopComputerTheme.Rule);
-        }
+        DrawFurnishingRows();
     }
 
     private static void DrawComputerStripe(float y)

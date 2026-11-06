@@ -657,6 +657,35 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
       check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
     }
+    if (selected === 'furniture-planning') {
+      await viewport(1280,720);await probe('Prepare','expansion');
+      const press = async id => {const s=await state();const ids=id.startsWith('Editor:')?s.editorControlIds:s.computerControlIds;const rects=id.startsWith('Editor:')?s.editorControls:s.computerControls;const i=ids.indexOf(id);if(i<0)throw Error('Missing '+id);await clickRect(rects[i]);};
+      let s=await state();const opening=s.balance;
+      check(s.computerControlIds.includes('Warehouse:Expand')&&!s.computerControlIds.includes('ExtraShelf:0'),'Developments group both room sizes and omit legacy cigarette expansion');
+      await capture('developments');
+      for(let i=0;i<3;i++)await press('Expand:0');
+      for(let i=0;i<3;i++)await press('Warehouse:Expand');
+      await press('Furnishing:Furniture');await capture('furniture-catalog');
+      s=await state();check(s.computerControlIds.filter(x=>x.startsWith('Module:Plan:')).length===5&&!s.computerControlIds.includes('Warehouse:Expand'),'Furniture tab groups racks and fridge without room sizes');
+      const funds=s.balance, base=s.moduleCount;
+      await press('Module:Plan:2');s=await state();check(s.arranging&&s.balance===funds&&s.plannedCount===0,'Catalog enters island placement without charging');
+      const point = async i => {const s=await state();return {x:s.purchaseTargets[i].x,y:height-s.purchaseTargets[i].y};};
+      const move = async p => {await send('Input.dispatchMouseEvent',{type:'mouseMoved',...p});await sleep(300);};
+      await move({x:s.badTarget.x,y:height-s.badTarget.y});s=await state();check(!s.previewValid,'Purchase ghost rejects entrance blockage');await capture('invalid-preview');
+      await move(await point(0));await key('r','KeyR',82);await key('r','KeyR',82);await sleep(300);s=await state();check(s.previewValid,'Rotated purchase preview fits snapped grid');check([s.editorPreviewPosition.x,s.editorPreviewPosition.z].every(v=>Math.abs(v/.05-Math.round(v/.05))<.001),'Real pointer movement and rotation snap both axes to 5cm grid');
+      await click((await point(0)).x,(await point(0)).y);s=await state();check(s.plannedCount===1&&s.dragging&&s.balance===funds,'One click adds unpaid island and retains repeat placement');
+      await move(await point(1));s=await state();check(s.previewValid,'Second island fits beside first');await click((await point(1)).x,(await point(1)).y);
+      s=await state();check(s.plannedCount===2&&s.plannedCost===20000&&s.moduleCount===base,'Repeated placement totals two purchases without live ownership');
+      await move(await point(2));await capture('purchase-plan-720');
+      await viewport(1920,1080);await sleep(300);await move(await point(2));await capture('purchase-plan-1080');await viewport(1280,720);
+      await key('Escape','Escape',27);await click((await point(0)).x,(await point(0)).y);await press('Editor:Remove');s=await state();check(s.plannedCount===1&&s.plannedCost===10000&&s.balance===funds,'Plan deletion updates quote without a money transaction');await press('Editor:Cancel');s=await state();check(!s.arranging&&s.balance===funds&&s.moduleCount===base,'Cancel restores original ownership and money');
+      await probe('Action','monitor-furnishing');await press('Arrange:0');await press('Editor:Catalog');await press('Editor:Buy:2');
+      await move(await point(0));await click((await point(0)).x,(await point(0)).y);await key('Escape','Escape',27);
+      await press('Editor:Save');s=await state();check(!s.arranging&&s.balance===funds-10000&&s.drawer===s.balance&&s.moduleCount===base+1,'Actual save buys and activates one island with exact reconciled debit');
+      await probe('Action','monitor-furnishing');await press('Arrange:0');s=await state();check(s.plannedCount===0&&s.moduleCount===base+1,'Reopening retains purchased furniture without another charge');await capture('saved-ownership');
+      await press('Editor:Catalog');for(let n=0;n<12;n++){s=await state();if(s.editorControlIds.includes('Editor:Buy:4'))break;await send('Input.dispatchMouseEvent',{type:'mouseWheel',x:width-100,y:300,deltaX:0,deltaY:440});await sleep(150);}s=await state();check(s.editorControlIds.includes('Editor:Buy:4'),'Scrolling at 720p reaches final fridge catalog card');await press('Editor:Buy:4');s=await state();check(s.selectedFurniture==='drinks-fridge'&&s.plannedCount===0,'Fridge can be previewed from scrolled catalog without a purchase');await capture('catalog-scrolled-720');
+      await viewport(1920,1080);await press('Editor:Catalog');s=await state();check(s.editorControlIds.filter(x=>x.startsWith('Editor:Buy:')).length===5,'At 1080p all five catalog items remain visible');await capture('catalog-complete-1080');await press('Editor:Cancel');
+    }
     if (selected === 'expansion') {
       await viewport(1280,720);await probe('Prepare','expansion');let s=await state();
       const control=async id=>{const a=await state();const i=a.computerControlIds.indexOf(id);if(i<0)throw Error('Missing '+id);return a.computerControls[i];};
@@ -664,30 +693,12 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       const cash=s.balance;
       for(let level=1;level<=3;level++){await press('Expand:0');s=await state();check(s.shopLevel===level && s.warehouseLevel===0,'Actual click buys independent shop level '+level);await capture('shop-upgrade-'+level);}
       check(s.balance===cash-117000,'Three shop stages charge exact configured total');
-      await press('Furnishing:Page');await capture('warehouse-and-modules');
+      await capture('developments-with-warehouse');
       for(let level=1;level<=3;level++){await press('Warehouse:Expand');s=await state();check(s.warehouseLevel===level && s.shopLevel===3,'Actual click buys independent warehouse level '+level);}
-      const base=s.moduleCount;
-      for(let kind=0;kind<4;kind++){await press('Module:Buy:'+kind);s=await state();check(s.moduleCount===base+kind+1,'Actual click buys usable modular furniture '+kind);}
-      await viewport(1920,1080);await capture('upgrades-large');await viewport(1280,720);
-      await press('Arrange:0');s=await state();check(s.arranging && s.timeScale===0,'Arrangement includes purchased warehouse and shop modules');await capture('modules-overview');
+      await press('Arrange:0');s=await state();check(s.arranging && s.timeScale===0,'Arrangement includes independently expanded rooms');await capture('modules-overview');
       let i=s.furnitureIds.indexOf('public-shelf'),point=s.furniturePoints[i];await click(point.x,height-point.y);s=await state();check(s.selectedFurniture==='public-shelf','Plan click selects actual modular shelf');
       await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:s.badTarget.x,y:height-s.badTarget.y});await sleep(300);s=await state();check(!s.previewValid,'Entrance blockage remains invalid');
       await key('Escape','Escape',27);await key('Escape','Escape',27);check(!(await state()).arranging,'Escape cancels editor and restores camera');
-      await probe('Action','monitor-furnishing');await press('Arrange:0');s=await state();
-      const warehouseId=s.furnitureIds.filter(id=>id.startsWith('module-')).slice(-1)[0];
-      const warehousePoint=s.furniturePoints[s.furnitureIds.indexOf(warehouseId)];
-      const shelfPoint=s.furniturePoints[s.furnitureIds.indexOf('public-shelf')];
-      const metre=Math.abs(shelfPoint.y-s.moveTarget.y)/1.15;
-      await click(warehousePoint.x,height-warehousePoint.y);s=await state();
-      check(s.selectedFurniture===warehouseId,'Plan click selects purchased warehouse rack');
-      const movedWarehouse={x:warehousePoint.x,y:height-warehousePoint.y-metre*.25};
-      await send('Input.dispatchMouseEvent',{type:'mouseMoved',...movedWarehouse});await sleep(300);s=await state();
-      check(s.previewValid,'Warehouse rack can move within its purchased room');
-      await click(movedWarehouse.x,movedWarehouse.y);const beforeSave=s.balance;await click(150,height-86);s=await state();
-      check(!s.arranging && s.balance===beforeSave,'Actual save applies warehouse draft without charging money');
-      await probe('Action','monitor-furnishing');await press('Arrange:0');s=await state();
-      const savedPoint=s.furniturePoints[s.furnitureIds.indexOf(warehouseId)];
-      check(Math.abs(savedPoint.y-warehousePoint.y-metre*.25)<3,'Warehouse rack saved position survives reopening');await capture('warehouse-rack-saved');await key('Escape','Escape',27);
       for(let shopLevel=0;shopLevel<4;shopLevel++)for(let warehouse=0;warehouse<4;warehouse++){
         await probe('Prepare','expansion');await probe('Action','expansion-plan:'+shopLevel+':'+warehouse);s=await state();check(s.arranging && s.shopLevel===shopLevel && s.warehouseLevel===warehouse,'Plan shows independent footprint '+shopLevel+'/'+warehouse);await capture('plan-'+shopLevel+'-'+warehouse);
         if(shopLevel===warehouse){await viewport(1920,1080);await capture('plan-'+shopLevel+'-'+warehouse+'-large');await viewport(1280,720);}
@@ -874,6 +885,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'arrangement');
       let s = await state();
       const money = s.balance, item = s.stockedItem;
+      const editorPress=async id=>{const a=await state();await clickRect(a.editorControls[a.editorControlIds.indexOf(id)]);};
       const selectPlan = async id => { const a=await state();const i=a.furnitureIds.indexOf(id);const p=a.furniturePoints[i];await click(p.x,height-p.y); };
       await capture('arrangement-monitor');
       const openEditor = async () => {
@@ -905,7 +917,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(!s.dragging && s.draftTurns === 0 && Math.abs(s.draftPosition.x - 2.75) < .01 && Math.abs(s.shelfPosition.x-3.95)<.01 && s.stockedItem === item,
         'Placing preview changes draft only and keeps exact stock');
       await capture('arrangement-draft');
-      await click(150, height - 38);
+      await editorPress('Editor:Cancel');
       s = await state();
       check(!s.arranging && Math.abs(s.shelfPosition.x-3.95)<.01 && s.stockedItem === item && s.balance === money && s.timeScale === 1,
         'Cancel restores original world, inventory, cash and clock');
@@ -913,7 +925,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await openEditor();
       await selectPlan('public-shelf'); s=await state();await movePointer({x:s.moveTarget.x,y:s.furniturePoints[s.furnitureIds.indexOf('public-shelf')].y}); await key('q', 'KeyQ', 81);
       s = await state(); await click(s.moveTarget.x, height - s.furniturePoints[s.furnitureIds.indexOf('public-shelf')].y);
-      await click(150, height - 86);
+      await editorPress('Editor:Save');
       s = await state();
       check(!s.arranging && s.shelfTurns === 0 && Math.abs(s.shelfPosition.x - 2.75) < .01 && s.stockedItem === item && s.balance === money && s.routeToShelf,
         'Save applies rotated stocked shelf with navigation and no charge');
@@ -921,11 +933,11 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action', 'monitor-furnishing'); await openEditor();
       await selectPlan('drinks-fridge');s=await state();const fp=s.furniturePoints[s.furnitureIds.indexOf('drinks-fridge')],sp=s.furniturePoints[s.furnitureIds.indexOf('public-shelf')];const ppm=planPixels;const fridgeMove={x:fp.x-ppm*.5,y:fp.y};await movePointer(fridgeMove);
       s = await state(); check(s.selectedFurniture === 'drinks-fridge' && s.previewValid, 'Purchased fridge can also be moved');
-      await click(fridgeMove.x, height - fridgeMove.y); await click(150, height - 86);
+      await click(fridgeMove.x, height - fridgeMove.y); await editorPress('Editor:Save');
       s = await state(); check(!s.arranging && Math.abs(s.fridgePosition.x - 2.85) < .01 && Math.abs(s.fridgePosition.z - 1.35) < .01, 'Save retains fridge position');
       await probe('Action', 'monitor-furnishing'); await openEditor();
       await viewport(1920, 1080); await capture('arrangement-large'); await viewport(1280, 720);
-      await click(150, height - 38);
+      await editorPress('Editor:Cancel');
       await probe('Action', 'finish-arranged-day'); await key('e', 'KeyE', 69); await enter();
       s = await state();
       check(s.day === 2 && s.phase === 'Preparing' && s.shelfTurns === 0 && Math.abs(s.shelfPosition.x - 2.75) < .01 && s.stockedItem === item && Math.abs(s.fridgePosition.x - 2.85) < .01,

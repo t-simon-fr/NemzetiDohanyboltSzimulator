@@ -50,7 +50,8 @@
       "lottery-state",
       "lottery-integration",
       "lottery-numbers",
-      "expansion"
+      "expansion",
+      "furniture-planning"
     ]
   },
   "suites": {
@@ -278,6 +279,11 @@
       "entry": "ExpansionChecks.Run",
       "purpose": "Independent shop/warehouse levels, 16 geometry pairs, paid modular furniture, access and reset",
       "file": "Tools/Checks/ExpansionChecks.cs"
+    },
+    "furniture-planning": {
+      "entry": "FurniturePlanningChecks.Run",
+      "file": "Tools/Checks/FurniturePlanningChecks.cs",
+      "purpose": "Deferred atomic furniture purchases, repeat/undo/cancel, reserved funds, fridge ownership and grid snapping"
     }
   },
   "historicalExcluded": {

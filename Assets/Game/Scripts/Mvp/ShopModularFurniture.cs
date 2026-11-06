@@ -107,6 +107,22 @@ public sealed class ShopModularFurniture : MonoBehaviour
         item.InWarehouse=warehouse;
         return item;
     }
+    public ShopFurniture CreatePreview(ShopModuleKind kind)
+    {
+        var item = Create(kind);
+        item.gameObject.SetActive(false);
+        return item;
+    }
+
+    public void CommitPlannedPurchase(ShopFurniture item)
+    {
+        shop.Arrangement.Adopt(item);
+        purchased.Add(item);
+        if (item.InWarehouse)
+            shop.Warehouse.RegisterStorage(item.GetComponentsInChildren<ShopStation>().Select(s => s.transform));
+        else
+            shop.Layout.RegisterPublicSlots(item.Slots);
+    }
     public bool Buy(ShopModuleKind kind)
     {
         if(!shop.CanDevelopShop||shop.Ledger.AvailableFunds<Prices[(int)kind])return false;

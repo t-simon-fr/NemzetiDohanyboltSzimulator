@@ -8,6 +8,8 @@ public sealed class ShopNextUpgrades : MonoBehaviour
 {
     public const int FridgePrice=18000;
     public bool FridgeOwned{get;private set;}
+    public ShopFurniture FridgeFurniture => fridge.GetComponent<ShopFurniture>();
+    public void CommitPlannedFridge() { FridgeOwned = true; fridge.SetActive(true); }
     private MvpShopController shop;
     private GameObject fridge;
     private Transform coffee;

@@ -1,5 +1,7 @@
 # Elfogadási ellenőrzések
 
+Legfrissebb fejlesztés: [#128 bútorvásárlás az átrendezőben és közös rácsigazítás](furniture-planning/REPORT.md): 1080 natív állítás / 46 suite, 17 vásárlási és 15 átrendezési WebGL-ellenőrzés, 0 konzolhiba; 720p/1080p képek átnézve. Pagesre nincs kiadva.
+
 Legfrissebb fejlesztés: [#123 üzlet-/raktárszintek és moduláris berendezés](expansion/REPORT.md): 1043 állításos baseline, 173 végső célzott állítás, 36 + 15 WebGL-ellenőrzés, 0 konzolhiba. Pagesre nincs kiadva.
 
 Legfrissebb fejlesztés: [#106 Szerecsenjáték Zrt. Lottópont](lottery-point/REPORT.md): 953 natív állítás / 44 csoport, 29 baseline és 8 végső célzott WebGL-próba, 0 konzolhiba, átnézett 720p/1080p képek. Pagesre nincs kiadva.

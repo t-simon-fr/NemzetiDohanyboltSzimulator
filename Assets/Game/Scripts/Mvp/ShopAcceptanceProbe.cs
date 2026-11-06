@@ -585,7 +585,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public string selectedFurniture, arrangementFeedback;
         public Vector3 shelfPosition, draftPosition, fridgePosition, arrangeButton, moveTarget, badTarget, fridgeTarget;
         public int shelfTurns, draftTurns, shelfStock;
-        public int shopLevel, warehouseLevel, moduleCount;
+        public int shopLevel, warehouseLevel, moduleCount, plannedCount, plannedCost;
+        public string[] editorControlIds;
+        public Rect[] editorControls;
+        public Vector3[] purchaseTargets;
+        public Vector3 editorPreviewPosition;
         public string[] furnitureIds;
         public Vector3[] furniturePoints;
         public string stockedItem;
@@ -700,6 +704,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         var fridge = g.Arrangement.Furniture.First(f => f.Id == "drinks-fridge");
         state.shopLevel=g.Layout.ShopLevel;state.warehouseLevel=g.Layout.WarehouseLevel;
         state.moduleCount=g.Arrangement.Furniture.Count;
+        state.plannedCount=g.Arrangement.PlannedCount;state.plannedCost=g.Arrangement.PlannedCost;
+        state.editorPreviewPosition=g.Arrangement.PreviewPosition;
+        state.editorControlIds = g.Arrangement.Active ? g.Arrangement.EditorControls().Select(t => t.Id).ToArray() : new string[0];
+        state.editorControls = g.Arrangement.Active ? g.Arrangement.EditorControls().Select(t => t.Bounds).ToArray() : new Rect[0];
+        state.purchaseTargets = new[] { new Vector3(5f,0,-2.8f), new Vector3(6.6f,0,-2.8f), new Vector3(7.4f,0,-.3f), new Vector3(-6.4f,0,-1.6f) }.Select(p => View.WorldToScreenPoint(p)).ToArray();
         state.furnitureIds=g.Arrangement.Current().Keys.Select(f=>f.Id).ToArray();
         state.furniturePoints=g.Arrangement.Current().Keys.Select(f=>View.WorldToScreenPoint(f.transform.position)).ToArray();
         state.shelfPosition = shelf.transform.position;

@@ -9,7 +9,7 @@
 | 2 | 9 × 6,3 m | 55 000 Ft | 5 × 5 m | 32 000 Ft |
 | 3 | 11 × 6,3 m | — | 5 × 6 m | — |
 
-A szintek függetlenek. Az üzlet jobbra nő; a raktár balra/előre, változatlan hátsó ajtóval. A játékos a TobaccOS Üzletfejlesztés lapján, nyitás előtt vagy az üres bolt bezárása után vásárolhat. A „Raktár / bútorok” oldalon van a raktárbővítés és a négy megvásárolható modul. Az első üzletbővítés nyitja az önkiszolgálót és a hűtő vásárlását.
+A szintek függetlenek. Az üzlet jobbra nő; a raktár balra/előre, változatlan hátsó ajtóval. A játékos a TobaccOS Üzletkezelés lapján, nyitás előtt vagy az üres bolt bezárása után vásárolhat. A Fejlesztések fülön együtt van az üzlet- és raktárbővítés; a Bútorok fülről a katalógus közvetlenül az átrendezőbe vezet. A bútorokat ott megtervezi, majd egyben fizeti ki mentéskor. Lásd [bútorvásárlás](../../Acceptance/furniture-planning/README.md). Az első üzletbővítés nyitja az önkiszolgálót és a hűtő vásárlását.
 
 A megvásárolható belső elhelyezési terület oldalanként 10 cm tervezési tartalékot tart. Üzlet: X = −2,4 … 2,4 + szint × 2; Z = −4,3 … 1,8. Raktár: X = −5,9 … −2,6 (0/1) vagy −7,4 … −2,6 (2/3); Z = −1,9 … 1,9 (0), −2,9 … 1,9 (1/2), −3,9 … 1,9 (3). A tényleges faltestek ezen kívül helyezkednek el.
 

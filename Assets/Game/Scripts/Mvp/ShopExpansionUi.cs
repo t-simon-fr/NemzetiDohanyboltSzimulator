@@ -1,34 +1,71 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public sealed partial class ShopDevices
 {
-    private void AddExpansionControls(List<ShopKeyboardTarget> controls)
+    private sealed class FurnishingOffer
     {
-        var geometry=shop.GetComponent<ShopExpansionGeometry>();
-        controls.Add(new ShopKeyboardTarget("Warehouse:Expand","Bővítem",new Rect(ComputerBody.xMax-226,ComputerBody.y+12,216,48),
-            ()=>geometry.BuyWarehouse(),shop.CanDevelopShop&&shop.Layout.WarehouseLevel<3&&shop.Ledger.AvailableFunds>=shop.Layout.NextWarehousePrice));
-        for(int i=0;i<4;i++)
-        {
-            int index=i;
-            controls.Add(new ShopKeyboardTarget("Module:Buy:"+i,"Megveszem",new Rect(ComputerBody.xMax-226,ComputerBody.y+72+i*60,216,48),
-                ()=>shop.GetComponent<ShopModularFurniture>().Buy((ShopModuleKind)index),
-                shop.CanDevelopShop&&shop.Ledger.AvailableFunds>=ShopModularFurniture.Prices[i]));
-        }
-        controls.Add(new ShopKeyboardTarget("Arrange:0","Üzlet átrendezése",new Rect(ComputerBody.x,ComputerBody.yMax-54,310,48),()=>BeginArrangement(),shop.CanDevelopShop));
+        public string Id, Title, Detail;
+        public int Price;
+        public bool Owned, Enabled;
+        public Action Buy;
     }
-    private void DrawExpansionRows()
+
+    private List<FurnishingOffer> FurnishingOffers()
     {
-        string[] labels={"Raktár · "+(shop.Layout.WarehouseLevel+1)+"/4 szint",ShopModularFurniture.Names[0],ShopModularFurniture.Names[1],ShopModularFurniture.Names[2],ShopModularFurniture.Names[3]};
-        for(int i=0;i<labels.Length;i++)
+        var offers = new List<FurnishingOffer>();
+        if (furnishingPage == 1)
         {
-            float y=ComputerBody.y+12+i*60;
-            int cost=i==0?shop.Layout.NextWarehousePrice:ShopModularFurniture.Prices[i-1];
-            ShopComputerTheme.Label(new Rect(ComputerBody.x+18,y,560,48),labels[i],24);
-            ShopComputerTheme.Label(new Rect(ComputerBody.x+620,y,230,48),cost==0?"Kész":ShopCatalog.Money(cost),22,true);
+            for (int i = 0; i < ShopArrangement.CatalogNames.Length; i++)
+            {
+                int kind = i;
+                string reason = shop.Arrangement.PurchaseUnavailable(kind);
+                offers.Add(new FurnishingOffer {
+                    Id = "Module:Plan:" + kind, Title = ShopArrangement.CatalogNames[kind],
+                    Detail = reason == "" ? ShopArrangement.CatalogDetails[kind] : reason,
+                    Price = ShopArrangement.CatalogPrice(kind), Enabled = reason == "",
+                    Owned = kind == 4 && shop.GetComponent<ShopNextUpgrades>().FridgeOwned,
+                    Buy = () => { if (BeginArrangement()) shop.Arrangement.StartPurchase(kind); }
+                });
+            }
+            return offers;
         }
-        ShopComputerTheme.Label(new Rect(ComputerBody.x+18,ComputerBody.y+326,1080,56),
-            "Üzlet: "+(5+shop.Layout.ShopLevel*2)+" × 6,3 m  ·  Raktár: "+
-            (shop.Layout.WarehouseArea.width+.2f).ToString("0.0")+" × "+(shop.Layout.WarehouseArea.height+.2f).ToString("0.0")+" m",21);
+        var layout = shop.Layout;
+        offers.Add(new FurnishingOffer { Id = "Expand:0", Title = "Üzlet bővítése", Detail = (5 + layout.ShopLevel * 2) + " × 6,3 m · " + (layout.ShopLevel + 1) + "/4 szint", Price = layout.NextShopPrice, Owned = layout.ShopLevel == 3, Buy = () => shop.TryExpand() });
+        offers.Add(new FurnishingOffer { Id = "Warehouse:Expand", Title = "Raktár bővítése", Detail = (layout.WarehouseLevel + 1) + "/4 szint", Price = layout.NextWarehousePrice, Owned = layout.WarehouseLevel == 3, Buy = () => shop.GetComponent<ShopExpansionGeometry>().BuyWarehouse() });
+        offers.Add(new FurnishingOffer { Id = "CoffeeMachineUpgrade:0", Title = "Kávégép", Detail = "Friss kávé a vásárlóknak", Price = ShopActivities.CoffeeMachinePrice, Owned = shop.Activities.CoffeeOwned, Buy = () => shop.Activities.BuyCoffeeMachine() });
+        offers.Add(new FurnishingOffer { Id = "Lottery:Upgrade", Title = "Lottópont", Detail = "Szerecsenjáték Zrt.", Price = ShopLotteryCatalog.UpgradePrice, Owned = shop.Lottery.Owned, Buy = () => shop.Lottery.TryBuy() });
+        offers.Add(new FurnishingOffer { Id = "PanicButtonUpgrade:0", Title = "Vészgomb", Detail = "Segítség veszély esetén", Price = ShopSecurity.PurchasePrice, Owned = shop.Security.Owned, Buy = () => PurchasePanicButton() });
+        foreach (var offer in offers) offer.Enabled = !offer.Owned && shop.CanDevelopShop && shop.Ledger.AvailableFunds >= offer.Price;
+        return offers;
+    }
+
+    private void AddFurnishingControls(List<ShopKeyboardTarget> controls)
+    {
+        controls.Add(new ShopKeyboardTarget("Furnishing:Developments", "Fejlesztések", new Rect(ComputerBody.x + 12, ComputerBody.y + 8, 240, 44), () => furnishingPage = 0));
+        controls.Add(new ShopKeyboardTarget("Furnishing:Furniture", "Bútorok", new Rect(ComputerBody.x + 264, ComputerBody.y + 8, 240, 44), () => furnishingPage = 1));
+        var offers = FurnishingOffers();
+        for (int i = 0; i < offers.Count; i++)
+        {
+            var offer = offers[i];
+            controls.Add(new ShopKeyboardTarget(offer.Id, offer.Owned ? "Megvásárolva" : furnishingPage == 1 ? "Elhelyezés" : "Megveszem",
+                new Rect(ComputerBody.xMax - 226, ComputerBody.y + 64 + i * 64, 216, 54), offer.Buy, offer.Enabled));
+        }
+        controls.Add(new ShopKeyboardTarget("Arrange:0", "Üzlet átrendezése", new Rect(ComputerBody.x + 12, ComputerBody.yMax - 54, 340, 44), () => BeginArrangement(), shop.CanDevelopShop));
+    }
+
+    private void DrawFurnishingRows()
+    {
+        var offers = FurnishingOffers();
+        for (int i = 0; i < offers.Count; i++)
+        {
+            var offer = offers[i];
+            float y = ComputerBody.y + 64 + i * 64;
+            ShopComputerTheme.Label(new Rect(ComputerBody.x + 18, y, 570, 28), offer.Title, 23, true);
+            ShopComputerTheme.Label(new Rect(ComputerBody.x + 18, y + 29, 570, 25), offer.Detail, 17);
+            ShopComputerTheme.Label(new Rect(ComputerBody.x + 620, y, 230, 54), offer.Owned ? "Kész" : ShopCatalog.Money(offer.Price), 22, true);
+            ShopUi.Fill(new Rect(ComputerBody.x + 18, y + 60, ComputerBody.width - 36, 1), ShopComputerTheme.Rule);
+        }
     }
 }
