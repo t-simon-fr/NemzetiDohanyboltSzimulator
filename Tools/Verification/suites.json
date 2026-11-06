@@ -46,7 +46,8 @@
       "refactor-coffee",
       "refactor-day-focus",
       "refactor-lifecycle",
-      "ingredient-packaging"
+      "ingredient-packaging",
+      "lottery-state"
     ]
   },
   "suites": {
@@ -254,6 +255,11 @@
       "entry": "IngredientPackagingChecks.Run",
       "file": "Tools/Checks/IngredientPackagingChecks.cs",
       "purpose": "Shared branded packaging geometry, readable print resources, carry/drop poses and exact refill conservation"
+    },
+    "lottery-state": {
+      "entry": "LotteryChecks.State",
+      "file": "Tools/Checks/LotteryChecks.cs",
+      "purpose": "Consignment, immutable tickets, atomic activation/payout/settlement, reserved stakes and once-only draws"
     }
   },
   "historicalExcluded": {
