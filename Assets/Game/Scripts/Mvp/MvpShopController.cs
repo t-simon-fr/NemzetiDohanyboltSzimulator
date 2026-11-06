@@ -500,10 +500,15 @@ public sealed partial class MvpShopController : MonoBehaviour
         if(Ledger.Closed){Message="A mai elszámolás már lezárult. Árurendeléshez kezdd el a következő napot.";return false;}
         if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary) { Message = "Ez az áru a boltbővítés után rendelhető."; return false; }
         if (quantity < 1 || quantity > ShopCatalog.MaxOrderQuantity) { Message = "Egy rendelésben 1–12 terméket választhatsz."; return false; }
-        if (warehouse[type] + PendingQuantity(type) + quantity > 24) { Message = "A dobozban már elég áru vár ebből a termékből."; return false; }
-        if (!Ledger.TryBuy(ShopCatalog.Costs[type],quantity)) { Message = "Nincs elég elkölthető pénz. Rendelés: "+ShopCatalog.Money(ShopCatalog.Costs[type]*quantity)+"; kasszaegyenleg: "+ShopCatalog.Money(Ledger.AvailableFunds)+"."; return false; }
-        SyncCashDrawer();
-        shipments.Add(new Shipment { Type = type, Quantity = quantity, Remaining = 8f }); SelectedSupply = type;
+        var quantities = new int[ShopCatalog.Count];
+        quantities[type] = quantity;
+        if (!TryPurchase(quantities, out var quote))
+        {
+            Message = quote.Error == ShopPurchaseError.Capacity ? "A dobozban már elég áru vár ebből a termékből." :
+                "Nincs elég elkölthető pénz. Rendelés: "+ShopCatalog.Money(ShopCatalog.Costs[type]*quantity)+"; kasszaegyenleg: "+ShopCatalog.Money(Ledger.AvailableFunds)+".";
+            return false;
+        }
+        SelectedSupply = type;
         Message = "Megrendelve " + quantity + " × " + ShopCatalog.Names[type] + ". A szállítás 8 másodperc.";
         return true;
     }
