@@ -1,0 +1,848 @@
+{
+  "started": "2026-11-06T19:14:55.989Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys independent shop level 1",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys independent shop level 2",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys independent shop level 3",
+      "passed": true
+    },
+    {
+      "label": "Three shop stages charge exact configured total",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys independent warehouse level 1",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys independent warehouse level 2",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys independent warehouse level 3",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys usable modular furniture 0",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys usable modular furniture 1",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys usable modular furniture 2",
+      "passed": true
+    },
+    {
+      "label": "Actual click buys usable modular furniture 3",
+      "passed": true
+    },
+    {
+      "label": "Arrangement includes purchased warehouse and shop modules",
+      "passed": true
+    },
+    {
+      "label": "Plan click selects actual modular shelf",
+      "passed": true
+    },
+    {
+      "label": "Entrance blockage remains invalid",
+      "passed": true
+    },
+    {
+      "label": "Escape cancels editor and restores camera",
+      "passed": true
+    },
+    {
+      "label": "Plan click selects purchased warehouse rack",
+      "passed": true
+    },
+    {
+      "label": "Warehouse rack can move within its purchased room",
+      "passed": true
+    },
+    {
+      "label": "Actual save applies warehouse draft without charging money",
+      "passed": true
+    },
+    {
+      "label": "Warehouse rack saved position survives reopening",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 0/0",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 0/1",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 0/2",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 0/3",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 1/0",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 1/1",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 1/2",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 1/3",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 2/0",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 2/1",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 2/2",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 2/3",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 3/0",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 3/1",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 3/2",
+      "passed": true
+    },
+    {
+      "label": "Plan shows independent footprint 3/3",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-shop-upgrade-1.png",
+    "1280x720-shop-upgrade-2.png",
+    "1280x720-shop-upgrade-3.png",
+    "1280x720-warehouse-and-modules.png",
+    "1920x1080-upgrades-large.png",
+    "1280x720-modules-overview.png",
+    "1280x720-warehouse-rack-saved.png",
+    "1280x720-plan-0-0.png",
+    "1920x1080-plan-0-0-large.png",
+    "1280x720-interior-0-0.png",
+    "1280x720-plan-0-1.png",
+    "1280x720-interior-0-1.png",
+    "1280x720-plan-0-2.png",
+    "1280x720-interior-0-2.png",
+    "1280x720-plan-0-3.png",
+    "1280x720-interior-0-3.png",
+    "1280x720-plan-1-0.png",
+    "1280x720-interior-1-0.png",
+    "1280x720-plan-1-1.png",
+    "1920x1080-plan-1-1-large.png",
+    "1280x720-interior-1-1.png",
+    "1280x720-plan-1-2.png",
+    "1280x720-interior-1-2.png",
+    "1280x720-plan-1-3.png",
+    "1280x720-interior-1-3.png",
+    "1280x720-plan-2-0.png",
+    "1280x720-interior-2-0.png",
+    "1280x720-plan-2-1.png",
+    "1280x720-interior-2-1.png",
+    "1280x720-plan-2-2.png",
+    "1920x1080-plan-2-2-large.png",
+    "1280x720-interior-2-2.png",
+    "1280x720-plan-2-3.png",
+    "1280x720-interior-2-3.png",
+    "1280x720-plan-3-0.png",
+    "1280x720-interior-3-0.png",
+    "1280x720-plan-3-1.png",
+    "1280x720-interior-3-1.png",
+    "1280x720-plan-3-2.png",
+    "1280x720-interior-3-2.png",
+    "1280x720-plan-3-3.png",
+    "1920x1080-plan-3-3-large.png",
+    "1280x720-interior-3-3.png"
+  ],
+  "states": [
+    {
+      "offeredQuantity": 0,
+      "boxedQuantity": 0,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Furnishing",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "Preparing",
+      "modal": "None",
+      "message": "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": false,
+      "blocked": false,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": false,
+      "applicationFocused": true,
+      "cursorLocked": true,
+      "balance": 506000,
+      "drawer": 506000,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -1.3999996185302734,
+        "y": 0.12999999523162842,
+        "z": 0.1499999761581421
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": true,
+      "routeToShelf": true,
+      "selectedFurniture": "",
+      "arrangementFeedback": "Elhelyezhető: az útvonalak szabadok.",
+      "shelfPosition": {
+        "x": 3.950000047683716,
+        "y": 0,
+        "z": -2.9000000953674316
+      },
+      "draftPosition": {
+        "x": 3.950000047683716,
+        "y": 0,
+        "z": -2.9000000953674316
+      },
+      "fridgePosition": {
+        "x": 3.3499999046325684,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": 816.1806640625,
+        "y": 160.76614379882812,
+        "z": 4.496326446533203
+      },
+      "badTarget": {
+        "x": 1253.8564453125,
+        "y": 69.7741470336914,
+        "z": 3.272421360015869
+      },
+      "fridgeTarget": {
+        "x": 487.1760559082031,
+        "y": 224.83816528320312,
+        "z": 6.103802680969238
+      },
+      "shelfTurns": 1,
+      "draftTurns": 1,
+      "shelfStock": 0,
+      "shopLevel": 3,
+      "warehouseLevel": 3,
+      "moduleCount": 4,
+      "furnitureIds": [
+        "public-shelf",
+        "starter-shelf-1",
+        "starter-shelf-2"
+      ],
+      "furniturePoints": [
+        {
+          "x": 877.9443359375,
+          "y": 217.02191162109375,
+          "z": 5.848721027374268
+        },
+        {
+          "x": 749.5504760742188,
+          "y": 210.9816131591797,
+          "z": 5.665745258331299
+        },
+        {
+          "x": 612.5869140625,
+          "y": 204.5381317138672,
+          "z": 5.482769012451172
+        }
+      ],
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 2090.870361328125,
+        "y": 494.9012145996094,
+        "width": 47.056884765625,
+        "height": 16.16845703125
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 2124.3349609375,
+        "y": 508.8187561035156,
+        "width": 48.731201171875,
+        "height": 16.875885009765625
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.119999885559082,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 2094.01708984375,
+          "y": 510.9549865722656,
+          "width": 48.698486328125,
+          "height": 17.121856689453125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1984.3505859375,
+          "y": 471.11102294921875,
+          "width": 43.888427734375,
+          "height": 15.1728515625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1998.558837890625,
+          "y": 470.3448486328125,
+          "width": 43.9239501953125,
+          "height": 15.0777587890625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 2012.626953125,
+          "y": 469.58612060546875,
+          "width": 43.95654296875,
+          "height": 14.98394775390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 2014.693359375,
+          "y": 484.16436767578125,
+          "width": 45.39208984375,
+          "height": 15.818603515625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 2029.0458984375,
+          "y": 483.3162841796875,
+          "width": 45.423095703125,
+          "height": 15.71630859375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 2043.2537841796875,
+          "y": 482.476806640625,
+          "width": 45.4510498046875,
+          "height": 15.61517333984375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 2046.3409423828125,
+          "y": 497.7772216796875,
+          "width": 46.9859619140625,
+          "height": 16.5067138671875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 2060.8369140625,
+          "y": 496.84100341796875,
+          "width": 47.011962890625,
+          "height": 16.3963623046875
+        },
+        {
+          "serializedVersion": "2",
+          "x": 2075.18359375,
+          "y": 495.9143981933594,
+          "width": 47.03515625,
+          "height": 16.287322998046875
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 2028.0157470703125,
+        "y": 468.75616455078125,
+        "width": 43.9891357421875,
+        "height": 14.881561279296875
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 2058.7919921875,
+        "y": 481.55859375,
+        "width": 45.478759765625,
+        "height": 15.504974365234375
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 506000,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": 1084.336181640625,
+        "y": 414.61846923828125,
+        "width": 106.25238800048828,
+        "height": 13.296014785766602
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        25,
+        0,
+        0,
+        1,
+        1,
+        2,
+        4,
+        6,
+        6,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "506 000 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    }
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27114340,
+    "seconds": 251.50275159999998,
+    "error": "",
+    "completedUtc": "2026-11-06T19:11:17.187Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "5c828ad26108b48f12e2b1cb8abd49f0e8f6e2b1096d827fb9fe34178710589e",
+      "AcceptanceWebGL.framework.js.unityweb": "4a87c86f3af85d8119f233e3c46692bff2cca32cc46c13c97d92024887615b79",
+      "AcceptanceWebGL.loader.js": "47545246fbc71a37159a96f3dc92389410bb095e4f42301cd85f480cf44d5f3f",
+      "AcceptanceWebGL.wasm.unityweb": "bb63efee254890b8e4e1307c9541be2540f4bbc5a103c4a4d09339e05fdbca61"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-06T19:16:18.154Z",
+  "stateSampling": "Final snapshot retained from 103 snapshots; complete raw report remains in local Builds/Verification acceptance artifact. Check results, captures, errors, timestamps and build hashes are unchanged."
+}

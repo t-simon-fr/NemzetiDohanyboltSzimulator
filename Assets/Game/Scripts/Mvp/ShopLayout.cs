@@ -13,14 +13,28 @@ public sealed class ShopLayout : MonoBehaviour
     [SerializeField] private ProductSlot[] publicSlots;
     [SerializeField] private int[] publicTypes;
     public bool Expanded { get; private set; }
+    public int ShopLevel { get; private set; }
+    public int WarehouseLevel { get; private set; }
+    public static readonly int[] ShopPrices = { 24000, 38000, 55000 };
+    public static readonly int[] WarehousePrices = { 12000, 20000, 32000 };
+    public int NextShopPrice => ShopLevel < 3 ? ShopPrices[ShopLevel] : 0;
+    public int NextWarehousePrice => WarehouseLevel < 3 ? WarehousePrices[WarehouseLevel] : 0;
+    public Rect ShopArea => Rect.MinMaxRect(-2.4f,-4.3f,2.4f+ShopLevel*2,1.8f);
+    public Rect WarehouseArea => Rect.MinMaxRect(WarehouseLevel < 2 ? -5.9f : -7.4f,
+        WarehouseLevel == 0 ? -1.9f : WarehouseLevel < 3 ? -2.9f : -3.9f,-2.6f,1.9f);
     public void Configure(GameObject wall,GameObject room,ProductSlot[] slots,int[] types)
     { starterWall=wall;extension=room;publicSlots=slots;publicTypes=types;SetExpanded(false); }
     public void SetExpanded(bool expanded)
+        => SetLevels(expanded ? 2 : 0, expanded ? WarehouseLevel : 0);
+    public void SetLevels(int shopLevel, int warehouseLevel)
     {
+        ShopLevel=Mathf.Clamp(shopLevel,0,3); WarehouseLevel=Mathf.Clamp(warehouseLevel,0,3);
+        bool expanded=ShopLevel>0;
         Expanded=expanded;GetComponent<ShopNextUpgrades>()?.RefreshLayout();starterWall.SetActive(!expanded);extension.SetActive(expanded);
         // Existing scenes keep the second divider beside the starter partition.
         var sideWall=starterWall.transform.parent.Find("Staff side wall");
         if(sideWall!=null)sideWall.gameObject.SetActive(!expanded);
+        GetComponent<ShopExpansionGeometry>()?.Refresh();
     }
     private void Start()
     {

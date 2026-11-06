@@ -30,11 +30,13 @@ public sealed class ShopBootstrap
         shop.Navigation = shop.gameObject.AddComponent<ShopNavigation>();
         shop.Arrangement = shop.gameObject.AddComponent<ShopArrangement>();
         shop.Arrangement.Configure(shop, player);
+        shop.gameObject.AddComponent<ShopModularFurniture>().Configure(shop);
         shop.Navigation.Configure(shop);
         shop.InitializeCheckout();
         shop.Scanner = new GameObject("Checkout barcode scanner").AddComponent<ShopBarcodeScanner>();
         shop.Scanner.Configure(shop);
         shop.gameObject.AddComponent<ShopTrafikIdentity>().Configure(shop);
+        shop.gameObject.AddComponent<ShopExpansionGeometry>().Configure(shop);
         shop.ResetDemo();
         shop.gameObject.AddComponent<ShopMenu>().Configure(shop);
     }

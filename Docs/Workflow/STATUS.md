@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #123: négy üzlet- és négy független raktárszint, vásárolható moduláris polcok és raktári állvány, közös átrendező. **1043 állításos / 45 suite baseline, 173 végső célzott állítás; 36 bővítési és 15 készletes átrendezési WebGL-ellenőrzés**, 0 konzolhiba. 720p/1080p képek átnézve. [Jelentés](../Acceptance/expansion/REPORT.md), [méretek és alaprajz](../Architecture/Expansion/README.md). Pagesre nincs kiadva.
+
 - #125: Dnyipro csomagolás és kötözött karton frissítve. 49 célzott Unity-állítás és 5 helyi WebGL-ellenőrzés, 0 konzolhiba; 720p/1080p képek átnézve. [Jelentés](../Acceptance/dnyipro/REPORT.md). Pagesre nincs kiadva.
 
 - #106: **Szerecsenjáték Zrt. Lottópont** elkészült: kaparósok, Ötöske, kézi kasszázás, későbbi NPC-beváltás és elkülönített üzemeltetői elszámolás. **953 natív állítás / 44 csoport**, 29 baseline és 8 végső célzott WebGL-ellenőrzés, 0 konzolhiba; 720p/1080p képek átnézve. [Közös jelentés](../Acceptance/lottery-point/REPORT.md), [használat és architektúra](../Architecture/LOTTERY_POINT.md). Pagesre nincs kiadva.

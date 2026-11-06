@@ -49,7 +49,8 @@
       "ingredient-packaging",
       "lottery-state",
       "lottery-integration",
-      "lottery-numbers"
+      "lottery-numbers",
+      "expansion"
     ]
   },
   "suites": {
@@ -272,6 +273,11 @@
       "purpose": "Customer number validation, physical printing/card checkout, immutable next-day draw and persistent reserve",
       "entry": "LotteryChecks.Numbers",
       "file": "Tools/Checks/LotteryChecks.cs"
+    },
+    "expansion": {
+      "entry": "ExpansionChecks.Run",
+      "purpose": "Independent shop/warehouse levels, 16 geometry pairs, paid modular furniture, access and reset",
+      "file": "Tools/Checks/ExpansionChecks.cs"
     }
   },
   "historicalExcluded": {

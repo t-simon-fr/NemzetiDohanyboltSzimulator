@@ -17,7 +17,7 @@ public static class AfterHoursUpgradeChecks
         Action reset=()=>{player.CancelHeld();shop.ClosePanel();shop.ResetDemo();shop.ManualTick=true;};
         try
         {
-            reset(); ShopCheckFixtures.Fund(shop,200000);
+            reset(); ShopCheckFixtures.Fund(shop,400000);
             check(shop.CanDevelopShop,"Preparing still allows development");
             int cash=shop.Ledger.Cash;
             shop.OpenShop();
@@ -32,7 +32,10 @@ public static class AfterHoursUpgradeChecks
                 int before=shop.Ledger.Cash;
                 check(buy[i](),"Buy development after closing: "+i);
                 check(shop.Ledger.Cash==before-costs[i]&&shop.Drawer.Total==shop.Ledger.Cash,"Development exact price and drawer reconciliation: "+i);
-                check(!buy[i]()&&shop.Ledger.Cash==before-costs[i],"Already owned development cannot be bought twice: "+i);
+                if(i==0) {
+                    check(shop.TryExpand()&&shop.TryExpand()&&shop.Layout.ShopLevel==3,"Further shop levels are independently purchasable");
+                    int maximumCash=shop.Ledger.Cash;check(!shop.TryExpand()&&shop.Ledger.Cash==maximumCash,"Maximum shop level cannot be purchased again");
+                } else check(!buy[i]()&&shop.Ledger.Cash==before-costs[i],"Already owned development cannot be bought twice: "+i);
             }
             check(Enumerable.Range(0,ShopCatalog.Ids.Length).Sum(shop.StockCount)==stock,"Development never creates or deletes merchandise");
             var body=player.GetComponent<CharacterController>();body.enabled=false;player.transform.position=shop.Layout.EntryInside;body.enabled=true;

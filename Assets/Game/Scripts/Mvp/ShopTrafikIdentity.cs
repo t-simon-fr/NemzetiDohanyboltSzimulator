@@ -160,7 +160,7 @@ public sealed class ShopTrafikIdentity : MonoBehaviour
     public void RefreshLayout(bool expanded)
     {
         if(roofMesh==null)return;
-        float right=expanded?6.75f:2.75f;
+        float right=2.75f+GetComponent<ShopLayout>().ShopLevel*2;
         float middle=(-2.75f+right)*.5f;
         float half=(right+2.75f)*.5f;
         var v=roofMesh.vertices;

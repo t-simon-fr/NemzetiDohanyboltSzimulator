@@ -45,7 +45,7 @@ public sealed class ShopNavigation : MonoBehaviour
         var obstacles = StaticObstacles();
         obstacles.AddRange(poses.Select(p => p.Key.BoundsAt(p.Value)));
         bool expanded = shop.Layout.Expanded;
-        return new ShopRouteGrid(Rect.MinMaxRect(-2.25f, -5.25f, expanded ? 6.25f : 2.25f, 1.5f), point =>
+        return new ShopRouteGrid(Rect.MinMaxRect(-2.25f, -5.25f, shop.Layout.ShopArea.xMax-.15f, 1.5f), point =>
         {
             // Only the entrance corridor extends beyond the purchased customer floor.
             if (point.z < -4.05f)

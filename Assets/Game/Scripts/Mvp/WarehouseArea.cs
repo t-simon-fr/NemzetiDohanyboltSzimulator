@@ -12,11 +12,16 @@ public sealed class WarehouseArea : MonoBehaviour
     private WarehouseCarton[] current = new WarehouseCarton[ShopCatalog.Count];
     private MvpShopController shop;
     private List<Transform> storageDocks;
+    public void RegisterStorage(IEnumerable<Transform> locations)
+    {
+        EnsureStorageDocks();storageDocks.AddRange(locations);
+    }
 
     public IReadOnlyList<Transform> StorageDocks { get { EnsureStorageDocks(); return storageDocks; } }
 
     private void EnsureStorageDocks()
     {
+        storageDocks?.RemoveAll(d=>d==null||!d.gameObject.activeInHierarchy);
         if (storageDocks != null || docks == null) return;
         storageDocks = docks.Where(dock => dock != null).ToList();
         // Every authored shelf board is usable, including rows without a former brand dock.
