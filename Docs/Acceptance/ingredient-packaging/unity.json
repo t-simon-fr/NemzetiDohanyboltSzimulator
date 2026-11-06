@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "ingredient-packaging",
+    "ingredient-pickup",
+    "coffee-world",
+    "coffee-display",
+    "refactor-coffee",
+    "tool-storage",
+    "checkout-revision"
+  ],
+  "startedUtc": "2026-11-06T11:26:40.1213652Z",
+  "source": {
+    "commit": "c067094caca56e0fa550e19c533cfa3aa7117f8b",
+    "sourceFingerprint": "0ccd5d820076d96b08285a2775d4072b261514691b434c4f9f0ef0c09d56af05",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "seconds": 0.6778172,
+      "id": "ingredient-packaging",
+      "entry": "IngredientPackagingChecks.Run",
+      "failed": 0,
+      "passed": 21
+    },
+    {
+      "seconds": 0.2020394,
+      "id": "ingredient-pickup",
+      "entry": "IngredientPickupChecks.Run",
+      "failed": 0,
+      "passed": 21
+    },
+    {
+      "seconds": 0.4637002,
+      "id": "coffee-world",
+      "entry": "NextFeatureChecks.WorldAndCoffee",
+      "failed": 0,
+      "passed": 29
+    },
+    {
+      "seconds": 0.2115864,
+      "id": "coffee-display",
+      "entry": "CoffeeDisplayChecks.Run",
+      "failed": 0,
+      "passed": 37
+    },
+    {
+      "seconds": 0.3400431,
+      "id": "refactor-coffee",
+      "entry": "RefactorChecks.Coffee",
+      "failed": 0,
+      "passed": 17
+    },
+    {
+      "seconds": 0.1313494,
+      "id": "tool-storage",
+      "entry": "ToolStorageChecks.Run",
+      "failed": 0,
+      "passed": 20
+    },
+    {
+      "seconds": 0.1815514,
+      "id": "checkout-revision",
+      "entry": "CheckoutRevisionChecks.Run",
+      "failed": 0,
+      "passed": 20
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.073622,
+  "finishedUtc": "2026-11-06T11:26:48.6051195Z",
+  "totalSeconds": 8.4982827
+}

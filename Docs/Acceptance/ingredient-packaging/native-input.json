@@ -1,0 +1,13 @@
+{
+  "output": null,
+  "diagnostics": [],
+  "success": true,
+  "result": {
+    "success": true,
+    "coffee": 10,
+    "milk": 10,
+    "balance": 46500,
+    "nativeMouse": "coffee and milk left click confirmed",
+    "cameraLookFrozenForReview": true
+  }
+}
