@@ -401,7 +401,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         }
         if(action=="expansion-staff-view")
         {
-            Shop.Arrangement.Cancel();Shop.ClosePanel();Aim(new Vector3(Shop.Layout.ShopArea.xMax-.7f,1,-1.2f),4,new Vector3(-1,0,0));
+            Shop.Arrangement.Cancel();Shop.ClosePanel();
+            var target=new Vector3(Shop.Layout.ShopArea.xMax-.7f,1.1f,-1.2f);
+            var offset=new Vector3(-1.4f,0,.15f)-new Vector3(target.x,0,target.z);
+            Aim(target,offset.magnitude,offset.normalized,true);
         }
         if (action == "aim-night-box" && Shop.AfterHours.DeliveryBox!=null) Aim(Shop.AfterHours.DeliveryBox.transform.position+Vector3.up*.13f,1.1f);
         if (action == "aim-private-storage") Aim(Shop.CounterStorage.Slots[0].transform.position+Vector3.up*.1f,1f);

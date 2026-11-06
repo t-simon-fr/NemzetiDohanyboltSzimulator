@@ -17,6 +17,8 @@ public static class ExpansionChecks
         check(shop.TryExpand()&&layout.ShopLevel==1&&layout.WarehouseLevel==0,"First shop step is seven metres and independent of warehouse");
         check(shop.Ledger.Cash==cash-24000,"Shop step debits once");
         var plans=new System.Collections.Generic.List<object>();
+        check(shop.Arrangement.Furniture.Where(f=>f.Id=="public-shelf"||f.Id.StartsWith("starter-shelf"))
+            .All(f=>f.GetComponentsInChildren<ShopShelfPriceLabel>(true).Length>0),"Inactive starter modules retain dynamic price labels");
         var original=shop.Arrangement.Current().ToDictionary(p=>p.Key,p=>p.Value);
         for(int s=0;s<4;s++)for(int w=0;w<4;w++)
         {
@@ -27,8 +29,14 @@ public static class ExpansionChecks
             check(shop.FloorPlan.Find("Door lintel").position.x==ShopFloorPlan.EntranceX,"Door remains in starter shop");
             if(w==0)
             {
+                if(s==0)check(shop.GetComponent<ShopModularFurniture>().Buy(ShopModuleKind.Narrow),"Starter footprint supports an optional narrow rack");
                 var a=shop.Arrangement.Current();
                 var b=a.ToDictionary(p=>p.Key,p=>p.Value);
+                if(s==0)
+                {
+                    var narrow=a.Keys.First(f=>f.Id.StartsWith("module-"));
+                    b[narrow]=new ShopFurniturePose(a[narrow].Position,a[narrow].QuarterTurns+2);
+                }
                 int index=0;
                 foreach(var item in a.Keys.Where(f=>f.Id=="public-shelf"||f.Id.StartsWith("starter-shelf")).OrderBy(f=>f.Id))
                 {
@@ -52,6 +60,8 @@ public static class ExpansionChecks
             check(shop.Ledger.Cash==cash-ShopModularFurniture.Prices[(int)kind],"Exact module debit "+kind);
         }
         check(shop.Arrangement.Validate(shop.Arrangement.Current(),out var reason),"Purchased modules retain circulation: "+reason);
+        var island=shop.Arrangement.Furniture.First(f=>f.Title==ShopModularFurniture.Names[2]);
+        check(island.GetComponentsInChildren<ShopShelfPriceLabel>().Length==8,"Two-sided rack labels both faces on every row");
         var warehouse=shop.Arrangement.Furniture.First(f=>f.InWarehouse);
         check(shop.Warehouse.StorageDocks.Any(d=>d.IsChildOf(warehouse.transform)),"Warehouse module has usable carton docks");
         check(shop.OrderSupply(0,1),"Order actual stock for modular rack");shop.Tick(8.1f);

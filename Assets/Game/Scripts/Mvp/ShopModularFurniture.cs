@@ -65,7 +65,9 @@ public sealed class ShopModularFurniture : MonoBehaviour
     }
     private void AddLabels(Transform root)
     {
-        foreach(var row in root.GetComponentsInChildren<ProductSlot>().GroupBy(s=>Mathf.RoundToInt(s.transform.localPosition.y*100)))
+        foreach(var row in root.GetComponentsInChildren<ProductSlot>(true).GroupBy(s=>new {
+            Height=Mathf.RoundToInt(s.transform.localPosition.y*100),
+            Side=Mathf.RoundToInt(s.transform.localEulerAngles.y/90) }))
         {
             var first=row.First();
             var text=ProductVisuals.Text(first.transform,"Module price", "",new Vector3(0,-.08f,-.26f),Quaternion.identity,.025f,Color.white);

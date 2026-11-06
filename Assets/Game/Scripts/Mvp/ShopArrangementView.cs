@@ -129,7 +129,7 @@ public sealed partial class ShopArrangement
             editorTitle = ShopUi.Text(22,true,true);
             editorText = ShopUi.Text(16,false,true);
             editorButton = ShopUi.ButtonStyle(16);
-            planLabel = new GUIStyle(editorText) { alignment=TextAnchor.MiddleCenter, fontStyle=FontStyle.Bold };
+            planLabel = new GUIStyle(editorText) { alignment=TextAnchor.MiddleCenter, fontStyle=FontStyle.Bold, fontSize=14, wordWrap=false, clipping=TextClipping.Clip };
         }
         Rect area = Rect.MinMaxRect(shop.Layout.WarehouseArea.xMin,-4.3f,shop.Layout.ShopArea.xMax,1.9f);
         Rect screenArea = OnPlan(area);
@@ -153,7 +153,7 @@ public sealed partial class ShopArrangement
             Color color = ghost ? previewValid ? new Color(.15f,.75f,.35f,.85f) : new Color(.85f,.2f,.15f,.9f) : new Color(.1f,.42f,.45f,.9f);
             Fill(rect,color);
             Outline(rect,Color.white);
-            GUI.Label(rect,pair.Key.Id == "public-shelf" ? "Polc" : pair.Key.Title,planLabel);
+            GUI.Label(rect,pair.Key.InWarehouse?"R":pair.Key.Id=="drinks-fridge"?"H":"P",planLabel);
         }
         Fill(new Rect(Sidebar+12,12,Screen.width-Sidebar-24,42),ShopUi.Green);
         GUI.Label(new Rect(Sidebar+24,18,Screen.width-Sidebar-48,32),"ÜZLET ÁTRENDEZÉSE • Előnézet",editorTitle);
