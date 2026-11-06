@@ -1,0 +1,49 @@
+{
+  "started": "2026-11-06T08:08:29.641Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Actual W input walks through the unobstructed stockroom opening",
+      "passed": true
+    },
+    {
+      "label": "Doorway crossing preserves money and day state",
+      "passed": true
+    },
+    {
+      "label": "Actual E still focuses the monitor on the cleared counter",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-warehouse-opening.png",
+    "1920x1080-warehouse-opening-large.png",
+    "1280x720-warehouse-inside.png",
+    "1280x720-counter-cleared.png",
+    "1920x1080-counter-cleared-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23250360,
+    "seconds": 254.3300361,
+    "error": "",
+    "completedUtc": "2026-11-06T08:08:28.905Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "ca6c9812f4e09315cf9a822fc3135417ce511be31b36e22af3bedd7293030960",
+      "AcceptanceWebGL.framework.js.unityweb": "9a42c7b29d3b2c844e02babe9249a5d7e9e9a2b9041737059c807a5491964123",
+      "AcceptanceWebGL.loader.js": "2ef3c2d88056fa8d96d5f0920aa1f82a20c6ab6f281d755dca8bbd774d057f35",
+      "AcceptanceWebGL.wasm.unityweb": "eca39da01b4c7613be96bdcf46a208c53f6f449538f44298fb0928a57206222b"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-06T08:08:51.147Z",
+  "capturedStateCount": 7
+}
