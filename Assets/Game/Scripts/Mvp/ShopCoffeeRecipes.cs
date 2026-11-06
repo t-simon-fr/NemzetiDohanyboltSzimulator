@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-public sealed class ShopIngredientPackage:MonoBehaviour{public int Coffee,Milk;}
+public sealed class ShopIngredientPackage : MonoBehaviour
+{
+    public int Coffee, Milk;
+    public string Brand => Milk > 0 ? "Albro" : "La Vazze";
+}
 public sealed partial class ShopActivities
 {
     public int ReadyCoffee=>ingredientPackages.Where(p=>p!=null).Sum(p=>p.GetComponent<ShopIngredientPackage>().Coffee);
@@ -31,10 +35,23 @@ public sealed partial class ShopActivities
     public void SelectRecipe(int type){if(coffeeState.SelectRecipe(type))CoffeeDisplay?.Refresh();}
     private void SpawnIngredientPackage(int servings,bool milk=false)
     {
-        var root=new GameObject(milk?"Milk ingredient delivery":"Coffee ingredient delivery");root.transform.SetParent(worldRoot,false);root.transform.position=shop.Warehouse.Dock(4).position+Vector3.up*.55f+shop.Warehouse.Dock(4).right*((ingredientPackages.Count%2-.5f)*.32f);
-        var body=Shape(root.transform,"Coffee and milk supply bag",Vector3.up*.12f,new Vector3(.26f,.24f,.20f),ivory,PrimitiveType.Cube,true);
-        ProductVisuals.Text(root.transform,"Supply label",(milk?"TEJ\n":"KÁVÉ\n")+servings+" ADAG",new Vector3(0,.13f,-.103f),Quaternion.identity,.035f,Color.black);
-        var tool=root.AddComponent<ShopHandTool>();tool.Configure(ShopToolKind.CoffeeRefill);var package=root.AddComponent<ShopIngredientPackage>();package.Coffee=milk?0:servings;package.Milk=milk?servings:0;
+        var root = new GameObject(milk ? "Milk ingredient delivery" : "Coffee ingredient delivery");
+        root.transform.SetParent(worldRoot, false);
+        root.transform.position = shop.Warehouse.Dock(4).position + Vector3.up * .55f
+            + shop.Warehouse.Dock(4).right * ((ingredientPackages.Count % 2 - .5f) * .32f);
+        // Printed fronts face the warehouse aisle, not the rack's back panel.
+        root.transform.localRotation = Quaternion.Euler(0, -90, 0);
+        var model = Resources.Load<GameObject>(milk ? "Ingredients/Albro" : "Ingredients/LaVazze");
+        if (model == null) throw new System.InvalidOperationException("Missing ingredient packaging prefab.");
+        Instantiate(model, root.transform, false);
+        var collider = root.AddComponent<BoxCollider>();
+        collider.size = milk ? new Vector3(.16f, .35f, .12f) : new Vector3(.20f, .24f, .10f);
+        collider.center = Vector3.up * collider.size.y * .5f;
+        var package = root.AddComponent<ShopIngredientPackage>();
+        package.Coffee = milk ? 0 : servings;
+        package.Milk = milk ? servings : 0;
+        var tool = root.AddComponent<ShopHandTool>();
+        tool.Configure(ShopToolKind.CoffeeRefill);
         ingredientPackages.Add(root);shop.Notify("Az alapanyag a raktári italpolc felső szintjén vár. E: felvétel, majd E a kávégépen: betöltés.");
     }
     private bool RefillFromHand()
