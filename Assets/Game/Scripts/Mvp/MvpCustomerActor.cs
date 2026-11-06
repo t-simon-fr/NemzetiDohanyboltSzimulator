@@ -6,6 +6,10 @@ public sealed class MvpCustomerActor : MonoBehaviour
 {
     public int Person { get; private set; }
     public int Product { get; private set; }
+    public string LotteryClaimId { get; private set; }
+    private int[] lotteryNumbers = System.Array.Empty<int>();
+    public int[] LotteryNumbers => (int[])lotteryNumbers.Clone();
+    public bool LotteryQuickPick { get; private set; }
     public int[] OrderTypes {get;private set;}
     public int[] UnitPrices {get;private set;}
     public bool AcceptsPrices {get;private set;}
@@ -35,16 +39,19 @@ public sealed class MvpCustomerActor : MonoBehaviour
     private List<Vector3> route;
     private int routeIndex, routeVersion = -1;
     private Vector3 routeGoal;
-    public void Initialize(int person,int product,int visit,int[] order=null)
+    public void Initialize(int person,int product,int visit,int[] order=null,string lotteryClaimId=null)
     {
         var game = MvpShopController.Instance;
-        OrderTypes = order ?? game.CreateCustomerOrder(product,visit);
-        if (OrderTypes.Length == 0) throw new System.ArgumentException("Customer requires an available order.");
-        Person=person;Product=OrderTypes[0];product=Product;
+        LotteryClaimId=lotteryClaimId;
+        OrderTypes = lotteryClaimId!=null ? System.Array.Empty<int>() : order ?? game.CreateCustomerOrder(product,visit);
+        if (OrderTypes.Length == 0 && lotteryClaimId==null) throw new System.ArgumentException("Customer requires an available order.");
+        Person=person;Product=OrderTypes.Length>0?OrderTypes[0]:-1;product=Product;
+        if(product==ShopLotteryCatalog.NumberType)
+        {lotteryNumbers=game.Lottery.Book.QuickPick();LotteryQuickPick=visit%2==0;}
         UnitPrices=OrderTypes.Select(ShopCatalog.SalePrice).ToArray();AcceptsPrices=OrderTypes.Select((t,i)=>ShopPricing.Accepts(t,UnitPrices[i],visit,game.Day)).All(x=>x);int price=TotalPrice;
         Tender=visit%3==1?price:price>2000?Mathf.CeilToInt(price/5000f)*5000:price>500?Mathf.CeilToInt(price/1000f)*1000:500;
         UsesCard=!game.SingleProductVisits&&visit%4==3;
-        UsesCoins=!UsesCard&&price<=1000 && visit%4<=2;
+        UsesCoins=lotteryClaimId==null&&!ShopLotteryCatalog.IsTicket(product)&&!UsesCard&&price<=1000 && visit%4<=2;
         layout=Object.FindAnyObjectByType<ShopLayout>();security=layout.GetComponent<ShopSecurity>();
         WillSteal=AcceptsPrices&&layout.IsPublicProduct(product) && (visit+MvpShopController.Instance.Day)%6==4;
         transform.SetPositionAndRotation(layout.EntryOutside,Quaternion.identity);

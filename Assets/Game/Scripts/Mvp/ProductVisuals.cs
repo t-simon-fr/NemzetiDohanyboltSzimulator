@@ -5,6 +5,7 @@ public static class ProductVisuals
     public static readonly Color[] Colors = {new Color(.87f,.81f,.67f),new Color(.72f,.04f,.07f),new Color(.28f,.035f,.075f),new Color(.035f,.035f,.04f),new Color(.2f,.6f,.8f),new Color(.72f,.025f,.04f),new Color(.025f,.03f,.025f),new Color(.75f,.24f,.025f),new Color(.12f,.32f,.12f)};
     public static Vector3 Size(int type)
     {
+        if (ShopLotteryCatalog.IsTicket(type)) return new Vector3(.15f,.21f,.008f);
         if(ShopCatalog.IsCoffee(type))return new Vector3(.14f,type==ShopCatalog.Coffee?.16f:type==ShopCatalog.LongCoffee?.22f:.27f,.14f);
         if (ShopCatalog.IsCigarette(type)) return new Vector3(.16f,.26f,.08f);
         if (type == ShopCatalog.Index("kevert")) return new Vector3(.085f,.20f,.085f);
@@ -50,6 +51,11 @@ public static class ProductVisuals
     }
     public static void Add(GameObject item,int type)
     {
+        if (ShopLotteryCatalog.IsTicket(type))
+        {
+            MvpShopController.Instance.Lottery.AddTicketVisual(item, type);
+            return;
+        }
         if(ShopCatalog.IsCoffee(type))
         {
             item.GetComponent<Renderer>().enabled=false;

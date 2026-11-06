@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton, Smuggler, Exit, Terminal, CoffeeControl, CustomerHand }
+public enum ShopStationKind { Till, Supplies, Door, Monitor, PanicButton, Smuggler, Exit, Terminal, CoffeeControl, CustomerHand, Lottery }
 public sealed class ShopStation : MonoBehaviour
 {
     [SerializeField] private ShopStationKind kind;
@@ -9,6 +9,8 @@ public sealed class ShopStation : MonoBehaviour
     public int ProductType=>productType;
     public void Configure(MvpShopController controller,ShopStationKind stationKind){shop=controller;kind=stationKind;}
     public void ConfigureBrand(MvpShopController controller,int type){Configure(controller,ShopStationKind.Supplies);productType=type;}
+    public void ConfigureLottery(MvpShopController controller,int type){Configure(controller,ShopStationKind.Lottery);productType=type;}
+    public bool IsLottery=>kind==ShopStationKind.Lottery;
     public bool IsSupplies=>kind==ShopStationKind.Supplies;
     public bool IsPanicButton=>kind==ShopStationKind.PanicButton;
     public bool IsCoffeeControl=>kind==ShopStationKind.CoffeeControl;
@@ -22,6 +24,7 @@ public sealed class ShopStation : MonoBehaviour
     {
         get
         {
+            if(IsLottery)return productType>=13?"E / bal kattintás – "+ShopCatalog.ShortNames[productType]+" · felvétel / visszaadás":"E / bal kattintás – Lottópont";
             if(kind==ShopStationKind.Smuggler)return "E – Beszélgetés a gyanús alakkal";
             if(IsPanicButton)return shop.Security.Prompt;
             if(kind==ShopStationKind.Monitor)return "E / B – Számítógép: rendelések és berendezés";
@@ -39,7 +42,8 @@ public sealed class ShopStation : MonoBehaviour
     public void Use(PlayerInteractor player)
     {
         if(shop==null)return;
-        if(kind==ShopStationKind.Smuggler)shop.AfterHours.OpenTrade();
+        if(IsLottery){if(productType>=13)shop.Lottery.UseRack(productType,player);else shop.Lottery.Open();}
+        else if(kind==ShopStationKind.Smuggler)shop.AfterHours.OpenTrade();
         else if(IsPanicButton)shop.Security.Toggle();
         else if(kind==ShopStationKind.Monitor)shop.OpenSupplier();
         else if(kind==ShopStationKind.Terminal)shop.Devices.Focus(ShopDeviceKind.Terminal);

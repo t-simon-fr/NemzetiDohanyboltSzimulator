@@ -143,6 +143,7 @@ public sealed class PlayerInteractor : MonoBehaviour
         if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !primaryInteraction) return;
         if(targetRack!=null && heldTool!=null){TryReturnHeldTool(targetRack);return;}
         if (station != null && station.IsPanicButton) { station.Use(this); return; }
+        if (station != null && station.IsLottery) { station.Use(this); return; }
         if (station != null && station.IsCoffeeControl && !HasHeldItem) { station.Use(this); return; }
         if(featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.CoffeeMachine&&(!HasHeldItem||heldTool!=null&&heldTool.Kind==ShopToolKind.CoffeeRefill)){MvpShopController.Instance.Activities.UseCoffeeMachine();return;}
         if(heldTool!=null)
