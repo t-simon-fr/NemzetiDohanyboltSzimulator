@@ -308,6 +308,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         if (action.StartsWith("aim-storage-") && int.TryParse(action.Substring(12),out int dockIndex)) AimStorageDock(Shop.Warehouse.Dock(dockIndex));
         if (action == "aim-storage-lower") AimStorageDock(LowerStorageDock());
         if (action == "aim-warehouse-shelf") AimWarehouseShelf();
+        if (action == "view-lighter-display") Aim(Shop.Devices.MonitorPosition, 1.1f, new Vector3(-1, 0, -.6f).normalized);
         if (action == "order-shelf-delivery") { Shop.OrderSupply(0, 2); Shop.ManualTick = false; }
         if (action == "aim-stock-shelf")
         {

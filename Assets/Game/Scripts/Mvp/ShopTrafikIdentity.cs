@@ -190,10 +190,7 @@ public sealed class ShopTrafikIdentity : MonoBehaviour
         var counter = shop.Counter.transform;
         Box(counter, "Trafik counter trim", new Vector3(0, .22f, -.435f), new Vector3(3.30f, .025f, .012f), cream);
         // Compact non-interactive lighter case at the rear counter end, away from checkout slots.
-        var glass = Make("Trafik display glass", new Color(.77f, .86f, .83f, .12f));
-        glass.shader = Shader.Find("Shop/PET"); glass.renderQueue = 3000;
         Box(root, "Trafik lighter case base", new Vector3(-.30f, 1.18f, -.87f), new Vector3(.65f, .035f, .46f), brown);
-        Box(root, "Trafik lighter case glass", new Vector3(-.30f, 1.32f, -.87f), new Vector3(.65f, .25f, .46f), glass);
         for (int i = 0; i < 6; i++)
             Box(root, "Trafik display lighter", new Vector3(-.54f + i * .09f, 1.25f, -.87f), new Vector3(.045f, .12f, .03f), i % 2 == 0 ? red : green);
         foreach(var label in gameObject.scene.GetRootGameObjects().SelectMany(t=>t.GetComponentsInChildren<TextMesh>(true))) {

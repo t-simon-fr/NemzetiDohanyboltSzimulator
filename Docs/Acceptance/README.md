@@ -2,7 +2,9 @@
 
 Aktuális Pages-kiadás: [trafik arculat, TobaccOS és az összes main-fejlesztés #92-ig](trafik-refresh-pages/REPORT.md). Korábbi kiadás: [#53–#59 új feature-csomag](2026-11-05-feature-pages/REPORT.md).
 
-Legfrissebb javítás: [#92 TobaccOS hover-kontraszt](hover-contrast/REPORT.md): 12 célzott natív és 4 WebGL-ellenőrzés, 0 konzolhiba; két felbontás átnézve. Pagesre még nincs kiadva.
+Legfrissebb javítás: [#94/#96 raktárnyílás és üveg nélküli öngyújtótartó](stockroom-and-display-fixes/REPORT.md): 13 natív és 4 WebGL-ellenőrzés, 0 konzolhiba. Pagesre még nincs kiadva.
+
+Korábbi javítás: [#92 TobaccOS hover-kontraszt](hover-contrast/REPORT.md): 12 célzott natív és 4 WebGL-ellenőrzés, 0 konzolhiba; két felbontás átnézve. Pagesre még nincs kiadva.
 
 Korábbi fejlesztés: [#87–#89 trafik arculat és minimalista TobaccOS](2026-11-05-trafik-refresh/REPORT.md): 766 állításos natív baseline, 98 és 44 friss célzott ellenőrzés, 31 WebGL-próba, 0 konzolhiba. Pagesre még nincs kiadva.
 

@@ -95,6 +95,10 @@ public static class VisualRefreshChecks
         check(panels.Length == 2, "Both solid side-wall sections retain their lower trim");
         check(panels.All(p => p.bounds.max.z <= frontWall.max.z + .001f || p.bounds.min.z >= rearWall.min.z - .001f),
             "No decorative panel spans the stockroom doorway");
+        var decorations = identity.Facade.parent.GetComponentsInChildren<Renderer>();
+        check(!decorations.Any(r => r.name == "Trafik lighter case glass"), "Lighter display has no glass cover");
+        check(decorations.Count(r => r.name == "Trafik display lighter") == 6 && decorations.Any(r => r.name == "Trafik lighter case base"),
+            "Open lighter display retains all six lighters and its base");
         check(g.FloorPlan.Find("Counter top").GetComponent<Renderer>().sharedMaterial.name=="Trafik countertop","Counter has owned muted surface material");
         check(g.FloorPlan.Find("Exterior shop sign")==null||!g.FloorPlan.Find("Exterior shop sign").GetComponent<Renderer>().enabled,"Old competing exterior sign hidden");
         check(identity.Facade.GetComponentsInChildren<TextMesh>().Any(t=>t.text=="NEMZETI DOHÁNYBOLT"),"Facade title is actual Hungarian sign text");

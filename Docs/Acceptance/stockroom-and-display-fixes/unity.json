@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "identity-visuals"
+  ],
+  "startedUtc": "2026-11-06T07:26:09.7114170Z",
+  "source": {
+    "commit": "be4aaab34898a232891ad0b93364dcfaf6c36a54",
+    "sourceFingerprint": "0ea9bf00c65904e44555108944722a064fa78ba23d256177957ac2500e87ec55",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "id": "identity-visuals",
+      "entry": "VisualRefreshChecks.Identity",
+      "seconds": 0.6245362,
+      "failed": 0,
+      "passed": 13
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.069258,
+  "finishedUtc": "2026-11-06T07:26:15.3314314Z",
+  "totalSeconds": 5.6292696
+}
