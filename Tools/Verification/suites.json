@@ -39,7 +39,8 @@
       "scanner-placement",
       "price-editor",
       "computer-ui",
-      "identity-visuals"
+      "identity-visuals",
+      "refactor-purchasing"
     ]
   },
   "suites": {
@@ -212,6 +213,11 @@
       "entry": "VisualRefreshChecks.Identity",
       "file": "Tools/Checks/VisualRefreshChecks.cs",
       "purpose": "Runtime branding and nonblocking visual geometry"
+    },
+    "refactor-purchasing": {
+      "purpose": "Atomic procurement quote and adapter invariants",
+      "entry": "RefactorChecks.Purchasing",
+      "file": "Tools/Checks/RefactorChecks.cs"
     }
   },
   "historicalExcluded": {

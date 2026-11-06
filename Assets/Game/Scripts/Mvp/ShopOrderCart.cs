@@ -83,21 +83,28 @@ public sealed partial class MvpShopController
 {
     public bool OrderBasket(int[] quantities)
     {
-        if (quantities == null || quantities.Length != ShopCatalog.Count || Ledger.Closed || Phase == ShopPhase.Summary) return false;
-        int total = 0;
-        for (int type=0;type<quantities.Length;type++)
+        if (!TryPurchase(quantities, out var quote))
         {
-            int quantity = quantities[type];
-            if (quantity < 0 || quantity > ShopCatalog.MaxOrderQuantity || type >= AvailableProducts && quantity > 0 || warehouse[type]+PendingQuantity(type)+quantity > 24)
-            { Notify("A kosár nem rendelhető: ellenőrizd a mennyiségeket és a raktárkapacitást."); return false; }
-            total += ShopCatalog.Costs[type]*quantity;
+            if (quote.Error == ShopPurchaseError.Closed || quote.Error == ShopPurchaseError.InvalidBasket) return false;
+            Notify(quote.Error == ShopPurchaseError.Empty ? "A rendelési kosár üres." :
+                quote.Error == ShopPurchaseError.Funds ? "Nincs elég pénz a teljes rendeléshez." :
+                "A kosár nem rendelhető: ellenőrizd a mennyiségeket és a raktárkapacitást.");
+            return false;
         }
-        if (total == 0 || !Ledger.TryBuy(total,1))
-        { Notify(total == 0 ? "A rendelési kosár üres." : "Nincs elég pénz a teljes rendeléshez."); return false; }
-        for (int type=0;type<quantities.Length;type++)
-            if (quantities[type] > 0) shipments.Add(new Shipment { Type=type, Quantity=quantities[type], Remaining=8f });
+        Notify("A teljes rendelés elküldve: "+ShopCatalog.Money(quote.Total)+". Szállítás: 8 másodperc.");
+        return true;
+    }
+
+    private bool TryPurchase(int[] quantities, out ShopPurchaseQuote quote)
+    {
+        var pending = Enumerable.Range(0, ShopCatalog.Count).Select(PendingQuantity).ToArray();
+        quote = ShopPurchaseRules.Quote(quantities, ShopCatalog.Costs, AvailableProducts, warehouse, pending,
+            Ledger.AvailableFunds, Ledger.Closed || Phase == ShopPhase.Summary, ShopCatalog.MaxOrderQuantity, 24);
+        if (!quote.Accepted || !Ledger.TryBuy(quote.Total, 1)) return false;
+        for (int type = 0; type < quote.Count; type++)
+            if (quote.Quantity(type) > 0)
+                shipments.Add(new Shipment { Type = type, Quantity = quote.Quantity(type), Remaining = 8f });
         SyncCashDrawer();
-        Notify("A teljes rendelés elküldve: "+ShopCatalog.Money(total)+". Szállítás: 8 másodperc.");
         return true;
     }
 }
