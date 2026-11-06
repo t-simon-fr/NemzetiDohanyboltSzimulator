@@ -13,7 +13,12 @@ let server, browser, ws, width = 1280, height = 720, lastState, captureFailure;
 const messages = [];
 const selected = process.argv.find(a => a.startsWith('--case='))?.split('=')[1];
 const refactorCases = new Set(["cash-register","hand-interaction","warehouse-storage","physical-terminal","triple","requests-batch","cart-only","coffee-display","menu","arrangement","summary"]);
-const batchCase = name => selected === 'refactor-batch' && refactorCases.has(name);
+const refactorUiCases = new Set(['cart-only', 'coffee-display', 'menu', 'arrangement', 'summary']);
+const batchCase = name => {
+  if (selected === 'refactor-batch') return refactorCases.has(name);
+  if (selected === 'refactor-ui') return refactorUiCases.has(name);
+  return selected === 'refactor-arrangement' && ['arrangement', 'summary'].includes(name);
+};
 const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); console.log((ok ? 'PASS ' : 'FAIL ') + label); if (!ok) throw Error(label); };
 
 (async () => {
@@ -575,19 +580,22 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare','feature-cart'); let s=await state(); const balance=s.balance;
       check(s.clock==='08:00' && s.cartQuantities.every(q=>q===0),'Cart opens empty before the 08:00 shift');
       const fill = async (rect,value) => {
-        await clickRect(rect); await key('Backspace','Backspace',8);
+        await clickRect(rect);
+        await send('Input.dispatchKeyEvent',{type:'keyDown',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await send('Input.dispatchKeyEvent',{type:'keyUp',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await key('Backspace','Backspace',8);
         await send('Input.dispatchKeyEvent',{type:'char',text:String(value),unmodifiedText:String(value)}); await sleep(300);
       };
       await fill(s.cartFields[0],2); await fill((await state()).cartFields[1],3); s=await state();
       check(s.cartQuantities[0]===2 && s.cartQuantities[1]===3 && s.balance===balance,'Actual quantity fields accept distinct typed values without purchasing');
-      await click(s.cartFields[0].x+53+16,s.cartFields[0].y+15);
+      await clickRect(s.computerControls[s.computerControlIds.indexOf('Cart:Plus:0')]);
       check((await state()).cartQuantities[0]===3,'Mouse plus increases only the chosen product');
-      await click(s.cartFields[0].x-37+16,s.cartFields[0].y+15); s=await state();
+      s=await state(); await clickRect(s.computerControls[s.computerControlIds.indexOf('Cart:Minus:0')]); s=await state();
       check(s.cartQuantities[0]===2 && s.cartQuantities[1]===3,'Mouse minus decreases only the chosen product');
       await capture('cart-typed'); await clickRect(s.cartSubmit); s=await state();
       check(s.pendingCart[0]===2 && s.pendingCart[1]===3 && s.balance===balance-7800 && s.balance===s.drawer,'One mouse confirmation submits every cart row and exact total');
       await viewport(1920,1080); await capture('cart-submitted-large'); await viewport(1280,720);
-      if (selected !== 'cart-only' && selected !== 'refactor-batch') {
+      if (selected !== 'cart-only' && selected !== 'refactor-batch' && selected !== 'refactor-ui') {
       await probe('Prepare','feature-scanner'); s=await state(); const scans=s.scannerCount;
       await capture('scanner-ready'); await key('e','KeyE',69); s=await state();
       check(s.scannerCount===scans+1 && s.scannerProduct==='cig_red' && s.stage==='Payment' && !s.held,'Actual E scans one held product before transferring it to the customer');
@@ -725,13 +733,14 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(!(await state()).menu, 'Settings back and menu resume work by mouse at large viewport');
     }
     if (!selected || (selected === 'arrangement' || batchCase('arrangement'))) {
+      await viewport(1280, 720);
       await probe('Prepare', 'arrangement');
       let s = await state();
       const money = s.balance, item = s.stockedItem;
       await capture('arrangement-monitor');
       const openEditor = async () => {
         const current = await state();
-        await click(current.arrangeButton.x, height - current.arrangeButton.y);
+        await clickRect(current.computerControls[current.computerControlIds.indexOf('Arrange:0')]);
         check((await state()).arranging, 'TobaccOS mouse button enters arrangement');
       };
       const movePointer = async point => {
