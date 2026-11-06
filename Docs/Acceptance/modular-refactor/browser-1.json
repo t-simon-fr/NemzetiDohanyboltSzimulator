@@ -1,0 +1,385 @@
+{
+  "started": "2026-11-06T09:17:44.302Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Cash checkout opens dedicated close lens",
+      "passed": true
+    },
+    {
+      "label": "Own register display shows real tender and required change",
+      "passed": true
+    },
+    {
+      "label": "Physical cash commands remain visible and clickable",
+      "passed": true
+    },
+    {
+      "label": "Physical pay rejects empty change without charging",
+      "passed": true
+    },
+    {
+      "label": "Physical note selection updates own screen without charging",
+      "passed": true
+    },
+    {
+      "label": "Physical undo updates screen",
+      "passed": true
+    },
+    {
+      "label": "Physical clear resets selected change",
+      "passed": true
+    },
+    {
+      "label": "Keyboard shares cash screen state",
+      "passed": true
+    },
+    {
+      "label": "Actual note and coin clicks produce exact unpaid change",
+      "passed": true
+    },
+    {
+      "label": "Large cash view retains all commands above help bar",
+      "passed": true
+    },
+    {
+      "label": "Physical cash approval settles exactly once",
+      "passed": true
+    },
+    {
+      "label": "Completed cash sale restores normal camera",
+      "passed": true
+    },
+    {
+      "label": "Repeated Enter cannot charge completed cash sale twice",
+      "passed": true
+    },
+    {
+      "label": "Escape leaves register and restores original lens",
+      "passed": true
+    },
+    {
+      "label": "Normal view targets the actual offered palm with a useful prompt",
+      "passed": true
+    },
+    {
+      "label": "E on the hand opens coin view without selecting money",
+      "passed": true
+    },
+    {
+      "label": "Close view stays upright on the player side of the customer hand",
+      "passed": true
+    },
+    {
+      "label": "Escape restores ordinary player view without charging",
+      "passed": true
+    },
+    {
+      "label": "Actual click on the hand opens once and cannot leak into coin selection",
+      "passed": true
+    },
+    {
+      "label": "Coin clicks still select in the corrected view",
+      "passed": true
+    },
+    {
+      "label": "Clear retains the corrected readable view",
+      "passed": true
+    },
+    {
+      "label": "All coin targets stay above controls in large player view",
+      "passed": true
+    },
+    {
+      "label": "Real shipments occupy physical storage; previously unassigned rows are usable",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks carton and clears vacated source",
+      "passed": true
+    },
+    {
+      "label": "Actual E places carton on another former brand dock",
+      "passed": true
+    },
+    {
+      "label": "Vacant source cannot remotely pick up relocated carton",
+      "passed": true
+    },
+    {
+      "label": "Actual mouse click picks the physically relocated carton",
+      "passed": true
+    },
+    {
+      "label": "Occupied storage rejects E without replacing its different-brand carton",
+      "passed": true
+    },
+    {
+      "label": "Actual E places carton on formerly unusable lower shelf row",
+      "passed": true
+    },
+    {
+      "label": "Mouse can retrieve carton from lower shelf row",
+      "passed": true
+    },
+    {
+      "label": "Relocated carton still unpacks exactly one finite product",
+      "passed": true
+    },
+    {
+      "label": "Mouse places part-filled carton at chosen empty warehouse dock",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks the stocked unit for carton return",
+      "passed": true
+    },
+    {
+      "label": "Unit return uses actual carton contents instead of dock original brand",
+      "passed": true
+    },
+    {
+      "label": "All keyboard and mouse relocation preserves exact cash and other carton",
+      "passed": true
+    },
+    {
+      "label": "Card checkout focuses actual terminal",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 0",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 1",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 2",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 3",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 4",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 5",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 6",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 7",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 8",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 9",
+      "passed": true
+    },
+    {
+      "label": "Physical terminal rejects wrong input on its own display",
+      "passed": true
+    },
+    {
+      "label": "Physical correction and keyboard share live terminal amount",
+      "passed": true
+    },
+    {
+      "label": "Physical OK pays once and keeps success visible",
+      "passed": true
+    },
+    {
+      "label": "Successful card payment automatically restores normal player view and input",
+      "passed": true
+    },
+    {
+      "label": "Repeated confirmation after auto-close cannot double charge",
+      "passed": true
+    },
+    {
+      "label": "Physical ESC leaves terminal at large viewport",
+      "passed": true
+    },
+    {
+      "label": "Three identical cigarettes recognized",
+      "passed": true
+    },
+    {
+      "label": "Three identical items have separate positions",
+      "passed": true
+    },
+    {
+      "label": "Open shop receives visits beyond the old fixed daily limit",
+      "passed": true
+    },
+    {
+      "label": "Actual sign interaction closes ongoing arrivals",
+      "passed": true
+    },
+    {
+      "label": "No new arrivals after closing while existing customers leave",
+      "passed": true
+    },
+    {
+      "label": "Cigarette cannot be placed directly in customer zone and no green guide appears there",
+      "passed": true
+    },
+    {
+      "label": "Mouse puts cigarette on scanner and internal handover reaches payment",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks the leaning corner broom",
+      "passed": true
+    },
+    {
+      "label": "Empty broom home is a reachable return target",
+      "passed": true
+    },
+    {
+      "label": "Mouse returns broom to permanent leaning home without picking it up again",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks mounted bat",
+      "passed": true
+    },
+    {
+      "label": "Actual E returns bat to its wall mount",
+      "passed": true
+    },
+    {
+      "label": "Both physical ceiling fixtures are lit after closing",
+      "passed": true
+    },
+    {
+      "label": "Actual W walks outside with no invisible wall and no automatic day ending",
+      "passed": true
+    },
+    {
+      "label": "Actual S walks back through the open doorway",
+      "passed": true
+    },
+    {
+      "label": "Explicit E at doorway finishes the closed day exactly once",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 0",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 0",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 0",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 1",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 1",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 1",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 2",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 2",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 2",
+      "passed": true
+    },
+    {
+      "label": "Three prepared coffees reach payment without barcode scans or lost ingredients",
+      "passed": true
+    },
+    {
+      "label": "One real card approval sells all three served coffees and reconciles stock and money",
+      "passed": true
+    },
+    {
+      "label": "Cart opens empty before the 08:00 shift",
+      "passed": true
+    },
+    {
+      "label": "Actual quantity fields accept distinct typed values without purchasing",
+      "passed": false
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-cash-register-ready.png",
+    "1280x720-cash-register-selected.png",
+    "1920x1080-cash-register-selected-large.png",
+    "1280x720-hand-world-prompt.png",
+    "1280x720-hand-player-view.png",
+    "1920x1080-hand-player-view-large.png",
+    "1280x720-warehouse-relocated.png",
+    "1920x1080-warehouse-lower-relocated.png",
+    "1920x1080-warehouse-returned-large.png",
+    "1280x720-warehouse-returned.png",
+    "1280x720-physical-terminal-error.png",
+    "1280x720-physical-terminal-approved.png",
+    "1920x1080-physical-terminal-large.png",
+    "1280x720-triple.png",
+    "1280x720-continuous-arrivals.png",
+    "1280x720-customer-zone-cigarette-blocked.png",
+    "1920x1080-scanner-zone-separated-large.png",
+    "1280x720-broom-corner.png",
+    "1280x720-broom-return-target.png",
+    "1280x720-bat-returned.png",
+    "1280x720-fixture-lights-off.png",
+    "1280x720-fixture-lights-on.png",
+    "1920x1080-fixture-lights-on-large.png",
+    "1280x720-outside-after-closing.png",
+    "1280x720-explicit-day-end.png",
+    "1280x720-three-coffees-served.png",
+    "1920x1080-three-coffees-served-large.png",
+    "1280x720-failure.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23277959,
+    "seconds": 516.7458478,
+    "error": "",
+    "completedUtc": "2026-11-06T09:17:28.88Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "727743b1f0033183e0e1c85cdc01bf0c09d19c0411893084c69e44613d5a7ef3",
+      "AcceptanceWebGL.framework.js.unityweb": "3b9da4984f087250bca150c8b8cb258a705477e3537ca0b13cf8395c5502d9bc",
+      "AcceptanceWebGL.loader.js": "c70d2c2636fbfdc55c38f6b132fc00a5570d96844a20633a2bce836f9fca54d5",
+      "AcceptanceWebGL.wasm.unityweb": "9acb9316a1aec65a1596d999a6ff6b69e86c9c9165e3f17de721adcee9bee0a8"
+    }
+  },
+  "result": "failed",
+  "failure": "Error: Actual quantity fields accept distinct typed values without purchasing\n    at check (D:\\Projects\\nemzeti-dohanybolt-sim\\NemzetiDohanyboltSzimulator\\Tools\\Verify-Acceptance.cjs:17:139)\n    at D:\\Projects\\nemzeti-dohanybolt-sim\\NemzetiDohanyboltSzimulator\\Tools\\Verify-Acceptance.cjs:582:7",
+  "finished": "2026-11-06T09:19:59.662Z",
+  "capturedStateCount": 196
+}

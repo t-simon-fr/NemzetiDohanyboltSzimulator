@@ -2,6 +2,10 @@
 
 Vizsgált forrás: `cadd47c`, Unity 6000.6.7f1, 2026-11-05. Statikus kódfelmérés; játékmeneti módosítás nem történt. A spike eredménye a döntés és a végrehajtható backlog. A hat új refaktorfeladat megvalósítása külön munka.
 
+## Megvalósítás állapota
+
+A #69–#74 follow-up feladatok végrehajtása elkészült. [Modulhatárok és tulajdonosok](REFACTOR_BATCH.md), [friss közös integrációs és WebGL-bizonyíték](../Acceptance/modular-refactor/REPORT.md). A lenti felmérés és becslések a spike időpontjának történeti állapotát írják le.
+
 ## Döntés
 
 Indokolt a felelősségi körök fokozatos leválasztása. Először a beszerzési szabályokat érdemes kiemelni: kicsi, már ellenőrzött, pénz- és készletinvariánsokkal jól körülhatárolható terület. A jelenlegi MonoBehaviour komponensek maradjanak adapterek, így a scene/prefab hivatkozások megtarthatók.

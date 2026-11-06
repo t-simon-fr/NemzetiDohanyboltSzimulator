@@ -1,0 +1,108 @@
+{
+  "started": "2026-11-06T09:24:53.634Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Arrangement pauses world and takes input without pause menu",
+      "passed": true
+    },
+    {
+      "label": "Mouse selects movable shelf",
+      "passed": true
+    },
+    {
+      "label": "Entrance obstruction shows invalid preview without moving shelf",
+      "passed": true
+    },
+    {
+      "label": "Mouse position and keyboard rotation form a valid preview",
+      "passed": true
+    },
+    {
+      "label": "Placing preview changes draft only and keeps exact stock",
+      "passed": true
+    },
+    {
+      "label": "Cancel restores original world, inventory, cash and clock",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Save applies rotated stocked shelf with navigation and no charge",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Purchased fridge can also be moved",
+      "passed": true
+    },
+    {
+      "label": "Save retains fridge position",
+      "passed": true
+    },
+    {
+      "label": "TobaccOS mouse button enters arrangement",
+      "passed": true
+    },
+    {
+      "label": "Door exit and next day preserve saved layout and stocked item",
+      "passed": true
+    },
+    {
+      "label": "Closed shop stays playable",
+      "passed": true
+    },
+    {
+      "label": "Door interaction ends day",
+      "passed": true
+    },
+    {
+      "label": "Enter starts next day preserving drawer",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-arrangement-monitor.png",
+    "1280x720-arrangement-overview.png",
+    "1280x720-arrangement-invalid.png",
+    "1280x720-arrangement-draft.png",
+    "1280x720-arrangement-saved.png",
+    "1920x1080-arrangement-large.png",
+    "1280x720-summary.png",
+    "1280x720-next-day.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 23277959,
+    "seconds": 516.7458478,
+    "error": "",
+    "completedUtc": "2026-11-06T09:17:28.88Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "727743b1f0033183e0e1c85cdc01bf0c09d19c0411893084c69e44613d5a7ef3",
+      "AcceptanceWebGL.framework.js.unityweb": "3b9da4984f087250bca150c8b8cb258a705477e3537ca0b13cf8395c5502d9bc",
+      "AcceptanceWebGL.loader.js": "c70d2c2636fbfdc55c38f6b132fc00a5570d96844a20633a2bce836f9fca54d5",
+      "AcceptanceWebGL.wasm.unityweb": "9acb9316a1aec65a1596d999a6ff6b69e86c9c9165e3f17de721adcee9bee0a8"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-06T09:25:30.759Z",
+  "capturedStateCount": 34
+}

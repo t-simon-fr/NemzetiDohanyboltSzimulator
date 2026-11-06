@@ -2,6 +2,8 @@
 
 Aktuális Pages-kiadás: [vizuális javítások és minden main-fejlesztés #98-ig](visual-fixes-pages/REPORT.md). Korábbi kiadás: [trafik és TobaccOS](trafik-refresh-pages/REPORT.md).
 
+Legfrissebb fejlesztés: [#69–#74 moduláris refaktor](modular-refactor/REPORT.md): 852 natív állítás / 40 csoport, 123 különböző sikeres WebGL-ellenőrzés, 0 konzolhiba. Pagesre még nincs kiadva.
+
 Legfrissebb javítás: [#98 öngyújtók és tartó eltávolítása](remove-lighter-display/REPORT.md): 13 natív és 4 WebGL-ellenőrzés, 0 konzolhiba. Pagesre publikálva.
 
 Korábbi javítás: [#94/#96 raktárnyílás és üveg nélküli öngyújtótartó](stockroom-and-display-fixes/REPORT.md): 13 natív és 4 WebGL-ellenőrzés, 0 konzolhiba. Pagesre publikálva.
@@ -57,3 +59,5 @@ A `door-storage` eset öt valódi Dnyipro csomagot készít elő, E-vel felvesz/
 A `ui` eset vegyes/azonos rendelést és részleges fizikai átadást készít elő, követi a darabszámot és a lejáró értesítést, hosszú magyar mondatot mutat mindkét felbontásban, majd valódi egérkattintással próbálja a hibás/javított kártyás fizetést, az elszámolás Következő nap gombját és a nagy nézet menüjét. A fixture nem helyettesíti a valós billentyűkiosztás-, szünet- és pénzügyi regressziós eseteket.
 
 A `movement` eset kontrollált tesztpadlón tényleges W / Shift+W / Space bemenettel méri a mozgást, majd a valódi üzlet ajtajánál próbálja a sprint/ugrás határát. A tesztpadló csak az acceptance fixture része, a normál playerbe nem kerül. A `physical-terminal` minden számgombot tényleges egérkattintással használ, javít/töröl, hibás és helyes összeget ad meg, majd a saját kijelzőt és egyszeri könyvelést ellenőrzi. A `coffee-display` E-vel lép be a gép nézetébe, fizikailag kattint a receptre és indításra, valós időben vár a főzésre, szüneteltet és átveszi az italt; mindhárom recept és a hiányállapotok is szerepelnek.
+
+Közös refaktor-próba: `node Tools/Verify-Acceptance.cjs --case=refactor-batch`. Csak korábban félbeszakadt UI-rész folytatására: `--case=refactor-ui` vagy `--case=refactor-arrangement`.
