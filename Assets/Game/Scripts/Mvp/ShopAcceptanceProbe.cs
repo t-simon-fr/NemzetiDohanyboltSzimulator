@@ -55,7 +55,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if(scenario=="visual-refresh") {
+        if (scenario == "warehouse-opening")
+        {
+            Aim(new Vector3(-2.5f, 1.1f, 0), 1.25f, Vector3.right);
+        }
+        else if(scenario=="visual-refresh") {
             Shop.Ledger.TrySellCard(100000,0);Shop.SyncCashDrawer();
             Shop.Devices.Focus(ShopDeviceKind.Monitor);
         }

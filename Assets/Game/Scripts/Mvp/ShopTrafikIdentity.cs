@@ -180,7 +180,13 @@ public sealed class ShopTrafikIdentity : MonoBehaviour
 
     private void BuildInterior(MvpShopController shop)
     {
-        Box(root, "Trafik left wainscot", new Vector3(-2.40f, .48f, -1.25f), new Vector3(.035f, .94f, 6.1f), brown);
+        // Follow the split authored wall, leaving the stockroom doorway unobstructed.
+        foreach (string wallName in new[] { "Shop side wall front", "Shop side wall rear" })
+        {
+            var wall = shop.FloorPlan.Find(wallName).GetComponent<Renderer>().bounds;
+            Box(root, "Trafik left wainscot " + wallName, new Vector3(wall.max.x + .018f, .48f, wall.center.z),
+                new Vector3(.035f, .94f, wall.size.z), brown);
+        }
         var counter = shop.Counter.transform;
         Box(counter, "Trafik counter trim", new Vector3(0, .22f, -.435f), new Vector3(3.30f, .025f, .012f), cream);
         // Compact non-interactive lighter case at the rear counter end, away from checkout slots.

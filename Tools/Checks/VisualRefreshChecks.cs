@@ -89,6 +89,12 @@ public static class VisualRefreshChecks
         var g=MvpShopController.Instance;var identity=g.GetComponent<ShopTrafikIdentity>();
         check(identity!=null&&identity.Facade!=null,"Runtime identity assembled without scene regeneration");
         check(identity.Facade.parent.GetComponentsInChildren<Collider>(true).All(c=>!c.enabled),"Decorations add no blocking entrance or shelf colliders");
+        var panels = identity.Facade.parent.GetComponentsInChildren<Renderer>().Where(r => r.name.StartsWith("Trafik left wainscot ")).ToArray();
+        var frontWall = g.FloorPlan.Find("Shop side wall front").GetComponent<Renderer>().bounds;
+        var rearWall = g.FloorPlan.Find("Shop side wall rear").GetComponent<Renderer>().bounds;
+        check(panels.Length == 2, "Both solid side-wall sections retain their lower trim");
+        check(panels.All(p => p.bounds.max.z <= frontWall.max.z + .001f || p.bounds.min.z >= rearWall.min.z - .001f),
+            "No decorative panel spans the stockroom doorway");
         check(g.FloorPlan.Find("Counter top").GetComponent<Renderer>().sharedMaterial.name=="Trafik countertop","Counter has owned muted surface material");
         check(g.FloorPlan.Find("Exterior shop sign")==null||!g.FloorPlan.Find("Exterior shop sign").GetComponent<Renderer>().enabled,"Old competing exterior sign hidden");
         check(identity.Facade.GetComponentsInChildren<TextMesh>().Any(t=>t.text=="NEMZETI DOHÁNYBOLT"),"Facade title is actual Hungarian sign text");

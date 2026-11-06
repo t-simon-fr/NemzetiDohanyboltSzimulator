@@ -419,6 +419,16 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'mop'); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); await sleep(2200);
       await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: width / 2, y: height / 2, button: 'left', clickCount: 1 }); s = await state(); check(s.tool === 'Mop' && s.dirt === 0, 'Mop retains held left-click cleaning'); await capture('mop-cleaned');
     }
+    if (selected === 'warehouse-opening') {
+      await probe('Prepare', 'warehouse-opening'); const before = await state();
+      await capture('warehouse-opening');
+      await viewport(1920, 1080); await capture('warehouse-opening-large'); await viewport(1280, 720);
+      await hold([['w', 'KeyW', 87]], 550); const after = await state();
+      check(after.position.x < -2.6, 'Actual W input walks through the unobstructed stockroom opening');
+      check(after.balance === before.balance && after.phase === before.phase, 'Doorway crossing preserves money and day state');
+      await capture('warehouse-inside');
+    }
+
     if (selected === 'hover-contrast') {
       await probe('Prepare','visual-refresh');let s=await state();
       const app=s.computerControlIds.indexOf('OpenApp:2');await clickRect(s.computerControls[app]);s=await state();
