@@ -136,7 +136,11 @@ public sealed class PlayerInteractor : MonoBehaviour
             }
         }
         if (station != null && !HasHeldProduct && ShopBindings.Pressed(UnityEngine.InputSystem.Key.Q)) station.Cycle();
-        if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !((heldTool==null||targetRack!=null)&&Mouse.current!=null&&Mouse.current.leftButton.wasPressedThisFrame)) return;
+        bool refillTarget = heldTool != null && heldTool.Kind == ShopToolKind.CoffeeRefill
+            && featureTarget != null && featureTarget.Kind == ShopFeatureKind.CoffeeMachine;
+        bool primaryInteraction = (heldTool == null || targetRack != null || refillTarget)
+            && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+        if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !primaryInteraction) return;
         if(targetRack!=null && heldTool!=null){TryReturnHeldTool(targetRack);return;}
         if (station != null && station.IsPanicButton) { station.Use(this); return; }
         if (station != null && station.IsCoffeeControl && !HasHeldItem) { station.Use(this); return; }
@@ -302,7 +306,8 @@ public sealed class PlayerInteractor : MonoBehaviour
             station != null && station.IsPanicButton ? station.Prompt :
             station != null && station.IsCoffeeControl && !HasHeldItem ? station.Prompt :
             heldTool!=null && targetRack!=null ? targetRack.Prompt :
-            heldTool!=null ? (featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill?featureTarget.Prompt:heldTool.DisplayName+" • Bal egérgomb: használat • G: eldobás") :
+            heldTool!=null ? (featureTarget!=null&&featureTarget.Kind==ShopFeatureKind.Spill?featureTarget.Prompt:
+                heldTool.Kind==ShopToolKind.CoffeeRefill?heldTool.DisplayName:heldTool.DisplayName+" • Bal egérgomb: használat • G: eldobás") :
             !HasHeldItem&&targetTool!=null ? "E – Felvétel: "+targetTool.DisplayName :
             !HasHeldItem&&featureTarget!=null ? featureTarget.Prompt :
             heldCarton != null ? (targetBin != null ? (heldCarton.Quantity==0?targetBin.Prompt:"A papírgyűjtőbe csak üres karton kerülhet") : LookingAtSupplies ? station.CartonPlacementPrompt : heldCarton.Quantity==0 ? "Üres doboz: vidd vissza vagy dobd a hátsó papírgyűjtőbe" : canPlace ? "E – Egy termék kipakolása a kijelölt polchelyre" : targetSlot!=null ? "Ez a hely foglalt, vagy más márkához tartozik" : "Nézz egy zölddel jelölt üres polchelyre") :

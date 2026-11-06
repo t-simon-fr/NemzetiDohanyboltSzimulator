@@ -238,22 +238,35 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
         await send('Input.dispatchMouseEvent',{type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(100);
         await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(300);
       };
-      await probe('Prepare','ingredient-pickup');let s=await state();const cash=s.balance;
+      await probe('Prepare','ingredient-pickup');let s=await state();let cash=s.balance;
       check(s.ingredientTarget==='coffee'&&s.readyCoffee===10&&s.readyMilk===10,'Real delivered coffee package is targetable through its empty storage-cell trigger');
       await capture('ingredient-coffee-target');
       await key('e','KeyE',69);s=await state();
       check(s.tool==='CoffeeRefill'&&s.readyCoffee===10,'Actual E picks the paid coffee ingredient package');
-      await probe('Action','aim-refill-machine');await key('e','KeyE',69);s=await state();
-      check(!s.tool&&s.ingredientCoffee===10&&s.readyCoffee===0,'Actual E refills all ten coffee servings exactly once');
+      check(s.heldIngredientBrand==='La Vazze','Held coffee package identifies the approved La Vazze brand');
+      await capture('la-vazze-held');await viewport(1920,1080);await capture('la-vazze-held-large');await viewport(1280,720);
+      await probe('Action','aim-refill-machine');await worldClick();s=await state();
+      check(!s.tool&&s.ingredientCoffee===10&&s.readyCoffee===0&&s.device==='None'&&s.brewRemaining===0,'Actual left click refills coffee exactly once without opening a menu or brewing');
       await probe('Action','aim-ingredient-milk');s=await state();
       check(s.ingredientTarget==='milk','Milk package is targetable instead of the blank warehouse shelf');
       await capture('ingredient-milk-target');
       await worldClick();s=await state();
       check(s.tool==='CoffeeRefill'&&s.readyMilk===10&&s.readyCoffee===0,'Actual mouse click picks the physically targeted milk package');
-      await probe('Action','aim-refill-machine');await key('e','KeyE',69);s=await state();
-      check(!s.tool&&s.ingredientMilk===10&&s.readyMilk===0&&s.ingredientCoffee===10,'Actual E refills milk without extra coffee brewing or duplicated ingredients');
+      check(s.heldIngredientBrand==='Albro','Held milk package identifies the approved Albro brand');
+      await capture('albro-held');await viewport(1920,1080);await capture('albro-held-large');await viewport(1280,720);
+      await probe('Action','aim-refill-machine');await worldClick();s=await state();
+      check(!s.tool&&s.ingredientMilk===10&&s.readyMilk===0&&s.ingredientCoffee===10&&s.device==='None'&&s.brewRemaining===0,'Actual left click refills milk exactly once without opening a menu or brewing');
       check(s.balance===cash,'Ingredient pickup and refill never charge or lose money');
+      await worldClick();s=await state();
+      check(s.device==='Coffee'&&s.ingredientCoffee===10&&s.ingredientMilk===10&&s.brewRemaining===0,'Following empty-handed click opens the menu without a second refill');
       await probe('Action','view-refilled-machine');await viewport(1920,1080);await capture('ingredient-machine-refilled-large');await viewport(1280,720);
+      await probe('Prepare','ingredient-pickup');s=await state();cash=s.balance;
+      for (const kind of ['coffee','milk']) {
+        await probe('Action','aim-ingredient-'+kind);await key('e','KeyE',69);
+        await probe('Action','aim-refill-machine');await key('e','KeyE',69);s=await state();
+        check(!s.tool&&s.device==='None'&&s.brewRemaining===0&&(kind==='coffee'?s.ingredientCoffee===10:s.ingredientMilk===10),'Actual E continues to refill the branded '+kind+' package');
+      }
+      check(s.balance===cash&&s.readyCoffee===0&&s.readyMilk===0,'Both E-refill packages transfer without extra charges or leftover stock');
     }
 
     if (!selected || selected === 'after-hours-upgrades' || selected === 'closing-fixes') {
