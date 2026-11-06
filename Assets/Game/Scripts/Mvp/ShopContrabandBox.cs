@@ -5,16 +5,14 @@ using UnityEngine;
 public sealed class ShopContrabandBox : MonoBehaviour
 {
     private readonly List<ShopProduct> products = new List<ShopProduct>();
-    private Material cardboard;
     public int Quantity => products.Count(p=>p!=null);
     public void Configure(MvpShopController shop, int quantity)
     {
-        cardboard = new Material(Shader.Find("Universal Render Pipeline/Lit")) { color=new Color(.48f,.31f,.16f) };
         var shell = GameObject.CreatePrimitive(PrimitiveType.Cube);
         shell.name="Sealed Dnyipro shipping carton"; shell.transform.SetParent(transform,false);
         shell.transform.localPosition=Vector3.up*.13f; shell.transform.localScale=new Vector3(.48f,.26f,.32f);
-        shell.GetComponent<Renderer>().sharedMaterial=cardboard;
-        ProductVisuals.Text(transform,"Carton contents",quantity+" × DNYIPRO",new Vector3(0,.15f,-.162f),Quaternion.identity,.027f,Color.black);
+        ShopDnyiproVisuals.Carton(shell.transform);
+        ProductVisuals.Text(transform,"Carton contents",quantity+" × DNYIPRO",new Vector3(0,.025f,-.172f),Quaternion.identity,.019f,new Color(.76f,.70f,.57f));
         for (int i=0;i<quantity;i++)
         {
             var slot = new GameObject("Boxed Dnyipro "+i).AddComponent<ProductSlot>();
@@ -42,5 +40,4 @@ public sealed class ShopContrabandBox : MonoBehaviour
         products.Clear();
         return true;
     }
-    private void OnDestroy() { Destroy(cardboard); }
 }

@@ -68,9 +68,8 @@ public static class ProductVisuals
         }
         if(type==ShopCatalog.Contraband)
         {
-            var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){color=new Color(.06f,.16f,.30f)};item.GetComponent<Renderer>().sharedMaterial=m;
-            item.AddComponent<ShopProductMaterials>().Materials=new[]{m};
-            Text(item.transform,"Dnyipro label","DNYIPRO\nUKRAJNA\n20 SZÁL\n18+",new Vector3(0,0,-.506f),Quaternion.identity,.18f,new Color(1,.78f,.2f));return;
+            ShopDnyiproVisuals.Pack(item);
+            return;
         }
         // Product roots retain their interaction collider; prefabs contain only visual meshes.
         var prefab = LoadModel(type);
