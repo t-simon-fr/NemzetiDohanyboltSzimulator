@@ -50,7 +50,7 @@ public sealed class ShopNextUpgrades : MonoBehaviour
     }
     void BuildFridge()
     {
-        fridge=new GameObject("Purchased Drinks Fridge");fridge.transform.SetParent(transform,false);fridge.transform.position=new Vector3(4.5f,0,1.35f);
+        fridge=new GameObject("Purchased Drinks Fridge");fridge.transform.SetParent(transform,false);fridge.transform.position=new Vector3(3.35f,0,1.35f);
         var white=Mat(new Color(.78f,.83f,.82f));var dark=Mat(new Color(.12f,.17f,.18f));var shelves=new List<ProductSlot>();
         Box(fridge.transform,"Fridge back",new Vector3(0,1,.30f),new Vector3(1.55f,2,.08f),white);
         foreach(int side in new[]{-1,1})Box(fridge.transform,"Fridge side",new Vector3(side*.77f,1,0),new Vector3(.07f,2,.65f),white);

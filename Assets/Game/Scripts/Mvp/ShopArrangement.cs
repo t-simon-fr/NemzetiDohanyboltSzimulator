@@ -11,6 +11,8 @@ public sealed partial class ShopArrangement : MonoBehaviour
     private readonly ShopPauseScope pause = new ShopPauseScope();
     public bool Active { get; private set; }
     public IReadOnlyList<ShopFurniture> Furniture => furniture;
+    public void Adopt(ShopFurniture item) { if(!furniture.Contains(item))furniture.Add(item); }
+    public void Forget(ShopFurniture item) => furniture.Remove(item);
     public string Feedback { get; private set; } = "";
     public static readonly Rect[] Protected = {
         Rect.MinMaxRect(-2.4f, -4.3f, .42f, 1.8f),
@@ -23,16 +25,16 @@ public sealed partial class ShopArrangement : MonoBehaviour
     {
         shop = owner;
         player = interactor;
-        Register(shop.FloorPlan.Find("Public shelf"), "public-shelf", "Önkiszolgáló polc", new Vector2(.7f, 3.5f));
         var fridge = shop.GetComponentsInChildren<Transform>(true).First(t => t.name == "Purchased Drinks Fridge");
         Register(fridge, "drinks-fridge", "Italhűtő", new Vector2(1.65f, .8f));
     }
 
-    private void Register(Transform root, string id, string title, Vector2 size)
+    public ShopFurniture Register(Transform root, string id, string title, Vector2 size)
     {
         var item = root.gameObject.AddComponent<ShopFurniture>();
         item.Configure(id, title, size);
         furniture.Add(item);
+        return item;
     }
 
     public Dictionary<ShopFurniture, ShopFurniturePose> Current() => furniture.Where(f => f.gameObject.activeInHierarchy).ToDictionary(f => f, f => f.Pose);
@@ -63,8 +65,8 @@ public sealed partial class ShopArrangement : MonoBehaviour
     public bool TryPlace(ShopFurniture item, ShopFurniturePose pose)
     {
         if (!Active || !draft.ContainsKey(item)) return false;
-        pose.Position.x = Mathf.Round(pose.Position.x / .25f) * .25f;
-        pose.Position.z = Mathf.Round(pose.Position.z / .25f) * .25f;
+        pose.Position.x = Mathf.Round(pose.Position.x / .05f) * .05f;
+        pose.Position.z = Mathf.Round(pose.Position.z / .05f) * .05f;
         pose.Position.y = item.DefaultPose.Position.y;
         var candidate = new Dictionary<ShopFurniture, ShopFurniturePose>(draft) { [item] = pose };
         if (!Validate(candidate, out string reason)) { Feedback = reason; return false; }
@@ -84,18 +86,19 @@ public sealed partial class ShopArrangement : MonoBehaviour
 
     public bool Validate(Dictionary<ShopFurniture, ShopFurniturePose> poses, out string reason)
     {
-        Rect area = ShopFloorPlan.PurchasedArea(shop.Layout.Expanded);
+        Rect area = shop.Layout.ShopArea;
         var staticObstacles = shop.Navigation.StaticObstacles(true);
         var placed = new List<Rect>();
         foreach (var pair in poses)
         {
+            area=pair.Key.InWarehouse?shop.Layout.WarehouseArea:shop.Layout.ShopArea;
             Rect bounds = pair.Key.BoundsAt(pair.Value);
             if (bounds.xMin < area.xMin || bounds.xMax > area.xMax || bounds.yMin < area.yMin || bounds.yMax > area.yMax)
             { reason = "A berendezés kilóg a megvásárolt üzlettérből."; return false; }
-            if (Protected.Any(r => r.Overlaps(bounds)))
+            if (!pair.Key.InWarehouse && Protected.Any(r => r.Overlaps(bounds)))
             { reason = "Fenntartott közlekedősávot vagy fix berendezés helyét blokkolja."; return false; }
             if (staticObstacles.Any(r => ShopNavigation.Expanded(r, .03f).Overlaps(bounds)) ||
-                placed.Any(r => ShopNavigation.Expanded(r, .08f).Overlaps(bounds)))
+                placed.Any(r => r.Overlaps(bounds)))
             { reason = "Nem fér el: falnak, tárgynak vagy másik berendezésnek ütközik."; return false; }
             if (ShopNavigation.Expanded(bounds, .3f).Contains(new Vector2(player.transform.position.x, player.transform.position.z)))
             { reason = "A játékos helyére nem tehető berendezés."; return false; }
@@ -104,13 +107,27 @@ public sealed partial class ShopArrangement : MonoBehaviour
         var grid = shop.Navigation.Build(poses);
         var required = new List<Vector3> { shop.Layout.EntryInside, shop.Layout.AisleGate, shop.Layout.EntryOutside, shop.Layout.ExitDoorway };
         for (int i = 0; i < 3; i++) required.Add(shop.Counter.QueuePoint(i));
-        foreach (var pair in poses) required.AddRange(pair.Key.AccessAt(pair.Value));
+        foreach (var pair in poses.Where(p=>!p.Key.InWarehouse)) required.AddRange(pair.Key.AccessAt(pair.Value));
         foreach (var point in required)
         {
             if (grid.TryPath(shop.Layout.EntryInside, point, out var unused)) continue;
             reason = "Nem járható az út a bejárat, a sor vagy valamelyik polc között.";
             return false;
         }
+        var staffArea=Rect.MinMaxRect(shop.Layout.WarehouseArea.xMin,-4.3f,shop.Layout.ShopArea.xMax,1.9f);
+        var staffObstacles=shop.Navigation.StaticObstacles();
+        staffObstacles.AddRange(poses.Select(p=>p.Key.BoundsAt(p.Value)));
+        var staffGrid=new ShopRouteGrid(staffArea,p=>
+        {
+            var point=new Vector2(p.x,p.z);
+            return (shop.Layout.ShopArea.Contains(point)||shop.Layout.WarehouseArea.Contains(point)||new Rect(-2.7f,-.55f,.5f,1.1f).Contains(point))
+                && !staffObstacles.Any(r=>ShopNavigation.Expanded(r,.29f).Contains(point));
+        });
+        var staffRequired=new List<Vector3>{new Vector3(-4.25f,0,1.45f),ShopFloorPlan.StaffExit};
+        foreach(var pair in poses.Where(p=>p.Key.InWarehouse))staffRequired.AddRange(pair.Key.AccessAt(pair.Value));
+        foreach(var point in staffRequired)
+            if(!staffGrid.TryPath(ShopFloorPlan.StaffSpawn,point,out var route))
+            {reason="Nem járható a pult–raktár–hátsó kijárat útvonala.";return false;}
         reason = "Elhelyezhető: az útvonalak szabadok.";
         return true;
     }
@@ -153,6 +170,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
     public void ResetLayout()
     {
         Cancel();
+        shop.GetComponent<ShopModularFurniture>()?.ResetPurchases();
         foreach (var item in furniture) item.Apply(item.DefaultPose);
         shop.Navigation.Rebuild();
     }

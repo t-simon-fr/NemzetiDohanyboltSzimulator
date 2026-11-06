@@ -657,6 +657,28 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
       check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
     }
+    if (selected === 'expansion') {
+      await viewport(1280,720);await probe('Prepare','expansion');let s=await state();
+      const control=async id=>{const a=await state();const i=a.computerControlIds.indexOf(id);if(i<0)throw Error('Missing '+id);return a.computerControls[i];};
+      const press=async id=>clickRect(await control(id));
+      const cash=s.balance;
+      for(let level=1;level<=3;level++){await press('Expand:0');s=await state();check(s.shopLevel===level && s.warehouseLevel===0,'Actual click buys independent shop level '+level);await capture('shop-upgrade-'+level);}
+      check(s.balance===cash-117000,'Three shop stages charge exact configured total');
+      await press('Furnishing:Page');await capture('warehouse-and-modules');
+      for(let level=1;level<=3;level++){await press('Warehouse:Expand');s=await state();check(s.warehouseLevel===level && s.shopLevel===3,'Actual click buys independent warehouse level '+level);}
+      const base=s.moduleCount;
+      for(let kind=0;kind<4;kind++){await press('Module:Buy:'+kind);s=await state();check(s.moduleCount===base+kind+1,'Actual click buys usable modular furniture '+kind);}
+      await viewport(1920,1080);await capture('upgrades-large');await viewport(1280,720);
+      await press('Arrange:0');s=await state();check(s.arranging && s.timeScale===0,'Arrangement includes purchased warehouse and shop modules');await capture('modules-overview');
+      let i=s.furnitureIds.indexOf('public-shelf'),point=s.furniturePoints[i];await click(point.x,height-point.y);s=await state();check(s.selectedFurniture==='public-shelf','Plan click selects actual modular shelf');
+      await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:s.badTarget.x,y:height-s.badTarget.y});await sleep(300);s=await state();check(!s.previewValid,'Entrance blockage remains invalid');
+      await key('Escape','Escape',27);await key('Escape','Escape',27);check(!(await state()).arranging,'Escape cancels editor and restores camera');
+      for(let shopLevel=0;shopLevel<4;shopLevel++)for(let warehouse=0;warehouse<4;warehouse++){
+        await probe('Prepare','expansion');await probe('Action','expansion-plan:'+shopLevel+':'+warehouse);s=await state();check(s.arranging && s.shopLevel===shopLevel && s.warehouseLevel===warehouse,'Plan shows independent footprint '+shopLevel+'/'+warehouse);await capture('plan-'+shopLevel+'-'+warehouse);
+        if(shopLevel===warehouse){await viewport(1920,1080);await capture('plan-'+shopLevel+'-'+warehouse+'-large');await viewport(1280,720);}
+        await key('Escape','Escape',27);await probe('Action','expansion-staff-view');await capture('interior-'+shopLevel+'-'+warehouse);
+      }
+    }
     if (selected === 'dnyipro') {
       await viewport(1280,720);
       await probe('Prepare','feature-night');

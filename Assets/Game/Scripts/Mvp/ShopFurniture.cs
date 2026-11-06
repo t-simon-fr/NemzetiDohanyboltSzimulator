@@ -19,6 +19,7 @@ public sealed class ShopFurniture : MonoBehaviour
     public string Id { get; private set; }
     public string Title { get; private set; }
     public Vector2 Size { get; private set; }
+    public bool InWarehouse { get; set; }
     public ShopFurniturePose DefaultPose { get; private set; }
     public ShopFurniturePose Pose => new ShopFurniturePose(transform.position, Mathf.RoundToInt(transform.eulerAngles.y / 90));
     public ProductSlot[] Slots { get; private set; }
@@ -43,6 +44,7 @@ public sealed class ShopFurniture : MonoBehaviour
 
     public IEnumerable<Vector3> AccessAt(ShopFurniturePose pose)
     {
+        if(InWarehouse)yield return pose.Position+pose.Rotation*new Vector3(0,0,-.85f);
         foreach (var point in access)
         {
             Vector3 value = pose.Position + pose.Rotation * point;

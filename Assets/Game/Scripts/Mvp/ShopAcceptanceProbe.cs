@@ -103,6 +103,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.Ledger.TrySellCard(100000,0); Shop.SyncCashDrawer();
             Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Orders);
         }
+        else if (scenario == "expansion")
+        {
+            Shop.Ledger.TrySellCard(500000,0);Shop.SyncCashDrawer();
+            Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Furnishing);
+        }
         else if (scenario == "feature-night")
         {
             Shop.Ledger.TrySellCard(50000,0); Shop.SyncCashDrawer();
@@ -389,6 +394,15 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.Tick(.1f);
             Aim(Shop.Entrance.Position + Vector3.up * .95f);
         }
+        if(action.StartsWith("expansion-plan:"))
+        {
+            var parts=action.Split(':');Shop.Arrangement.Cancel();Shop.ClosePanel();
+            Shop.Layout.SetLevels(int.Parse(parts[1]),int.Parse(parts[2]));Shop.Navigation.Rebuild();Shop.Arrangement.Begin();
+        }
+        if(action=="expansion-staff-view")
+        {
+            Shop.Arrangement.Cancel();Shop.ClosePanel();Aim(new Vector3(Shop.Layout.ShopArea.xMax-.7f,1,-1.2f),4,new Vector3(-1,0,0));
+        }
         if (action == "aim-night-box" && Shop.AfterHours.DeliveryBox!=null) Aim(Shop.AfterHours.DeliveryBox.transform.position+Vector3.up*.13f,1.1f);
         if (action == "aim-private-storage") Aim(Shop.CounterStorage.Slots[0].transform.position+Vector3.up*.1f,1f);
         if (action == "view-private-storage") Aim(Shop.CounterStorage.Slots[5].transform.position+Vector3.up*.1f,1.4f);
@@ -568,6 +582,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public string selectedFurniture, arrangementFeedback;
         public Vector3 shelfPosition, draftPosition, fridgePosition, arrangeButton, moveTarget, badTarget, fridgeTarget;
         public int shelfTurns, draftTurns, shelfStock;
+        public int shopLevel, warehouseLevel, moduleCount;
+        public string[] furnitureIds;
+        public Vector3[] furniturePoints;
         public string stockedItem;
         public int privateStock;
         public string outwardSign;
@@ -678,6 +695,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.arrangementFeedback = g.Arrangement.PreviewFeedback;
         var shelf = g.Arrangement.Furniture.First(f => f.Id == "public-shelf");
         var fridge = g.Arrangement.Furniture.First(f => f.Id == "drinks-fridge");
+        state.shopLevel=g.Layout.ShopLevel;state.warehouseLevel=g.Layout.WarehouseLevel;
+        state.moduleCount=g.Arrangement.Furniture.Count;
+        state.furnitureIds=g.Arrangement.Current().Keys.Select(f=>f.Id).ToArray();
+        state.furniturePoints=g.Arrangement.Current().Keys.Select(f=>View.WorldToScreenPoint(f.transform.position)).ToArray();
         state.shelfPosition = shelf.transform.position;
         state.fridgePosition = fridge.transform.position;
         state.shelfTurns = shelf.Pose.QuarterTurns;
@@ -691,7 +712,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.stockedItem = shelf.Slots.FirstOrDefault(s => s.Occupant != null)?.Occupant.GetEntityId().ToString() ?? "";
         var control = FindObjectsByType<ShopWorldControl>().FirstOrDefault(c => c.Kind == WorldControlKind.Arrange && c.isActiveAndEnabled);
         if (control != null) state.arrangeButton = View.WorldToScreenPoint(control.GetComponent<Collider>().bounds.center);
-        state.moveTarget = View.WorldToScreenPoint(new Vector3(3.75f,0,-1.75f));
+        state.moveTarget = View.WorldToScreenPoint(new Vector3(2.75f,0,-1.75f));
         state.badTarget = View.WorldToScreenPoint(new Vector3(1.25f,0,-3.5f));
         state.fridgeTarget = View.WorldToScreenPoint(new Vector3(4.75f,0,.75f));
         state.routeToShelf = g.Navigation.TryPath(g.Layout.EntryInside, shelf.AccessAt(shelf.Pose).First(), out var path);

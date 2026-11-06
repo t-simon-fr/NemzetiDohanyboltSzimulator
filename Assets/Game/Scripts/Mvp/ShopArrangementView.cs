@@ -13,6 +13,7 @@ public sealed partial class ShopArrangement
     private bool dragging, previewValid;
     private string previewReason = "";
     private GUIStyle editorTitle, editorText, editorButton, planLabel;
+    private Vector2 furnitureScroll;
     private float Sidebar => Mathf.Clamp(Screen.width * .25f, 260, 360);
     public string SelectedFurnitureId => selected == null ? "" : selected.Id;
     public bool Dragging => dragging;
@@ -23,7 +24,7 @@ public sealed partial class ShopArrangement
     {
         arrangementCamera = player.GetComponentInChildren<Camera>();
         cameraSnapshot = new ShopCameraSnapshot(arrangementCamera);
-        arrangementCamera.transform.SetPositionAndRotation(new Vector3(2, 12, -1.25f), Quaternion.Euler(90, 0, 0));
+        arrangementCamera.transform.SetPositionAndRotation(new Vector3((shop.Layout.WarehouseArea.xMin+shop.Layout.ShopArea.xMax)*.5f, 12, -1.25f), Quaternion.Euler(90, 0, 0));
         arrangementCamera.orthographic = true;
         arrangementCamera.orthographicSize = 4.4f;
         selected = null;
@@ -70,7 +71,7 @@ public sealed partial class ShopArrangement
     {
         if (!Active) return;
         arrangementCamera.rect = new Rect(Sidebar / Screen.width, 0, 1 - Sidebar / Screen.width, 1);
-        arrangementCamera.orthographicSize = Mathf.Max(4.4f, (ShopFloorPlan.PurchasedArea(shop.Layout.Expanded).width + 1) / arrangementCamera.aspect * .5f);
+        arrangementCamera.orthographicSize = Mathf.Max(4.4f, (Rect.MinMaxRect(shop.Layout.WarehouseArea.xMin,-4.3f,shop.Layout.ShopArea.xMax,1.9f).width + 1) / arrangementCamera.aspect * .5f);
         if (!Application.isFocused || Keyboard.current == null) return;
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
@@ -92,7 +93,7 @@ public sealed partial class ShopArrangement
         Ray ray = arrangementCamera.ScreenPointToRay(pointer);
         if (!plane.Raycast(ray, out float distance)) return;
         Vector3 position = ray.GetPoint(distance);
-        position = new Vector3(Mathf.Round(position.x * 4) / 4, selected.DefaultPose.Position.y, Mathf.Round(position.z * 4) / 4);
+        position = new Vector3(Mathf.Round(position.x * 20) / 20, selected.DefaultPose.Position.y, Mathf.Round(position.z * 20) / 20);
         if ((position - preview.Position).sqrMagnitude < .001f) return;
         preview = new ShopFurniturePose(position, preview.QuarterTurns);
         ValidatePreview();
@@ -130,7 +131,7 @@ public sealed partial class ShopArrangement
             editorButton = ShopUi.ButtonStyle(16);
             planLabel = new GUIStyle(editorText) { alignment=TextAnchor.MiddleCenter, fontStyle=FontStyle.Bold };
         }
-        Rect area = ShopFloorPlan.PurchasedArea(shop.Layout.Expanded);
+        Rect area = Rect.MinMaxRect(shop.Layout.WarehouseArea.xMin,-4.3f,shop.Layout.ShopArea.xMax,1.9f);
         Rect screenArea = OnPlan(area);
         Outline(screenArea, new Color(.5f,.8f,.75f));
         // Half-metre guide lines; placement still snaps to a quarter metre.
@@ -162,10 +163,12 @@ public sealed partial class ShopArrangement
         GUILayout.Label("A bolt szünetel. A pult, ajtók és a feltöltési útvonal fix.",editorText);
         GUILayout.Space(12);
         if (draft.Count == 0) GUILayout.Label("Még nincs átrendezhető berendezés. Az önkiszolgáló bővítéssel nyílik meg az első polc.",editorText);
+        furnitureScroll=GUILayout.BeginScrollView(furnitureScroll,GUILayout.MaxHeight(Screen.height*.38f));
         foreach (var item in draft.Keys)
             if (GUILayout.Button(item.Title + (selected==item ? " • KIJELÖLVE" : ""),editorButton,GUILayout.Height(44))) Select(item);
+        GUILayout.EndScrollView();
         GUILayout.Space(12);
-        GUILayout.Label("Egér: pozíció\nBal kattintás: lerakás\nQ / E: forgatás\nJobb kattintás / Esc: előnézet elvetése\nRács: 0,25 m",editorText);
+        GUILayout.Label("Egér: pozíció\nBal kattintás: lerakás\nQ / E: forgatás\nJobb kattintás / Esc: előnézet elvetése\nRács: 0,05 m",editorText);
         if (selected != null)
         {
             GUILayout.Space(8);

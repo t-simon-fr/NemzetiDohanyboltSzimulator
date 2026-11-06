@@ -605,9 +605,9 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public bool TryExpand()
     {
-        if (Layout == null || Layout.Expanded || !CanDevelopShop) { Message = "Bővíteni nyitás előtt vagy zárás után, üres boltban lehet."; return false; }
-        if (!Ledger.TryImprove(ShopLayout.ExpansionPrice)) { Message = "Nincs elég pénz a bővítéshez."; return false; }
-        SyncCashDrawer(); Layout.SetExpanded(true); Navigation?.Rebuild(); Devices?.RefreshMonitor();
+        if (Layout == null || Layout.ShopLevel>=3 || !CanDevelopShop) { Message = "Bővíteni nyitás előtt vagy zárás után, üres boltban lehet."; return false; }
+        if (!Ledger.TryImprove(Layout.NextShopPrice)) { Message = "Nincs elég pénz a bővítéshez."; return false; }
+        SyncCashDrawer(); Layout.SetLevels(Layout.ShopLevel+1,Layout.WarehouseLevel); Navigation?.Rebuild(); Devices?.RefreshMonitor();
         Message = "Megnyílt az önkiszolgáló rész! Rendelj árut, és töltsd fel az új polcokat. A pult a helyén maradt.";
         return true;
     }
