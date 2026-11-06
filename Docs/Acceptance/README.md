@@ -1,5 +1,7 @@
 # Elfogadási ellenőrzések
 
+Legfrissebb fejlesztés: [#115/#116 Albro és La Vazze modellek, bal klikkes feltöltés](ingredient-packaging/REPORT.md): 165 célzott natív állítás, 14 helyi WebGL-próba, átnézett 720p/1080p képek. Pagesre még nincs kiadva.
+
 Aktuális Pages-kiadás: [moduláris refaktor és minden korábbi main-fejlesztés](modular-refactor-pages/REPORT.md). Korábbi kiadás: [vizuális javítások](visual-fixes-pages/REPORT.md).
 
 Legfrissebb fejlesztés: [#69–#74 moduláris refaktor](modular-refactor/REPORT.md): 852 natív állítás / 40 csoport, 123 különböző sikeres WebGL-ellenőrzés, 0 konzolhiba. Pagesre publikálva.

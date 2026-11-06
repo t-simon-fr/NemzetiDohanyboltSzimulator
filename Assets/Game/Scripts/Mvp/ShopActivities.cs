@@ -192,7 +192,12 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     public void UseCoffeeMachine()
     {
-        if(RefillFromHand())return;
+        if (RefillFromHand())
+        {
+            ShopInputGate.ConsumeWorldAction();
+            CoffeeDisplay.Refresh();
+            return;
+        }
         if (!player.HasHeldItem)
         {
             ShopInputGate.ConsumeWorldAction();
@@ -360,7 +365,6 @@ public sealed partial class ShopActivities : MonoBehaviour
     private void OnGUI()
     {
         if(shop==null||shop.Ledger==null||ShopMenu.Active)return;
-        DrawMachineRecipeHint();
         if(shop.Devices.FocusKind==ShopDeviceKind.Coins&&CoinOffer!=null)
         {
             Styles(Screen.width*.6f);var panel=new Rect(Screen.width*.18f,Screen.height-170,Screen.width*.64f,150);ShopUi.Panel(panel);

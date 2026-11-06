@@ -20,16 +20,6 @@ public sealed partial class ShopActivities
     }
     public int SelectedRecipe=>selectedRecipe;
     public void CycleRecipe()=>SelectRecipe(ShopCatalog.Coffee+(selectedRecipe-ShopCatalog.Coffee+1)%3);
-    private void DrawMachineRecipeHint()
-    {
-        if(ShopMenu.Active||ShopInputGate.Blocked||player==null||player.TargetFeature==null||player.TargetFeature.Kind!=ShopFeatureKind.CoffeeMachine)return;
-        using (ShopUi.Frame())
-        {
-            ShopUi.Panel(new Rect(380, 474, 520, 104));
-            ShopUi.Label(new Rect(396, 490, 488, 28), "Kávé: " + ShopCatalog.ShortNames[selectedRecipe], 19, true);
-            ShopUi.Label(new Rect(396, 524, 488, 42), ShopUi.BoundText("1: rövid • 2: hosszú • 3: latte • Q: következő\nE / bal klikk: elkészítés vagy átvétel"), 15);
-        }
-    }
     public int MilkSupplies { get => coffeeState.Milk; private set => coffeeState.Milk = value; }
     private readonly List<GameObject> ingredientPackages=new List<GameObject>();
     public void SelectRecipe(int type){if(coffeeState.SelectRecipe(type))CoffeeDisplay?.Refresh();}
