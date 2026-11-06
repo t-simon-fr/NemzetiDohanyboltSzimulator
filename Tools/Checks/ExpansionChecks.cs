@@ -45,6 +45,13 @@ public static class ExpansionChecks
                     index++;
                 }
                 check(shop.Arrangement.Validate(b,out var planReason),"Alternative floor plan "+s+": "+planReason);
+                if(s>=2)
+                {
+                    int exact=0;var touching=b.ToDictionary(p=>p.Key,p=>p.Value);
+                    foreach(var item in touching.Keys.Where(f=>f.Id=="public-shelf"||f.Id.StartsWith("starter-shelf")).OrderBy(f=>f.Id).ToArray())
+                        touching[item]=new ShopFurniturePose(new Vector3(3.25f+exact++*1.2f,0,-1.5f),0);
+                    check(shop.Arrangement.Validate(touching,out var exactReason),"Three modules occupy exactly 3.6 metres: "+exactReason);
+                }
                 foreach(var example in new[]{a,b})plans.Add(new{level=s,furniture=example.Select(p=>new{id=p.Key.Id,x=p.Value.Position.x,z=p.Value.Position.z,width=p.Key.BoundsAt(p.Value).width,depth=p.Key.BoundsAt(p.Value).height}).ToArray()});
             }
         }

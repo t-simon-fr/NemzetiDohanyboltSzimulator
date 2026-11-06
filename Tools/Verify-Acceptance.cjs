@@ -673,6 +673,21 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       let i=s.furnitureIds.indexOf('public-shelf'),point=s.furniturePoints[i];await click(point.x,height-point.y);s=await state();check(s.selectedFurniture==='public-shelf','Plan click selects actual modular shelf');
       await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:s.badTarget.x,y:height-s.badTarget.y});await sleep(300);s=await state();check(!s.previewValid,'Entrance blockage remains invalid');
       await key('Escape','Escape',27);await key('Escape','Escape',27);check(!(await state()).arranging,'Escape cancels editor and restores camera');
+      await probe('Action','monitor-furnishing');await press('Arrange:0');s=await state();
+      const warehouseId=s.furnitureIds.filter(id=>id.startsWith('module-')).slice(-1)[0];
+      const warehousePoint=s.furniturePoints[s.furnitureIds.indexOf(warehouseId)];
+      const shelfPoint=s.furniturePoints[s.furnitureIds.indexOf('public-shelf')];
+      const metre=Math.abs(shelfPoint.y-s.moveTarget.y)/1.15;
+      await click(warehousePoint.x,height-warehousePoint.y);s=await state();
+      check(s.selectedFurniture===warehouseId,'Plan click selects purchased warehouse rack');
+      const movedWarehouse={x:warehousePoint.x,y:height-warehousePoint.y-metre*.25};
+      await send('Input.dispatchMouseEvent',{type:'mouseMoved',...movedWarehouse});await sleep(300);s=await state();
+      check(s.previewValid,'Warehouse rack can move within its purchased room');
+      await click(movedWarehouse.x,movedWarehouse.y);const beforeSave=s.balance;await click(150,height-86);s=await state();
+      check(!s.arranging && s.balance===beforeSave,'Actual save applies warehouse draft without charging money');
+      await probe('Action','monitor-furnishing');await press('Arrange:0');s=await state();
+      const savedPoint=s.furniturePoints[s.furnitureIds.indexOf(warehouseId)];
+      check(Math.abs(savedPoint.y-warehousePoint.y-metre*.25)<3,'Warehouse rack saved position survives reopening');await capture('warehouse-rack-saved');await key('Escape','Escape',27);
       for(let shopLevel=0;shopLevel<4;shopLevel++)for(let warehouse=0;warehouse<4;warehouse++){
         await probe('Prepare','expansion');await probe('Action','expansion-plan:'+shopLevel+':'+warehouse);s=await state();check(s.arranging && s.shopLevel===shopLevel && s.warehouseLevel===warehouse,'Plan shows independent footprint '+shopLevel+'/'+warehouse);await capture('plan-'+shopLevel+'-'+warehouse);
         if(shopLevel===warehouse){await viewport(1920,1080);await capture('plan-'+shopLevel+'-'+warehouse+'-large');await viewport(1280,720);}
@@ -859,6 +874,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Prepare', 'arrangement');
       let s = await state();
       const money = s.balance, item = s.stockedItem;
+      const selectPlan = async id => { const a=await state();const i=a.furnitureIds.indexOf(id);const p=a.furniturePoints[i];await click(p.x,height-p.y); };
       await capture('arrangement-monitor');
       const openEditor = async () => {
         const current = await state();
@@ -872,46 +888,47 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await openEditor();
       s = await state();
       check(s.timeScale === 0 && s.blocked && !s.menu, 'Arrangement pauses world and takes input without pause menu');
+      const planPixels=(s.furniturePoints[s.furnitureIds.indexOf('public-shelf')].x-s.moveTarget.x)/1.2;
       await capture('arrangement-overview');
-      await click(150, 130);
+      await selectPlan('public-shelf');
       check((await state()).selectedFurniture === 'public-shelf', 'Mouse selects movable shelf');
       await movePointer((await state()).badTarget);
       s = await state();
-      check(!s.previewValid && s.dragging && s.shelfPosition.x > 5, 'Entrance obstruction shows invalid preview without moving shelf');
+      check(!s.previewValid && s.dragging && Math.abs(s.shelfPosition.x-3.95)<.01, 'Entrance obstruction shows invalid preview without moving shelf');
       await capture('arrangement-invalid');
-      await movePointer(s.moveTarget);
-      await key('e', 'KeyE', 69);
+      await movePointer({x:s.moveTarget.x,y:s.furniturePoints[s.furnitureIds.indexOf('public-shelf')].y});
+      await key('q', 'KeyQ', 81);
       s = await state();
       check(s.previewValid, 'Mouse position and keyboard rotation form a valid preview');
-      await click(s.moveTarget.x, height - s.moveTarget.y);
+      await click(s.moveTarget.x, height - s.furniturePoints[s.furnitureIds.indexOf('public-shelf')].y);
       s = await state();
-      check(!s.dragging && s.draftTurns === 1 && Math.abs(s.draftPosition.x - 3.75) < .01 && s.shelfPosition.x > 5 && s.stockedItem === item,
+      check(!s.dragging && s.draftTurns === 0 && Math.abs(s.draftPosition.x - 2.75) < .01 && Math.abs(s.shelfPosition.x-3.95)<.01 && s.stockedItem === item,
         'Placing preview changes draft only and keeps exact stock');
       await capture('arrangement-draft');
       await click(150, height - 38);
       s = await state();
-      check(!s.arranging && s.shelfPosition.x > 5 && s.stockedItem === item && s.balance === money && s.timeScale === 1,
+      check(!s.arranging && Math.abs(s.shelfPosition.x-3.95)<.01 && s.stockedItem === item && s.balance === money && s.timeScale === 1,
         'Cancel restores original world, inventory, cash and clock');
       await probe('Action', 'monitor-furnishing');
       await openEditor();
-      await click(150, 130); await movePointer((await state()).moveTarget); await key('e', 'KeyE', 69);
-      s = await state(); await click(s.moveTarget.x, height - s.moveTarget.y);
+      await selectPlan('public-shelf'); s=await state();await movePointer({x:s.moveTarget.x,y:s.furniturePoints[s.furnitureIds.indexOf('public-shelf')].y}); await key('q', 'KeyQ', 81);
+      s = await state(); await click(s.moveTarget.x, height - s.furniturePoints[s.furnitureIds.indexOf('public-shelf')].y);
       await click(150, height - 86);
       s = await state();
-      check(!s.arranging && s.shelfTurns === 1 && Math.abs(s.shelfPosition.x - 3.75) < .01 && s.stockedItem === item && s.balance === money && s.routeToShelf,
+      check(!s.arranging && s.shelfTurns === 0 && Math.abs(s.shelfPosition.x - 2.75) < .01 && s.stockedItem === item && s.balance === money && s.routeToShelf,
         'Save applies rotated stocked shelf with navigation and no charge');
       await capture('arrangement-saved');
       await probe('Action', 'monitor-furnishing'); await openEditor();
-      await click(150, 178); await movePointer((await state()).fridgeTarget);
+      await selectPlan('drinks-fridge');s=await state();const fp=s.furniturePoints[s.furnitureIds.indexOf('drinks-fridge')],sp=s.furniturePoints[s.furnitureIds.indexOf('public-shelf')];const ppm=planPixels;const fridgeMove={x:fp.x-ppm*.5,y:fp.y};await movePointer(fridgeMove);
       s = await state(); check(s.selectedFurniture === 'drinks-fridge' && s.previewValid, 'Purchased fridge can also be moved');
-      await click(s.fridgeTarget.x, height - s.fridgeTarget.y); await click(150, height - 86);
-      s = await state(); check(!s.arranging && Math.abs(s.fridgePosition.x - 4.75) < .01 && Math.abs(s.fridgePosition.z - .75) < .01, 'Save retains fridge position');
+      await click(fridgeMove.x, height - fridgeMove.y); await click(150, height - 86);
+      s = await state(); check(!s.arranging && Math.abs(s.fridgePosition.x - 2.85) < .01 && Math.abs(s.fridgePosition.z - .75) < .01, 'Save retains fridge position');
       await probe('Action', 'monitor-furnishing'); await openEditor();
       await viewport(1920, 1080); await capture('arrangement-large'); await viewport(1280, 720);
       await click(150, height - 38);
       await probe('Action', 'finish-arranged-day'); await key('e', 'KeyE', 69); await enter();
       s = await state();
-      check(s.day === 2 && s.phase === 'Preparing' && s.shelfTurns === 1 && Math.abs(s.shelfPosition.x - 3.75) < .01 && s.stockedItem === item && Math.abs(s.fridgePosition.x - 4.75) < .01,
+      check(s.day === 2 && s.phase === 'Preparing' && s.shelfTurns === 0 && Math.abs(s.shelfPosition.x - 2.75) < .01 && s.stockedItem === item && Math.abs(s.fridgePosition.x - 2.85) < .01,
         'Door exit and next day preserve saved layout and stocked item');
     }
     if (!selected || selected === 'door-storage') {

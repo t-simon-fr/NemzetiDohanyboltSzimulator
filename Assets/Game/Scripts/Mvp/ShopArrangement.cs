@@ -98,7 +98,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
             if (!pair.Key.InWarehouse && Protected.Any(r => r.Overlaps(bounds)))
             { reason = "Fenntartott közlekedősávot vagy fix berendezés helyét blokkolja."; return false; }
             if (staticObstacles.Any(r => ShopNavigation.Expanded(r, .03f).Overlaps(bounds)) ||
-                placed.Any(r => r.Overlaps(bounds)))
+                placed.Any(r => ShopNavigation.Expanded(r,-.001f).Overlaps(bounds)))
             { reason = "Nem fér el: falnak, tárgynak vagy másik berendezésnek ütközik."; return false; }
             if (ShopNavigation.Expanded(bounds, .3f).Contains(new Vector2(player.transform.position.x, player.transform.position.z)))
             { reason = "A játékos helyére nem tehető berendezés."; return false; }
