@@ -4,6 +4,137 @@ using UnityEngine;
 
 public static class LotteryChecks
 {
+    public static object Numbers()
+    {
+        int passed=0;
+        Action<bool,string> check=(ok,name)=>{if(!ok)throw new Exception(name);passed++;};
+        var g=MvpShopController.Instance;var player=UnityEngine.Object.FindAnyObjectByType<PlayerInteractor>();
+        try
+        {
+            player.CancelHeld();g.ClosePanel();g.ResetDemo();g.ManualTick=true;g.AutomaticArrivals=false;
+            ShopCheckFixtures.Fund(g,60000);g.Lottery.TryBuy();g.Lottery.Order(15);g.Tick(8.1f);g.OpenShop();
+            typeof(MvpShopController).GetProperty("Spawned").SetValue(g,3);
+            typeof(MvpShopController).GetMethod("SpawnCustomer",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).Invoke(g,new object[]{15,false});
+            for(int i=0;i<1500&&g.ActiveCustomer==null;i++)g.Tick(.1f);
+            check(g.ActiveCustomer!=null&&g.ActiveCustomer.Product==15&&!g.ActiveCustomer.LotteryQuickPick&&g.CardPayment,"NPC requests explicit lottery numbers and normal card payment");
+            int stock=g.Lottery.Book.Stock(15);g.Lottery.NumberEntry="1 1 2 3 4";
+            check(!g.Lottery.Take(15,player)&&!player.HasHeldItem&&g.Lottery.Book.Stock(15)==stock,"Duplicate number input does not print or consume stock");
+            var requested=g.ActiveCustomer.LotteryNumbers;
+            var wrong=Enumerable.Range(1,20).Where(n=>!requested.Contains(n)).Take(5).ToArray();
+            g.Lottery.NumberEntry=string.Join(" ",wrong);
+            check(!g.Lottery.Take(15,player)&&g.Lottery.Book.Stock(15)==stock,"Valid but wrong customer numbers are rejected before printing");
+            g.Lottery.NumberEntry=string.Join(", ",requested.Reverse());
+            check(g.Lottery.Take(15,player),"Correct normalized numbers print one real paper");
+            var item=player.HeldProduct;var id=item.GetComponent<ShopLotteryPaper>().TicketId;
+            check(g.Lottery.Book.Find(id).Numbers.SequenceEqual(requested)&&g.Lottery.Book.Stock(15)==stock-1,"Printed paper freezes the requested numbers and consumes one blank");
+            player.CancelHeld();check(item.AssignInitialSlot(g.DeliverySlot),"Number ticket fits scanner handover");g.DeliverySlot.NotifyProductPlaced(item);
+            check(g.Stage==ServiceStage.Payment&&g.CardPayment,"Number paper hands over into existing physical card flow");
+            g.EnterCardDigit(1);check(!g.ConfirmCardPayment()&&!g.Lottery.Book.Find(id).Sold,"Incorrect card amount cannot activate number ticket");
+            g.ClearCardAmount();foreach(char digit in "500")g.EnterCardDigit(digit-'0');int cash=g.Ledger.Cash;
+            check(g.ConfirmCardPayment()&&g.Ledger.Cash==cash+500&&g.Drawer.Total==g.Ledger.Cash&&g.Lottery.Book.Find(id).Sold,"Exact card payment activates the printed number paper once");
+            check(!g.ConfirmCardPayment()&&g.Lottery.Book.Scan(id,1)==LotteryTicketStatus.AwaitingDraw,"Repeated card approval cannot change a pending draw");
+            for(int i=0;i<300;i++)g.Tick(.1f);g.RequestClose();for(int i=0;i<300;i++)g.Tick(.1f);
+            typeof(MvpShopController).GetMethod("FinishDay",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).Invoke(g,null);g.NextDay();
+            var draw=g.Lottery.Book.DrawNumbers(2);int prize=g.Lottery.Book.Find(id).Prize;g.Lottery.AdvanceDay();
+            check(draw.Length==5&&g.Lottery.Book.DrawCount==1&&g.Lottery.Book.Find(id).Prize==prize&&g.Lottery.Book.Find(id).Numbers.SequenceEqual(requested),"Real next-day transition resolves one stable draw without changing ticket numbers");
+            check(g.Lottery.Book.Sales==500&&g.Lottery.Book.Outstanding==450&&g.Ledger.LotteryReserve==450,"Unsettled operator money survives replacement of the daily ledger");
+            check(!g.Pricing.TrySetPrice(15,1000),"Operator-set ticket price cannot be edited as ordinary shop stock");
+            return new{passed,failed=0};
+        }
+        finally{player.CancelHeld();g.ClosePanel();g.ResetDemo();g.ManualTick=false;}
+    }
+
+    public static object Integration()
+    {
+        int passed=0;
+        Action<bool,string> check=(ok,name)=>{if(!ok)throw new Exception(name);passed++;};
+        var g=MvpShopController.Instance;var player=UnityEngine.Object.FindAnyObjectByType<PlayerInteractor>();
+        var spawn=typeof(MvpShopController).GetMethod("SpawnCustomer",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance);
+        void Spawn(int type)
+        {
+            spawn.Invoke(g,new object[]{type,false});
+            for(int i=0;i<1500&&g.ActiveCustomer==null;i++)g.Tick(.1f);
+            if(g.ActiveCustomer==null)throw new Exception("Lottery customer did not reach counter");
+        }
+        void Drain()
+        {
+            for(int i=0;i<1000&&(g.ActiveCustomer!=null||g.QueueCount>0||!g.CanEndDay);i++)
+            {g.Tick(.1f);if(g.ActiveCustomer==null&&g.QueueCount==0&&i>100)break;}
+        }
+        try
+        {
+            player.CancelHeld();g.ClosePanel();g.ResetDemo();g.ManualTick=true;g.AutomaticArrivals=false;g.SingleProductVisits=true;
+            check(!g.Lottery.Owned&&!g.Lottery.Terminal.gameObject.activeSelf&&!g.Lottery.TryBuy(),"Lottery hidden and unaffordable in starting shop");
+            check(!g.CreateCustomerOrder(13,0).Any(ShopLotteryCatalog.IsTicket),"No lottery requests before development and procurement");
+            ShopCheckFixtures.Fund(g,60000);int before=g.Ledger.Cash;
+            check(g.Lottery.TryBuy()&&g.Ledger.Cash==before-12000&&!g.Lottery.TryBuy(),"Real lottery development debits once and displays its physical terminal");
+            check(g.Lottery.Terminal.GetComponentsInChildren<Collider>().Where(c=>c.enabled&&!c.isTrigger).All(c=>
+                g.Devices.TillAssembly.GetComponentsInChildren<Renderer>().All(r=>!c.bounds.Intersects(r.bounds))),"Lottery furniture does not overlap cash register or card terminal");
+            var body=player.GetComponent<CharacterController>();var originalPosition=player.transform.position;
+            body.enabled=false;player.transform.position=ShopFloorPlan.StaffSpawn;body.enabled=true;Physics.SyncTransforms();
+            for(int i=0;i<300;i++)
+            {
+                var delta=ShopFloorPlan.StaffExit-player.transform.position;delta.y=0;
+                if(delta.magnitude<.08f)break;body.Move(Vector3.ClampMagnitude(delta,.04f));
+            }
+            check(Vector3.ProjectOnPlane(player.transform.position-ShopFloorPlan.StaffExit,Vector3.up).magnitude<.1f,"Lottery extension preserves actual player route to stockroom");
+            body.enabled=false;player.transform.position=originalPosition;body.enabled=true;Physics.SyncTransforms();
+            check(g.Lottery.Order(13)&&g.AvailableInventory(13)==0,"Pending consignment cannot enter NPC orders");g.Tick(8.1f);
+            check(g.Lottery.Book.Stock(13)==5&&g.AvailableInventory(13)==5&&g.Lottery.Feedback.Contains("Megérkezett"),"Delivered consignment enters available assortment with current status");
+            var request1=g.CreateCustomerOrder(13,0);var request2=g.CreateCustomerOrder(13,0);
+            check(request1.SequenceEqual(new[]{13})&&request2.SequenceEqual(request1)&&g.Lottery.Book.Stock(13)==5,"Queued orders do not reserve tickets or mix with ordinary goods");
+            var view=Camera.main;var pose=new Pose(view.transform.localPosition,view.transform.localRotation);
+            g.Devices.Focus(ShopDeviceKind.Lottery);
+            check(g.Devices.FocusKind==ShopDeviceKind.Lottery&&ShopInputGate.Blocked,"Lottery focus owns cursor/input");g.ClosePanel();
+            check(Vector3.Distance(view.transform.localPosition,pose.position)<.001f&&Quaternion.Angle(view.transform.localRotation,pose.rotation)<.01f&&!ShopInputGate.Blocked,"Closing terminal restores exact camera and input");
+            foreach(int page in new[]{0,1,2,3})
+            {
+                g.Lottery.SelectPage(page);
+                check(g.Lottery.Controls(ShopLotteryRetailer.TerminalBody).All(c=>ShopLotteryRetailer.TerminalBody.Contains(c.Bounds.min)&&ShopLotteryRetailer.TerminalBody.Contains(c.Bounds.max-Vector2.one*.1f)),"All lottery controls fit their panel: "+page);
+            }
+            g.OpenShop();Spawn(13);
+            check(g.ActiveCustomer.Product==13&&g.Dialogue.Contains("Falusi Fortuna"),"Real NPC asks for an unlocked stocked scratch ticket");
+            check(g.Lottery.Take(13,player)&&player.HeldProduct.GetComponent<ShopLotteryPaper>()!=null,"Rack selection creates one physical identifiable ticket in hand");
+            var item=player.HeldProduct;var id=item.GetComponent<ShopLotteryPaper>().TicketId;int frozenPrize=g.Lottery.Book.Find(id).Prize;
+            Physics.SyncTransforms();check(item.TryGetPlacement(g.DeliverySlot,out _),"Real physical ticket placement is unobstructed on barcode scanner");
+            check(g.Lottery.Book.Scan(id,g.Day)==LotteryTicketStatus.Unpaid,"Physical unpaid paper is not eligible for redemption");
+            player.CancelHeld();check(item.AssignInitialSlot(g.DeliverySlot),"Physical scratch ticket fits scanner slot");g.DeliverySlot.NotifyProductPlaced(item);
+            check(g.Stage==ServiceStage.Payment&&g.Scanner.LastProductId==ShopCatalog.Ids[13],"Barcode handover uses existing multi-item checkout");
+            int cash=g.Ledger.Cash;
+            check(g.SubmitChange(0)&&g.Lottery.Book.Find(id).Sold&&g.Ledger.Cash==cash+500&&g.Drawer.Total==g.Ledger.Cash,"Cash sale activates ticket and updates physical drawer exactly once");
+            check(!g.SubmitChange(0)&&g.Lottery.Book.Sales==500&&g.Ledger.LotteryReserve==450&&g.Ledger.Profit==50,"Repeated payment cannot duplicate operator liability or commission");
+            Drain();Spawn(13);check(g.Lottery.Take(13,player),"Next customer can pick a separate ticket");int stock=g.Lottery.Book.Stock(13);
+            g.SkipCurrent();check(!player.HasHeldItem&&g.Lottery.Book.Stock(13)==stock+1,"Skipping cancels held unpaid ticket and restores consignment");Drain();
+            // Produce real seeded winning outcomes, using the same ledger callback as retail checkout.
+            var winner=g.Lottery.Book.Find(id);
+            if(winner.Prize==0)g.Lottery.Book.FinishReturn(id,g.Day);
+            for(int i=0;i<100&&(winner.Prize==0||winner.Prize>10000);i++)
+            {
+                if(g.Lottery.Book.Stock(13)==0){g.Lottery.Order(13);g.Tick(8.1f);}
+                var t=g.Lottery.Book.Print(13,g.Day);
+                g.Lottery.Book.TrySell(t.Id,1,g.Day,()=>g.Ledger.TrySellCard(500,450));
+                if(t.Prize>0&&t.Prize<=10000)winner=t;else g.Lottery.Book.FinishReturn(t.Id,g.Day);
+            }
+            g.Lottery.SyncReserve();g.SyncCashDrawer();
+            check(winner.Prize>0&&winner.Prize<=10000,"Seeded retail ledger has a locally payable winning paper");
+            g.RequestClose();Drain();
+            typeof(MvpShopController).GetMethod("FinishDay",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).Invoke(g,null);
+            int sales=g.Lottery.Book.Sales;g.NextDay();
+            check(g.Day==2&&g.Lottery.Owned&&g.Lottery.Book.Find(winner.Id).Prize==winner.Prize&&g.Lottery.Book.Sales==sales,"Development, ticket result and operator liability survive real next-day transition");
+            g.SingleProductVisits=false;g.OpenShop();
+            typeof(MvpShopController).GetProperty("Spawned").SetValue(g,1);Spawn(-1);
+            check(g.ActiveCustomer.LotteryClaimId!=null&&g.ActiveCustomer.Person==g.Lottery.Book.Find(g.ActiveCustomer.LotteryClaimId).Owner,"Original NPC returns with a real owned ticket on a later day");
+            check(g.Lottery.ScanCurrent(),"Terminal reads the returning NPC paper");
+            var claim=g.Lottery.Book.Find(g.Lottery.ScannedId);cash=g.Ledger.Cash;
+            check(g.Lottery.PayPrize()&&g.Ledger.Cash==cash-claim.Prize&&g.Drawer.Total==g.Ledger.Cash&&claim.Redeemed,"Confirmed prize debits the shared physical till");
+            check(!g.Lottery.PayPrize()&&g.Stage==ServiceStage.Thanks,"Repeated prize approval cannot pay twice");
+            check(g.Lottery.SettleOperator()&&g.Lottery.Book.Outstanding==0&&!g.Lottery.SettleOperator(),"TobaccOS settlement reconciles once");
+            check(g.Ledger.LotteryReserve==0&&g.Ledger.AvailableFunds==g.Ledger.Cash,"Operator settlement releases only the actual remaining liability");
+            return new{passed,failed=0};
+        }
+        finally{player.CancelHeld();g.ClosePanel();g.ResetDemo();g.ManualTick=false;}
+    }
+
     public static object State()
     {
         int passed = 0;
@@ -49,6 +180,8 @@ public static class LotteryChecks
         check(state.Scan(loser.Id,9)==LotteryTicketStatus.Expired && sold.Prize>=0 && first.Prize==prize, "Expiry and scans do not reroll scratch results");
         check(!ShopLotteryCatalog.TryNumbers("1 1 2 3 4",out _) && !ShopLotteryCatalog.TryNumbers("0 2 3 4 5",out _)
             && !ShopLotteryCatalog.TryNumbers("1 2 3 4",out _), "Number entry rejects duplicates, range and wrong count");
+        check(!ShopLotteryCatalog.TryNumbers("-1 2 3 4 5",out _), "Negative sign cannot be mistaken for a number separator");
+        check(!ShopLotteryCatalog.TryNumbers("1-2-3-4-5",out _), "Only the advertised number separators are accepted");
         check(ShopLotteryCatalog.TryNumbers("20, 4, 3, 2, 1",out var numbers) && numbers.SequenceEqual(new[]{1,2,3,4,20}), "Number entry accepts and normalizes five valid numbers");
         state.Order(15,2);state.Tick(8.1f);
         check(state.Print(15,1,new[]{1,1,2,3,4})==null && state.Stock(15)==2, "Invalid numbers do not consume a blank");

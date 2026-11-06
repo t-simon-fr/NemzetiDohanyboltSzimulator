@@ -87,7 +87,14 @@ public sealed partial class ShopLotteryRetailer : MonoBehaviour
         terminal.gameObject.SetActive(true);shop.Navigation?.Rebuild();shop.SyncCashDrawer();Refresh();
         shop.Notify("Lottópont megnyitva. Rendelj bizományos készletet a terminálon vagy a TobaccOS-ban.");return true;
     }
-    public void Tick(float dt){Book.Tick(dt);Refresh();}
+    public void Tick(float dt)
+    {
+        bool pending = Enumerable.Range(13,3).Any(t=>Book.Pending(t)>0);
+        Book.Tick(dt);
+        if(pending&&!Enumerable.Range(13,3).Any(t=>Book.Pending(t)>0))
+            Feedback="Megérkezett a szelvénykészlet.";
+        Refresh();
+    }
     public void AdvanceDay(){Book.AdvanceDay(shop.Day);SyncReserve();}
     public void SyncReserve()=>shop.Ledger.SetLotteryReserve(Book.Reserve);
     public int Available(int type) => Owned ? Book.Stock(type)+shop.StockCount(type) : 0;
@@ -192,7 +199,8 @@ public sealed partial class ShopLotteryRetailer : MonoBehaviour
         if(c==null||c.LotteryClaimId!=ScannedId||shop.Stage!=ServiceStage.Order)return false;
         if(!Book.TryRedeem(ScannedId,shop.Day,amount=>shop.Ledger.TryOperatorTransfer(-amount)))
         {Feedback=Book.Scan(ScannedId,shop.Day)==LotteryTicketStatus.Winning?"Nincs elég készpénz a kasszában. A szelvény beváltatlan maradt.":"Ez a szelvény nem fizethető ki.";return false;}
-        SyncReserve();shop.SyncCashDrawer();shop.FinishLotteryVisit("Kifizetve: "+ShopCatalog.Money(Book.Find(ScannedId).Prize)+". Most már csak értelmesen kellene elkölteni.");return true;
+        SyncReserve();shop.SyncCashDrawer();Feedback="A nyereményt kifizettük.";
+        shop.FinishLotteryVisit("Kifizetve: "+ShopCatalog.Money(Book.Find(ScannedId).Prize)+". Most már csak értelmesen kellene elkölteni.");return true;
     }
     public void FinishCheck()
     {

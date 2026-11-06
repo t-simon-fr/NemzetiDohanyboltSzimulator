@@ -18,7 +18,7 @@ public static class ShopLotteryCatalog
     public static bool TryNumbers(string text, out int[] numbers)
     {
         numbers = Array.Empty<int>();
-        var fields = (text ?? "").Split(new[] { ' ', ',', ';', '-', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+        var fields = (text ?? "").Split(new[] { ' ', ',', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
         if (fields.Length != 5) return false;
         var parsed = new int[5];
         for (int i = 0; i < parsed.Length; i++)

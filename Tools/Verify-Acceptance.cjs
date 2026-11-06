@@ -233,6 +233,75 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await viewport(1280, 720);
     }
 
+    if (selected === 'lottery' || selected === 'lottery-numbers') {
+      const press=async id=>{
+        const s=await state();let i=s.lotteryControlIds.indexOf(id);
+        let rect=i>=0?s.lotteryControls[i]:s.computerControls[s.computerControlIds.indexOf(id)];
+        if(!rect)throw Error('Missing lottery UI control '+id);await clickRect(rect);
+      };
+      const fill=async text=>{
+        const s=await state();await clickRect(s.lotteryNumberField);
+        await send('Input.dispatchKeyEvent',{type:'keyDown',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await send('Input.dispatchKeyEvent',{type:'keyUp',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await key('Backspace','Backspace',8);
+        for(const character of text)await send('Input.dispatchKeyEvent',{type:'char',text:character,unmodifiedText:character});await sleep(300);
+      };
+      const goNextDay=async()=>{
+        await probe('Action','lottery-home');await key('e','KeyE',69);let s=await state();
+        check(s.phase==='Summary','Actual door interaction closes the lottery day');await capture('lottery-daily-summary');
+        await enter();s=await state();check(s.phase==='Preparing','Enter starts next day with lottery state intact');return s;
+      };
+      if (selected === 'lottery-numbers') {
+        await probe('Prepare','lottery-numbers');let s=await state();
+        check(s.lotteryOwned&&s.order==='Ötöske'&&s.device==='Lottery','Real number customer and paid development are ready');
+        await press('Lottery:Page:1');const blanks=s.lotteryStock[2];const requested=s.lotteryRequestedNumbers;
+        await fill('-1 2 3 4 5');await press('Lottery:Print');s=await state();
+        check(s.held===''&&s.lotteryStock[2]===blanks&&s.lotterySales===0,'Actual negative number entry is rejected without printing, cash or stock movement');await capture('lottery-negative-number');
+        await fill(requested.join(' '));await press('Lottery:Print');s=await state();
+        check(s.held==='lottery_numbers'&&s.lotteryStock[2]===blanks-1,'Valid customer numbers still print exactly one paper after rejection');
+        await probe('Action','aim-scanner');await key('e','KeyE',69);await key('f','KeyF',70);await type('500');await enter();s=await state();
+        check(s.lotterySales===500&&s.lotteryCommission===50&&s.lotteryReserve===450&&s.drawer===s.balance,'Corrected number path still activates only after actual card payment');
+        await goNextDay();await probe('Action','lottery-terminal');await key('e','KeyE',69);await press('Lottery:Page:1');s=await state();
+        check(s.lotteryDrawCount===1&&s.lotteryDraw.length===5,'Corrected number ticket still resolves only one next-day draw');
+        await capture('lottery-final-draw');await viewport(1920,1080);await capture('lottery-final-draw-large');await viewport(1280,720);
+      } else {
+      await probe('Prepare','lottery');let s=await state();const cash=s.balance;
+      check(!s.lotteryOwned,'Lottery starts locked');await capture('lottery-development');
+      await press('Lottery:Upgrade');s=await state();check(s.lotteryOwned&&s.balance===cash-12000,'Actual TobaccOS click buys lottery development once');
+      await press('Desktop:0');await press('OpenApp:7');
+      for(const type of [13,14,15])await press('Lottery:Order:'+type);
+      s=await state();check(s.lotteryStock.every(n=>n===0)&&s.lotteryPending.every(n=>n===5),'Consignment order waits for delivery without charging face value');
+      await probe('Action','lottery-deliver');s=await state();check(s.lotteryStock.every(n=>n===5),'Consignment arrives as selectable ticket stock');
+      await capture('lottery-stock');await viewport(1920,1080);await capture('lottery-stock-large');await viewport(1280,720);
+      await probe('Action','lottery-scratch-customer');await capture('lottery-physical-rack');
+      await key('e','KeyE',69);s=await state();check(s.held==='lottery_fortuna'&&s.lotteryStock[0]===4&&!s.lotteryFirstSold,'Actual E picks one unpaid scratch ticket from its rack');await capture('lottery-held-paper');
+      await probe('Action','aim-scanner');await key('e','KeyE',69);s=await state();check(s.stage==='Payment'&&!s.lotteryFirstSold,'Actual barcode handover prepares payment but does not activate the ticket');
+      await key('f','KeyF',70);s=await state();check(s.device==='Till','Actual F opens existing cash register for lottery sale');
+      const before=s.balance;await enter();s=await state();check(s.lotteryFirstSold&&s.balance===before+500&&s.drawer===s.balance,'Actual cash approval activates one ticket and updates the shared till');
+      check(s.lotterySales===500&&s.lotteryCommission===50&&s.lotteryReserve===450&&s.lotteryFunds===s.balance-450,'Only commission is spendable, operator stake remains reserved');
+      await enter();s=await state();check(s.lotterySales===500,'Repeated cash approval cannot sell the paper twice');
+      s=await goNextDay();check(s.lotteryOwned&&s.lotteryFirstSold&&s.lotteryReserve===450,'Development, paid paper and reserve survive day transition');
+      await probe('Action','lottery-return');s=await state();check(s.lotteryClaim===s.lotteryFirstId,'Original NPC brings back the exact paid paper');
+      await key('e','KeyE',69);s=await state();check(s.device==='Lottery','Actual E opens physical lottery terminal');
+      await press('Lottery:Scan');s=await state();check(s.lotteryStatus==='Winning','Terminal scans the actual paid winning paper');await capture('lottery-winning-scan');
+      const payoutBefore=s.balance;await press('Lottery:Payout');s=await state();check(s.lotteryFirstRedeemed&&s.lotteryPayouts===500&&s.balance===payoutBefore-500&&s.drawer===s.balance,'Actual prize confirmation pays once from the shared physical till');
+      check(s.lotteryOutstanding===-50&&s.lotteryReserve===0,'Prize payout creates correct operator receivable');
+      await probe('Action','lottery-terminal');await key('e','KeyE',69);await press('Lottery:Page:3');await capture('lottery-settlement');
+      const settlementBefore=(await state()).balance;await press('Lottery:Settle');s=await state();check(s.lotteryOutstanding===0&&s.balance===settlementBefore+50,'Actual settlement credits operator reimbursement without a second sale');
+      await key('Escape','Escape',27);s=await state();check(s.device==='None'&&!s.blocked,'Escape restores normal world input after lottery terminal');
+      await probe('Action','lottery-number-customer');await key('e','KeyE',69);await press('Lottery:Page:1');s=await state();
+      const requested=s.lotteryRequestedNumbers;const blanks=s.lotteryStock[2];
+      await fill('1 1 2 3 4');await press('Lottery:Print');s=await state();check(s.held===''&&s.lotteryStock[2]===blanks&&s.lotteryFeedback.includes('különböző'),'Duplicate typed numbers cannot print or consume a blank');await capture('lottery-invalid-numbers');
+      await fill(requested.join(' '));await press('Lottery:Print');s=await state();check(s.held==='lottery_numbers'&&s.lotteryStock[2]===blanks-1,'Actual typed customer numbers print one physical number ticket');await capture('lottery-number-paper');
+      await probe('Action','aim-scanner');await key('e','KeyE',69);await key('f','KeyF',70);s=await state();check(s.device==='Terminal','Number ticket uses the existing physical bank card terminal');
+      await type('1');await enter();s=await state();check(s.lotterySales===500,'Wrong card amount cannot activate number ticket');
+      await key('Delete','Delete',46);await type('500');await enter();s=await state();check(s.lotterySales===1000&&s.lotteryCommission===100&&s.lotteryReserve===450&&s.drawer===s.balance,'Correct card approval activates number ticket with exact commission and reserve');
+      await goNextDay();await probe('Action','lottery-terminal');await key('e','KeyE',69);await press('Lottery:Page:1');s=await state();
+      check(s.lotteryDrawCount===1&&s.lotteryDraw.length===5&&new Set(s.lotteryDraw).size===5,'Next game day resolves one five-number draw');
+      await capture('lottery-draw-results');await viewport(1920,1080);await capture('lottery-draw-results-large');await viewport(1280,720);
+      }
+    }
+
     if (!selected || selected === 'ingredient-pickup' || selected === 'closing-fixes') {
       const worldClick=async()=>{
         await send('Input.dispatchMouseEvent',{type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(100);

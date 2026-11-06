@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #106: **Szerecsenjáték Zrt. Lottópont** elkészült: kaparósok, Ötöske, kézi kasszázás, későbbi NPC-beváltás és elkülönített üzemeltetői elszámolás. **953 natív állítás / 44 csoport**, 29 baseline és 8 végső célzott WebGL-ellenőrzés, 0 konzolhiba; 720p/1080p képek átnézve. [Közös jelentés](../Acceptance/lottery-point/REPORT.md), [használat és architektúra](../Architecture/LOTTERY_POINT.md). Pagesre nincs kiadva.
+
 - #115/#116: Albro tej- és La Vazze kávéalapanyag saját modellel, olvasható csomagolással és játékos felőli kéznézettel; a gép E-vel és bal kattintással is feltölthető. **165 célzott Unity-állítás, 14 helyi WebGL-ellenőrzés, 0 konzolhiba**, 720p/1080p képek átnézve. [Közös jelentés](../Acceptance/ingredient-packaging/REPORT.md). Pagesre még nincs kiadva.
 
 **Aktuális Pages-kiadás:** a #69–#74 moduláris refaktor és az összes korábbi main-fejlesztés publikálva. Forrás `9a5b437`, publish `f26839b`. A pontos commit Pages-státusza **built**. [Élő játék](https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/?v=9a5b437), [kiadási jelentés](../Acceptance/modular-refactor-pages/REPORT.md). Az alábbi korábbi kiadási megjegyzések történetiek.

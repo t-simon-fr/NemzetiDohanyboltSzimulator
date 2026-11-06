@@ -55,7 +55,19 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "warehouse-opening")
+        if (scenario == "lottery" || scenario == "lottery-numbers")
+        {
+            Shop.Ledger.TrySellCard(60000,0);Shop.SyncCashDrawer();
+            Set(Shop.Lottery,"Book",new ShopLotteryState(1));
+            Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Furnishing);
+            Shop.AutomaticArrivals=false;Shop.ManualTick=false;
+            if(scenario=="lottery-numbers")
+            {
+                Shop.Lottery.TryBuy();Shop.Lottery.Order(15);Shop.Tick(8.1f);Shop.ClosePanel();
+                Visit(3,15);AimLotteryTerminal();Shop.Lottery.Open();
+            }
+        }
+        else if (scenario == "warehouse-opening")
         {
             Aim(new Vector3(-2.5f, 1.1f, 0), 1.25f, Vector3.right);
         }
@@ -272,6 +284,30 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if(action=="lottery-deliver")Shop.Tick(8.1f);
+        if(action=="lottery-scratch-customer")
+        {
+            Shop.ClosePanel();Visit(0,13);AimLotteryStock(13);
+        }
+        if(action=="lottery-number-customer")
+        {
+            Shop.ClosePanel();Shop.Tick(3f);Visit(3,15);AimLotteryTerminal();
+        }
+        if(action=="lottery-terminal")AimLotteryTerminal();
+        if(action=="lottery-cash")Shop.OpenCash();
+        if(action=="lottery-home")
+        {
+            Shop.ClosePanel();Shop.Tick(3f);Shop.RequestClose();
+            for(int i=0;i<2000&&!Shop.CanEndDay;i++)Shop.Tick(.1f);
+            Aim(Shop.Entrance.Position+Vector3.up*.95f);
+        }
+        if(action=="lottery-return")
+        {
+            Shop.ClosePanel();Shop.AutomaticArrivals=false;Shop.OpenShop();Set(Shop,"Spawned",1);
+            typeof(MvpShopController).GetMethod("SpawnCustomer",Private).Invoke(Shop,new object[]{-1,false});
+            for(int i=0;i<2000&&Shop.ActiveCustomer==null;i++)Shop.Tick(.1f);
+            AimLotteryTerminal();
+        }
         if(action=="design-exterior"||action=="design-interior") {
             Shop.ClosePanel();Player.GetComponent<FirstPersonController>().enabled=false;
             View.transform.position=action=="design-exterior"?new Vector3(-4.5f,2.5f,-12):new Vector3(1.7f,1.7f,-4);
@@ -418,6 +454,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Aim(package.GetComponentInChildren<Collider>().bounds.center,1.25f,Vector3.right);
     }
 
+    private void AimLotteryStock(int type)
+    {
+        var stock=Shop.Lottery.Terminal.Find("Lottery stock "+type);
+        Aim(stock.GetComponent<Collider>().bounds.center,1.1f,-Shop.Lottery.Terminal.forward,true);
+    }
+    private void AimLotteryTerminal() => Aim(Shop.Lottery.Terminal.TransformPoint(new Vector3(0,.14f,-.15f)),1.1f,-Shop.Lottery.Terminal.forward);
+
     private Transform LowerStorageDock() => Shop.Warehouse.StorageDocks
         .First(d => d.parent == Shop.Warehouse.Dock(0) && d.position.y < Shop.Warehouse.Dock(0).position.y-.2f);
 
@@ -459,7 +502,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f, .5f, 0)));
     }
 
-    private void Aim(Vector3 target, float distance = .85f, Vector3? outward = null)
+    private void Aim(Vector3 target, float distance = .85f, Vector3? outward = null, bool standingEye = false)
     {
         var root = Player.transform;
         var body = Player.GetComponent<CharacterController>();
@@ -470,7 +513,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         // The relocated sign is beside the counter end; approach from the door
         // rather than placing the test player inside the counter body.
         if (target.z < -4.2f && Mathf.Abs(target.y - 1.5f) < .1f) eye.x = ShopFloorPlan.EntranceX + .7f;
-        eye.y = Mathf.Max(target.y + .3f, 1.75f);
+        eye.y = standingEye ? 1.75f : Mathf.Max(target.y + .3f, 1.75f);
         Vector3 horizontal = target - eye;
         horizontal.y = 0;
         root.rotation = Quaternion.LookRotation(horizontal);
@@ -549,6 +592,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public int[] upgradeCosts;
         public string ingredientTarget;
         public string ingredientBrand, heldIngredientBrand;
+        public bool lotteryOwned, lotteryFirstSold, lotteryFirstRedeemed;
+        public int lotterySales, lotteryPayouts, lotteryCommission, lotteryOutstanding, lotteryReserve, lotteryFunds, lotteryDrawCount;
+        public int[] lotteryStock, lotteryPending, lotteryRequestedNumbers, lotteryDraw;
+        public string lotteryFirstId, lotteryClaim, lotteryScanned, lotteryStatus, lotteryEntry, lotteryFeedback;
+        public string[] lotteryControlIds;
+        public Rect[] lotteryControls;
+        public Rect lotteryNumberField;
         public int ingredientCoffee,ingredientMilk,readyCoffee,readyMilk;
         public Rect[] cashDenominations, cashKeys;
         public int[] cashCounts;
@@ -679,6 +729,22 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.ingredientBrand = targetPackage != null ? targetPackage.Brand : "";
         var heldIngredient = Player.HeldTool != null ? Player.HeldTool.GetComponent<ShopIngredientPackage>() : null;
         state.heldIngredientBrand = heldIngredient != null ? heldIngredient.Brand : "";
+        var lottery=g.Lottery;
+        var firstTicket=lottery.Book.Tickets.FirstOrDefault();
+        state.lotteryOwned=lottery.Owned;state.lotteryFirstSold=firstTicket?.Sold??false;state.lotteryFirstRedeemed=firstTicket?.Redeemed??false;
+        state.lotteryFirstId=firstTicket?.Id??"";state.lotteryClaim=g.ActiveCustomer?.LotteryClaimId??"";
+        state.lotteryStock=Enumerable.Range(13,3).Select(lottery.Book.Stock).ToArray();state.lotteryPending=Enumerable.Range(13,3).Select(lottery.Book.Pending).ToArray();
+        state.lotterySales=lottery.Book.Sales;state.lotteryPayouts=lottery.Book.Payouts;state.lotteryCommission=lottery.Book.Commission;
+        state.lotteryOutstanding=lottery.Book.Outstanding;state.lotteryReserve=g.Ledger.LotteryReserve;state.lotteryFunds=g.Ledger.AvailableFunds;
+        state.lotteryEntry=lottery.NumberEntry;state.lotteryFeedback=lottery.Feedback;state.lotteryScanned=lottery.ScannedId;
+        state.lotteryStatus=lottery.Book.Scan(lottery.ScannedId,g.Day).ToString();
+        state.lotteryRequestedNumbers=g.ActiveCustomer?.LotteryNumbers??Array.Empty<int>();
+        state.lotteryDrawCount=lottery.Book.DrawCount;state.lotteryDraw=lottery.Book.DrawNumbers(g.Day);
+        var lotteryTargets=g.Devices.FocusKind==ShopDeviceKind.Lottery?g.Devices.KeyboardTargets():
+            g.Devices.FocusKind==ShopDeviceKind.Monitor&&g.Devices.ComputerApp==ShopComputerApp.Lottery?g.Devices.ComputerKeyboardTargets():new System.Collections.Generic.List<ShopKeyboardTarget>();
+        state.lotteryControlIds=lotteryTargets.Select(t=>t.Id).ToArray();state.lotteryControls=lotteryTargets.Select(t=>t.Bounds).ToArray();
+        state.lotteryNumberField=g.Devices.FocusKind==ShopDeviceKind.Lottery?ShopUi.ScreenRect(new Rect(128,318,500,54)):
+            g.Devices.ComputerToScreen(new Rect(ShopDevices.ComputerBody.x+24,ShopDevices.ComputerBody.y+178,500,54));
         state.ingredientCoffee=g.Activities.CoffeeSupplies;state.ingredientMilk=g.Activities.MilkSupplies;
         state.readyCoffee=g.Activities.ReadyCoffee;state.readyMilk=g.Activities.ReadyMilk;
         state.upgradesOwned = new[]{g.Layout.Expanded,g.Layout.ExtraShelfOwned,g.Activities.CoffeeOwned,g.GetComponent<ShopNextUpgrades>().FridgeOwned,g.Security.Owned};
