@@ -1,6 +1,6 @@
 # Elfogadási ellenőrzések
 
-Aktuális Pages-kiadás: [#53–#59 új feature-csomag](2026-11-05-feature-pages/REPORT.md).
+Aktuális Pages-kiadás: [trafik arculat, TobaccOS és az összes main-fejlesztés #92-ig](trafik-refresh-pages/REPORT.md). Korábbi kiadás: [#53–#59 új feature-csomag](2026-11-05-feature-pages/REPORT.md).
 
 Legfrissebb javítás: [#92 TobaccOS hover-kontraszt](hover-contrast/REPORT.md): 12 célzott natív és 4 WebGL-ellenőrzés, 0 konzolhiba; két felbontás átnézve. Pagesre még nincs kiadva.
 
