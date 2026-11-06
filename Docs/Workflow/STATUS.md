@@ -2,9 +2,9 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
-**Aktuális Pages-kiadás:** az összes main-fejlesztés #98-ig publikálva. Forrás `b6f8868`, publish `facb53a`. A pontos commit Pages-státusza **built**. [Élő játék](https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/?v=b6f8868), [kiadási jelentés](../Acceptance/visual-fixes-pages/REPORT.md). Az alábbi korábbi kiadási megjegyzések történetiek.
+**Aktuális Pages-kiadás:** a #69–#74 moduláris refaktor és az összes korábbi main-fejlesztés publikálva. Forrás `9a5b437`, publish `f26839b`. A pontos commit Pages-státusza **built**. [Élő játék](https://t-simon-fr.github.io/NemzetiDohanyboltSzimulator-WebGL/?v=9a5b437), [kiadási jelentés](../Acceptance/modular-refactor-pages/REPORT.md). Az alábbi korábbi kiadási megjegyzések történetiek.
 
-- #69–#74: a hat moduláris refaktor elkészült: beszerzés, készlet/szállítás, checkout, kávégép, nap/fókusz, bootstrap/erőforrás-élettartam. **852 natív állítás / 40 csoport**, közös WebGL-build, **123 különböző sikeres böngészős ellenőrzés**, 0 konzolhiba. [Közös jelentés](../Acceptance/modular-refactor/REPORT.md), [modulhatárok](../Architecture/REFACTOR_BATCH.md), PR #100–#105. A futtató három régi UI-célzási hibája javítva, a sikeres részeket megtartottuk. Pagesre még nincs kiadva.
+- #69–#74: a hat moduláris refaktor elkészült: beszerzés, készlet/szállítás, checkout, kávégép, nap/fókusz, bootstrap/erőforrás-élettartam. **852 natív állítás / 40 csoport**, közös WebGL-build, **123 különböző sikeres böngészős ellenőrzés**, 0 konzolhiba. [Közös jelentés](../Acceptance/modular-refactor/REPORT.md), [modulhatárok](../Architecture/REFACTOR_BATCH.md), PR #100–#105. A futtató három régi UI-célzási hibája javítva, a sikeres részeket megtartottuk. Pagesre publikálva; lásd a fenti kiadási jelentést.
 
 - #98: az öngyújtók és a tartó is eltávolítva. **13 célzott natív és 4 helyi WebGL-ellenőrzés**, 0 konzolhiba; két felbontás képei átnézve. [Jelentés](../Acceptance/remove-lighter-display/REPORT.md), PR #99. Pagesre publikálva; lásd a fenti kiadási jelentést.
 

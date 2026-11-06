@@ -1,8 +1,8 @@
 # Elfogadási ellenőrzések
 
-Aktuális Pages-kiadás: [vizuális javítások és minden main-fejlesztés #98-ig](visual-fixes-pages/REPORT.md). Korábbi kiadás: [trafik és TobaccOS](trafik-refresh-pages/REPORT.md).
+Aktuális Pages-kiadás: [moduláris refaktor és minden korábbi main-fejlesztés](modular-refactor-pages/REPORT.md). Korábbi kiadás: [vizuális javítások](visual-fixes-pages/REPORT.md).
 
-Legfrissebb fejlesztés: [#69–#74 moduláris refaktor](modular-refactor/REPORT.md): 852 natív állítás / 40 csoport, 123 különböző sikeres WebGL-ellenőrzés, 0 konzolhiba. Pagesre még nincs kiadva.
+Legfrissebb fejlesztés: [#69–#74 moduláris refaktor](modular-refactor/REPORT.md): 852 natív állítás / 40 csoport, 123 különböző sikeres WebGL-ellenőrzés, 0 konzolhiba. Pagesre publikálva.
 
 Legfrissebb javítás: [#98 öngyújtók és tartó eltávolítása](remove-lighter-display/REPORT.md): 13 natív és 4 WebGL-ellenőrzés, 0 konzolhiba. Pagesre publikálva.
 

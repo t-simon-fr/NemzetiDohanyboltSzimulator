@@ -31,4 +31,4 @@ Reviewer: Codex (implementáló; nem független review). A tényleges Game view 
 
 [Készpénz, 720p](1280x720-cash-register-selected.png) · [Kéznézet, 1080p](1920x1080-hand-player-view-large.png) · [Latte, 720p](1280x720-coffee-display-latte.png) · [Rendelés, 1080p](1920x1080-cart-submitted-large.png) · [Átrendezés, 720p](1280x720-arrangement-overview.png) · [Mentett elrendezés, 1080p](1920x1080-arrangement-large.png) · [Következő nap](1280x720-next-day.png).
 
-A meglévő felhasználói anyag-/render-/projektbeállítások és Recovery/Data fájlok érintetlenül megmaradtak; nem kerültek commitba. Jelenetmentés vagy -generálás nem történt. **Pagesre még nincs kiadva.**
+A meglévő felhasználói anyag-/render-/projektbeállítások és Recovery/Data fájlok érintetlenül megmaradtak; nem kerültek commitba. Jelenetmentés vagy -generálás nem történt. **Pagesre publikálva:** [kiadási jelentés](../modular-refactor-pages/REPORT.md).
