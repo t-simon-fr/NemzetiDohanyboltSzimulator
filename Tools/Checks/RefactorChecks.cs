@@ -3,6 +3,36 @@ using System.Linq;
 
 public static class RefactorChecks
 {
+    public static object Coffee()
+    {
+        int passed = 0;
+        void Check(bool valid, string name) { if (!valid) throw new Exception(name); passed++; }
+        var machine = new ShopCoffeeMachineState();
+        Check(machine.TryBrew(false, false) == ShopBrewResult.Unavailable, "Unowned machine cannot brew");
+        machine.Install(); machine.Refill(3, 1); machine.SelectRecipe(ShopCatalog.Latte);
+        Check(machine.TryBrew(false, false) == ShopBrewResult.Started && machine.Coffee == 2 && machine.Milk == 0, "Latte consumes one shared coffee and milk serving");
+        Check(machine.TryBrew(false, false) != ShopBrewResult.Started && machine.Coffee == 2, "Repeated start never consumes a second serving");
+        Check(!machine.SelectRecipe(ShopCatalog.LongCoffee), "Recipe cannot change during an active brew");
+        Check(machine.TickBrew(-1) == -1 && machine.BrewRemaining == 3.5f, "Negative time cannot advance brewing");
+        Check(machine.TickBrew(3) == -1 && machine.TickBrew(.6f) == ShopCatalog.Latte, "Brew finishes with its original recipe at the required duration");
+        Check(machine.TickBrew(10) == -1, "Ready event is emitted exactly once");
+        machine.RefundBrew(ShopCatalog.Latte);
+        Check(machine.Coffee == 3 && machine.Milk == 1, "Blocked output restores exactly the spent ingredients");
+        machine.SelectRecipe(ShopCatalog.LongCoffee);
+        Check(machine.TryBrew(false, true) == ShopBrewResult.Unavailable && machine.Coffee == 3, "Occupied tray cannot consume ingredients");
+        Check(machine.TryBrew(true, false) == ShopBrewResult.Unavailable, "Closed-day machine cannot start");
+        Check(machine.TryBrew(false, false) == ShopBrewResult.Started && machine.Milk == 1, "Long coffee does not consume milk");
+        Check(!machine.TryOrder(false, 50, false, () => throw new Exception("Capacity must precede debit")), "Physical ready packages count toward ingredient capacity");
+        Check(!machine.TryOrder(false, 0, false, () => false) && machine.PendingCoffee == 0, "Failed payment creates no ingredient delivery");
+        Check(machine.TryOrder(false, 0, false, () => true) && machine.TryOrder(true, 0, false, () => true), "Coffee and milk have independent timed shipments");
+        var arrival = machine.TickDeliveries(8);
+        Check(arrival.coffee == 10 && arrival.milk == 10 && machine.Coffee == 2, "Delivery produces physical-package quantities without loading the machine");
+        Check(machine.TickDeliveries(8) == (0, 0), "Ingredient shipment does not arrive twice");
+        machine.Reset();
+        Check(!machine.Owned && machine.Coffee == 0 && machine.Milk == 0 && machine.PendingCoffee == 0 && machine.PendingMilk == 0 && machine.BrewRemaining == 0, "New game clears machine, brew and all pending ingredients");
+        return new { passed, failed = 0 };
+    }
+
     public static object Checkout()
     {
         int passed = 0;

@@ -18,14 +18,17 @@ public sealed partial class ShopActivities : MonoBehaviour
     private Material metal,ivory,dark,coffee,skin,dirt;
     private ShopHandTool bat,mop;
     private Vector3 batHome,mopHome;
-    private float dirtTimer=48,coffeeDelivery,brewRemaining,cameraTimer,snakeTimer,swingCooldown;
-    private int pendingCoffee,selectedCamera,gameChoice;
+    private float dirtTimer=48,cameraTimer,snakeTimer,swingCooldown;
+    private readonly ShopCoffeeMachineState coffeeState = new ShopCoffeeMachineState();
+    private float brewRemaining => coffeeState.BrewRemaining;
+    private int pendingCoffee => coffeeState.PendingCoffee;
+    private int selectedCamera,gameChoice;
     public ShopCoffeeDisplay CoffeeDisplay { get; private set; }
     private ShopSnake snake;
     private ShopMemoryGame memory;
     private GUIStyle heading,label,buttonStyle;
-    public bool CoffeeOwned { get; private set; }
-    public int CoffeeSupplies { get; private set; }
+    public bool CoffeeOwned { get => coffeeState.Owned; private set => coffeeState.Owned = value; }
+    public int CoffeeSupplies { get => coffeeState.Coffee; private set => coffeeState.Coffee = value; }
     public int PendingCoffee=>pendingCoffee;
     public float BrewRemaining=>brewRemaining;
     public ProductSlot CoffeeOutput { get; private set; }
@@ -160,16 +163,32 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     public bool OrderCoffeeSupplies()
     {
-        int quantity=10;
-        if(!CoffeeOwned||shop.Phase==ShopPhase.Summary||CoffeeSupplies+pendingCoffee+ReadyCoffee+quantity>60){shop.Notify("Kávégép szükséges; legfeljebb 60 adag alapanyagot tárolhatsz.");return false;}
-        if(!shop.Ledger.TryBuy(ShopCatalog.Costs[ShopCatalog.Coffee],quantity)){shop.Notify("Nincs elég pénz a kávéalapanyagra.");return false;}
-        shop.SyncCashDrawer();pendingCoffee+=quantity;coffeeDelivery=8;shop.Notify("Megrendelve 10 adag kávéalapanyag. Szállítás: 8 másodperc.");return true;
+        bool attemptedDebit = false;
+        bool ordered = coffeeState.TryOrder(false, ReadyCoffee, shop.Phase == ShopPhase.Summary, () =>
+        {
+            attemptedDebit = true;
+            return shop.Ledger.TryBuy(ShopCatalog.Costs[ShopCatalog.Coffee], 10);
+        });
+        if (!ordered)
+        {
+            shop.Notify(attemptedDebit ? "Nincs elég pénz a kávéalapanyagra." : "Kávégép szükséges; legfeljebb 60 adag alapanyagot tárolhatsz.");
+            return false;
+        }
+        shop.SyncCashDrawer();
+        shop.Notify("Megrendelve 10 adag kávéalapanyag. Szállítás: 8 másodperc.");
+        return true;
     }
     public bool BrewCoffee()
     {
-        if(selectedRecipe==ShopCatalog.Latte&&MilkSupplies==0){shop.Notify("A lattéhoz tölts tejet a gépbe.");return false;}
-        if(!CoffeeOwned||shop.Phase==ShopPhase.Summary||CoffeeSupplies==0||brewRemaining>0||CoffeeOutput.Occupant!=null){shop.Notify("Kávéfőzéshez szabad tálca és megérkezett alapanyag szükséges.");return false;}
-        CoffeeSupplies--;if(selectedRecipe==ShopCatalog.Latte)MilkSupplies--;brewRemaining=3.5f;shop.Notify("Készül a kávé…");CoffeeDisplay.Refresh();return true;
+        var result = coffeeState.TryBrew(shop.Phase == ShopPhase.Summary, CoffeeOutput.Occupant != null);
+        if (result != ShopBrewResult.Started)
+        {
+            shop.Notify(result == ShopBrewResult.MilkMissing ? "A lattéhoz tölts tejet a gépbe." : "Kávéfőzéshez szabad tálca és megérkezett alapanyag szükséges.");
+            return false;
+        }
+        shop.Notify("Készül a kávé…");
+        CoffeeDisplay.Refresh();
+        return true;
     }
     public void UseCoffeeMachine()
     {
@@ -195,12 +214,22 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     public void Tick(float dt)
     {
-        TickMilk(Mathf.Max(0,dt));dt=Mathf.Max(0,dt);swingCooldown=Mathf.Max(0,swingCooldown-dt);
-        if(pendingCoffee>0){coffeeDelivery-=dt;if(coffeeDelivery<=0){SpawnIngredientPackage(pendingCoffee);pendingCoffee=0;shop.Notify("Megérkezett a kávéalapanyag.");}}
-        if(brewRemaining>0)
+        dt = Mathf.Max(0, dt);
+        swingCooldown = Mathf.Max(0, swingCooldown - dt);
+        var arrivals = coffeeState.TickDeliveries(dt);
+        if (arrivals.milk > 0) SpawnIngredientPackage(arrivals.milk, true);
+        if (arrivals.coffee > 0) { SpawnIngredientPackage(arrivals.coffee); shop.Notify("Megérkezett a kávéalapanyag."); }
+        int completedRecipe = coffeeState.TickBrew(dt);
+        if (completedRecipe >= 0)
         {
-            brewRemaining=Mathf.Max(0,brewRemaining-dt);
-            if(brewRemaining==0){var cup=shop.CreateCoffee(selectedRecipe);if(!cup.AssignInitialSlot(CoffeeOutput)){cup.RemoveFromWorld();CoffeeSupplies++;if(selectedRecipe==ShopCatalog.Latte)MilkSupplies++;shop.Notify("A főzőtálca foglalt, az alapanyag megmaradt.");}else shop.Notify("Elkészült a kávé. E a gépen: felvétel.");}
+            var cup = shop.CreateCoffee(completedRecipe);
+            if (!cup.AssignInitialSlot(CoffeeOutput))
+            {
+                cup.RemoveFromWorld();
+                coffeeState.RefundBrew(completedRecipe);
+                shop.Notify("A főzőtálca foglalt, az alapanyag megmaradt.");
+            }
+            else shop.Notify("Elkészült a kávé. E a gépen: felvétel.");
         }
         CoffeeDisplay.Refresh();
         if(shop.Modal==ShopModal.None&&shop.Phase==ShopPhase.Open)
@@ -293,7 +322,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     public void ClearHand(){CoinOffer=null;if(hand!=null){hand.gameObject.SetActive(false);Destroy(hand.gameObject);hand=null;}}
     public void ResetFeatures()
     {
-        ResetIngredientPackages();ClearHand();gameChoice=0;snake=null;memory=null;selectedCamera=0;CoffeeOwned=false;CoffeeSupplies=0;pendingCoffee=0;brewRemaining=0;coffeeDelivery=0;dirtTimer=48;coffeeRoot.gameObject.SetActive(false);
+        ResetIngredientPackages();ClearHand();gameChoice=0;snake=null;memory=null;selectedCamera=0;coffeeState.Reset();dirtTimer=48;coffeeRoot.gameObject.SetActive(false);
         foreach(var spill in spills)if(spill!=null){spill.gameObject.SetActive(false);Destroy(spill.gameObject);}spills.Clear();
         ResetTool(bat,batHome);ResetTool(mop,mopHome);
         CoffeeDisplay?.Refresh();

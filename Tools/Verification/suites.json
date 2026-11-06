@@ -42,7 +42,8 @@
       "identity-visuals",
       "refactor-purchasing",
       "refactor-inventory",
-      "refactor-checkout"
+      "refactor-checkout",
+      "refactor-coffee"
     ]
   },
   "suites": {
@@ -230,6 +231,11 @@
       "entry": "RefactorChecks.Checkout",
       "purpose": "Explicit receipt ownership, repeated goods, removed items and once-only settlement",
       "file": "Tools/Checks/RefactorChecks.cs"
+    },
+    "refactor-coffee": {
+      "entry": "RefactorChecks.Coffee",
+      "file": "Tools/Checks/RefactorChecks.cs",
+      "purpose": "Pure brewing, shared ingredients, delivery timing and blocked-output refunds"
     }
   },
   "historicalExcluded": {
