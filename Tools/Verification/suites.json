@@ -44,7 +44,8 @@
       "refactor-inventory",
       "refactor-checkout",
       "refactor-coffee",
-      "refactor-day-focus"
+      "refactor-day-focus",
+      "refactor-lifecycle"
     ]
   },
   "suites": {
@@ -242,6 +243,11 @@
       "file": "Tools/Checks/RefactorChecks.cs",
       "purpose": "Day transitions and nested UI focus, camera, time and input restoration",
       "entry": "RefactorChecks.DayAndFocus"
+    },
+    "refactor-lifecycle": {
+      "entry": "RefactorChecks.Lifecycle",
+      "purpose": "Enable/disable subscriptions, singleton, nested focus cleanup and native resource lifetime",
+      "file": "Tools/Checks/RefactorChecks.cs"
     }
   },
   "historicalExcluded": {

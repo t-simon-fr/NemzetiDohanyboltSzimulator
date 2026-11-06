@@ -35,6 +35,12 @@ public static class ProductVisuals
     {
         if(fontMaterial!=null && font==Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"))fontMaterial.mainTexture=font.material.mainTexture;
     }
+    internal static void ReleaseWorldFont()
+    {
+        Font.textureRebuilt -= UpdateFontTexture;
+        if (fontMaterial != null) Object.Destroy(fontMaterial);
+        fontMaterial = null;
+    }
     private static readonly string[] ModelPaths = { "CigarettePacks/LuckyStroke", "CigarettePacks/Marlbroke", "CigarettePacks/Downhill", "CigarettePacks/Davidon", "Drinks/ReturAqua", "Drinks/LocaCola", "Drinks/HamsterEnergy", "Drinks/Kevert", "Drinks/Kofejtoi" };
     public static GameObject LoadModel(int type)
     {

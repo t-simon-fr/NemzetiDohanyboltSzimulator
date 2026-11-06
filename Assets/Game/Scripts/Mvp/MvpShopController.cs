@@ -35,8 +35,8 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ShopModal Modal { get; private set; }
     public ServiceStage Stage { get => checkout.Stage; private set => checkout.Stage = value; }
     public ShopLedger Ledger { get; private set; }
-    public ShopPricing Pricing {get;private set;}
-    public ShopAfterHours AfterHours {get;private set;}
+    public ShopPricing Pricing {get;internal set;}
+    public ShopAfterHours AfterHours {get;internal set;}
     public int PriceRefusals {get;private set;}
     public int Day { get => dayCycle.Day; private set => dayCycle.Day = value; }
     public float Elapsed { get => dayCycle.Elapsed; private set => dayCycle.Elapsed = value; }
@@ -51,7 +51,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public int TotalVisitors => ShopCatalog.VisitProducts.Length;
     public MvpCustomerActor ActiveCustomer => active;
     public ProductSlot DeliverySlot => delivery;
-    public ShopBarcodeScanner Scanner { get; private set; }
+    public ShopBarcodeScanner Scanner { get; internal set; }
     public string Dialogue { get; private set; } = "";
     private string message = "";
     public int MessageRevision { get; private set; }
@@ -68,13 +68,13 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ShopCashDrawer Drawer { get; private set; }
     public ShopDevices Devices { get; private set; }
     public ShopLayout Layout { get; private set; }
-    public ShopSecurity Security { get; private set; }
-    public ShopEntrance Entrance { get; private set; }
-    public ShopFloorPlan FloorPlan { get; private set; }
-    public ShopInteriorLighting InteriorLighting { get; private set; }
-    public ShopNavigation Navigation { get; private set; }
-    public ShopArrangement Arrangement { get; private set; }
-    public ShopCounterStorage CounterStorage { get; private set; }
+    public ShopSecurity Security { get; internal set; }
+    public ShopEntrance Entrance { get; internal set; }
+    public ShopFloorPlan FloorPlan { get; internal set; }
+    public ShopInteriorLighting InteriorLighting { get; internal set; }
+    public ShopNavigation Navigation { get; internal set; }
+    public ShopArrangement Arrangement { get; internal set; }
+    public ShopCounterStorage CounterStorage { get; internal set; }
     private bool ShopEmpty => queue.Count == 0 && departing.Count == 0 && fleeing.Count == 0 && !HasHeldProduct;
     public bool CanEndDay => dayCycle.CanEnd(ShopEmpty);
     public bool BuyPanicButton() => Security != null && Security.TryPurchase();
@@ -114,47 +114,58 @@ public sealed partial class MvpShopController : MonoBehaviour
         delivery = tray; tillPoint = till;
     }
     private void Awake() { Instance = this; Warehouse=GetComponent<WarehouseArea>(); Counter = FindAnyObjectByType<CounterLayout>(); Devices = GetComponent<ShopDevices>(); Layout = GetComponent<ShopLayout>(); }
-    private void OnEnable() { if (delivery != null) delivery.ProductPlaced += OnDelivery; }
+    private readonly HashSet<ProductSlot> deliveryBindings = new HashSet<ProductSlot>();
+    private void OnEnable()
+    {
+        Instance = this;
+        BindDeliveryEvents();
+    }
     private void OnDisable()
     {
-        if (delivery != null) delivery.ProductPlaced -= OnDelivery;
-        if(Activities!=null&&Activities.BasketSlot!=null)Activities.BasketSlot.ProductPlaced-=OnDelivery;
-        if(Activities!=null&&Activities.CustomerHandoverSlots!=null)
-            foreach(var slot in Activities.CustomerHandoverSlots)slot.ProductPlaced-=OnDelivery;
+        UnbindDeliveryEvents();
+        Arrangement?.Cancel();
+        GetComponent<ShopMenu>()?.Resume();
+        Devices?.Release();
         Security?.ReleaseEntrance();
-        ShopInputGate.Blocked = false; Cursor.lockState = CursorLockMode.None; Cursor.visible = true;
+        ShopInputGate.Blocked = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         if (Instance == this) Instance = null;
     }
-    private void Start()
+    private void Start() => new ShopBootstrap().Initialize(this, player);
+    private void OnDestroy() => ProductVisuals.ReleaseWorldFont();
+
+    internal void InitializeRuntimeRoots()
     {
-        stockRoot = new GameObject("MVP Stock").transform; stockRoot.SetParent(transform, false);
-        actorRoot = new GameObject("MVP Customers").transform; actorRoot.SetParent(transform, false);
-        stock.AddRange(FindObjectsByType<ShopProduct>().Where(p => p.gameObject.scene == gameObject.scene));
-        FloorPlan = gameObject.AddComponent<ShopFloorPlan>();
-        FloorPlan.Configure(this, player);
-        InteriorLighting=gameObject.AddComponent<ShopInteriorLighting>();
-        InteriorLighting.Configure(this);
-        CounterStorage = gameObject.AddComponent<ShopCounterStorage>();
-        CounterStorage.Configure(this);
-        Security = GetComponent<ShopSecurity>();
-        if (Security == null) Security = gameObject.AddComponent<ShopSecurity>();
-        Security.Configure(this);
-        Entrance = gameObject.AddComponent<ShopEntrance>();
-        Entrance.Configure(this);
-        Activities=gameObject.AddComponent<ShopActivities>();Activities.Configure(this,player);delivery.Configure(new Vector3(.4f,.4f,.4f));gameObject.AddComponent<ShopNextUpgrades>().Configure(this);
-        Pricing=gameObject.AddComponent<ShopPricing>();Pricing.Configure(this);AfterHours=gameObject.AddComponent<ShopAfterHours>();AfterHours.Configure(this);
-        Navigation = gameObject.AddComponent<ShopNavigation>();
-        Arrangement = gameObject.AddComponent<ShopArrangement>();
-        Arrangement.Configure(this, player);
-        Navigation.Configure(this);
+        stockRoot = new GameObject("MVP Stock").transform;
+        stockRoot.SetParent(transform, false);
+        actorRoot = new GameObject("MVP Customers").transform;
+        actorRoot.SetParent(transform, false);
+        stock.AddRange(FindObjectsByType<ShopProduct>().Where(product => product.gameObject.scene == gameObject.scene));
+    }
+    internal void InitializeCheckout()
+    {
         checkout.Configure(Activities.BasketSlot, delivery.transform.parent, ReceiptPosition);
-        Activities.BasketSlot.ProductPlaced+=OnDelivery;
-        foreach(var slot in Activities.CustomerHandoverSlots)slot.ProductPlaced+=OnDelivery;
-        delivery.SetManualPlacementRule(product=>ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)));
-        Scanner = new GameObject("Checkout barcode scanner").AddComponent<ShopBarcodeScanner>();
-        Scanner.Configure(this);
-        gameObject.AddComponent<ShopTrafikIdentity>().Configure(this);
-        ResetDemo();gameObject.AddComponent<ShopMenu>().Configure(this);
+        delivery.SetManualPlacementRule(product => ShopCatalog.IsCigarette(ShopCatalog.Index(product.ProductId)));
+        BindDeliveryEvents();
+    }
+    private void BindDeliveryEvents()
+    {
+        UnbindDeliveryEvents();
+        if (!isActiveAndEnabled) return;
+        if (delivery != null) deliveryBindings.Add(delivery);
+        if (Activities != null)
+        {
+            if (Activities.BasketSlot != null) deliveryBindings.Add(Activities.BasketSlot);
+            if (Activities.CustomerHandoverSlots != null)
+                foreach (var slot in Activities.CustomerHandoverSlots) if (slot != null) deliveryBindings.Add(slot);
+        }
+        foreach (var slot in deliveryBindings) slot.ProductPlaced += OnDelivery;
+    }
+    private void UnbindDeliveryEvents()
+    {
+        foreach (var slot in deliveryBindings) if (slot != null) slot.ProductPlaced -= OnDelivery;
+        deliveryBindings.Clear();
     }
     private void Update()
     {
