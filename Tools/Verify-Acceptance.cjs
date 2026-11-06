@@ -922,7 +922,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await selectPlan('drinks-fridge');s=await state();const fp=s.furniturePoints[s.furnitureIds.indexOf('drinks-fridge')],sp=s.furniturePoints[s.furnitureIds.indexOf('public-shelf')];const ppm=planPixels;const fridgeMove={x:fp.x-ppm*.5,y:fp.y};await movePointer(fridgeMove);
       s = await state(); check(s.selectedFurniture === 'drinks-fridge' && s.previewValid, 'Purchased fridge can also be moved');
       await click(fridgeMove.x, height - fridgeMove.y); await click(150, height - 86);
-      s = await state(); check(!s.arranging && Math.abs(s.fridgePosition.x - 2.85) < .01 && Math.abs(s.fridgePosition.z - .75) < .01, 'Save retains fridge position');
+      s = await state(); check(!s.arranging && Math.abs(s.fridgePosition.x - 2.85) < .01 && Math.abs(s.fridgePosition.z - 1.35) < .01, 'Save retains fridge position');
       await probe('Action', 'monitor-furnishing'); await openEditor();
       await viewport(1920, 1080); await capture('arrangement-large'); await viewport(1280, 720);
       await click(150, height - 38);

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "expansion",
+    "arrangement",
+    "shelf-labels",
+    "floor-plan"
+  ],
+  "startedUtc": "2026-11-06T19:06:05.6811322Z",
+  "source": {
+    "commit": "386f31fa70fb65cf89c2a0642ba0666a81575c66",
+    "sourceFingerprint": "a39e33bbbb5e997209c054a27621be4f3a391377963d646a3737951cd7ae16f2",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "passed": 98,
+      "entry": "ExpansionChecks.Run",
+      "seconds": 9.8240025,
+      "id": "expansion",
+      "failed": 0
+    },
+    {
+      "passed": 27,
+      "entry": "ArrangementChecks.Run",
+      "seconds": 0.4023539,
+      "id": "arrangement",
+      "failed": 0
+    },
+    {
+      "passed": 32,
+      "entry": "ShelfLabelChecks.Run",
+      "seconds": 0.2599503,
+      "id": "shelf-labels",
+      "failed": 0
+    },
+    {
+      "passed": 16,
+      "entry": "FloorPlanChecks.Run",
+      "seconds": 0.1190669,
+      "id": "floor-plan",
+      "failed": 0
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0551732,
+  "finishedUtc": "2026-11-06T19:06:21.7016134Z",
+  "totalSeconds": 16.0350437
+}
