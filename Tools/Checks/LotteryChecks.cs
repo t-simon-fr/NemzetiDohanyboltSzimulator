@@ -80,7 +80,7 @@ public static class LotteryChecks
             check(Vector3.ProjectOnPlane(player.transform.position-ShopFloorPlan.StaffExit,Vector3.up).magnitude<.1f,"Lottery extension preserves actual player route to stockroom");
             body.enabled=false;player.transform.position=originalPosition;body.enabled=true;Physics.SyncTransforms();
             check(g.Lottery.Order(13)&&g.AvailableInventory(13)==0,"Pending consignment cannot enter NPC orders");g.Tick(8.1f);
-            check(g.Lottery.Book.Stock(13)==5&&g.AvailableInventory(13)==5,"Delivered consignment enters available assortment");
+            check(g.Lottery.Book.Stock(13)==5&&g.AvailableInventory(13)==5&&g.Lottery.Feedback.Contains("Megérkezett"),"Delivered consignment enters available assortment with current status");
             var request1=g.CreateCustomerOrder(13,0);var request2=g.CreateCustomerOrder(13,0);
             check(request1.SequenceEqual(new[]{13})&&request2.SequenceEqual(request1)&&g.Lottery.Book.Stock(13)==5,"Queued orders do not reserve tickets or mix with ordinary goods");
             var view=Camera.main;var pose=new Pose(view.transform.localPosition,view.transform.localRotation);
@@ -180,6 +180,8 @@ public static class LotteryChecks
         check(state.Scan(loser.Id,9)==LotteryTicketStatus.Expired && sold.Prize>=0 && first.Prize==prize, "Expiry and scans do not reroll scratch results");
         check(!ShopLotteryCatalog.TryNumbers("1 1 2 3 4",out _) && !ShopLotteryCatalog.TryNumbers("0 2 3 4 5",out _)
             && !ShopLotteryCatalog.TryNumbers("1 2 3 4",out _), "Number entry rejects duplicates, range and wrong count");
+        check(!ShopLotteryCatalog.TryNumbers("-1 2 3 4 5",out _), "Negative sign cannot be mistaken for a number separator");
+        check(!ShopLotteryCatalog.TryNumbers("1-2-3-4-5",out _), "Only the advertised number separators are accepted");
         check(ShopLotteryCatalog.TryNumbers("20, 4, 3, 2, 1",out var numbers) && numbers.SequenceEqual(new[]{1,2,3,4,20}), "Number entry accepts and normalizes five valid numbers");
         state.Order(15,2);state.Tick(8.1f);
         check(state.Print(15,1,new[]{1,1,2,3,4})==null && state.Stock(15)==2, "Invalid numbers do not consume a blank");

@@ -233,7 +233,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await viewport(1280, 720);
     }
 
-    if (selected === 'lottery') {
+    if (selected === 'lottery' || selected === 'lottery-numbers') {
       const press=async id=>{
         const s=await state();let i=s.lotteryControlIds.indexOf(id);
         let rect=i>=0?s.lotteryControls[i]:s.computerControls[s.computerControlIds.indexOf(id)];
@@ -251,6 +251,20 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
         check(s.phase==='Summary','Actual door interaction closes the lottery day');await capture('lottery-daily-summary');
         await enter();s=await state();check(s.phase==='Preparing','Enter starts next day with lottery state intact');return s;
       };
+      if (selected === 'lottery-numbers') {
+        await probe('Prepare','lottery-numbers');let s=await state();
+        check(s.lotteryOwned&&s.order==='Ötöske'&&s.device==='Lottery','Real number customer and paid development are ready');
+        await press('Lottery:Page:1');const blanks=s.lotteryStock[2];const requested=s.lotteryRequestedNumbers;
+        await fill('-1 2 3 4 5');await press('Lottery:Print');s=await state();
+        check(s.held===''&&s.lotteryStock[2]===blanks&&s.lotterySales===0,'Actual negative number entry is rejected without printing, cash or stock movement');await capture('lottery-negative-number');
+        await fill(requested.join(' '));await press('Lottery:Print');s=await state();
+        check(s.held==='lottery_numbers'&&s.lotteryStock[2]===blanks-1,'Valid customer numbers still print exactly one paper after rejection');
+        await probe('Action','aim-scanner');await key('e','KeyE',69);await key('f','KeyF',70);await type('500');await enter();s=await state();
+        check(s.lotterySales===500&&s.lotteryCommission===50&&s.lotteryReserve===450&&s.drawer===s.balance,'Corrected number path still activates only after actual card payment');
+        await goNextDay();await probe('Action','lottery-terminal');await key('e','KeyE',69);await press('Lottery:Page:1');s=await state();
+        check(s.lotteryDrawCount===1&&s.lotteryDraw.length===5,'Corrected number ticket still resolves only one next-day draw');
+        await capture('lottery-final-draw');await viewport(1920,1080);await capture('lottery-final-draw-large');await viewport(1280,720);
+      } else {
       await probe('Prepare','lottery');let s=await state();const cash=s.balance;
       check(!s.lotteryOwned,'Lottery starts locked');await capture('lottery-development');
       await press('Lottery:Upgrade');s=await state();check(s.lotteryOwned&&s.balance===cash-12000,'Actual TobaccOS click buys lottery development once');
@@ -285,6 +299,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await goNextDay();await probe('Action','lottery-terminal');await key('e','KeyE',69);await press('Lottery:Page:1');s=await state();
       check(s.lotteryDrawCount===1&&s.lotteryDraw.length===5&&new Set(s.lotteryDraw).size===5,'Next game day resolves one five-number draw');
       await capture('lottery-draw-results');await viewport(1920,1080);await capture('lottery-draw-results-large');await viewport(1280,720);
+      }
     }
 
     if (!selected || selected === 'ingredient-pickup' || selected === 'closing-fixes') {

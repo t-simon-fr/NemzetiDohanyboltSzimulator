@@ -55,12 +55,17 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "lottery")
+        if (scenario == "lottery" || scenario == "lottery-numbers")
         {
             Shop.Ledger.TrySellCard(60000,0);Shop.SyncCashDrawer();
             Set(Shop.Lottery,"Book",new ShopLotteryState(1));
             Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Furnishing);
             Shop.AutomaticArrivals=false;Shop.ManualTick=false;
+            if(scenario=="lottery-numbers")
+            {
+                Shop.Lottery.TryBuy();Shop.Lottery.Order(15);Shop.Tick(8.1f);Shop.ClosePanel();
+                Visit(3,15);AimLotteryTerminal();Shop.Lottery.Open();
+            }
         }
         else if (scenario == "warehouse-opening")
         {
