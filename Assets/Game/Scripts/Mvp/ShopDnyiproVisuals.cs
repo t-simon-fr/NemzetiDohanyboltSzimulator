@@ -23,6 +23,8 @@ public static class ShopDnyiproVisuals
         {
             var value = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = name, color = color };
             value.SetFloat("_Smoothness", .12f);
+            value.EnableKeyword("_EMISSION");
+            value.SetColor("_EmissionColor", color * .18f);
             materials.Add(value);
             return value;
         }
@@ -40,7 +42,7 @@ public static class ShopDnyiproVisuals
         Box(owner.transform, "Lid crease", new Vector3(0, .28f, -.506f), new Vector3(.98f, .008f, .004f), print.Cord);
         for (int edge = -1; edge <= 1; edge += 2)
             Box(owner.transform, "Worn paper edge", new Vector3(edge * .495f, 0, -.507f), new Vector3(.008f, .93f, .004f), print.Paper);
-        var mark = ProductVisuals.Text(back, "Batch mark", "D-48 / 20 ШТ.", new Vector3(0, -.36f, -.01f), Quaternion.identity, .075f, print.Paper.color);
+        var mark = ProductVisuals.Text(back, "Batch mark", "D-48 / 20 ШТ.", new Vector3(0, -.36f, -.01f), Quaternion.identity, .045f, print.Paper.color);
         mark.fontStyle = FontStyle.Italic;
     }
 
@@ -60,16 +62,16 @@ public static class ShopDnyiproVisuals
         var sticker = Face(shell, "Handwritten inventory sticker", new Vector3(-.28f, .32f, -.532f), 0);
         sticker.localRotation = Quaternion.Euler(0, 0, 7);
         Box(sticker, "Paper", Vector3.zero, new Vector3(.26f, .18f, .004f), print.Paper);
-        var text = ProductVisuals.Text(sticker, "Inventory mark", "D-48", new Vector3(0, 0, -.005f), Quaternion.identity, .11f, print.Blue.color);
+        var text = ProductVisuals.Text(sticker, "Inventory mark", "D-48", new Vector3(0, 0, -.005f), Quaternion.identity, .065f, print.Blue.color);
         text.fontStyle = FontStyle.Italic;
     }
 
     private static void Label(Transform face, Print print, bool carton)
     {
         Box(face, "Cream label", Vector3.zero, new Vector3(.98f, .61f, .004f), print.Paper);
-        var brand = ProductVisuals.Text(face, "Dnyipro wordmark", "DNYIPRO", new Vector3(0, .055f, -.007f), Quaternion.identity, .23f, print.Navy.color);
+        var brand = ProductVisuals.Text(face, "Dnyipro wordmark", "DNYIPRO", new Vector3(0, .055f, -.007f), Quaternion.identity, .13f, print.Navy.color);
         brand.fontStyle = FontStyle.BoldAndItalic;
-        ProductVisuals.Text(face, "Filter print", "— FILTER CIGARETTES —", new Vector3(0, -.105f, -.007f), Quaternion.identity, .065f, print.Navy.color);
+        ProductVisuals.Text(face, "Filter print", "— FILTER CIGARETTES —", new Vector3(0, -.105f, -.007f), Quaternion.identity, .045f, print.Navy.color);
         for (int i = 0; i < 10; i++)
         {
             float x = -.45f + i * .1f;
@@ -78,7 +80,7 @@ public static class ShopDnyiproVisuals
             Box(face, "Yellow wrap stripe", new Vector3(x, y - .06f, -.009f), new Vector3(.103f, .045f, .004f), print.Yellow);
         }
         if (!carton)
-            ProductVisuals.Text(face, "Pack size", "20 SZÁL · 18+", new Vector3(0, -.43f, -.01f), Quaternion.identity, .07f, print.Paper.color);
+            ProductVisuals.Text(face, "Pack size", "20 SZÁL · 18+", new Vector3(0, -.43f, -.01f), Quaternion.identity, .045f, print.Paper.color);
     }
 
     private static Transform Face(Transform owner, string name, Vector3 position, float yaw)
@@ -103,3 +105,4 @@ public static class ShopDnyiproVisuals
         Object.Destroy(collider);
     }
 }
+
