@@ -1,0 +1,15 @@
+{
+  "image": "D:\\Projects\\nemzeti-dohanybolt-sim\\NemzetiDohanyboltSzimulator\\Builds\\Verification\\visual-20261107-123101-908\\current.png",
+  "interactionReview": "API-prepared native model review. Actual mouse and keyboard placement are verified separately in the final WebGL run.",
+  "scenario": "current",
+  "capturedUtc": "2026-11-07T12:31:04.4314163Z",
+  "source": {
+    "commit": "e66d94c39bad7f5ebdbbd389414b9771deb8df59",
+    "sourceFingerprint": "3ddc8b9c67558dca3e779c099e480140b6c6f799bb40efdcefa7a7d87c08d7ff",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "reviewer": "Codex self-review",
+  "review": "passed",
+  "observations": "1918x879 Game view including GUI. Both normal shelves join the 120x120cm corner with continuous 50cm depth and matching five board levels; no visible floor gap between adjoining modules. Native setup is not claimed as native mouse interaction."
+}

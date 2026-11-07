@@ -1,0 +1,839 @@
+{
+  "started": "2026-11-07T20:53:53.475Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Front-wall shelf explicitly identifies outward-facing customer side",
+      "passed": true
+    },
+    {
+      "label": "Same front-wall position works after facing into shop",
+      "passed": true
+    },
+    {
+      "label": "Repeated shelf placement retains inward-facing rotation",
+      "passed": true
+    },
+    {
+      "label": "Monitor catalog offers all six entries including corner",
+      "passed": true
+    },
+    {
+      "label": "Corner fits front and right walls with diagonal face inward",
+      "passed": true
+    },
+    {
+      "label": "Preview footprint and drawn wall boundary agree",
+      "passed": true
+    },
+    {
+      "label": "Corner plan has exact unpaid quote",
+      "passed": true
+    },
+    {
+      "label": "Normal row joins corner at target 3",
+      "passed": true
+    },
+    {
+      "label": "Normal row joins corner at target 4",
+      "passed": true
+    },
+    {
+      "label": "Two perpendicular normal rows and corner remain one unpaid plan",
+      "passed": true
+    },
+    {
+      "label": "Joined shelves activate with one exact debit",
+      "passed": true
+    },
+    {
+      "label": "Corner resale uses shared half-price rule",
+      "passed": true
+    },
+    {
+      "label": "Cancel preserves corner and money",
+      "passed": true
+    },
+    {
+      "label": "Saving resale removes corner and credits once",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-front-wall-wrong-facing.png",
+    "1280x720-front-wall-repeat-720.png",
+    "1920x1080-front-wall-repeat-1080.png",
+    "1280x720-six-item-catalog.png",
+    "1280x720-corner-preview-720.png",
+    "1920x1080-corner-preview-1080.png",
+    "1280x720-corner-plan.png",
+    "1280x720-joined-corner-720.png",
+    "1920x1080-joined-corner-1080.png"
+  ],
+  "states": [
+    {
+      "offeredQuantity": 0,
+      "boxedQuantity": 0,
+      "scannerCount": 0,
+      "requestsSpawned": 0,
+      "customerGuides": 0,
+      "fixtureLights": 2,
+      "coffeeMerchandise": 0,
+      "broomAtHome": true,
+      "batAtHome": true,
+      "toolRack": "",
+      "computerApp": "Furnishing",
+      "priceDraft": "2200",
+      "priceError": "",
+      "selectedPrice": 2200,
+      "priceCategory": 0,
+      "priceEditing": false,
+      "priceProducts": [
+        "cig_red",
+        "cig_blue",
+        "cig_gold",
+        "cig_davidon"
+      ],
+      "computerControlIds": [],
+      "computerControls": [],
+      "computerScreen": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "cartQuantities": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pendingCart": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cartFields": [],
+      "cartSubmit": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "tradeOpen": false,
+      "clock": "08:00",
+      "scannerProduct": "",
+      "stage": "None",
+      "phase": "Preparing",
+      "modal": "None",
+      "message": "Az új üzletelrendezés elmentve. A következő napra is megmarad.",
+      "entered": "",
+      "held": "",
+      "cup": "",
+      "order": "",
+      "interactionKey": "E",
+      "tool": "",
+      "menu": false,
+      "blocked": false,
+      "unavailable": false,
+      "entranceOpen": false,
+      "canEndDay": false,
+      "applicationFocused": true,
+      "cursorLocked": true,
+      "balance": 190750,
+      "drawer": 190750,
+      "sales": 1,
+      "missing": 0,
+      "received": 0,
+      "recipe": 9,
+      "milk": 0,
+      "coffee": 0,
+      "day": 1,
+      "missed": 0,
+      "dirt": 0,
+      "elapsed": 0,
+      "timeScale": 1,
+      "position": {
+        "x": -1.399999976158142,
+        "y": 0.05000000074505806,
+        "z": -2.299999952316284
+      },
+      "receipts": [],
+      "arranging": false,
+      "dragging": false,
+      "previewValid": true,
+      "routeToShelf": true,
+      "selectedFurniture": "",
+      "arrangementFeedback": "Elhelyezhető: az útvonalak szabadok.",
+      "shelfPosition": {
+        "x": 3.950000047683716,
+        "y": 0,
+        "z": -2.9000000953674316
+      },
+      "draftPosition": {
+        "x": 3.950000047683716,
+        "y": 0,
+        "z": -2.9000000953674316
+      },
+      "fridgePosition": {
+        "x": 3.3499999046325684,
+        "y": 0,
+        "z": 1.350000023841858
+      },
+      "arrangeButton": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "moveTarget": {
+        "x": 557.3623046875,
+        "y": 109.08224487304688,
+        "z": 4.149999618530273
+      },
+      "badTarget": {
+        "x": 922.3568725585938,
+        "y": -32.94670867919922,
+        "z": 2.6500000953674316
+      },
+      "fridgeTarget": {
+        "x": 330.7655029296875,
+        "y": 190.68150329589844,
+        "z": 6.149998664855957
+      },
+      "shelfTurns": 1,
+      "draftTurns": 1,
+      "shelfStock": 0,
+      "shopLevel": 3,
+      "warehouseLevel": 3,
+      "moduleCount": 7,
+      "plannedCount": 0,
+      "plannedCost": 0,
+      "editorControlIds": [],
+      "editorControls": [],
+      "purchaseTargets": [
+        {
+          "x": 688.7138671875,
+          "y": 197.2954864501953,
+          "z": 6.399999141693115
+        },
+        {
+          "x": 678.9710693359375,
+          "y": 229.83639526367188,
+          "z": 7.999999046325684
+        },
+        {
+          "x": 498.28668212890625,
+          "y": 241.66946411132812,
+          "z": 8.799999237060547
+        },
+        {
+          "x": 727.2952880859375,
+          "y": 568.26171875,
+          "z": -4.999999523162842
+        }
+      ],
+      "editorPreviewPosition": {
+        "x": 7.822999477386475,
+        "y": 0,
+        "z": -3.7230005264282227
+      },
+      "editorSaleCredit": 0,
+      "editorFridges": 0,
+      "editorCorners": 0,
+      "editorPreviewTurns": 1,
+      "editorPhysicalArea": {
+        "serializedVersion": "2",
+        "x": -2.4230000972747803,
+        "y": -4.323000431060791,
+        "width": 10.845999717712402,
+        "height": 6.146000862121582
+      },
+      "editorCornerTestPoints": [
+        {
+          "x": 802.578369140625,
+          "y": 206.8663787841797,
+          "z": 6.799999237060547
+        },
+        {
+          "x": 736.2045288085938,
+          "y": 247.0965118408203,
+          "z": 9.22299861907959
+        },
+        {
+          "x": 539.1334228515625,
+          "y": 206.8663330078125,
+          "z": 6.799999237060547
+        },
+        {
+          "x": 654.5250854492188,
+          "y": 251.22438049316406,
+          "z": 9.572998046875
+        },
+        {
+          "x": 777.7954711914062,
+          "y": 230.20953369140625,
+          "z": 8.022997856140137
+        }
+      ],
+      "editorCornerPoints": [],
+      "editorModelVisible": false,
+      "editorSnap": "Falhoz illesztve",
+      "editorNotice": "Eladás a tervben. Jóváírás mentéskor: 3 250 Ft",
+      "editorPreviewSize": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "editorFridgeIds": [],
+      "editorFridgePoints": [],
+      "editorTestPoints": [
+        {
+          "x": 565.0390014648438,
+          "y": 246.1957550048828,
+          "z": 9.149998664855957
+        },
+        {
+          "x": 688.7138671875,
+          "y": 197.2954864501953,
+          "z": 6.399999141693115
+        },
+        {
+          "x": 677.1153564453125,
+          "y": 236.03469848632812,
+          "z": 8.399998664855957
+        }
+      ],
+      "furnitureIds": [
+        "public-shelf",
+        "starter-shelf-1",
+        "starter-shelf-2",
+        "module-5",
+        "module-7"
+      ],
+      "furniturePoints": [
+        {
+          "x": 709.929443359375,
+          "y": 165.3628387451172,
+          "z": 5.34999942779541
+        },
+        {
+          "x": 564.242919921875,
+          "y": 165.3628387451172,
+          "z": 5.34999942779541
+        },
+        {
+          "x": 418.55645751953125,
+          "y": 165.3628387451172,
+          "z": 5.34999942779541
+        },
+        {
+          "x": 654.5250854492188,
+          "y": 251.22438049316406,
+          "z": 9.572998046875
+        },
+        {
+          "x": 777.7954711914062,
+          "y": 230.20953369140625,
+          "z": 8.022998809814453
+        }
+      ],
+      "stockedItem": "",
+      "privateStock": 0,
+      "outwardSign": "ZÁRVA",
+      "uiNotice": "Az új üzletelrendezés elmentve. A következő napra is megmarad.",
+      "spoken": "",
+      "orderLines": [],
+      "menuStart": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 220,
+        "width": 552,
+        "height": 52
+      },
+      "menuSettings": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 344,
+        "width": 552,
+        "height": 52
+      },
+      "menuBinding": {
+        "serializedVersion": "2",
+        "x": 744,
+        "y": 318,
+        "width": 148,
+        "height": 34
+      },
+      "menuDefaults": {
+        "serializedVersion": "2",
+        "x": 364,
+        "y": 562,
+        "width": 266,
+        "height": 44
+      },
+      "menuBack": {
+        "serializedVersion": "2",
+        "x": 642,
+        "y": 562,
+        "width": 274,
+        "height": 44
+      },
+      "cardConfirm": {
+        "serializedVersion": "2",
+        "x": 1577.67724609375,
+        "y": 596.13525390625,
+        "width": 62.587646484375,
+        "height": 27.2635498046875
+      },
+      "cardBack": {
+        "serializedVersion": "2",
+        "x": 1612.58154296875,
+        "y": 621.1775512695312,
+        "width": 66.28564453125,
+        "height": 29.23565673828125
+      },
+      "settingsOpen": false,
+      "movementLearned": false,
+      "grounded": true,
+      "verticalSpeed": -2.119999885559082,
+      "cardDigits": [
+        {
+          "serializedVersion": "2",
+          "x": 1537.021728515625,
+          "y": 621.1776123046875,
+          "width": 63.5093994140625,
+          "height": 29.235595703125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1414.62646484375,
+          "y": 551.0821533203125,
+          "width": 52.88916015625,
+          "height": 23.89398193359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1446.9122314453125,
+          "y": 551.0821533203125,
+          "width": 53.9520263671875,
+          "height": 23.89398193359375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1479.19775390625,
+          "y": 551.0821533203125,
+          "width": 55.01513671875,
+          "height": 23.8939208984375
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1441.46337890625,
+          "y": 572.8283081054688,
+          "width": 55.6990966796875,
+          "height": 25.49176025390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1474.867431640625,
+          "y": 572.8283081054688,
+          "width": 56.838623046875,
+          "height": 25.49176025390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1508.271484375,
+          "y": 572.8283081054688,
+          "width": 57.97802734375,
+          "height": 25.49176025390625
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1470.226318359375,
+          "y": 596.1353149414062,
+          "width": 58.786376953125,
+          "height": 27.26348876953125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1504.829345703125,
+          "y": 596.1353149414062,
+          "width": 60.0107421875,
+          "height": 27.26348876953125
+        },
+        {
+          "serializedVersion": "2",
+          "x": 1539.43212890625,
+          "y": 596.13525390625,
+          "width": 61.234619140625,
+          "height": 27.2635498046875
+        }
+      ],
+      "cardUndo": {
+        "serializedVersion": "2",
+        "x": 1514.881591796875,
+        "y": 551.0821533203125,
+        "width": 56.1903076171875,
+        "height": 23.8939208984375
+      },
+      "cardClear": {
+        "serializedVersion": "2",
+        "x": 1545.191650390625,
+        "y": 572.8282470703125,
+        "width": 59.2373046875,
+        "height": 25.4918212890625
+      },
+      "cardDisplayAmount": "0 Ft",
+      "cardDisplayStatus": "KÉSZENLÉT",
+      "device": "None",
+      "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+      "warehouseShelfLabel": "",
+      "supplyPrompt": "",
+      "cartonQuantity": -1,
+      "warehouseGoods": 0,
+      "retailGoods": 8,
+      "storageLabels": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "lowerStorageLabel": "",
+      "storageTypes": [
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "storagePlaces": 24,
+      "heldCartonType": -1,
+      "canDevelop": true,
+      "upgradesOwned": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "upgradeButtons": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ],
+      "upgradeCosts": [
+        24000,
+        9000,
+        16000,
+        18000,
+        7500
+      ],
+      "ingredientTarget": "",
+      "ingredientBrand": "",
+      "heldIngredientBrand": "",
+      "lotteryOwned": false,
+      "lotteryFirstSold": false,
+      "lotteryFirstRedeemed": false,
+      "lotterySales": 0,
+      "lotteryPayouts": 0,
+      "lotteryCommission": 0,
+      "lotteryOutstanding": 0,
+      "lotteryReserve": 0,
+      "lotteryFunds": 190750,
+      "lotteryDrawCount": 0,
+      "lotteryStock": [
+        0,
+        0,
+        0
+      ],
+      "lotteryPending": [
+        0,
+        0,
+        0
+      ],
+      "lotteryRequestedNumbers": [],
+      "lotteryDraw": [],
+      "lotteryFirstId": "",
+      "lotteryClaim": "",
+      "lotteryScanned": "",
+      "lotteryStatus": "Invalid",
+      "lotteryEntry": "",
+      "lotteryFeedback": "Válassz szolgáltatást.",
+      "lotteryControlIds": [],
+      "lotteryControls": [],
+      "lotteryNumberField": {
+        "serializedVersion": "2",
+        "x": -138.708251953125,
+        "y": 428.7719421386719,
+        "width": 140.44940185546875,
+        "height": 15.168525695800781
+      },
+      "ingredientCoffee": 0,
+      "ingredientMilk": 0,
+      "readyCoffee": 0,
+      "readyMilk": 0,
+      "cashDenominations": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashKeys": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "cashCounts": [
+        9,
+        0,
+        0,
+        2,
+        3,
+        3,
+        5,
+        6,
+        7,
+        10,
+        8,
+        4
+      ],
+      "offeredCoins": [],
+      "selectedCoins": [],
+      "coinSelected": 0,
+      "coinTargets": [],
+      "coinClear": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "coinPay": {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lookingAtHand": false,
+      "handUpright": false,
+      "handSide": 0,
+      "handPrompt": "",
+      "cashPrice": 0,
+      "cashTender": 0,
+      "cameraFov": 60,
+      "cashDue": "190 750 Ft",
+      "cashReceived": "–",
+      "cashChange": "–",
+      "cashSelected": "–",
+      "coffeeButtons": [
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "serializedVersion": "2",
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "coffeeScreenRecipe": "Rövid kávé",
+      "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+      "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+      "brewRemaining": 0,
+      "coffeeActionEnabled": false,
+      "coffeeSlotHeld": false
+    }
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27119328,
+    "seconds": 503.1509298,
+    "error": "",
+    "completedUtc": "2026-11-07T20:52:59.686Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "fc85c8c3d2ecb0bd2053d80b5c0eb2abc53ee62f8fc93df432c2ade430ae1975",
+      "AcceptanceWebGL.framework.js.unityweb": "5c311311b788e4296b8e54fffab66360ba6e7219c0c8a3e41a69467ee3473b9c",
+      "AcceptanceWebGL.loader.js": "251e4dd6a051a6e03114e60493aba04a91c1a812750178b5ac8d50986116f172",
+      "AcceptanceWebGL.wasm.unityweb": "6fa560f4c0c15d057d8686e4ae6be51e9d4aba4a7177627300c815d7dc20e1a9"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-07T20:54:46.982Z",
+  "rawReport": "Builds\\Verification\\acceptance-1794084833474\\report.json"
+}

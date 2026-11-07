@@ -8,6 +8,9 @@ public sealed class ShopModularFurniture : MonoBehaviour
 {
     public static readonly string[] Names = { "Bolti polc · 1,2 m", "Keskeny polc · 0,6 m", "Kétoldalas polc", "Raktári állvány", "Hűtő", "Sarokpolc" };
     public static readonly int[] Prices = { 6000, 3500, 10000, 5000, 18000, 6500 };
+    public const float NormalShelfDepth = .5f;
+    public const float CornerWidth = 1.2f;
+    public const float CornerCutFraction = (CornerWidth - NormalShelfDepth) / CornerWidth;
     private MvpShopController shop;
     private readonly List<ShopFurniture> purchased = new List<ShopFurniture>();
     private readonly ShopRuntimeResources resources = new ShopRuntimeResources();
@@ -30,7 +33,7 @@ public sealed class ShopModularFurniture : MonoBehaviour
         {
             var root=CreateRoot("Starter modular shelf "+part,new Vector3(3.95f,0,-2.9f+part*1.25f),legacy);
             root.rotation=Quaternion.Euler(0,90,0);
-            BuildFrame(root,1.2f,.5f,false,5);
+            BuildFrame(root,1.2f,NormalShelfDepth,false,5);
             var group=slots.Where(s=>groups[s]==part).ToArray();
             foreach(var slot in group)
             {
@@ -81,7 +84,7 @@ public sealed class ShopModularFurniture : MonoBehaviour
     {
         if (kind == ShopModuleKind.Corner) return CreateCorner();
         bool warehouse=kind==ShopModuleKind.Warehouse, island=kind==ShopModuleKind.Island;
-        float width=kind==ShopModuleKind.Narrow?.6f:1.2f, depth=warehouse?.6f:island?.9f:.5f;
+        float width=kind==ShopModuleKind.Narrow?.6f:1.2f, depth=warehouse?.6f:island?.9f:NormalShelfDepth;
         var root=CreateRoot(Names[(int)kind],Vector3.zero);
         int rows = kind == ShopModuleKind.Shelf || kind == ShopModuleKind.Narrow ? 5 : 4;
         BuildFrame(root,width,depth,island,rows);
@@ -116,20 +119,24 @@ public sealed class ShopModularFurniture : MonoBehaviour
     private ShopFurniture CreateCorner()
     {
         var root = CreateRoot("Sarokpolc", Vector3.zero);
-        Box(root, "Corner back X", new Vector3(.38f, 1.25f, 0), new Vector3(.04f, 2.5f, .8f), wood);
-        Box(root, "Corner back Z", new Vector3(0, 1.25f, .38f), new Vector3(.8f, 2.5f, .04f), wood);
+        float halfWidth = CornerWidth * .5f;
+        Box(root, "Corner back X", new Vector3(halfWidth - .02f, 1.25f, 0), new Vector3(.04f, 2.5f, CornerWidth), wood);
+        Box(root, "Corner back Z", new Vector3(0, 1.25f, halfWidth - .02f), new Vector3(CornerWidth, 2.5f, .04f), wood);
         foreach (var point in new[] {
-            new Vector3(-.375f, 1.25f, .375f),
-            new Vector3(.375f, 1.25f, .375f),
-            new Vector3(.375f, 1.25f, -.375f)
+            new Vector3(-halfWidth + .025f, 1.25f, halfWidth - .025f),
+            new Vector3(halfWidth - .025f, 1.25f, halfWidth - .025f),
+            new Vector3(halfWidth - .025f, 1.25f, -halfWidth + .025f)
         })
             Box(root, "Corner upright", point, new Vector3(.05f, 2.5f, .05f), metal);
 
         if (cornerBoardMesh == null)
         {
+            // Both straight joining edges have the same depth as a normal shelf.
+            float half = CornerWidth * .5f;
+            float shoulder = half - NormalShelfDepth;
             var profile = new[] {
-                new Vector3(-.4f, 0, .4f), new Vector3(.4f, 0, .4f),
-                new Vector3(.4f, 0, -.4f), new Vector3(.1f, 0, -.4f), new Vector3(-.4f, 0, .1f)
+                new Vector3(-half, 0, half), new Vector3(half, 0, half),
+                new Vector3(half, 0, -half), new Vector3(shoulder, 0, -half), new Vector3(-half, 0, shoulder)
             };
             var vertices = profile.Select(v => v + Vector3.down * .0225f)
                 .Concat(profile.Select(v => v + Vector3.up * .0225f)).ToArray();
@@ -174,7 +181,7 @@ public sealed class ShopModularFurniture : MonoBehaviour
         AddLabels(root);
         var item = root.gameObject.AddComponent<ShopFurniture>();
         item.CatalogKind = 5;
-        item.Configure("module-" + (++serial), "Sarokpolc", new Vector2(.8f, .8f));
+        item.Configure("module-" + (++serial), "Sarokpolc", new Vector2(CornerWidth, CornerWidth));
         return item;
     }
 

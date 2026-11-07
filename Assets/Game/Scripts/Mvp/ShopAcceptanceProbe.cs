@@ -732,7 +732,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.editorPreviewTurns=g.Arrangement.PreviewQuarterTurns;
         state.editorPhysicalArea=g.Layout.FurnitureArea(false);
         var cornerArea=g.Layout.FurnitureArea(false);
-        state.editorCornerTestPoints=new[]{new Vector3(5.4f,0,cornerArea.yMin+.25f),new Vector3(cornerArea.xMax-.4f,0,cornerArea.yMin+.4f),new Vector3(5.4f,0,-1.2f)}.Select(p=>View.WorldToScreenPoint(p)).ToArray();
+        var cornerCentre = new Vector3(cornerArea.xMax - .6f, 0, cornerArea.yMin + .6f);
+        state.editorCornerTestPoints = new[] {
+            new Vector3(5.4f, 0, cornerArea.yMin + .25f), cornerCentre, new Vector3(5.4f, 0, -1.2f),
+            cornerCentre + new Vector3(.35f, 0, 1.2f), cornerCentre + new Vector3(-1.2f, 0, -.35f)
+        }.Select(p => View.WorldToScreenPoint(p)).ToArray();
         state.editorCornerPoints=g.Arrangement.Current().Keys.Where(f=>f.CatalogKind==5).Select(f=>View.WorldToScreenPoint(f.transform.position)).ToArray();
         state.editorSaleCredit=g.Arrangement.SaleCredit;state.editorModelVisible=g.Arrangement.ModelPreviewVisible;
         state.editorSnap=g.Arrangement.SnapFeedback;state.editorNotice=g.Arrangement.Feedback;

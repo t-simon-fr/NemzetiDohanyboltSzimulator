@@ -43,7 +43,8 @@ public sealed class ShopNavigation : MonoBehaviour
     public ShopRouteGrid Build(Dictionary<ShopFurniture, ShopFurniturePose> poses)
     {
         var obstacles = StaticObstacles();
-        obstacles.AddRange(poses.Select(p => p.Key.BoundsAt(p.Value)));
+        obstacles.AddRange(poses.Where(p => p.Key.CatalogKind != 5).Select(p => p.Key.BoundsAt(p.Value)));
+        var corners = poses.Where(p => p.Key.CatalogKind == 5).ToArray();
         bool expanded = shop.Layout.Expanded;
         return new ShopRouteGrid(Rect.MinMaxRect(-2.25f, -5.25f, shop.Layout.ShopArea.xMax-.15f, 1.5f), point =>
         {
@@ -53,8 +54,18 @@ public sealed class ShopNavigation : MonoBehaviour
                 if (Mathf.Abs(point.x - ShopFloorPlan.EntranceX) > .45f) return false;
             }
             else if (point.x < .45f) return false; // staff aisle is never an NPC shortcut
-            return !obstacles.Any(r => Expanded(r, Clearance).Contains(new Vector2(point.x, point.z)));
+            return !obstacles.Any(r => Expanded(r, Clearance).Contains(new Vector2(point.x, point.z))) &&
+                !corners.Any(p => BlocksCorner(p.Key, p.Value, point));
         });
+    }
+
+    private static bool BlocksCorner(ShopFurniture item, ShopFurniturePose pose, Vector3 point)
+    {
+        if (!Expanded(item.BoundsAt(pose), Clearance).Contains(new Vector2(point.x, point.z))) return false;
+        Vector3 local = Quaternion.Inverse(pose.Rotation) * (point - pose.Position);
+        // Offset the diagonal by the same NPC clearance as the straight sides.
+        // The removed front triangle stays walkable when normal rows join the corner.
+        return local.x + local.z >= -ShopModularFurniture.NormalShelfDepth - Clearance * Mathf.Sqrt(2);
     }
 
     public static Rect Expanded(Rect rect, float margin) => Rect.MinMaxRect(rect.xMin - margin, rect.yMin - margin, rect.xMax + margin, rect.yMax + margin);

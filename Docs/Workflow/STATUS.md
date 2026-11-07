@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #134: 120×120×250 cm-es sarokelem, mindkét oldalon 50 cm mély csatlakozással a normál polcsorokhoz; egyező öt polcszint, közös mesh-/kontúrarány, átlós NPC-foglalás biztonsági távolsággal. **1162 natív állítás / 48 suite, 15 sarokcsatlakozási és 15 készletes átrendezési WebGL-ellenőrzés**, 0 konzolhiba; natív és 720p/1080p képek átnézve. [Jelentés](../Acceptance/corner-connector/REPORT.md). Pagesre nincs kiadva.
+
 - #132: tényleges falfelülethez igazított rendező és illesztés, vásárlói iránynyilak és konkrét megközelítési hibák, ismételt lerakás megtartott forgatással; 6500 Ft-os, tíz készlethelyes Sarokpolc. **1148 natív állítás / 48 suite baseline, 12 friss UI-állítás a kontúr finomítása után; 12 sarok/fal, 16 bútoros és 15 készletes átrendezési WebGL-ellenőrzés**, 0 konzolhiba. Natív kép és 720p/1080p WebGL-képek átnézve. [Jelentés](../Acceptance/corner-wall/REPORT.md). Pagesre nincs kiadva.
 
 - #130: a kezdőpolccal azonos megvehető normál/keskeny polc, több önálló hűtő, üres bútorok eladása 50%-os jóváírással, fal-/bútorillesztés és látható 10 cm-es rács, valódi modell-/méretelőnézet. **1112 natív állítás / 47 suite baseline, 159 végső célzott állítás; 16 új bútoros és 15 készletes átrendezési WebGL-ellenőrzés**, 0 konzolhiba, 720p/1080p képek átnézve. [Jelentés](../Acceptance/furniture-editor/REPORT.md). Pagesre nincs kiadva.
