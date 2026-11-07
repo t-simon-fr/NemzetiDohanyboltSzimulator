@@ -5,8 +5,8 @@ using UnityEngine;
 public sealed partial class ShopArrangement
 {
     // Independently owned, repeatable furniture.
-    public static readonly string[] CatalogNames = { "Normál polc", "Keskeny polc", "Kétoldalas polc", "Raktári állvány", "Hűtő" };
-    public static readonly string[] CatalogDetails = { "1,2 × 0,5 × 2,5 m", "0,6 × 0,5 × 2,5 m", "1,2 × 0,9 m · kétoldalas", "1,2 × 0,6 m · raktár", "1,65 × 0,8 m" };
+    public static readonly string[] CatalogNames = { "Normál polc", "Keskeny polc", "Kétoldalas polc", "Raktári állvány", "Hűtő", "Sarokpolc" };
+    public static readonly string[] CatalogDetails = { "1,2 × 0,5 × 2,5 m", "0,6 × 0,5 × 2,5 m", "1,2 × 0,9 m · kétoldalas", "1,2 × 0,6 m · raktár", "1,65 × 0,8 m", "0,8 × 0,8 × 2,5 m" };
     private readonly Dictionary<ShopFurniture, int> plannedPurchases = new Dictionary<ShopFurniture, int>();
     private ShopFurniture purchaseGhost;
     private int purchaseKind = -1;
@@ -82,13 +82,18 @@ public sealed partial class ShopArrangement
         var candidate = new Dictionary<ShopFurniture, ShopFurniturePose>(draft) { [purchaseGhost] = pose };
         if (!Validate(candidate, out reason)) { Feedback = reason; return false; }
         int kind = purchaseKind;
+        int turns = pose.QuarterTurns;
         draft = candidate;
         plannedPurchases.Add(purchaseGhost, kind);
         purchaseGhost = null;
         purchaseKind = -1;
         dragging = false;
         Feedback = "A bútor a tervben van. Fizetés a mentéskor.";
-        if (PurchaseUnavailable(kind) == "") StartPurchase(kind);
+        if (PurchaseUnavailable(kind) == "" && StartPurchase(kind))
+        {
+            preview = new ShopFurniturePose(preview.Position, turns);
+            ValidatePreview();
+        }
         return true;
     }
 

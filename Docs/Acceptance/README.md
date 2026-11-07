@@ -1,5 +1,7 @@
 # Elfogadási ellenőrzések
 
+Legfrissebb fejlesztés: [#132 sarokpolc, tényleges falillesztés és vásárlói irány](corner-wall/REPORT.md): 1148 natív állításos baseline / 48 suite, 12 végső UI-állítás; 12 + 16 + 15 WebGL-ellenőrzés, 0 konzolhiba. Natív és 720p/1080p képek átnézve. Pagesre nincs kiadva.
+
 Legfrissebb fejlesztés: [#130 bútor-eladás, több hűtő és kényelmesebb átrendezés](furniture-editor/REPORT.md): 1112 natív állításos baseline, 159 végső célzott állítás; 16 + 15 WebGL-ellenőrzés, 0 konzolhiba. Pagesre nincs kiadva.
 
 Legfrissebb fejlesztés: [#128 bútorvásárlás az átrendezőben és közös rácsigazítás](furniture-planning/REPORT.md): 1080 natív állítás / 46 suite, 17 vásárlási és 15 átrendezési WebGL-ellenőrzés, 0 konzolhiba; 720p/1080p képek átnézve. Pagesre publikálva; lásd a kiadási jelentést.

@@ -604,6 +604,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public Vector3[] purchaseTargets;
         public Vector3 editorPreviewPosition;
         public int editorSaleCredit, editorFridges;
+        public int editorCorners, editorPreviewTurns;
+        public Rect editorPhysicalArea;
+        public Vector3[] editorCornerTestPoints, editorCornerPoints;
         public bool editorModelVisible;
         public string editorSnap, editorNotice;
         public Vector3 editorPreviewSize;
@@ -725,6 +728,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.moduleCount=g.Arrangement.Furniture.Count;
         state.plannedCount=g.Arrangement.PlannedCount;state.plannedCost=g.Arrangement.PlannedCost;
         state.editorPreviewPosition=g.Arrangement.PreviewPosition;
+        state.editorCorners=g.Arrangement.Current().Keys.Count(f=>f.CatalogKind==5);
+        state.editorPreviewTurns=g.Arrangement.PreviewQuarterTurns;
+        state.editorPhysicalArea=g.Layout.FurnitureArea(false);
+        var cornerArea=g.Layout.FurnitureArea(false);
+        state.editorCornerTestPoints=new[]{new Vector3(5.4f,0,cornerArea.yMin+.25f),new Vector3(cornerArea.xMax-.4f,0,cornerArea.yMin+.4f),new Vector3(5.4f,0,-1.2f)}.Select(p=>View.WorldToScreenPoint(p)).ToArray();
+        state.editorCornerPoints=g.Arrangement.Current().Keys.Where(f=>f.CatalogKind==5).Select(f=>View.WorldToScreenPoint(f.transform.position)).ToArray();
         state.editorSaleCredit=g.Arrangement.SaleCredit;state.editorModelVisible=g.Arrangement.ModelPreviewVisible;
         state.editorSnap=g.Arrangement.SnapFeedback;state.editorNotice=g.Arrangement.Feedback;
         var fridgeItems=g.Arrangement.Current().Keys.Where(f=>f.CatalogKind==4).ToArray();

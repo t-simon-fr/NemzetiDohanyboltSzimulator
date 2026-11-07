@@ -1,0 +1,15 @@
+{
+  "reviewer": "Codex self-review",
+  "capturedUtc": "2026-11-07T11:35:29.3208341Z",
+  "interactionReview": "Native state prepared via API; actual mouse, R, scrolling, purchase, sale and cancel verified in browser.json.",
+  "scenario": "current",
+  "image": "D:\\Projects\\nemzeti-dohanybolt-sim\\NemzetiDohanyboltSzimulator\\Builds\\Verification\\visual-20261107-113528-104\\current.png",
+  "review": "passed",
+  "source": {
+    "commit": "fff17f6fe1bb4ff25434986bb2d865a5ff2465e7",
+    "sourceFingerprint": "9e90ecc6fb86b2a5dae4d61202fdae588aa5515ce82805efb8395ad3b7b5bd59",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "observations": "1918x879 Game view including GUI. Final pentagonal contour, diagonal arrow and physical wall alignment reviewed; initial detached outline corrected before the shared WebGL build."
+}

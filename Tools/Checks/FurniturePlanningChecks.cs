@@ -73,12 +73,13 @@ public static class FurniturePlanningChecks
             shop.ResetDemo(); shop.ClosePanel();
             check(!shop.GetComponent<ShopNextUpgrades>().FridgeOwned && editor.PlannedCount == 0 && !editor.Current().Keys.Any(f => f.InWarehouse), "New game clears owned and pending purchases");
             shop.Devices.Focus(ShopDeviceKind.Monitor); shop.Devices.OpenApp(ShopComputerApp.Furnishing);
+            shop.Devices.KeyboardTargets().Single(t=>t.Id=="Furnishing:Developments").Activate();
             var controls = shop.Devices.KeyboardTargets();
             check(controls.Any(t => t.Id == "Expand:0") && controls.Any(t => t.Id == "Warehouse:Expand"), "Both room sizes share development tab");
             check(!controls.Any(t => t.Id == "ExtraShelf:0" || t.Id.StartsWith("Module:Plan:")), "Legacy cigarette expansion and furniture not in developments");
             controls.Single(t => t.Id == "Furnishing:Furniture").Activate();
             controls = shop.Devices.KeyboardTargets();
-            check(controls.Count(t => t.Id.StartsWith("Module:Plan:")) == 5 && !controls.Any(t => t.Id == "Warehouse:Expand"), "Furniture catalog contains four racks and fridge, no building expansion");
+            check(controls.Count(t => t.Id.StartsWith("Module:Plan:")) == 6 && !controls.Any(t => t.Id == "Warehouse:Expand"), "Furniture catalog contains four racks and fridge, no building expansion");
             check(!controls.Single(t => t.Id == "Module:Plan:4").Enabled, "Starter shop still locks fridge");
             int before = shop.Ledger.Cash;
             controls.Single(t => t.Id == "Module:Plan:1").Activate();

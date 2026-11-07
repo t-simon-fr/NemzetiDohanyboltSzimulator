@@ -11,7 +11,7 @@ public sealed partial class ShopArrangement
     public ShopFurniturePose SnapToGuides(ShopFurniture item, ShopFurniturePose pose)
     {
         pose = SnapPose(item, pose);
-        Rect room = item.InWarehouse ? shop.Layout.WarehouseArea : shop.Layout.ShopArea;
+        Rect room = shop.Layout.FurnitureArea(item.InWarehouse);
         var half = item.BoundsAt(pose).size * .5f;
         float x = pose.Position.x, z = pose.Position.z;
         float bestX = .22f, bestZ = .22f;

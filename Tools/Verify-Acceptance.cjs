@@ -657,6 +657,20 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
       check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
     }
+    if (selected === 'corner-wall') {
+      await viewport(1280,720);await probe('Prepare','furniture-editor');
+      const press=async id=>{const s=await state();const ids=id.startsWith('Editor:')?s.editorControlIds:s.computerControlIds;const rects=id.startsWith('Editor:')?s.editorControls:s.computerControls;const i=ids.indexOf(id);if(i<0)throw Error('Missing '+id);await clickRect(rects[i]);};
+      const point=async i=>(await state()).editorCornerTestPoints[i];
+      const move=async p=>{await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:p.x,y:height-p.y});await sleep(350);};
+      await press('Arrange:0');await press('Editor:Catalog');await press('Editor:Buy:0');await move(await point(0));let s=await state();const funds=s.balance;
+      check(!s.previewValid&&s.arrangementFeedback.includes('Forgasd'),'Front-wall shelf explicitly identifies outward-facing customer side');await capture('front-wall-wrong-facing');
+      await key('r','KeyR',82);await key('r','KeyR',82);await move(await point(0));s=await state();check(s.previewValid,'Same front-wall position works after facing into shop');let p=await point(0);await click(p.x,height-p.y);
+      s=await state();check(s.plannedCount===1&&s.editorPreviewTurns===2,'Repeated shelf placement retains inward-facing rotation');await move(await point(2));await capture('front-wall-repeat-720');await viewport(1920,1080);await move(await point(2));await capture('front-wall-repeat-1080');await viewport(1280,720);await press('Editor:Cancel');
+      await probe('Action','monitor-furnishing');await press('Furnishing:Furniture');s=await state();check(s.computerControlIds.filter(x=>x.startsWith('Module:Plan:')).length===6,'Monitor catalog offers all six entries including corner');await capture('six-item-catalog');await press('Module:Plan:5');await key('r','KeyR',82);await move(await point(1));s=await state();
+      check(s.previewValid&&s.editorPreviewTurns===1,'Corner fits front and right walls with diagonal face inward');const a=s.editorPhysicalArea;check(Math.abs(s.editorPreviewPosition.x+.4-a.x-a.width)<.001&&Math.abs(s.editorPreviewPosition.z-.4-a.y)<.001,'Preview footprint and drawn wall boundary agree');await capture('corner-preview-720');await viewport(1920,1080);await move(await point(1));await capture('corner-preview-1080');await viewport(1280,720);await move(await point(1));p=await point(1);await click(p.x,height-p.y);await key('Escape','Escape',27);s=await state();check(s.plannedCost===6500&&s.balance===funds,'Corner plan has exact unpaid quote');await capture('corner-plan');await press('Editor:Save');s=await state();check(s.editorCorners===1&&s.balance===funds-6500&&s.drawer===s.balance,'Actual corner purchase activates furniture with one exact debit');
+      await probe('Action','monitor-furnishing');await press('Arrange:0');s=await state();p=s.editorCornerPoints[0];await click(p.x,height-p.y);await press('Editor:Sell');s=await state();check(s.editorSaleCredit===3250,'Corner resale uses shared half-price rule');await press('Editor:Cancel');s=await state();check(s.editorCorners===1&&s.balance===funds-6500,'Cancel preserves corner and money');
+      await probe('Action','monitor-furnishing');await press('Arrange:0');s=await state();p=s.editorCornerPoints[0];await click(p.x,height-p.y);await press('Editor:Sell');await press('Editor:Save');s=await state();check(s.editorCorners===0&&s.balance===funds-3250,'Saving resale removes corner and credits once');
+    }
     if (selected === 'furniture-editor') {
       await viewport(1280,720);await probe('Prepare','furniture-editor');
       const press=async id=>{const s=await state();const ids=id.startsWith('Editor:')?s.editorControlIds:s.computerControlIds;const rects=id.startsWith('Editor:')?s.editorControls:s.computerControls;const i=ids.indexOf(id);if(i<0)throw Error('Missing '+id);await clickRect(rects[i]);};
@@ -665,7 +679,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await press('Arrange:0');let s=await state();const tall=s.furniturePoints[s.furnitureIds.indexOf('public-shelf')];await click(tall.x,height-tall.y);s=await state();check(s.editorPreviewSize.y>2.4,'Actual tall shelf height is shown');await capture('tall-shelf');await press('Editor:Cancel');
       await probe('Action','monitor-furnishing');await press('Arrange:0');await press('Editor:Catalog');await press('Editor:Buy:0');
       await move(await point(0));s=await state();check(s.previewValid&&s.editorSnap.includes('Fal'),'Real pointer attracts shelf edge to wall');check(s.editorModelVisible,'Selected furniture has a live real-mesh preview');check(s.editorPreviewSize.y>2.4,'Purchased normal shelf matches tall starter model');
-      check(Math.abs(s.editorPreviewPosition.x+s.editorPreviewSize.x/2-8.4)<.001,'Wall alignment uses actual footprint edge');
+      check(Math.abs(s.editorPreviewPosition.x+s.editorPreviewSize.x/2-8.423)<.001,'Wall alignment uses actual footprint edge');
       await capture('wall-snap-720');await viewport(1920,1080);await move(await point(0));await capture('wall-snap-1080');await viewport(1280,720);await move(await point(0));
       await key('r','KeyR',82);await key('r','KeyR',82);await move(await point(0));s=await state();check(s.previewValid&&s.editorSnap.includes('Fal'),'Wall snapping persists after rotation');await press('Editor:Cancel');
       await probe('Action','monitor-furnishing');await press('Arrange:0');await press('Editor:Catalog');
@@ -686,7 +700,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       for(let i=0;i<3;i++)await press('Expand:0');
       for(let i=0;i<3;i++)await press('Warehouse:Expand');
       await press('Furnishing:Furniture');await capture('furniture-catalog');
-      s=await state();check(s.computerControlIds.filter(x=>x.startsWith('Module:Plan:')).length===5&&!s.computerControlIds.includes('Warehouse:Expand'),'Furniture tab groups racks and fridge without room sizes');
+      s=await state();check(s.computerControlIds.filter(x=>x.startsWith('Module:Plan:')).length===6&&!s.computerControlIds.includes('Warehouse:Expand'),'Furniture tab groups racks and fridge without room sizes');
       const funds=s.balance, base=s.moduleCount;
       await press('Module:Plan:2');s=await state();check(s.arranging&&s.balance===funds&&s.plannedCount===0,'Catalog enters island placement without charging');
       const point = async i => {const s=await state();return {x:s.purchaseTargets[i].x,y:height-s.purchaseTargets[i].y};};
@@ -704,7 +718,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await press('Editor:Save');s=await state();check(!s.arranging&&s.balance===funds-10000&&s.drawer===s.balance&&s.moduleCount===base+1,'Actual save buys and activates one island with exact reconciled debit');
       await probe('Action','monitor-furnishing');await press('Arrange:0');s=await state();check(s.plannedCount===0&&s.moduleCount===base+1,'Reopening retains purchased furniture without another charge');await capture('saved-ownership');
       await press('Editor:Catalog');for(let n=0;n<12;n++){s=await state();if(s.editorControlIds.includes('Editor:Buy:4'))break;await send('Input.dispatchMouseEvent',{type:'mouseWheel',x:width-100,y:300,deltaX:0,deltaY:440});await sleep(150);}s=await state();check(s.editorControlIds.includes('Editor:Buy:4'),'Scrolling at 720p reaches final fridge catalog card');await press('Editor:Buy:4');s=await state();check(s.selectedFurniture.startsWith('drinks-fridge')&&s.plannedCount===0,'Fridge can be previewed from scrolled catalog without a purchase');await capture('catalog-scrolled-720');
-      await viewport(1920,1080);await press('Editor:Catalog');s=await state();check(s.editorControlIds.filter(x=>x.startsWith('Editor:Buy:')).length===5,'At 1080p all five catalog items remain visible');await capture('catalog-complete-1080');await press('Editor:Cancel');
+      await viewport(1920,1080);await press('Editor:Catalog');s=await state();check(s.editorControlIds.filter(x=>x.startsWith('Editor:Buy:')).length===6,'At 1080p all six catalog items remain visible');await capture('catalog-complete-1080');await press('Editor:Cancel');
     }
     if (selected === 'expansion') {
       await viewport(1280,720);await probe('Prepare','expansion');let s=await state();
@@ -954,7 +968,7 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await selectPlan('drinks-fridge');s=await state();const fp=s.furniturePoints[s.furnitureIds.indexOf('drinks-fridge')],sp=s.furniturePoints[s.furnitureIds.indexOf('public-shelf')];const ppm=planPixels;const fridgeMove={x:fp.x-ppm*.5,y:fp.y};await movePointer(fridgeMove);
       s = await state(); check(s.selectedFurniture === 'drinks-fridge' && s.previewValid, 'Purchased fridge can also be moved');
       await click(fridgeMove.x, height - fridgeMove.y); await editorPress('Editor:Save');
-      s = await state(); check(!s.arranging && Math.abs(s.fridgePosition.x - 2.85) < .031 && Math.abs(s.fridgePosition.z - 1.4) < .01, 'Save retains fridge position');
+      s = await state(); check(!s.arranging && Math.abs(s.fridgePosition.x - 2.85) < .031 && Math.abs(s.fridgePosition.z - 1.423) < .01, 'Save retains fridge position');
       await probe('Action', 'monitor-furnishing'); await openEditor();
       await viewport(1920, 1080); await capture('arrangement-large'); await viewport(1280, 720);
       await editorPress('Editor:Cancel');
