@@ -4,13 +4,20 @@ using UnityEngine;
 
 public sealed partial class ShopArrangement : MonoBehaviour
 {
-    public const float GridStep = .05f;
+    public const float GridStep = .1f;
     public static ShopFurniturePose SnapPose(ShopFurniture item, ShopFurniturePose pose)
     {
-        pose.Position.x = Mathf.Round(pose.Position.x / GridStep) * GridStep;
-        pose.Position.z = Mathf.Round(pose.Position.z / GridStep) * GridStep;
+        var half = item.BoundsAt(pose).size * .5f;
+        pose.Position.x = SnapAxis(pose.Position.x, half.x);
+        pose.Position.z = SnapAxis(pose.Position.z, half.y);
         pose.Position.y = item.DefaultPose.Position.y;
         return pose;
+    }
+    private static float SnapAxis(float centre, float half)
+    {
+        float fromMin = Mathf.Round((centre - half) / GridStep) * GridStep + half;
+        float fromMax = Mathf.Round((centre + half) / GridStep) * GridStep - half;
+        return Mathf.Abs(centre - fromMin) <= Mathf.Abs(centre - fromMax) ? fromMin : fromMax;
     }
     private MvpShopController shop;
     private PlayerInteractor player;
@@ -34,7 +41,9 @@ public sealed partial class ShopArrangement : MonoBehaviour
         shop = owner;
         player = interactor;
         var fridge = shop.GetComponentsInChildren<Transform>(true).First(t => t.name == "Purchased Drinks Fridge");
-        Register(fridge, "drinks-fridge", "Italhűtő", new Vector2(1.65f, .8f));
+        var item = Register(fridge, "drinks-fridge", "Italhűtő", new Vector2(1.65f, .8f));
+        item.CatalogKind = 4;
+        shop.Layout.RegisterPublicSlots(item.Slots);
     }
 
     public ShopFurniture Register(Transform root, string id, string title, Vector2 size)
@@ -73,7 +82,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
     public bool TryPlace(ShopFurniture item, ShopFurniturePose pose)
     {
         if (!Active || !draft.ContainsKey(item)) return false;
-        pose = SnapPose(item, pose);
+        pose = SnapToGuides(item, pose);
         var candidate = new Dictionary<ShopFurniture, ShopFurniturePose>(draft) { [item] = pose };
         if (!Validate(candidate, out string reason)) { Feedback = reason; return false; }
         draft = candidate;
@@ -99,11 +108,11 @@ public sealed partial class ShopArrangement : MonoBehaviour
         {
             area=pair.Key.InWarehouse?shop.Layout.WarehouseArea:shop.Layout.ShopArea;
             Rect bounds = pair.Key.BoundsAt(pair.Value);
-            if (bounds.xMin < area.xMin || bounds.xMax > area.xMax || bounds.yMin < area.yMin || bounds.yMax > area.yMax)
+            if (bounds.xMin < area.xMin - .001f || bounds.xMax > area.xMax + .001f || bounds.yMin < area.yMin - .001f || bounds.yMax > area.yMax + .001f)
             { reason = "A berendezés kilóg a megvásárolt üzlettérből."; return false; }
             if (!pair.Key.InWarehouse && Protected.Any(r => r.Overlaps(bounds)))
             { reason = "Fenntartott közlekedősávot vagy fix berendezés helyét blokkolja."; return false; }
-            if (staticObstacles.Any(r => ShopNavigation.Expanded(r, .03f).Overlaps(bounds)) ||
+            if (staticObstacles.Any(r => ShopNavigation.Expanded(r, .02f).Overlaps(bounds)) ||
                 placed.Any(r => ShopNavigation.Expanded(r,-.001f).Overlaps(bounds)))
             { reason = "Nem fér el: falnak, tárgynak vagy másik berendezésnek ütközik."; return false; }
             if (ShopNavigation.Expanded(bounds, .3f).Contains(new Vector2(player.transform.position.x, player.transform.position.z)))
@@ -143,7 +152,8 @@ public sealed partial class ShopArrangement : MonoBehaviour
         if (!Active) return false;
         if (dragging && purchaseGhost == null && selected != null && !TryPlace(selected, preview)) return false;
         int cost = PlannedCost;
-        if (cost > 0 && (!shop.CanDevelopShop || cost > shop.Ledger.AvailableFunds || shop.Ledger.Closed))
+        int credit = SaleCredit;
+        if (!SalesValid() || (cost > 0 || credit > 0) && (!shop.CanDevelopShop || cost > (long)shop.Ledger.AvailableFunds + credit || shop.Ledger.Closed))
         {
             Feedback = "Nincs elég elkölthető pénz a teljes tervre. Törölj új bútorokat a tervből.";
             return false;
@@ -164,7 +174,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
             shop.Navigation.Rebuild();
             throw;
         }
-        if (cost > 0 && !shop.Ledger.TryImprove(cost))
+        if ((cost > 0 || credit > 0) && !shop.Ledger.TryFurnish(cost, credit))
         {
             foreach (var pair in original) pair.Key.Apply(pair.Value);
             Feedback = "A vásárlás nem sikerült. A tervet megőriztük.";
@@ -173,7 +183,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
         CommitPlannedPurchases();
         Physics.SyncTransforms();
         shop.Navigation.Rebuild();
-        if (cost > 0) shop.SyncCashDrawer();
+        if (cost > 0 || credit > 0) shop.SyncCashDrawer();
         End();
         shop.Notify("Az új üzletelrendezés elmentve. A következő napra is megmarad.");
         return true;
@@ -193,7 +203,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
     {
         Cancel();
         shop.GetComponent<ShopModularFurniture>()?.ResetPurchases();
-        foreach (var item in furniture) item.Apply(item.DefaultPose);
+        foreach (var item in furniture) { item.Apply(item.DefaultPose); if (item.InitiallyOwned) item.gameObject.SetActive(true); }
         shop.Navigation.Rebuild();
     }
     partial void BeginView();

@@ -103,6 +103,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.Ledger.TrySellCard(100000,0); Shop.SyncCashDrawer();
             Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Orders);
         }
+        else if (scenario == "furniture-editor")
+        {
+            Shop.Ledger.TrySellCard(200000,0);Shop.SyncCashDrawer();Shop.Layout.SetLevels(3,3);Shop.Navigation.Rebuild();
+            Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Furnishing);
+        }
         else if (scenario == "expansion")
         {
             Shop.Ledger.TrySellCard(500000,0);Shop.SyncCashDrawer();
@@ -399,6 +404,14 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             var parts=action.Split(':');Shop.Arrangement.Cancel();Shop.ClosePanel();
             Shop.Layout.SetLevels(int.Parse(parts[1]),int.Parse(parts[2]));Shop.Navigation.Rebuild();Shop.Arrangement.Begin();
         }
+        if(action=="stock-editor-fridge")
+        {
+            var fridge=Shop.Arrangement.Current().Keys.First(f=>f.CatalogKind==4);
+            var item=Shop.CreateCoffee(ShopCatalog.Index("water"));item.AssignInitialSlot(fridge.Slots[0]);
+        }
+        if(action=="empty-editor-fridge")
+            foreach(var fridge in Shop.Arrangement.Current().Keys.Where(f=>f.CatalogKind==4))
+                foreach(var slot in fridge.Slots)if(slot.Occupant!=null)slot.Occupant.RemoveFromWorld();
         if(action=="expansion-staff-view")
         {
             Shop.Arrangement.Cancel();Shop.ClosePanel();
@@ -590,6 +603,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public Rect[] editorControls;
         public Vector3[] purchaseTargets;
         public Vector3 editorPreviewPosition;
+        public int editorSaleCredit, editorFridges;
+        public bool editorModelVisible;
+        public string editorSnap, editorNotice;
+        public Vector3 editorPreviewSize;
+        public string[] editorFridgeIds;
+        public Vector3[] editorFridgePoints, editorTestPoints;
         public string[] furnitureIds;
         public Vector3[] furniturePoints;
         public string stockedItem;
@@ -706,6 +725,15 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.moduleCount=g.Arrangement.Furniture.Count;
         state.plannedCount=g.Arrangement.PlannedCount;state.plannedCost=g.Arrangement.PlannedCost;
         state.editorPreviewPosition=g.Arrangement.PreviewPosition;
+        state.editorSaleCredit=g.Arrangement.SaleCredit;state.editorModelVisible=g.Arrangement.ModelPreviewVisible;
+        state.editorSnap=g.Arrangement.SnapFeedback;state.editorNotice=g.Arrangement.Feedback;
+        var fridgeItems=g.Arrangement.Current().Keys.Where(f=>f.CatalogKind==4).ToArray();
+        state.editorFridges=fridgeItems.Length;
+        state.editorFridgeIds=fridgeItems.Select(f=>f.Id).ToArray();
+        state.editorFridgePoints=fridgeItems.Select(f=>View.WorldToScreenPoint(f.transform.position)).ToArray();
+        state.editorTestPoints=new[]{new Vector3(g.Layout.ShopArea.xMax-.65f,0,-1.2f),new Vector3(5,0,-2.8f),new Vector3(7,0,-2.8f)}.Select(p=>View.WorldToScreenPoint(p)).ToArray();
+        var chosen=g.Arrangement.PurchasePreview??g.Arrangement.Furniture.FirstOrDefault(f=>f.Id==g.Arrangement.SelectedFurnitureId);
+        if(chosen!=null)state.editorPreviewSize=new Vector3(chosen.Size.x,chosen.Height,chosen.Size.y);
         state.editorControlIds = g.Arrangement.Active ? g.Arrangement.EditorControls().Select(t => t.Id).ToArray() : new string[0];
         state.editorControls = g.Arrangement.Active ? g.Arrangement.EditorControls().Select(t => t.Bounds).ToArray() : new Rect[0];
         state.purchaseTargets = new[] { new Vector3(5f,0,-2.8f), new Vector3(6.6f,0,-2.8f), new Vector3(7.4f,0,-.3f), new Vector3(-6.4f,0,-1.6f) }.Select(p => View.WorldToScreenPoint(p)).ToArray();

@@ -43,3 +43,6 @@ A bolt/pult/raktár nyitása közötti közlekedő védett. Az elhelyezés ellen
 A jelenlegi projekt az elrendezést futamon/napváltáson belül tartja meg; új teljes futammentés nem készült. Az eredeti hosszú polc objektumneve/hivatkozása megmarad a migráció gyökereként, az eredeti polchelyek újrafelhasználásával. Új játék törli a vásárolt modulokat és visszaállítja az eredeti szinteket/pozíciókat.
 
 Ellenőrzés: `expansion` natív suite a checkout-profilban; `node Tools/Verify-Acceptance.cjs --case=expansion`. Részletek és a tényleges készültség: [elfogadási jelentés](../../Acceptance/expansion/REPORT.md).
+
+
+A #130-tól a normál/keskeny polc a kezdőpolc 2,5 m-es modellje, a hűtő ismételten vásárolható. Üres bútor eladható, az átrendező 10 cm-es bútorszél- és falillesztést használ. [Aktuális használat](../../Acceptance/furniture-editor/README.md).

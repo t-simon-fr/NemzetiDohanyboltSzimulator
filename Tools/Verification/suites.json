@@ -51,7 +51,8 @@
       "lottery-integration",
       "lottery-numbers",
       "expansion",
-      "furniture-planning"
+      "furniture-planning",
+      "furniture-editor"
     ]
   },
   "suites": {
@@ -284,6 +285,11 @@
       "entry": "FurniturePlanningChecks.Run",
       "file": "Tools/Checks/FurniturePlanningChecks.cs",
       "purpose": "Deferred atomic furniture purchases, repeat/undo/cancel, reserved funds, fridge ownership and grid snapping"
+    },
+    "furniture-editor": {
+      "entry": "FurnitureEditorChecks.Run",
+      "file": "Tools/Checks/FurnitureEditorChecks.cs",
+      "purpose": "Empty-only resale, atomic credit/debit, independent fridges, real heights, wall and grid snapping, reset"
     }
   },
   "historicalExcluded": {

@@ -1,0 +1,11 @@
+# #130 – Bútorok eladása és kényelmesebb rendezés
+
+A megvásárolható normál és keskeny polc a kezdőpolc magas, ötszintes modelljét használja (2,5 m); a normál változat azonos szélességgel/mélységgel és anyagokkal készül. A kétoldalas szigetpolc külön, 2 m-es bútor marad. Az átrendező a tényleges modellből méri és megjeleníti a magasságot; a kijelölt bútor külön, kizárólag vizuális mesh-előnézetet kap. A valós berendezés, készlet és kolliderek tervezés közben nem mozdulnak.
+
+A látható rács 10 cm-es, félméteres fővonalakkal. A bútor befoglalójának szélét igazítjuk a rácshoz; ez nem a kurzor vagy a középpont kerekítése. A fal/használható helyiséghatár és a szomszédos bútor széle 22 cm-es tartományból vonzza az előnézetet. A falnál a már meglévő építési biztonsági tartalék megmarad. Két segédvonal és szöveges visszajelzés mutatja az illesztést; forgatás, kattintás és mentés ugyanazt a pozíciót kezeli. Az útvonal- és ütközésvédelem továbbra is érvényes. A szélső termékhez tartozó vásárlói célpontot szükség esetén oldalirányban távolítjuk a faltól; az ellenőrzés és a tényleges NPC-kiszolgálás ugyanazt az elérhető célpontot használja. A bútor előtti/mögötti megközelítés irányát nem változtatjuk meg.
+
+A hűtő többször megvehető; minden példány külön azonosítót és saját készlethelyeket kap. Az üzlet első bővítése továbbra is előfeltétel. A régi egyszeri fejlesztési API kompatibilitási célból megmarad, a katalógus az ismételhető bútorműveletet használja.
+
+A Saját bútorok között kijelölhető és eladásra jelölhető a polc, szigetpolc, raktári állvány vagy hűtő. Csak üres bútor adható el: a polcról az árut, az állványról a kartonokat le kell venni. A visszavásárlási ár az aktuális bútor-alapár 50%-a, 5 Ft-ra lefelé kerekítve. A kezdő magas polc értéke a normál polc alapára. A terv mentésekor újra ellenőrzött, egyszeri vételi/eladási elszámolás történik; az eladási összeg felhasználható a tervben lévő másik bútorra. A lottótartalék megmarad. Az eladási bevétel külön FurnitureResale pénzmozgás; nem termékeladás vagy árbevétel.
+
+Mégse esetén nincs pénz- vagy tulajdonváltozás. Új játékban a kezdő polcok visszatérnek, a megvett bútorok eltűnnek. A változás nem ad új mentési rendszert. [Ellenőrzési jelentés](REPORT.md).

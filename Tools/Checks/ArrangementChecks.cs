@@ -43,7 +43,7 @@ public static class ArrangementChecks
             check(!layout.TryPlace(shelf, new ShopFurniturePose(new Vector3(-1.3f,0,-1),0)), "Reject staff aisle obstruction");
             check(!layout.TryPlace(shelf, new ShopFurniturePose(fridge.transform.position,1)), "Reject overlap with fridge");
             check(!layout.TryPlace(shelf, new ShopFurniturePose(new Vector3(5.95f,0,-1),2)), "Reject shelf with its usable face against wall");
-            var moved = new ShopFurniturePose(new Vector3(3.75f,0,-2.9f),1);
+            var moved = layout.SnapToGuides(shelf, new ShopFurniturePose(new Vector3(3.75f,0,-2.9f),1));
             check(layout.TryPlace(shelf, moved), "Move and rotate stocked shelf in preview");
             check(shelf.transform.position == original && product.transform.position == stockPosition && product.CurrentSlot == slot,
                 "Preview does not mutate furniture or stock");

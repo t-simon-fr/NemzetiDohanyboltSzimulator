@@ -13,7 +13,7 @@ public static class FurniturePlanningChecks
             for (float x = room.xMin + .7f; x < room.xMax - .4f; x += .25f)
                 for (int turn = 0; turn < 4; turn++)
                 {
-                    var pose = ShopArrangement.SnapPose(item, new ShopFurniturePose(new Vector3(x, 0, z), turn));
+                    var pose = shop.Arrangement.SnapToGuides(item, new ShopFurniturePose(new Vector3(x, 0, z), turn));
                     plan[item] = pose;
                     if (shop.Arrangement.Validate(plan, out var reason)) return pose;
                 }
@@ -48,7 +48,7 @@ public static class FurniturePlanningChecks
             check(editor.Begin() && editor.StartPurchase(3) && editor.PlacePurchase(Fit(shop, editor.PurchasePreview)), "Plan actual warehouse rack");
             check(shop.Warehouse.StorageDocks.Count() == docks, "Unpaid warehouse docks are not usable");
             check(editor.StartPurchase(4) && editor.PlacePurchase(Fit(shop, editor.PurchasePreview)), "Plan once-only fridge");
-            check(!editor.StartPurchase(4), "Cannot plan fridge twice");
+            check(editor.StartPurchase(4), "Another independent fridge can be previewed");
             check(!shop.GetComponent<ShopNextUpgrades>().FridgeOwned, "Fridge stays unowned during planning");
             int total = editor.PlannedCost;
             shop.Ledger.SetLotteryReserve(shop.Ledger.Cash - total + 1);
@@ -60,13 +60,15 @@ public static class FurniturePlanningChecks
             check(!editor.Save() && shop.Ledger.Cash == funds - total, "Repeated save never debits twice");
             check(shop.GetComponent<ShopNextUpgrades>().FridgeOwned && editor.Current().Count == owned.Count + 2, "Fridge and warehouse rack become real owned furniture");
             check(shop.Warehouse.StorageDocks.Count() == docks + 4, "Paid rack registers its four carton docks once");
-            check(editor.Begin() && !editor.StartPurchase(4), "Owned fridge remains once-only after reopening");
+            check(editor.Begin() && editor.StartPurchase(4), "Owned fridge permits another instance after reopening");
             editor.Cancel();
             var shelf = owned.Keys.First();
             for (int turn = 0; turn < 4; turn++)
             {
                 var pose = ShopArrangement.SnapPose(shelf, new ShopFurniturePose(new Vector3(3.123f, 5, -1.678f), turn));
-                check(Mathf.Abs(pose.Position.x - 3.1f) < .001f && Mathf.Abs(pose.Position.z + 1.7f) < .001f && pose.Position.y == shelf.DefaultPose.Position.y, "Every rotation snaps to same 5cm grid " + turn);
+                var bounds = shelf.BoundsAt(pose);
+                Func<float,bool> aligned=v=>Mathf.Abs(v/.1f-Mathf.Round(v/.1f))<.001f;
+                check((aligned(bounds.xMin)||aligned(bounds.xMax))&&(aligned(bounds.yMin)||aligned(bounds.yMax))&&pose.Position.y==shelf.DefaultPose.Position.y,"Both footprint axes align after rotation "+turn);
             }
             shop.ResetDemo(); shop.ClosePanel();
             check(!shop.GetComponent<ShopNextUpgrades>().FridgeOwned && editor.PlannedCount == 0 && !editor.Current().Keys.Any(f => f.InWarehouse), "New game clears owned and pending purchases");

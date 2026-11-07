@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 1,
+  "profile": "checkout",
+  "selectedSuites": [
+    "ledger",
+    "checkout-revision",
+    "basket-day",
+    "recovery",
+    "acceptance-logic",
+    "coffee-world",
+    "binding-acceptance",
+    "entrance-day",
+    "floor-plan",
+    "arrangement",
+    "door-storage",
+    "ui-presentation",
+    "player-movement",
+    "physical-terminal",
+    "coffee-display",
+    "shelf-labels",
+    "modern-register",
+    "forint-visuals",
+    "customer-hand",
+    "wall-seam",
+    "counter-mats",
+    "warehouse-storage",
+    "stock-aware-orders",
+    "after-hours-upgrades",
+    "ingredient-pickup",
+    "feature-batch",
+    "continuous-arrivals",
+    "tool-storage",
+    "fixture-lighting",
+    "walkable-entrance",
+    "scanner-placement",
+    "price-editor",
+    "computer-ui",
+    "identity-visuals",
+    "refactor-purchasing",
+    "refactor-inventory",
+    "refactor-checkout",
+    "refactor-coffee",
+    "refactor-day-focus",
+    "refactor-lifecycle",
+    "ingredient-packaging",
+    "lottery-state",
+    "lottery-integration",
+    "lottery-numbers",
+    "expansion",
+    "furniture-planning",
+    "furniture-editor"
+  ],
+  "startedUtc": "2026-11-07T10:46:42.3748818Z",
+  "source": {
+    "commit": "9c1a6a59e8266e5ba65a3c31abedcbbbc94921f6",
+    "sourceFingerprint": "0ac22bb8885cc2e8b0c2883b83b3ef8418b2e27535420a52805f7579f6c70626",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "failed": 0,
+      "seconds": 0.1474263,
+      "id": "ledger",
+      "entry": "LedgerChecks.Run",
+      "passed": 12
+    },
+    {
+      "failed": 0,
+      "seconds": 0.4540291,
+      "id": "checkout-revision",
+      "entry": "CheckoutRevisionChecks.Run",
+      "passed": 20
+    },
+    {
+      "failed": 0,
+      "seconds": 0.5258155,
+      "id": "basket-day",
+      "entry": "NextFeatureChecks.BasketDay",
+      "passed": 41
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3387772,
+      "id": "recovery",
+      "entry": "NextFeatureChecks.RecoveryAndCancellation",
+      "passed": 9
+    },
+    {
+      "failed": 0,
+      "seconds": 0.258979,
+      "id": "acceptance-logic",
+      "entry": "AcceptanceLogicChecks.Run",
+      "passed": 15
+    },
+    {
+      "failed": 0,
+      "seconds": 0.375232,
+      "id": "coffee-world",
+      "entry": "NextFeatureChecks.WorldAndCoffee",
+      "passed": 29
+    },
+    {
+      "failed": 0,
+      "seconds": 0.1855862,
+      "id": "binding-acceptance",
+      "entry": "BindingAcceptanceChecks.Run",
+      "passed": 4
+    },
+    {
+      "failed": 0,
+      "seconds": 0.2324666,
+      "id": "entrance-day",
+      "entry": "EntranceDayChecks.Run",
+      "passed": 15
+    },
+    {
+      "failed": 0,
+      "seconds": 0.255196,
+      "id": "floor-plan",
+      "entry": "FloorPlanChecks.Run",
+      "passed": 16
+    },
+    {
+      "failed": 0,
+      "seconds": 0.427272,
+      "id": "arrangement",
+      "entry": "ArrangementChecks.Run",
+      "passed": 27
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3881839,
+      "id": "door-storage",
+      "entry": "DoorStorageChecks.Run",
+      "passed": 27
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3998082,
+      "id": "ui-presentation",
+      "entry": "UiPresentationChecks.Run",
+      "passed": 20
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3308015,
+      "id": "player-movement",
+      "entry": "PlayerMovementChecks.Run",
+      "passed": 12
+    },
+    {
+      "failed": 0,
+      "seconds": 0.4731347,
+      "id": "physical-terminal",
+      "entry": "PhysicalTerminalChecks.Run",
+      "passed": 32
+    },
+    {
+      "failed": 0,
+      "seconds": 0.2725258,
+      "id": "coffee-display",
+      "entry": "CoffeeDisplayChecks.Run",
+      "passed": 37
+    },
+    {
+      "failed": 0,
+      "seconds": 0.4444186,
+      "id": "shelf-labels",
+      "entry": "ShelfLabelChecks.Run",
+      "passed": 32
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3128957,
+      "id": "modern-register",
+      "entry": "ModernRegisterChecks.Run",
+      "passed": 47
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3776564,
+      "id": "forint-visuals",
+      "entry": "ForintVisualChecks.Run",
+      "passed": 59
+    },
+    {
+      "failed": 0,
+      "seconds": 0.5188558,
+      "id": "customer-hand",
+      "entry": "CustomerHandChecks.Run",
+      "passed": 21
+    },
+    {
+      "failed": 0,
+      "seconds": 0.2375175,
+      "id": "wall-seam",
+      "entry": "WallSeamChecks.Run",
+      "passed": 18
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3768939,
+      "id": "counter-mats",
+      "entry": "CounterMatChecks.Run",
+      "passed": 12
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3325187,
+      "id": "warehouse-storage",
+      "entry": "WarehouseStorageChecks.Run",
+      "passed": 38
+    },
+    {
+      "failed": 0,
+      "seconds": 0.5226708,
+      "id": "stock-aware-orders",
+      "entry": "StockAwareOrderChecks.Run",
+      "passed": 34
+    },
+    {
+      "failed": 0,
+      "seconds": 0.4314937,
+      "id": "after-hours-upgrades",
+      "entry": "AfterHoursUpgradeChecks.Run",
+      "passed": 28
+    },
+    {
+      "failed": 0,
+      "seconds": 0.2483129,
+      "id": "ingredient-pickup",
+      "entry": "IngredientPickupChecks.Run",
+      "passed": 21
+    },
+    {
+      "failed": 0,
+      "seconds": 0.424287,
+      "id": "feature-batch",
+      "entry": "FeatureBatchChecks.Run",
+      "passed": 22
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3578319,
+      "id": "continuous-arrivals",
+      "entry": "ContinuousArrivalChecks.Run",
+      "passed": 6
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3275722,
+      "id": "tool-storage",
+      "entry": "ToolStorageChecks.Run",
+      "passed": 20
+    },
+    {
+      "failed": 0,
+      "seconds": 0.3314514,
+      "id": "fixture-lighting",
+      "entry": "FixtureLightingChecks.Run",
+      "passed": 12
+    },
+    {
+      "failed": 0,
+      "seconds": 0.2915562,
+      "id": "walkable-entrance",
+      "entry": "WalkableEntranceChecks.Run",
+      "passed": 11
+    },
+    {
+      "failed": 0,
+      "seconds": 0.2457033,
+      "id": "scanner-placement",
+      "entry": "ScannerPlacementChecks.Run",
+      "passed": 17
+    },
+    {
+      "failed": 0,
+      "seconds": 0.4836181,
+      "id": "price-editor",
+      "entry": "VisualRefreshChecks.Prices",
+      "passed": 32
+    },
+    {
+      "failed": 0,
+      "seconds": 0.1929186,
+      "id": "computer-ui",
+      "entry": "VisualRefreshChecks.Computer",
+      "passed": 12
+    },
+    {
+      "failed": 0,
+      "seconds": 0.1001418,
+      "id": "identity-visuals",
+      "entry": "VisualRefreshChecks.Identity",
+      "passed": 13
+    },
+    {
+      "failed": 0,
+      "seconds": 0.2435721,
+      "id": "refactor-purchasing",
+      "entry": "RefactorChecks.Purchasing",
+      "passed": 13
+    },
+    {
+      "failed": 0,
+      "seconds": 0.1650438,
+      "id": "refactor-inventory",
+      "entry": "RefactorChecks.Inventory",
+      "passed": 12
+    },
+    {
+      "failed": 0,
+      "seconds": 0.1652391,
+      "id": "refactor-checkout",
+      "entry": "RefactorChecks.Checkout",
+      "passed": 9
+    },
+    {
+      "failed": 0,
+      "seconds": 0.1534671,
+      "id": "refactor-coffee",
+      "entry": "RefactorChecks.Coffee",
+      "passed": 17
+    },
+    {
+      "failed": 0,
+      "seconds": 0.1519824,
+      "id": "refactor-day-focus",
+      "entry": "RefactorChecks.DayAndFocus",
+      "passed": 14
+    },
+    {
+      "failed": 0,
+      "seconds": 0.1748816,
+      "id": "refactor-lifecycle",
+      "entry": "RefactorChecks.Lifecycle",
+      "passed": 13
+    },
+    {
+      "failed": 0,
+      "seconds": 0.1537455,
+      "id": "ingredient-packaging",
+      "entry": "IngredientPackagingChecks.Run",
+      "passed": 21
+    },
+    {
+      "failed": 0,
+      "seconds": 0.2866436,
+      "id": "lottery-state",
+      "entry": "LotteryChecks.State",
+      "passed": 35
+    },
+    {
+      "failed": 0,
+      "seconds": 0.2587264,
+      "id": "lottery-integration",
+      "entry": "LotteryChecks.Integration",
+      "passed": 32
+    },
+    {
+      "failed": 0,
+      "seconds": 0.399745,
+      "id": "lottery-numbers",
+      "entry": "LotteryChecks.Numbers",
+      "passed": 13
+    },
+    {
+      "failed": 0,
+      "seconds": 8.8968963,
+      "id": "expansion",
+      "entry": "ExpansionChecks.Run",
+      "passed": 98
+    },
+    {
+      "failed": 0,
+      "seconds": 8.5884005,
+      "id": "furniture-planning",
+      "entry": "FurniturePlanningChecks.Run",
+      "passed": 32
+    },
+    {
+      "failed": 0,
+      "seconds": 0.7136442,
+      "id": "furniture-editor",
+      "entry": "FurnitureEditorChecks.Run",
+      "passed": 32
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0986403,
+  "finishedUtc": "2026-11-07T10:47:17.1270049Z",
+  "totalSeconds": 34.7641893
+}

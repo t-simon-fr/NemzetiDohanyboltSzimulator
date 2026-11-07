@@ -80,7 +80,9 @@ public sealed class ShopLayout : MonoBehaviour
     public Vector3 ShelfApproach(ShopProduct product)
     {
         Vector3 point=product.CurrentSlot.transform.position-product.CurrentSlot.transform.forward*.8f;
-        point.y=0;return point;
+        point.y=0;
+        var furniture=product.CurrentSlot.GetComponentInParent<ShopFurniture>();
+        return furniture == null ? point : furniture.ApproachAt(furniture.transform.InverseTransformPoint(point), furniture.Pose);
     }
     public Vector3 AisleGate=>aisleGate.position;
 }

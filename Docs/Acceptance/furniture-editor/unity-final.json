@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "furniture-editor",
+    "arrangement",
+    "expansion"
+  ],
+  "startedUtc": "2026-11-07T10:55:29.2552151Z",
+  "source": {
+    "commit": "9c1a6a59e8266e5ba65a3c31abedcbbbc94921f6",
+    "sourceFingerprint": "3ae6d523eaa6e173353dc5bc52eef7f3984b7eff2f67c7a81e73b9439b973328",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "id": "furniture-editor",
+      "failed": 0,
+      "passed": 34,
+      "entry": "FurnitureEditorChecks.Run",
+      "seconds": 1.498035
+    },
+    {
+      "id": "arrangement",
+      "failed": 0,
+      "passed": 27,
+      "entry": "ArrangementChecks.Run",
+      "seconds": 0.4042007
+    },
+    {
+      "id": "expansion",
+      "failed": 0,
+      "passed": 98,
+      "entry": "ExpansionChecks.Run",
+      "seconds": 10.1662366
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.1440062,
+  "finishedUtc": "2026-11-07T10:55:47.3941122Z",
+  "totalSeconds": 18.1485402
+}
