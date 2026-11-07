@@ -40,7 +40,9 @@ public sealed class ShopModularFurniture : MonoBehaviour
                 slot.transform.localRotation=Quaternion.identity;
             }
             AddLabels(root);
-            shop.Arrangement.Register(root,part==0?"public-shelf":"starter-shelf-"+part,"Bolti polc "+(part+1),new Vector2(1.2f,.5f));
+            var starter = shop.Arrangement.Register(root,part==0?"public-shelf":"starter-shelf-"+part,"Bolti polc "+(part+1),new Vector2(1.2f,.5f));
+            starter.CatalogKind = 0;
+            starter.InitiallyOwned = true;
         }
     }
 
@@ -79,7 +81,8 @@ public sealed class ShopModularFurniture : MonoBehaviour
         bool warehouse=kind==ShopModuleKind.Warehouse, island=kind==ShopModuleKind.Island;
         float width=kind==ShopModuleKind.Narrow?.6f:1.2f, depth=warehouse?.6f:island?.9f:.5f;
         var root=CreateRoot(Names[(int)kind],Vector3.zero);
-        BuildFrame(root,width,depth,island);
+        int rows = kind == ShopModuleKind.Shelf || kind == ShopModuleKind.Narrow ? 5 : 4;
+        BuildFrame(root,width,depth,island,rows);
         if(warehouse)
         {
             var docks=new List<Transform>();
@@ -95,16 +98,18 @@ public sealed class ShopModularFurniture : MonoBehaviour
         }
         else
         {
-            for(int row=0;row<4;row++)for(int side=0;side<(island?2:1);side++)for(int col=0;col<(width>.7f?3:1);col++)
+            for(int row=0;row<rows;row++)for(int side=0;side<(island?2:1);side++)for(int col=0;col<(width>.7f?3:1);col++)
             {
                 var slot=new GameObject("Module stock slot").AddComponent<ProductSlot>();slot.transform.SetParent(root,false);
-                slot.transform.localPosition=new Vector3(width>.7f?(col-1)*.35f:0,.275f+row*.45f,island?(side==0?-.22f:.22f):0);
+                slot.transform.localPosition=new Vector3(width>.7f?(col-1)*.35f:0,rows==5?.325f+row*.46f:.275f+row*.45f,island?(side==0?-.22f:.22f):0);
                 slot.transform.localRotation=Quaternion.Euler(0,side*180,0);slot.Configure(new Vector3(.34f,.4f,.4f));slot.RestrictTo("water");
             }
             AddLabels(root);
         }
         var item=root.gameObject.AddComponent<ShopFurniture>();item.Configure("module-"+(++serial),Names[(int)kind],new Vector2(width,depth));
         item.InWarehouse=warehouse;
+        item.CatalogKind=(int)kind;
+        item.CatalogKind=(int)kind;
         return item;
     }
     public ShopFurniture CreatePreview(ShopModuleKind kind)

@@ -25,7 +25,7 @@ public sealed partial class ShopDevices
                     Id = "Module:Plan:" + kind, Title = ShopArrangement.CatalogNames[kind],
                     Detail = reason == "" ? ShopArrangement.CatalogDetails[kind] : reason,
                     Price = ShopArrangement.CatalogPrice(kind), Enabled = reason == "",
-                    Owned = kind == 4 && shop.GetComponent<ShopNextUpgrades>().FridgeOwned,
+                    Owned = false,
                     Buy = () => { if (BeginArrangement()) shop.Arrangement.StartPurchase(kind); }
                 });
             }

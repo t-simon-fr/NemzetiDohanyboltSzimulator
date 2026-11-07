@@ -7,9 +7,9 @@ using UnityEngine.InputSystem;
 public sealed class ShopNextUpgrades : MonoBehaviour
 {
     public const int FridgePrice=18000;
-    public bool FridgeOwned{get;private set;}
+    public bool FridgeOwned => shop.Arrangement != null && shop.Arrangement.Current().Keys.Any(f => f.CatalogKind == 4);
     public ShopFurniture FridgeFurniture => fridge.GetComponent<ShopFurniture>();
-    public void CommitPlannedFridge() { FridgeOwned = true; fridge.SetActive(true); }
+    public void CommitPlannedFridge() { fridge.SetActive(true); }
     private MvpShopController shop;
     private GameObject fridge;
     private Transform coffee;
@@ -50,10 +50,21 @@ public sealed class ShopNextUpgrades : MonoBehaviour
         coffee=GetComponentsInChildren<Transform>(true).First(t=>t.name=="Purchased Coffee Machine");
         coffee.SetPositionAndRotation(new Vector3(-1.85f,0,1.15f),Quaternion.identity);
     }
-    void BuildFridge()
+    void BuildFridge() { fridge = BuildFridgeModel(); }
+    private int fridgeSerial;
+    private Material fridgeWhite, fridgeDark, fridgeGlass;
+    public ShopFurniture CreateFridgePreview()
     {
-        fridge=new GameObject("Purchased Drinks Fridge");fridge.transform.SetParent(transform,false);fridge.transform.position=new Vector3(3.35f,0,1.35f);
-        var white=Mat(new Color(.78f,.83f,.82f));var dark=Mat(new Color(.12f,.17f,.18f));var shelves=new List<ProductSlot>();
+        var root = BuildFridgeModel();
+        var item = root.AddComponent<ShopFurniture>();
+        item.Configure("drinks-fridge-" + (++fridgeSerial), "Italhűtő " + fridgeSerial, new Vector2(1.65f, .8f));
+        item.CatalogKind = 4;
+        return item;
+    }
+    private GameObject BuildFridgeModel()
+    {
+        var fridge=new GameObject("Purchased Drinks Fridge");fridge.transform.SetParent(transform,false);fridge.transform.position=new Vector3(3.35f,0,1.35f);
+        var white=fridgeWhite ?? (fridgeWhite=Mat(new Color(.78f,.83f,.82f)));var dark=fridgeDark ?? (fridgeDark=Mat(new Color(.12f,.17f,.18f)));var shelves=new List<ProductSlot>();
         Box(fridge.transform,"Fridge back",new Vector3(0,1,.30f),new Vector3(1.55f,2,.08f),white);
         foreach(int side in new[]{-1,1})Box(fridge.transform,"Fridge side",new Vector3(side*.77f,1,0),new Vector3(.07f,2,.65f),white);
         Box(fridge.transform,"Fridge roof",new Vector3(0,2,0),new Vector3(1.55f,.08f,.65f),white);
@@ -68,9 +79,10 @@ public sealed class ShopNextUpgrades : MonoBehaviour
         for(int i=0;i<23;i++)Box(fridge.transform,"Vent fin",new Vector3((i-11)*.055f,.065f,-.345f),new Vector3(.008f,.08f,.008f),white);
         Box(fridge.transform,"Temperature display",new Vector3(.55f,1.88f,-.345f),new Vector3(.27f,.11f,.015f),dark);
         ProductVisuals.Text(fridge.transform,"Temperature","4 °C",new Vector3(.55f,1.88f,-.356f),Quaternion.identity,.035f,new Color(.3f,1,.7f));
-        var glass=Mat(new Color(.72f,.87f,.9f,.09f));glass.shader=Shader.Find("Shop/PET");glass.color=new Color(.72f,.87f,.9f,.09f);glass.renderQueue=3000;
+        var glass=fridgeGlass ?? (fridgeGlass=Mat(new Color(.72f,.87f,.9f,.09f)));glass.shader=Shader.Find("Shop/PET");glass.color=new Color(.72f,.87f,.9f,.09f);glass.renderQueue=3000;
         var pane=Box(fridge.transform,"Fridge glazing",new Vector3(0,.95f,-.32f),new Vector3(1.43f,1.65f,.009f),glass);pane.GetComponent<Collider>().enabled=false;
-        shop.Layout.RegisterPublicSlots(shelves.ToArray());fridge.SetActive(false);
+        fridge.SetActive(false);
+        return fridge;
     }
     public bool BuyFridge()
     {
@@ -78,9 +90,9 @@ public sealed class ShopNextUpgrades : MonoBehaviour
         var furniture = fridge.GetComponent<ShopFurniture>();
         if (furniture != null && !shop.Arrangement.CanActivate(furniture)) return false;
         if(!shop.Ledger.TryImprove(FridgePrice)){shop.Notify("Nincs elég pénz a hűtőre.");return false;}
-        shop.SyncCashDrawer();FridgeOwned=true;fridge.SetActive(true);shop.Navigation?.Rebuild();shop.Notify("Hűtő megvásárolva. A polcait kézzel töltheted fel.");return true;
+        shop.SyncCashDrawer();fridge.SetActive(true);shop.Navigation?.Rebuild();shop.Notify("Hűtő megvásárolva. A polcait kézzel töltheted fel.");return true;
     }
-    public void ResetUpgrades(){FridgeOwned=false;if(fridge!=null)fridge.SetActive(false);}
+    public void ResetUpgrades(){if(fridge!=null)fridge.SetActive(false);}
     public void RefreshLayout()
     {
         // Expansion changes available floor area, never existing furniture poses.
@@ -111,7 +123,7 @@ public sealed class ShopNextUpgrades : MonoBehaviour
         for(int type=0;type<shop.AvailableProducts;type++)GUILayout.Label(ShopCatalog.ShortNames[type]+": "+shop.StockCount(type)+" polc / "+shop.WarehouseCount(type)+" raktár");
         if(GUILayout.Button("Koszfolt"))shop.Activities.SpawnSpill();if(GUILayout.Button("Következő vásárló"))shop.SkipCurrent();
         if(GUILayout.Button("10 másodperc szimuláció")){bool previous=shop.ManualTick;shop.ManualTick=true;shop.Tick(10);shop.ManualTick=previous;}
-        if(GUILayout.Button("Új játék")){shop.ResetDemo();FridgeOwned=false;fridge.SetActive(false);}
+        if(GUILayout.Button("Új játék")){shop.ResetDemo();fridge.SetActive(false);}
         if(GUILayout.Button("Bezárás")){developer=false;shop.ClosePanel();}GUILayout.EndScrollView();GUILayout.EndArea();
     }
     void OnDestroy(){foreach(var m in materials)if(m!=null)Destroy(m);}

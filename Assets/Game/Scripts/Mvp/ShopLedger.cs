@@ -72,6 +72,16 @@ public sealed class ShopLedger
         if(Closed||Cash<0||cost<=0||quantity<=0||quantity>10||(long)cost*quantity>AvailableFunds)return false;
         int amount=cost*quantity;SpendFunds(amount);Purchases+=amount;return true;
     }
+    public int FurnitureResale { get; private set; }
+    public bool TryFurnish(int purchases, int resale)
+    {
+        long next = (long)Cash + resale - purchases;
+        if (Closed || purchases < 0 || resale < 0 || purchases > (long)AvailableFunds + resale || next < 0 || next > int.MaxValue || (long)Improvements + purchases > int.MaxValue || (long)FurnitureResale + resale > int.MaxValue) return false;
+        Cash = (int)next;
+        Improvements += purchases;
+        FurnitureResale += resale;
+        return true;
+    }
     public bool TryImprove(int amount)
     {
         if(Closed || amount<=0 || amount>AvailableFunds)return false;
