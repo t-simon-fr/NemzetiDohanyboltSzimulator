@@ -106,13 +106,13 @@ public sealed partial class ShopArrangement : MonoBehaviour
         var placed = new List<Rect>();
         foreach (var pair in poses)
         {
-            area=pair.Key.InWarehouse?shop.Layout.WarehouseArea:shop.Layout.ShopArea;
+            area=shop.Layout.FurnitureArea(pair.Key.InWarehouse);
             Rect bounds = pair.Key.BoundsAt(pair.Value);
             if (bounds.xMin < area.xMin - .001f || bounds.xMax > area.xMax + .001f || bounds.yMin < area.yMin - .001f || bounds.yMax > area.yMax + .001f)
             { reason = "A berendezés kilóg a megvásárolt üzlettérből."; return false; }
             if (!pair.Key.InWarehouse && Protected.Any(r => r.Overlaps(bounds)))
             { reason = "Fenntartott közlekedősávot vagy fix berendezés helyét blokkolja."; return false; }
-            if (staticObstacles.Any(r => ShopNavigation.Expanded(r, .02f).Overlaps(bounds)) ||
+            if (staticObstacles.Any(r => r.Overlaps(bounds)) ||
                 placed.Any(r => ShopNavigation.Expanded(r,-.001f).Overlaps(bounds)))
             { reason = "Nem fér el: falnak, tárgynak vagy másik berendezésnek ütközik."; return false; }
             if (ShopNavigation.Expanded(bounds, .3f).Contains(new Vector2(player.transform.position.x, player.transform.position.z)))
@@ -122,13 +122,21 @@ public sealed partial class ShopArrangement : MonoBehaviour
         var grid = shop.Navigation.Build(poses);
         var required = new List<Vector3> { shop.Layout.EntryInside, shop.Layout.AisleGate, shop.Layout.EntryOutside, shop.Layout.ExitDoorway };
         for (int i = 0; i < 3; i++) required.Add(shop.Counter.QueuePoint(i));
-        foreach (var pair in poses.Where(p=>!p.Key.InWarehouse)) required.AddRange(pair.Key.AccessAt(pair.Value));
         foreach (var point in required)
         {
             if (grid.TryPath(shop.Layout.EntryInside, point, out var unused)) continue;
-            reason = "Nem járható az út a bejárat, a sor vagy valamelyik polc között.";
+            reason = "A bejárat vagy a várakozósor útvonala elzáródik.";
             return false;
         }
+        foreach (var pair in poses.Where(p => !p.Key.InWarehouse))
+            foreach (var point in pair.Key.AccessAt(pair.Value))
+            {
+                if (grid.TryPath(shop.Layout.EntryInside, point, out var route)) continue;
+                reason = !shop.Layout.FurnitureArea(false).Contains(new Vector2(point.x,point.z))
+                    ? pair.Key.Title + ": a vásárlói oldal a fal felé néz. Forgasd el (R)."
+                    : pair.Key.Title + ": a vásárlói oldal nem érhető el. Hagyj előtte szabad helyet.";
+                return false;
+            }
         var staffArea=Rect.MinMaxRect(shop.Layout.WarehouseArea.xMin,-4.3f,shop.Layout.ShopArea.xMax,1.9f);
         var staffObstacles=shop.Navigation.StaticObstacles();
         staffObstacles.AddRange(poses.Select(p=>p.Key.BoundsAt(p.Value)));
@@ -210,6 +218,7 @@ public sealed partial class ShopArrangement : MonoBehaviour
     partial void EndView();
     private void OnDestroy()
     {
+        if (cornerFootprint != null) Destroy(cornerFootprint);
         if (!Active) return;
         ClearPlannedPurchases();
         EndView();

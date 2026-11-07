@@ -1,5 +1,7 @@
 # #123 – Üzlet és raktár
 
+Aktuális bútor-elhelyezés: a névleges méretek változatlanok; a `FurnitureArea` a tényleges belső falfelületet követi 2 mm elválasztással. Az átrendező 10 cm-es bútorszél-rácsot, fal-/szomszédvonzást és R-forgatást használ. A Sarokpolc 0,8×0,8×2,5 m, tíz készlethely, 6500 Ft; megközelítése átlós, rajza ötszög, navigációs foglalása a teljes befoglaló. A következő rész korábbi #123 alapméretezése történeti; lásd [aktuális működés és ellenőrzés](../../Acceptance/corner-wall/REPORT.md).
+
 ## Méretek, árak és jogosultság
 
 | Szint | Üzlet névleges mérete | Következő lépcső ára | Raktár névleges mérete | Következő lépcső ára |

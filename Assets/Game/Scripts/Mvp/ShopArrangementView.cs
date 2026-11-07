@@ -19,6 +19,7 @@ public sealed partial class ShopArrangement
     public bool Dragging => dragging;
     public bool PreviewValid => previewValid;
     public Vector3 PreviewPosition => preview.Position;
+    public int PreviewQuarterTurns => preview.QuarterTurns;
     public string PreviewFeedback => previewReason;
 
     partial void BeginView()
@@ -175,10 +176,11 @@ public sealed partial class ShopArrangement
         if (planLabel == null) planLabel = new GUIStyle(ShopComputerTheme.Text(12, true, true)) {
             alignment = TextAnchor.MiddleCenter, wordWrap = false, clipping = TextClipping.Clip
         };
-        Rect area = Rect.MinMaxRect(shop.Layout.WarehouseArea.xMin, -4.3f, shop.Layout.ShopArea.xMax, 1.9f);
+        Rect shopArea=shop.Layout.FurnitureArea(false), warehouseArea=shop.Layout.FurnitureArea(true);
+        Rect area = Rect.MinMaxRect(warehouseArea.xMin, Mathf.Min(shopArea.yMin,warehouseArea.yMin), shopArea.xMax, Mathf.Max(shopArea.yMax,warehouseArea.yMax));
         Outline(OnPlan(area), new Color(.5f, .8f, .75f));
-        DrawGrid(shop.Layout.ShopArea);
-        DrawGrid(shop.Layout.WarehouseArea);
+        DrawGrid(shopArea);
+        DrawGrid(warehouseArea);
         foreach (Rect reserved in Protected) Fill(OnPlan(reserved), new Color(.5f, .25f, .16f, .2f));
         foreach (var pair in draft) DrawPlanFurniture(pair.Key, pair.Key == selected && dragging ? preview : pair.Value, pair.Key == selected && dragging);
         if (purchaseGhost != null) DrawPlanFurniture(purchaseGhost, preview, true);
@@ -262,10 +264,78 @@ public sealed partial class ShopArrangement
         Rect rect = OnPlan(item.BoundsAt(pose));
         Color color = ghost ? previewValid ? new Color(.15f, .65f, .3f, .65f) : new Color(.85f, .2f, .15f, .8f) :
             IsPlanned(item) ? new Color(.36f, .48f, .2f, .8f) : new Color(.1f, .42f, .45f, .9f);
-        if (item != selected) Fill(rect, color);
-        Outline(rect, ghost ? (previewValid ? Color.green : Color.red) : Color.white);
+        Color edge = ghost ? (previewValid ? Color.green : Color.red) : Color.white;
+        if (item.CatalogKind == 5) DrawCornerFootprint(rect, pose.QuarterTurns, item != selected, color, edge);
+        else { if (item != selected) Fill(rect, color); Outline(rect,edge); }
+        DrawFrontArrow(item,pose,edge);
         GUI.Label(rect, ghost && purchaseGhost != null ? ShopCatalog.Money(CatalogPrice(purchaseKind)) :
-            (item.InWarehouse ? "R" : item.CatalogKind == 4 ? "H" : "P") + "\n" + item.Height.ToString("0.#") + (IsPlanned(item) ? " +" : ""), planLabel);
+            (item.InWarehouse ? "R" : item.CatalogKind == 4 ? "H" : item.CatalogKind == 5 ? "S" : "P") + "\n" + item.Height.ToString("0.#") + (IsPlanned(item) ? " +" : ""), planLabel);
+    }
+
+    private Texture2D cornerFootprint;
+
+    private static void Segment(Vector2 a, Vector2 b, Color color)
+    {
+        var old = GUI.matrix;
+        GUIUtility.RotateAroundPivot(Mathf.Atan2(b.y - a.y, b.x - a.x) * Mathf.Rad2Deg, a);
+        Fill(new Rect(a.x, a.y, Vector2.Distance(a, b), 2), color);
+        GUI.matrix = old;
+    }
+
+    private void DrawCornerFootprint(Rect rect, int turns, bool fill, Color color, Color edge)
+    {
+        if (cornerFootprint == null)
+        {
+            cornerFootprint = new Texture2D(64, 64) {
+                filterMode = FilterMode.Point, hideFlags = HideFlags.HideAndDontSave
+            };
+            for (int y = 0; y < 64; y++)
+                for (int x = 0; x < 64; x++)
+                    cornerFootprint.SetPixel(x, y, new Color(1, 1, 1, (x + .5f) / 64f + (y + .5f) / 64f >= .625f ? 1 : 0));
+            cornerFootprint.Apply();
+        }
+        var old = GUI.matrix;
+        GUIUtility.RotateAroundPivot(turns * 90, rect.center);
+        if (fill)
+        {
+            var tint = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture(rect, cornerFootprint);
+            GUI.color = tint;
+        }
+        GUI.matrix = old;
+        var points = new[] {
+            new Vector2(rect.x, rect.y), new Vector2(rect.xMax, rect.y), new Vector2(rect.xMax, rect.yMax),
+            new Vector2(rect.x + rect.width * .625f, rect.yMax), new Vector2(rect.x, rect.y + rect.height * .375f)
+        };
+        float angle = turns * 90 * Mathf.Deg2Rad;
+        for (int i = 0; i < points.Length; i++)
+        {
+            Vector2 delta = points[i] - rect.center;
+            points[i] = rect.center + new Vector2(
+                Mathf.Cos(angle) * delta.x - Mathf.Sin(angle) * delta.y,
+                Mathf.Sin(angle) * delta.x + Mathf.Cos(angle) * delta.y);
+        }
+        for (int i = 0; i < points.Length; i++)
+            Segment(points[i], points[(i + 1) % points.Length], edge);
+    }
+
+    private void DrawFrontArrow(ShopFurniture item, ShopFurniturePose pose, Color color)
+    {
+        Vector3 local = item.CatalogKind == 5 ? new Vector3(-1, 0, -1).normalized : Vector3.back;
+        Vector2 centre = OnPlan(new Rect(pose.Position.x, pose.Position.z, 0, 0)).position;
+        void Arrow(Vector3 direction)
+        {
+            var world = pose.Position + pose.Rotation * direction * .45f;
+            Vector2 end = OnPlan(new Rect(world.x, world.z, 0, 0)).position;
+            Vector2 start = Vector2.Lerp(centre, end, .55f);
+            Segment(start, end, color);
+            Vector2 delta = (end - start).normalized, side = new Vector2(-delta.y, delta.x);
+            Segment(end, end - delta * 5 + side * 3, color);
+            Segment(end, end - delta * 5 - side * 3, color);
+        }
+        Arrow(local);
+        if (item.CatalogKind == 2) Arrow(-local);
     }
 
     private void DrawGrid(Rect room)

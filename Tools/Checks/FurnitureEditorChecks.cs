@@ -55,12 +55,12 @@ public static class FurnitureEditorChecks
             var low=e.PurchasePreview;
             foreach(int turn in Enumerable.Range(0,4))
             {
-                var pose=e.SnapToGuides(low,new ShopFurniturePose(new Vector3(g.Layout.ShopArea.xMax-.65f,0,-1.21f),turn));
+                var pose=e.SnapToGuides(low,new ShopFurniturePose(new Vector3(g.Layout.FurnitureArea(false).xMax-.65f,0,-1.21f),turn));
                 var bounds=low.BoundsAt(pose);
-                if(turn%2==0)check(Mathf.Abs(bounds.xMax-g.Layout.ShopArea.xMax)<.001f&&e.SnapFeedback.Contains("Fal"),"Right wall attracts actual edge "+turn);
+                if(turn%2==0)check(Mathf.Abs(bounds.xMax-g.Layout.FurnitureArea(false).xMax)<.001f&&e.SnapFeedback.Contains("Fal"),"Right wall attracts actual edge "+turn);
                 check(Mathf.Abs(bounds.yMin/.1f-Mathf.Round(bounds.yMin/.1f))<.001f,"Visible grid aligns depth edge "+turn);
             }
-            var wallPose=e.SnapToGuides(low,new ShopFurniturePose(new Vector3(g.Layout.ShopArea.xMax-.65f,0,-1.2f),0));
+            var wallPose=e.SnapToGuides(low,new ShopFurniturePose(new Vector3(g.Layout.FurnitureArea(false).xMax-.65f,0,-1.2f),0));
             var epsilonPlan=e.Draft;
             epsilonPlan[low]=new ShopFurniturePose(wallPose.Position+Vector3.right*.0000005f,0);
             check(e.Validate(epsilonPlan,out var epsilonReason),"Sub-millimetre rotation rounding is accepted at wall");

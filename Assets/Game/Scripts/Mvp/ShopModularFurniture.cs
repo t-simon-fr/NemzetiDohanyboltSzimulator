@@ -2,16 +2,17 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum ShopModuleKind { Shelf, Narrow, Island, Warehouse }
+public enum ShopModuleKind { Shelf, Narrow, Island, Warehouse, Corner = 5 }
 
 public sealed class ShopModularFurniture : MonoBehaviour
 {
-    public static readonly string[] Names = { "Bolti polc · 1,2 m", "Keskeny polc · 0,6 m", "Kétoldalas polc", "Raktári állvány" };
-    public static readonly int[] Prices = { 6000, 3500, 10000, 5000 };
+    public static readonly string[] Names = { "Bolti polc · 1,2 m", "Keskeny polc · 0,6 m", "Kétoldalas polc", "Raktári állvány", "Hűtő", "Sarokpolc" };
+    public static readonly int[] Prices = { 6000, 3500, 10000, 5000, 18000, 6500 };
     private MvpShopController shop;
     private readonly List<ShopFurniture> purchased = new List<ShopFurniture>();
     private readonly ShopRuntimeResources resources = new ShopRuntimeResources();
     private Material wood, metal;
+    private Mesh cornerBoardMesh;
     private int serial;
 
     public void Configure(MvpShopController owner)
@@ -78,6 +79,7 @@ public sealed class ShopModularFurniture : MonoBehaviour
     }
     private ShopFurniture Create(ShopModuleKind kind)
     {
+        if (kind == ShopModuleKind.Corner) return CreateCorner();
         bool warehouse=kind==ShopModuleKind.Warehouse, island=kind==ShopModuleKind.Island;
         float width=kind==ShopModuleKind.Narrow?.6f:1.2f, depth=warehouse?.6f:island?.9f:.5f;
         var root=CreateRoot(Names[(int)kind],Vector3.zero);
@@ -109,9 +111,73 @@ public sealed class ShopModularFurniture : MonoBehaviour
         var item=root.gameObject.AddComponent<ShopFurniture>();item.Configure("module-"+(++serial),Names[(int)kind],new Vector2(width,depth));
         item.InWarehouse=warehouse;
         item.CatalogKind=(int)kind;
-        item.CatalogKind=(int)kind;
         return item;
     }
+    private ShopFurniture CreateCorner()
+    {
+        var root = CreateRoot("Sarokpolc", Vector3.zero);
+        Box(root, "Corner back X", new Vector3(.38f, 1.25f, 0), new Vector3(.04f, 2.5f, .8f), wood);
+        Box(root, "Corner back Z", new Vector3(0, 1.25f, .38f), new Vector3(.8f, 2.5f, .04f), wood);
+        foreach (var point in new[] {
+            new Vector3(-.375f, 1.25f, .375f),
+            new Vector3(.375f, 1.25f, .375f),
+            new Vector3(.375f, 1.25f, -.375f)
+        })
+            Box(root, "Corner upright", point, new Vector3(.05f, 2.5f, .05f), metal);
+
+        if (cornerBoardMesh == null)
+        {
+            var profile = new[] {
+                new Vector3(-.4f, 0, .4f), new Vector3(.4f, 0, .4f),
+                new Vector3(.4f, 0, -.4f), new Vector3(.1f, 0, -.4f), new Vector3(-.4f, 0, .1f)
+            };
+            var vertices = profile.Select(v => v + Vector3.down * .0225f)
+                .Concat(profile.Select(v => v + Vector3.up * .0225f)).ToArray();
+            var triangles = new List<int>();
+            for (int i = 1; i < 4; i++)
+            {
+                triangles.AddRange(new[] { 5, 5 + i, 6 + i });
+                triangles.AddRange(new[] { 0, i + 1, i });
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                int n = (i + 1) % 5;
+                triangles.AddRange(new[] { i, n, 5 + n, i, 5 + n, 5 + i });
+            }
+            var mesh = resources.Own(new Mesh { name = "Corner shelf pentagon" });
+            mesh.vertices = vertices;
+            mesh.triangles = triangles.ToArray();
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            cornerBoardMesh = mesh;
+        }
+
+        var boardMesh = cornerBoardMesh;
+        for (int row = 0; row < 5; row++)
+        {
+            var board = new GameObject("Corner shelf board");
+            board.transform.SetParent(root, false);
+            board.transform.localPosition = Vector3.up * (.3f + row * .46f);
+            board.AddComponent<MeshFilter>().sharedMesh = boardMesh;
+            board.AddComponent<MeshRenderer>().sharedMaterial = wood;
+            board.AddComponent<MeshCollider>().sharedMesh = boardMesh;
+            for (int col = 0; col < 2; col++)
+            {
+                var slot = new GameObject("Corner product slot").AddComponent<ProductSlot>();
+                slot.transform.SetParent(root, false);
+                slot.transform.localPosition = new Vector3(col == 0 ? -.05f : .19f, .325f + row * .46f, col == 0 ? .19f : -.05f);
+                slot.transform.localRotation = Quaternion.Euler(0, 45, 0);
+                slot.Configure(new Vector3(.31f, .4f, .31f));
+                slot.RestrictTo("water");
+            }
+        }
+        AddLabels(root);
+        var item = root.gameObject.AddComponent<ShopFurniture>();
+        item.CatalogKind = 5;
+        item.Configure("module-" + (++serial), "Sarokpolc", new Vector2(.8f, .8f));
+        return item;
+    }
+
     public ShopFurniture CreatePreview(ShopModuleKind kind)
     {
         var item = Create(kind);
@@ -130,6 +196,7 @@ public sealed class ShopModularFurniture : MonoBehaviour
     }
     public bool Buy(ShopModuleKind kind)
     {
+        if (!System.Enum.IsDefined(typeof(ShopModuleKind), kind)) return false;
         if(!shop.CanDevelopShop||shop.Ledger.AvailableFunds<Prices[(int)kind])return false;
         var item=Create(kind);
         Rect area=item.InWarehouse?shop.Layout.WarehouseArea:shop.Layout.ShopArea;

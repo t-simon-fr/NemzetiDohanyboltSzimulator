@@ -52,7 +52,8 @@
       "lottery-numbers",
       "expansion",
       "furniture-planning",
-      "furniture-editor"
+      "furniture-editor",
+      "corner-wall"
     ]
   },
   "suites": {
@@ -290,6 +291,11 @@
       "entry": "FurnitureEditorChecks.Run",
       "file": "Tools/Checks/FurnitureEditorChecks.cs",
       "purpose": "Empty-only resale, atomic credit/debit, independent fridges, real heights, wall and grid snapping, reset"
+    },
+    "corner-wall": {
+      "entry": "CornerWallChecks.Run",
+      "file": "Tools/Checks/CornerWallChecks.cs",
+      "purpose": "Front-wall facing and repeated rotation, physical wall gap, corner geometry/stock/NPC access/purchase/resale/day/reset and six-item catalog"
     }
   },
   "historicalExcluded": {

@@ -50,7 +50,7 @@ public sealed partial class ShopDevices
         {
             var offer = offers[i];
             controls.Add(new ShopKeyboardTarget(offer.Id, offer.Owned ? "Megvásárolva" : furnishingPage == 1 ? "Elhelyezés" : "Megveszem",
-                new Rect(ComputerBody.xMax - 226, ComputerBody.y + 64 + i * 64, 216, 54), offer.Buy, offer.Enabled));
+                new Rect(ComputerBody.xMax - 226, ComputerBody.y + 64 + i * (furnishingPage == 1 ? 56 : 64), 216, furnishingPage == 1 ? 50 : 54), offer.Buy, offer.Enabled));
         }
         controls.Add(new ShopKeyboardTarget("Arrange:0", "Üzlet átrendezése", new Rect(ComputerBody.x + 12, ComputerBody.yMax - 54, 340, 44), () => BeginArrangement(), shop.CanDevelopShop));
     }
@@ -61,11 +61,11 @@ public sealed partial class ShopDevices
         for (int i = 0; i < offers.Count; i++)
         {
             var offer = offers[i];
-            float y = ComputerBody.y + 64 + i * 64;
+            float y = ComputerBody.y + 64 + i * (furnishingPage == 1 ? 56 : 64);
             ShopComputerTheme.Label(new Rect(ComputerBody.x + 18, y, 570, 28), offer.Title, 23, true);
             ShopComputerTheme.Label(new Rect(ComputerBody.x + 18, y + 29, 570, 25), offer.Detail, 17);
             ShopComputerTheme.Label(new Rect(ComputerBody.x + 620, y, 230, 54), offer.Owned ? "Kész" : ShopCatalog.Money(offer.Price), 22, true);
-            ShopUi.Fill(new Rect(ComputerBody.x + 18, y + 60, ComputerBody.width - 36, 1), ShopComputerTheme.Rule);
+            ShopUi.Fill(new Rect(ComputerBody.x + 18, y + (furnishingPage == 1 ? 54 : 60), ComputerBody.width - 36, 1), ShopComputerTheme.Rule);
         }
     }
 }

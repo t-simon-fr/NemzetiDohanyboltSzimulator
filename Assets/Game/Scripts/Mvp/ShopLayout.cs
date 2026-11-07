@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 
 public sealed class ShopLayout : MonoBehaviour
 {
@@ -22,6 +23,25 @@ public sealed class ShopLayout : MonoBehaviour
     public Rect ShopArea => Rect.MinMaxRect(-2.4f,-4.3f,2.4f+ShopLevel*2,1.8f);
     public Rect WarehouseArea => Rect.MinMaxRect(WarehouseLevel < 2 ? -5.9f : -7.4f,
         WarehouseLevel == 0 ? -1.9f : WarehouseLevel < 3 ? -2.9f : -3.9f,-2.6f,1.9f);
+    // ShopArea/WarehouseArea retain their nominal gameplay dimensions. Furniture
+    // uses the actual inner wall faces, with a small physical separation.
+    public Rect FurnitureArea(bool warehouse)
+    {
+        Rect area = warehouse ? WarehouseArea : ShopArea;
+        area = Rect.MinMaxRect(area.xMin-.025f, area.yMin-.025f, area.xMax+.025f, area.yMax+.025f);
+        var floor = MvpShopController.Instance?.FloorPlan;
+        if (floor != null && !warehouse)
+        {
+            Transform right = Expanded ? floor.Find("Self-service Extension/Extension outer wall") : starterWall?.transform;
+            // Authored extension objects can live directly below the layout root.
+            if (Expanded) right = floor.GetComponentsInChildren<Transform>(true).FirstOrDefault(t=>t.name=="Extension outer wall");
+            var body = right != null && right.gameObject.activeInHierarchy ? right.GetComponent<Collider>() : null;
+            if (body != null) area.xMax = body.bounds.min.x;
+        }
+        const float gap = .002f;
+        return Rect.MinMaxRect(area.xMin+gap,area.yMin+gap,area.xMax-gap,area.yMax-gap);
+    }
+
     public void Configure(GameObject wall,GameObject room,ProductSlot[] slots,int[] types)
     { starterWall=wall;extension=room;publicSlots=slots;publicTypes=types;SetExpanded(false); }
     public void SetExpanded(bool expanded)
@@ -79,9 +99,10 @@ public sealed class ShopLayout : MonoBehaviour
     { entryOutside=outside; entryInside=inside; aisleGate=gate; exitDoorway=exit; }
     public Vector3 ShelfApproach(ShopProduct product)
     {
-        Vector3 point=product.CurrentSlot.transform.position-product.CurrentSlot.transform.forward*.8f;
-        point.y=0;
         var furniture=product.CurrentSlot.GetComponentInParent<ShopFurniture>();
+        float distance=furniture==null ? .8f : furniture.ApproachDistance;
+        Vector3 point=product.CurrentSlot.transform.position-product.CurrentSlot.transform.forward*distance;
+        point.y=0;
         return furniture == null ? point : furniture.ApproachAt(furniture.transform.InverseTransformPoint(point), furniture.Pose);
     }
     public Vector3 AisleGate=>aisleGate.position;
