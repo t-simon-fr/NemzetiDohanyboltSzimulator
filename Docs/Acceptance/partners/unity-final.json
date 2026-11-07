@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "partner-integration",
+    "ui-presentation",
+    "entrance-day"
+  ],
+  "startedUtc": "2026-11-07T21:56:00.5946474Z",
+  "source": {
+    "commit": "bc7b24715ba92d4e58ae7ddbbcf041289b442f14",
+    "sourceFingerprint": "e1a443ca39ed2951dedf468e94e405c44c7d0be01fed29a176ca8d7ed23e0a15",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "id": "partner-integration",
+      "entry": "PartnerChecks.Integration",
+      "failed": 0,
+      "passed": 79,
+      "seconds": 1.6625156
+    },
+    {
+      "id": "ui-presentation",
+      "entry": "UiPresentationChecks.Run",
+      "failed": 0,
+      "passed": 20,
+      "seconds": 0.3950504
+    },
+    {
+      "id": "entrance-day",
+      "entry": "EntranceDayChecks.Run",
+      "failed": 0,
+      "passed": 15,
+      "seconds": 0.1850414
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0938982,
+  "finishedUtc": "2026-11-07T21:56:10.2151472Z",
+  "totalSeconds": 9.6356709
+}

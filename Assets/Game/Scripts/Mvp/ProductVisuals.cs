@@ -5,6 +5,8 @@ public static class ProductVisuals
     public static readonly Color[] Colors = {new Color(.87f,.81f,.67f),new Color(.72f,.04f,.07f),new Color(.28f,.035f,.075f),new Color(.035f,.035f,.04f),new Color(.2f,.6f,.8f),new Color(.72f,.025f,.04f),new Color(.025f,.03f,.025f),new Color(.75f,.24f,.025f),new Color(.12f,.32f,.12f)};
     public static Vector3 Size(int type)
     {
+        if (ShopPartnerCatalog.IsSpirit(type)) return new Vector3(.085f, .22f, .085f);
+        if (type == ShopPartnerCatalog.Fantom || type == ShopPartnerCatalog.Spritz) return new Vector3(.14f, .24f, .14f);
         if (ShopLotteryCatalog.IsTicket(type)) return new Vector3(.15f,.21f,.008f);
         if(ShopCatalog.IsCoffee(type))return new Vector3(.14f,type==ShopCatalog.Coffee?.16f:type==ShopCatalog.LongCoffee?.22f:.27f,.14f);
         if (ShopCatalog.IsCigarette(type)) return new Vector3(.16f,.26f,.08f);
@@ -19,6 +21,20 @@ public static class ProductVisuals
         var t=go.AddComponent<TextMesh>();t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");t.GetComponent<MeshRenderer>().sharedMaterial=WorldFontMaterial();
         t.text=value;t.characterSize=size*.18f;t.fontSize=64;t.anchor=TextAnchor.MiddleCenter;t.alignment=TextAlignment.Center;t.color=color;go.AddComponent<ShopWorldText>();
         return t;
+    }
+    public static void FitText(TextMesh text, float width, float originalSize)
+    {
+        text.characterSize = originalSize;
+        text.font.RequestCharactersInTexture(text.text, text.fontSize, text.fontStyle);
+        int longest = 0, line = 0;
+        foreach (char character in text.text)
+        {
+            if (character == '\n') { longest = Mathf.Max(longest,line);line = 0;continue; }
+            if (text.font.GetCharacterInfo(character,out var info,text.fontSize,text.fontStyle)) line += info.advance;
+        }
+        longest = Mathf.Max(longest,line);
+        float measured = longest * originalSize * .1f;
+        if (measured > width && width > 0) text.characterSize = originalSize * width / measured;
     }
     private static Material fontMaterial;
     public static Material WorldFontMaterial()
@@ -51,6 +67,11 @@ public static class ProductVisuals
     }
     public static void Add(GameObject item,int type)
     {
+        if (ShopPartnerCatalog.IsVariant(type))
+        {
+            MvpShopController.Instance.Partners.AddProductVisual(item, type);
+            return;
+        }
         if (ShopLotteryCatalog.IsTicket(type))
         {
             MvpShopController.Instance.Lottery.AddTicketVisual(item, type);

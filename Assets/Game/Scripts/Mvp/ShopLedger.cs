@@ -6,18 +6,20 @@ public static class ShopCatalog
 {
     // Packaged products that use shelves and warehouse docks. Coffee is prepared separately.
     public const int Count = 9;
+    public const int SupplyCapacity = 23;
+    public static bool IsPackaged(int type) => type >= 0 && type < Count || ShopPartnerCatalog.IsVariant(type);
     public const int Coffee = Count;
     public const int LongCoffee=Count+1,Latte=Count+2,Contraband=Count+3;
     public static bool IsCoffee(int type)=>type>=Coffee&&type<=Latte;
     public const int CigaretteCount = 4;
     public const int MaxOrderQuantity = 12;
     public static bool IsCigarette(int type) => type >= 0 && type < CigaretteCount || type==Contraband;
-    public static readonly string[] Ids = { "cig_red", "cig_blue", "cig_gold", "cig_davidon", "water", "cola", "energy", "kevert", "beer", "coffee", "coffee_long", "latte", "dnyipro", "lottery_fortuna", "lottery_pension", "lottery_numbers" };
-    public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy", "Kevert", "Kőfejtői", "Rövid kávé", "Hosszú kávé", "Latte", "Dnyipro", "Falusi Fortuna", "Nyugdíj Plusz", "Ötöske" };
-    public static readonly string[] Names = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua 500 ml", "Loca Cola 330 ml", "Hamster Energy 500 ml", "Kevert 50 ml", "Kőfejtői 500 ml", "Rövid kávé", "Hosszú kávé", "Latte", "Dnyipro ukrán cigaretta", "Falusi Fortuna sorsjegy", "Nyugdíj Plusz sorsjegy", "Ötöske számszelvény" };
-    public static readonly int[] Prices = { 2200, 2300, 2400, 2600, 350, 450, 650, 450, 550, 650, 750, 1100, 1400, 500, 1000, 500 };
+    public static readonly string[] Ids = { "cig_red", "cig_blue", "cig_gold", "cig_davidon", "water", "cola", "energy", "kevert", "beer", "coffee", "coffee_long", "latte", "dnyipro", "lottery_fortuna", "lottery_pension", "lottery_numbers", "energy_zero", "energy_mango", "fantom", "spritz", "muszak_plum", "muszak_pear", "muszak_mixed" };
+    public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy", "Kevert", "Kőfejtői", "Rövid kávé", "Hosszú kávé", "Latte", "Dnyipro", "Falusi Fortuna", "Nyugdíj Plusz", "Ötöske", "Hamster Zero", "Hamster Pacific Mango", "Fantom", "Spritz", "Műszakkezdő Szilva", "Műszakkezdő Körte", "Műszakkezdő Vegyes" };
+    public static readonly string[] Names = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua 500 ml", "Loca Cola 330 ml", "Hamster Energy 500 ml", "Kevert 50 ml", "Kőfejtői 500 ml", "Rövid kávé", "Hosszú kávé", "Latte", "Dnyipro ukrán cigaretta", "Falusi Fortuna sorsjegy", "Nyugdíj Plusz sorsjegy", "Ötöske számszelvény", "Hamster Zero 500 ml", "Hamster Pacific Mango 500 ml", "Fantom narancs 330 ml", "Spritz citrus 330 ml", "Műszakkezdő Szilva 50 ml", "Műszakkezdő Körte 50 ml", "Műszakkezdő Vegyes 50 ml" };
+    public static readonly int[] Prices = { 2200, 2300, 2400, 2600, 350, 450, 650, 450, 550, 650, 750, 1100, 1400, 500, 1000, 500, 650, 700, 450, 450, 550, 550, 550 };
     // Lottery cost is the operator's share, not a second procurement payment.
-    public static readonly int[] Costs = { 1500, 1600, 1700, 1850, 150, 180, 300, 220, 280, 200, 200, 350, 700, 450, 900, 450 };
+    public static readonly int[] Costs = { 1500, 1600, 1700, 1850, 150, 180, 300, 220, 280, 200, 200, 350, 700, 450, 900, 450, 300, 330, 180, 180, 260, 270, 250 };
     public static readonly int[] Denominations = { 20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5 };
     public static readonly int[] VisitProducts = { 0, 1, 2, 3, 1, 0, 2, 3 };
     public static int SalePrice(int type)=>MvpShopController.Instance?.Pricing?.Price(type)??Prices[type];
@@ -44,6 +46,8 @@ public sealed class ShopLedger
     public int Cash { get; private set; }
     public int Revenue { get; private set; }
     public int Purchases { get; private set; }
+    public int PurchaseRounding { get; private set; }
+    public void RecordPurchaseRounding(int difference) { if (!Closed) PurchaseRounding += difference; }
     public int Improvements { get; private set; }
     public int CostOfGoods { get; private set; }
     public int OperatingCosts { get; private set; }
@@ -51,7 +55,7 @@ public sealed class ShopLedger
     public void RecordStockLoss(int cost) { if(!Closed && cost>0)StockLoss+=cost; }
     public int Sales { get; private set; }
     public bool Closed { get; private set; }
-    public int Profit => Revenue - CostOfGoods - OperatingCosts - StockLoss;
+    public int Profit => Revenue - CostOfGoods - OperatingCosts - StockLoss - PurchaseRounding;
     public ShopLedger(int openingCash,int bankBalance=0) { OpeningCash = openingCash+Math.Max(0,bankBalance); Cash = OpeningCash; BankBalance=0; }
     private void SpendFunds(int amount){Cash-=amount;}
     public bool TrySellCard(int price,int cost)

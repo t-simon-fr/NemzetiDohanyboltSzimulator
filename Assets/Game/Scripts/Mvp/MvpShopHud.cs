@@ -145,6 +145,8 @@ public sealed class MvpShopHud : MonoBehaviour
         GUILayout.Label("Működési költség: " + ShopCatalog.Money(shop.Ledger.OperatingCosts) + "  •  Kártyás bevétel: " + ShopCatalog.Money(shop.Ledger.CardRevenue), ShopUi.Text(16));
         GUILayout.Label("Lopáskár: " + ShopCatalog.Money(shop.Ledger.StockLoss) + "  •  Megállított tolvaj: " + shop.CaughtToday, ShopUi.Text(16));
         GUILayout.Label("Utánrendelés: " + ShopCatalog.Money(shop.Ledger.Purchases) + "  •  Beruházás: " + ShopCatalog.Money(shop.Ledger.Improvements), ShopUi.Text(16));
+        if (shop.Ledger.PurchaseRounding != 0)
+            GUILayout.Label("Beszerzési kerekítés: " + ShopCatalog.Money(shop.Ledger.PurchaseRounding), ShopUi.Text(16));
         if(shop.Lottery.Owned)
         {
             var book=shop.Lottery.Book;
@@ -155,7 +157,7 @@ public sealed class MvpShopHud : MonoBehaviour
         }
         GUILayout.Space(12);
         GUILayout.Label("KÉSZLET  /  BOLT + RAKTÁR", ShopUi.Text(14, true));
-        for (int i = 0; i < shop.AvailableProducts; i++)
+        foreach (int i in shop.SupplyTypes)
             GUILayout.Label(ShopCatalog.Names[i] + "  —  " + shop.StockCount(i) + " + " + shop.WarehouseCount(i) + " db", ShopUi.Text(16));
         if (shop.StockCount(ShopCatalog.Contraband) > 0) GUILayout.Label("Dnyipro  —  " + shop.StockCount(ShopCatalog.Contraband) + " csomag", ShopUi.Text(16));
         GUILayout.EndScrollView();

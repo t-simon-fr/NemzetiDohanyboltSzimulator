@@ -269,7 +269,7 @@ public sealed partial class ShopArrangement
         else { if (item != selected) Fill(rect, color); Outline(rect,edge); }
         DrawFrontArrow(item,pose,edge);
         GUI.Label(rect, ghost && purchaseGhost != null ? ShopCatalog.Money(CatalogPrice(purchaseKind)) :
-            (item.InWarehouse ? "R" : item.CatalogKind == 4 ? "H" : item.CatalogKind == 5 ? "S" : "P") + "\n" + item.Height.ToString("0.#") + (IsPlanned(item) ? " +" : ""), planLabel);
+            (item.InWarehouse ? "R" : item.IsFridge ? "H" : item.CatalogKind == 5 ? "S" : "P") + "\n" + item.Height.ToString("0.#") + (IsPlanned(item) ? " +" : ""), planLabel);
     }
 
     private Texture2D cornerFootprint;

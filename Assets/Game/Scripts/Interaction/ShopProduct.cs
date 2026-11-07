@@ -17,6 +17,8 @@ public sealed class ShopProduct : MonoBehaviour
     private bool originalKinematic;
     private bool originalGravity;
 
+    public int UnitCost { get; private set; } = -1;
+    public void SetUnitCost(int value) { if (value < 0) throw new System.ArgumentOutOfRangeException(nameof(value)); UnitCost = value; }
     public string ProductId => productId;
     public string DisplayName => displayName;
     public bool IsHeld { get; private set; }

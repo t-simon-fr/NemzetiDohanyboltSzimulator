@@ -1,5 +1,7 @@
 # Elfogadási ellenőrzések
 
+Legfrissebb fejlesztés: [#124 márkapartneri csomagok](partners/REPORT.md): 1295 natív állítás / 51 suite baseline, 114 + 34 végső célzott állítás; 45 partnerségi, 6 beszerzési, 15 átrendezési és 4 napvégi WebGL-ellenőrzés, 0 konzolhiba. Mindhárom partner és a 720p/1080p felületek ellenőrizve. Pagesre nincs kiadva.
+
 Legfrissebb fejlesztés: [#134 normál polcsorokat összekötő 120×120-as sarokelem](corner-connector/REPORT.md): 1162 natív állítás / 48 suite; 15 sarokcsatlakozási és 15 készletes átrendezési WebGL-ellenőrzés, 0 konzolhiba; natív és 720p/1080p képek átnézve. Pagesre nincs kiadva.
 
 Legfrissebb fejlesztés: [#132 sarokpolc, tényleges falillesztés és vásárlói irány](corner-wall/REPORT.md): 1148 natív állításos baseline / 48 suite, 12 végső UI-állítás; 12 + 16 + 15 WebGL-ellenőrzés, 0 konzolhiba. Natív és 720p/1080p képek átnézve. Pagesre nincs kiadva.

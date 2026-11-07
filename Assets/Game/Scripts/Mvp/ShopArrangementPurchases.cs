@@ -18,7 +18,8 @@ public sealed partial class ShopArrangement
     public int SaleCredit => plannedSales.Sum(SalePrice);
     public int SaleCount => plannedSales.Count;
     public int RemainingFunds => shop.Ledger.AvailableFunds + SaleCredit - PlannedCost;
-    public static int SalePrice(ShopFurniture item) => item.CatalogKind < 0 ? 0 : CatalogPrice(item.CatalogKind) / 10 * 5;
+    public static int SalePrice(ShopFurniture item) => item.CatalogKind < 0 ? 0 :
+        item.CatalogKind >= ShopPartnerCatalog.FirstFurnitureKind ? ShopNextUpgrades.FridgePrice / 2 : CatalogPrice(item.CatalogKind) / 10 * 5;
     private bool Empty(ShopFurniture item) => item.Slots.All(s => s.Occupant == null) && !shop.Warehouse.StorageDocks.Any(d => d != null && d.IsChildOf(item.transform) && shop.Warehouse.CartonAt(d) != null);
     public bool PlanSale(ShopFurniture item)
     {
@@ -33,11 +34,19 @@ public sealed partial class ShopArrangement
         return true;
     }
     private bool SalesValid() => plannedSales.All(f => f != null && f.gameObject.activeSelf && Empty(f));
-    public static int CatalogPrice(int kind) => kind == 4 ? ShopNextUpgrades.FridgePrice : ShopModularFurniture.Prices[kind];
+    public static int CatalogPrice(int kind) => kind >= ShopPartnerCatalog.FirstFurnitureKind ? ShopPartnerCatalog.PackagePrice :
+        kind == 4 ? ShopNextUpgrades.FridgePrice : ShopModularFurniture.Prices[kind];
     public bool IsPlanned(ShopFurniture item) => plannedPurchases.ContainsKey(item);
 
     public string PurchaseUnavailable(int kind)
     {
+        if (kind >= ShopPartnerCatalog.FirstFurnitureKind && kind < ShopPartnerCatalog.FirstFurnitureKind + 2)
+        {
+            if (plannedPurchases.ContainsValue(kind)) return "A partnercsomag már a tervben van.";
+            string unavailable = shop.Partners.Unavailable((ShopPartnerKind)(kind - ShopPartnerCatalog.FirstFurnitureKind));
+            if (unavailable != "") return unavailable;
+            return CatalogPrice(kind) > RemainingFunds ? "Nincs elég elkölthető pénz a partnercsomagra." : "";
+        }
         if (kind < 0 || kind >= CatalogNames.Length) return "Ismeretlen bútor.";
         if (!shop.CanDevelopShop) return "Vásárolni nyitás előtt vagy zárás után, üres boltban lehet.";
         if (kind == 4)
@@ -54,7 +63,8 @@ public sealed partial class ShopArrangement
         if (reason != "") { Feedback = reason; return false; }
         DiscardPurchaseGhost();
         purchaseKind = kind;
-        purchaseGhost = kind == 4 ? shop.GetComponent<ShopNextUpgrades>().CreateFridgePreview() :
+        purchaseGhost = kind >= ShopPartnerCatalog.FirstFurnitureKind ?
+            shop.Partners.CreateFridgePreview((ShopPartnerKind)(kind - ShopPartnerCatalog.FirstFurnitureKind)) : kind == 4 ? shop.GetComponent<ShopNextUpgrades>().CreateFridgePreview() :
             shop.GetComponent<ShopModularFurniture>().CreatePreview((ShopModuleKind)kind);
         selected = purchaseGhost;
         preview = new ShopFurniturePose(new Vector3(99, 0, 99), 0);
@@ -125,7 +135,8 @@ public sealed partial class ShopArrangement
         foreach (var pair in plannedPurchases)
         {
             pair.Key.gameObject.SetActive(true);
-            shop.GetComponent<ShopModularFurniture>().CommitPlannedPurchase(pair.Key);
+            if (pair.Value >= ShopPartnerCatalog.FirstFurnitureKind) shop.Partners.CommitFridge(pair.Key);
+            else shop.GetComponent<ShopModularFurniture>().CommitPlannedPurchase(pair.Key);
         }
         plannedPurchases.Clear();
     }

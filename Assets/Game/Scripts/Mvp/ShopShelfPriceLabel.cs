@@ -8,10 +8,13 @@ public sealed class ShopShelfPriceLabel : MonoBehaviour
     private ProductSlot[] slots;
     private float nextRefresh;
     private bool compact;
+    private float maximumWidth, originalSize;
 
-    public void Configure(TextMesh target, ProductSlot[] row, bool shortLabel = false)
+    public void Configure(TextMesh target, ProductSlot[] row, bool shortLabel = false, float width = 0)
     {
         label = target;
+        maximumWidth = width;
+        originalSize = target.characterSize;
         slots = row;
         compact = shortLabel;
         Refresh();
@@ -22,14 +25,20 @@ public sealed class ShopShelfPriceLabel : MonoBehaviour
         if (label == null || slots == null) return;
         var types = slots.Where(s => s != null && s.Occupant != null && !s.Occupant.IsHeld)
             .Select(s => ShopCatalog.Index(s.Occupant.ProductId)).Where(type => type >= 0).Distinct().ToArray();
-        if (types.Length == 0) { label.text = ""; return; }
+        if (types.Length == 0) { SetText(""); return; }
         if (types.Length == 1)
         {
             int type = types[0];
-            label.text = (compact ? ShopCatalog.ShortNames[type] : ShopCatalog.Names[type]) + " • " + ShopCatalog.Money(ShopCatalog.SalePrice(type));
+            SetText((compact ? ShopCatalog.ShortNames[type] : ShopCatalog.Names[type]) + " • " + ShopCatalog.Money(ShopCatalog.SalePrice(type)));
             return;
         }
-        label.text = (compact ? "" : "VEGYES POLC • ") + string.Join(" / ", types.Select(type => ShopCatalog.ShortNames[type]));
+        SetText((compact ? "" : "VEGYES POLC • ") + string.Join(" / ", types.Select(type => ShopCatalog.ShortNames[type])));
+    }
+
+    private void SetText(string value)
+    {
+        label.text = value;
+        if (maximumWidth > 0) ProductVisuals.FitText(label, maximumWidth, originalSize);
     }
 
     private void Update()
