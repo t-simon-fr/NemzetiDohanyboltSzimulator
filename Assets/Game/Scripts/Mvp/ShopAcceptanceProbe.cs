@@ -55,7 +55,14 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "lottery" || scenario == "lottery-numbers")
+        if (scenario == "partners" || scenario == "partners-visual")
+        {
+            Shop.Ledger.TrySellCard(500000,0);Shop.SyncCashDrawer();Shop.Layout.SetLevels(3,3);Shop.Navigation.Rebuild();
+            Shop.OrderSupply(6,1);Shop.Tick(8.1f);
+            if (scenario == "partners-visual") SetupPartnerVisuals();
+            else { Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Furnishing); }
+        }
+        else if (scenario == "lottery" || scenario == "lottery-numbers")
         {
             Shop.Ledger.TrySellCard(60000,0);Shop.SyncCashDrawer();
             Set(Shop.Lottery,"Book",new ShopLotteryState(1));
@@ -294,6 +301,40 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action == "partner-orders") { Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Orders); }
+        if (action == "partner-deliver") Shop.Tick(8.1f);
+        if (action == "partner-return-carton") Player.ReturnCarton();
+        if (action.StartsWith("partner-carton:"))
+        {
+            int type = int.Parse(action.Substring("partner-carton:".Length));
+            Shop.ClosePanel();
+            var carton = Shop.Warehouse.Carton(type);
+            if (Shop.Warehouse.IsStorageDock(carton.transform.parent)) AimStorageDock(carton.transform.parent);
+            else Aim(carton.transform.TransformPoint(new Vector3(0,.14f,-.198f)),1.15f,-carton.transform.forward,true);
+            Physics.SyncTransforms();Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f,.5f,0)));
+        }
+        if (action.StartsWith("partner-slot:"))
+        {
+            int type = int.Parse(action.Substring("partner-slot:".Length));
+            var slot = PartnerSlots(type).First(p=>p.Occupant==null);
+            Vector3 front = slot.HintCenter - slot.transform.forward * slot.GetComponent<BoxCollider>().size.z * .4f;
+            // Stand in the aisle between the counter and cigarette wall;
+            // standing directly below either outside bottle overlaps furniture.
+            bool spirit = ShopPartnerCatalog.IsSpirit(type);
+            Vector3 approach = spirit ? new Vector3((-1.4f-front.x)/1.35f,0,1) : -slot.transform.forward;
+            Aim(front,spirit ? 1.35f : 1.15f,approach,true);
+            Physics.SyncTransforms();Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f,.5f,0)));
+        }
+        if (action == "partner-fridges-view") Aim(new Vector3(6,1.15f,Shop.Layout.FurnitureArea(false).yMax-.15f),2.8f,Vector3.back,true);
+        if (action == "partner-counter-view") Aim(new Vector3(-1.6f,2.05f,-4.15f),1.3f,Vector3.forward,true);
+        if (action == "partner-customer")
+        {
+            Shop.ClosePanel();Shop.SingleProductVisits=true;Visit(0,16);
+            for(int i=0;i<1500 && Shop.Stage!=ServiceStage.Payment;i++)Shop.Tick(.1f);
+            if(Shop.Stage!=ServiceStage.Payment)throw new Exception("Partner customer could not collect real public stock.");
+            Set(Shop.ActiveCustomer,"UsesCard",true);Set(Shop.ActiveCustomer,"UsesCoins",false);
+            Shop.ManualTick=false;
+        }
         if(action=="lottery-deliver")Shop.Tick(8.1f);
         if(action=="lottery-scratch-customer")
         {
@@ -452,6 +493,30 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Snapshot("");
     }
 
+    private ProductSlot[] PartnerSlots(int type)
+    {
+        int partner=ShopPartnerCatalog.PartnerFor(type);
+        return partner==2 ? Shop.Partners.CounterDisplay.GetComponentsInChildren<ProductSlot>() :
+            Shop.Arrangement.Furniture.First(f=>f.CatalogKind==6+partner && f.gameObject.activeSelf).Slots;
+    }
+    private void SetupPartnerVisuals()
+    {
+        var arrangement=Shop.Arrangement;var area=Shop.Layout.FurnitureArea(false);
+        arrangement.Begin();
+        foreach(int partner in new[]{0,1})
+        {
+            arrangement.StartPurchase(6+partner);
+            if(!arrangement.PlacePurchase(new ShopFurniturePose(new Vector3(5+partner*2,0,area.yMax-.4f),0)))throw new Exception(arrangement.Feedback);
+        }
+        if(!arrangement.Save()||!Shop.Partners.BuyCounterDisplay())throw new Exception("Partner fixture purchase failed.");
+        foreach(int type in new[]{6,16,17,5,18,19,20,21,22})
+        {
+            var product=Shop.CreateCoffee(type);
+            product.AssignInitialSlot(PartnerSlots(type).First(slot=>slot.Occupant==null));
+        }
+        Aim(new Vector3(6,1.15f,area.yMax-.15f),2.8f,Vector3.back,true);
+    }
+
     private void AimCustomerHand()
     {
         var hand = Shop.Activities.CustomerHand;
@@ -604,6 +669,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public Vector3[] purchaseTargets;
         public Vector3 editorPreviewPosition;
         public int editorSaleCredit, editorFridges;
+        public bool[] partnerOwned;
+        public int[] supplyTypes, partnerStock, partnerStored, partnerPending, partnerCosts;
+        public int[] partnerCartQuantities, physicalProductCosts;
+        public string[] physicalProductIds;
+        public Vector3[] partnerDropTargets;
+        public int partnerCartSubtotal, partnerCartPayment, lastPurchaseSubtotal, lastPurchaseTotal, purchaseRounding, costOfGoods;
         public int editorCorners, editorPreviewTurns;
         public Rect editorPhysicalArea;
         public Vector3[] editorCornerTestPoints, editorCornerPoints;
@@ -709,6 +780,21 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             var controls=g.Devices.KeyboardTargets();state.computerControlIds=controls.Select(t=>t.Id).ToArray();
             state.computerControls=controls.Select(t=>t.Bounds).ToArray();state.computerScreen=g.Devices.ComputerScreenRect;
         }
+        state.partnerOwned=Enumerable.Range(0,3).Select(i=>g.Partners.State.Owned((ShopPartnerKind)i)).ToArray();
+        state.supplyTypes=g.SupplyTypes;
+        state.partnerStock=Enumerable.Range(0,ShopCatalog.SupplyCapacity).Select(g.StockCount).ToArray();
+        state.partnerStored=Enumerable.Range(0,ShopCatalog.SupplyCapacity).Select(g.WarehouseCount).ToArray();
+        state.partnerPending=Enumerable.Range(0,ShopCatalog.SupplyCapacity).Select(g.PendingQuantity).ToArray();
+        state.partnerCosts=Enumerable.Range(0,ShopCatalog.SupplyCapacity).Select(g.ProcurementCost).ToArray();
+        state.partnerCartQuantities=Enumerable.Range(0,ShopCatalog.SupplyCapacity).Select(g.Devices.CartQuantity).ToArray();
+        state.partnerCartSubtotal=g.Devices.CartSubtotal;state.partnerCartPayment=g.Devices.CartPayment;
+        state.lastPurchaseSubtotal=g.LastPurchaseSubtotal;state.lastPurchaseTotal=g.LastPurchaseTotal;
+        state.purchaseRounding=g.Ledger.PurchaseRounding;state.costOfGoods=g.Ledger.CostOfGoods;
+        var partnerArea=g.Layout.FurnitureArea(false);
+        state.partnerDropTargets=new[]{new Vector3(5,0,partnerArea.yMax-.4f),new Vector3(7,0,partnerArea.yMax-.4f)}.Select(point=>View.WorldToScreenPoint(point)).ToArray();
+        var physicalProducts=FindObjectsByType<ShopProduct>().Where(product=>product.UnitCost>=0).OrderBy(product=>product.ProductId).ToArray();
+        state.physicalProductIds=physicalProducts.Select(product=>product.ProductId).ToArray();
+        state.physicalProductCosts=physicalProducts.Select(product=>product.UnitCost).ToArray();
         state.cartQuantities=Enumerable.Range(0,ShopCatalog.Count).Select(g.Devices.CartQuantity).ToArray();
         state.pendingCart=Enumerable.Range(0,ShopCatalog.Count).Select(g.PendingQuantity).ToArray();
         if (g.Devices.Focused && g.Devices.FocusKind==ShopDeviceKind.Monitor)

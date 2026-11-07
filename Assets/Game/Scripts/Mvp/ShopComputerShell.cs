@@ -63,9 +63,10 @@ public sealed partial class ShopDevices
             shop.Pricing.AddKeyboardTargets(targets, ComputerBody);
         if(ComputerApp==ShopComputerApp.Orders) {
             targets.Add(new ShopKeyboardTarget("Cart:Submit","Megrendelem",new Rect(ComputerBody.x+802,ComputerBody.y+400,330,46),()=>SubmitCart()));
-            for(int i=0;i<shop.AvailableProducts;i++) {
-                int type=i;float y=ComputerBody.y+48+i*62-cartScroll.y;
-                if(y<ComputerBody.y+48||y+50>ComputerBody.y+388)continue;
+            var supplyTypes = shop.SupplyTypes;
+            for(int row=0;row<supplyTypes.Length;row++) {
+                int type=supplyTypes[row];int i=type;float y=ComputerBody.y+48+row*62-cartScroll.y;
+                if(y<ComputerBody.y+48||y+50>ComputerBody.y+370)continue;
                 targets.Add(new ShopKeyboardTarget("Cart:Minus:"+i,"-",new Rect(ComputerBody.x+796,y+6,48,44),()=>SetCartQuantity(type,CartQuantity(type)-1)));
                 targets.Add(new ShopKeyboardTarget("Cart:Plus:"+i,"+",new Rect(ComputerBody.x+962,y+6,48,44),()=>SetCartQuantity(type,CartQuantity(type)+1)));
             }
@@ -105,7 +106,7 @@ public sealed partial class ShopDevices
             foreach (var target in ComputerControls())
             {
                 bool selected = target.Id == keyboardTargetId && keyboardOutline ||
-                    target.Id == (furnishingPage == 0 ? "Furnishing:Developments" : "Furnishing:Furniture");
+                    target.Id == (furnishingPage == 0 ? "Furnishing:Developments" : furnishingPage == 1 ? "Furnishing:Furniture" : "Furnishing:Partners");
                 GUI.enabled = target.Enabled;
                 if (GUI.Button(target.Bounds, target.Label, ShopComputerTheme.Button(selected || target.Id.StartsWith("Coffee:Recipe:") &&
                     target.Id == "Coffee:Recipe:" + shop.Activities.SelectedRecipe || target.Id == "Camera:" + shop.Activities.SelectedCamera, ComputerApp == ShopComputerApp.Desktop ? 25 : 21)))

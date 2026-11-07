@@ -42,7 +42,7 @@ public sealed partial class MvpShopController
     {
         if(Stage!=ServiceStage.Payment||!CardPayment||!PreparedIsValid())return false;
         if(!int.TryParse(CardAmount,out int entered)||entered!=active.TotalPrice){CardStatus=CardTerminalStatus.Error;Notify("Hibás összeg. Írd be a pontos fizetendő összeget.");return false;}
-        if(!TrySettleSale(() => Ledger.TrySellCard(active.TotalPrice,active.TotalCost)))return false;
+        if(!TrySettleSale(() => Ledger.TrySellCard(active.TotalPrice,CurrentOrderCost)))return false;
         int paid = active.TotalPrice;
         ShopInputGate.ConsumeWorldAction();
         Drawer.CancelTender();SyncCashDrawer();ClearCardAmount();CompleteSale();
@@ -83,7 +83,7 @@ public sealed partial class MvpShopController
         var offer=Activities.CoinOffer;
         if(offer.Total!=active.TotalPrice){Notify("Pontosan a fizetendő összeget válaszd ki a vásárló érméiből.");return false;}
         int[] pieces=offer.Pieces();Drawer.OfferTenderPieces(pieces);
-        if(!TrySettleSale(() => Ledger.TrySell(offer.Price,active.TotalCost,offer.Price,0))){Drawer.CancelTender();return false;}
+        if(!TrySettleSale(() => Ledger.TrySell(offer.Price,CurrentOrderCost,offer.Price,0))){Drawer.CancelTender();return false;}
         Drawer.Settle(offer.Price,new int[ShopCatalog.Denominations.Length]);CompleteSale();return true;
     }
     private void CompleteSale()

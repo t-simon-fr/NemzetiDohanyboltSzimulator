@@ -1,0 +1,1091 @@
+{
+  "started": "2026-11-07T22:19:17.315Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Cart opens empty before the 08:00 shift",
+      "passed": true
+    },
+    {
+      "label": "Actual quantity fields accept distinct typed values without purchasing",
+      "passed": true
+    },
+    {
+      "label": "Mouse plus increases only the chosen product",
+      "passed": true
+    },
+    {
+      "label": "Mouse minus decreases only the chosen product",
+      "passed": true
+    },
+    {
+      "label": "One mouse confirmation submits every cart row and exact total",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-cart-typed.png",
+    "1920x1080-cart-submitted-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27140520,
+    "seconds": 250.67458979999998,
+    "error": "",
+    "completedUtc": "2026-11-07T22:15:11.492Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "a9adad34682826e6680569e358580ab512103ff754ff22de49f9db163baf6d34",
+      "AcceptanceWebGL.framework.js.unityweb": "171794b916a542a4c3e46d9679a8cb3e9edf88a705b7cbe1da0d1b2bf127a324",
+      "AcceptanceWebGL.loader.js": "cd1033d1529705a2511a671305321809f22635edf45f6fb2d53717c8a83b3538",
+      "AcceptanceWebGL.wasm.unityweb": "3c2b5b2f865ceaa35d2be82267b975b75a8e76e4609fe492d09b7d64d7cdd11c"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-07T22:19:39.856Z",
+  "case": "cart-only",
+  "rawReport": "Builds/Verification/acceptance-1794089957315/report.json",
+  "stateSampleCount": 10,
+  "finalState": {
+    "offeredQuantity": 0,
+    "boxedQuantity": 0,
+    "scannerCount": 0,
+    "requestsSpawned": 0,
+    "customerGuides": 0,
+    "fixtureLights": 2,
+    "coffeeMerchandise": 0,
+    "broomAtHome": true,
+    "batAtHome": true,
+    "toolRack": "",
+    "computerApp": "Orders",
+    "priceDraft": "2200",
+    "priceError": "",
+    "selectedPrice": 2200,
+    "priceCategory": 0,
+    "priceEditing": false,
+    "priceProducts": [
+      "cig_red",
+      "cig_blue",
+      "cig_gold",
+      "cig_davidon"
+    ],
+    "computerControlIds": [
+      "Exit:0",
+      "Desktop:0",
+      "Cart:Submit",
+      "Cart:Minus:0",
+      "Cart:Plus:0",
+      "Cart:Minus:1",
+      "Cart:Plus:1",
+      "Cart:Minus:2",
+      "Cart:Plus:2",
+      "Cart:Minus:3",
+      "Cart:Plus:3"
+    ],
+    "computerControls": [
+      {
+        "serializedVersion": "2",
+        "x": 1122.1597900390625,
+        "y": 89.11510467529297,
+        "width": 51.231563568115234,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 997.7404174804688,
+        "y": 89.11510467529297,
+        "width": 113.44131469726562,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 853.1942138671875,
+        "y": 510.06195068359375,
+        "width": 301.9002990722656,
+        "height": 42.09468460083008
+      },
+      {
+        "serializedVersion": "2",
+        "x": 847.705078125,
+        "y": 193.4367218017578,
+        "width": 43.91276550292969,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 999.570068359375,
+        "y": 193.4367218017578,
+        "width": 43.91276550292969,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 847.705078125,
+        "y": 250.17303466796875,
+        "width": 43.91276550292969,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 999.570068359375,
+        "y": 250.17303466796875,
+        "width": 43.91276550292969,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 847.705078125,
+        "y": 306.90936279296875,
+        "width": 43.91276550292969,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 999.570068359375,
+        "y": 306.90936279296875,
+        "width": 43.91276550292969,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 847.705078125,
+        "y": 363.6456604003906,
+        "width": 43.91276550292969,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 999.570068359375,
+        "y": 363.6456604003906,
+        "width": 43.91276550292969,
+        "height": 40.26448059082031
+      }
+    ],
+    "computerScreen": {
+      "serializedVersion": "2",
+      "x": 97.52861022949219,
+      "y": 30.548583984375,
+      "width": 1097.8192138671875,
+      "height": 622.269287109375
+    },
+    "cartQuantities": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "pendingCart": [
+      2,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "cartFields": [
+      {
+        "serializedVersion": "2",
+        "x": 904.42578125,
+        "y": 193.4367218017578,
+        "width": 82.33644104003906,
+        "height": 40.26448059082031
+      },
+      {
+        "serializedVersion": "2",
+        "x": 904.42578125,
+        "y": 250.17303466796875,
+        "width": 82.33644104003906,
+        "height": 40.26448059082031
+      }
+    ],
+    "cartSubmit": {
+      "serializedVersion": "2",
+      "x": 853.1942138671875,
+      "y": 510.06195068359375,
+      "width": 301.9002990722656,
+      "height": 42.09468460083008
+    },
+    "tradeOpen": false,
+    "clock": "08:00",
+    "scannerProduct": "",
+    "stage": "None",
+    "phase": "Preparing",
+    "modal": "None",
+    "message": "A teljes rendelés elküldve: 7 800 Ft. Szállítás: 8 másodperc.",
+    "entered": "",
+    "held": "",
+    "cup": "",
+    "order": "",
+    "interactionKey": "E",
+    "tool": "",
+    "menu": false,
+    "blocked": true,
+    "unavailable": false,
+    "entranceOpen": false,
+    "canEndDay": false,
+    "applicationFocused": true,
+    "cursorLocked": false,
+    "balance": 98200,
+    "drawer": 98200,
+    "sales": 1,
+    "missing": 0,
+    "received": 0,
+    "recipe": 9,
+    "milk": 0,
+    "coffee": 0,
+    "day": 1,
+    "missed": 0,
+    "dirt": 0,
+    "elapsed": 0,
+    "timeScale": 1,
+    "position": {
+      "x": -1.399999976158142,
+      "y": 0.05000000074505806,
+      "z": -2.299999952316284
+    },
+    "receipts": [],
+    "arranging": false,
+    "dragging": false,
+    "previewValid": false,
+    "routeToShelf": false,
+    "selectedFurniture": "",
+    "arrangementFeedback": "",
+    "shelfPosition": {
+      "x": 3.950000047683716,
+      "y": 0,
+      "z": -2.9000000953674316
+    },
+    "draftPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "fridgePosition": {
+      "x": 3.3499999046325684,
+      "y": 0,
+      "z": 1.350000023841858
+    },
+    "arrangeButton": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "moveTarget": {
+      "x": 739.9838256835938,
+      "y": 95.94579315185547,
+      "z": 3.423762798309326
+    },
+    "badTarget": {
+      "x": 1385,
+      "y": -121.27228546142578,
+      "z": 1.9241790771484375
+    },
+    "fridgeTarget": {
+      "x": 415.6815185546875,
+      "y": 198.7057647705078,
+      "z": 5.4232072830200195
+    },
+    "shelfTurns": 1,
+    "draftTurns": 0,
+    "shelfStock": 0,
+    "shopLevel": 0,
+    "warehouseLevel": 0,
+    "moduleCount": 4,
+    "plannedCount": 0,
+    "plannedCost": 0,
+    "editorControlIds": [],
+    "editorControls": [],
+    "purchaseTargets": [
+      {
+        "x": 815.7465209960938,
+        "y": 206.4578857421875,
+        "z": 5.673140525817871
+      },
+      {
+        "x": 777.0927734375,
+        "y": 243.4539031982422,
+        "z": 7.272697925567627
+      },
+      {
+        "x": 570.4039916992188,
+        "y": 256.4538269042969,
+        "z": 8.072473526000977
+      },
+      {
+        "x": 596.5325317382812,
+        "y": 541.3911743164062,
+        "z": -5.723705291748047
+      }
+    ],
+    "editorPreviewPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "editorSaleCredit": 0,
+    "editorFridges": 0,
+    "partnerOwned": [
+      false,
+      false,
+      false
+    ],
+    "supplyTypes": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "partnerStock": [
+      8,
+      8,
+      8,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partnerStored": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partnerPending": [
+      2,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partnerCosts": [
+      1500,
+      1600,
+      1700,
+      1850,
+      150,
+      180,
+      300,
+      220,
+      280,
+      200,
+      200,
+      350,
+      700,
+      450,
+      900,
+      450,
+      300,
+      330,
+      180,
+      180,
+      260,
+      270,
+      250
+    ],
+    "partnerCartQuantities": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "physicalProductCosts": [
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500
+    ],
+    "physicalProductIds": [
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red"
+    ],
+    "partnerDropTargets": [
+      {
+        "x": 351.593994140625,
+        "y": 206.45777893066406,
+        "z": 5.6731367111206055
+      },
+      {
+        "x": 426.7513732910156,
+        "y": 250.2926025390625,
+        "z": 7.67258358001709
+      }
+    ],
+    "partnerCartSubtotal": 0,
+    "partnerCartPayment": 0,
+    "lastPurchaseSubtotal": 7800,
+    "lastPurchaseTotal": 7800,
+    "purchaseRounding": 0,
+    "costOfGoods": 0,
+    "editorCorners": 0,
+    "editorPreviewTurns": 0,
+    "editorPhysicalArea": {
+      "serializedVersion": "2",
+      "x": -2.4230000972747803,
+      "y": -4.323000431060791,
+      "width": 4.8460001945495605,
+      "height": 6.146000862121582
+    },
+    "editorCornerTestPoints": [
+      {
+        "x": 934.8773193359375,
+        "y": 217.5339813232422,
+        "z": 6.073030948638916
+      },
+      {
+        "x": 1269.7755126953125,
+        "y": -7.498726844787598,
+        "z": 2.497020959854126
+      },
+      {
+        "x": 639.8968505859375,
+        "y": 217.53390502929688,
+        "z": 6.073028564453125
+      },
+      {
+        "x": 929.5465087890625,
+        "y": 39.47160339355469,
+        "z": 2.8469231128692627
+      },
+      {
+        "x": 2020.35009765625,
+        "y": -360.88946533203125,
+        "z": 1.2973531484603882
+      }
+    ],
+    "editorCornerPoints": [],
+    "editorModelVisible": false,
+    "editorSnap": "Rácshoz illesztve · 10 cm",
+    "editorNotice": "",
+    "editorPreviewSize": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "editorFridgeIds": [],
+    "editorFridgePoints": [],
+    "editorTestPoints": [
+      {
+        "x": 639.7423706054688,
+        "y": -19.0047607421875,
+        "z": 2.424038887023926
+      },
+      {
+        "x": 815.7465209960938,
+        "y": 206.4578857421875,
+        "z": 5.673140525817871
+      },
+      {
+        "x": 769.947509765625,
+        "y": 250.2926788330078,
+        "z": 7.6725873947143555
+      }
+    ],
+    "furnitureIds": [],
+    "furniturePoints": [],
+    "stockedItem": "",
+    "privateStock": 0,
+    "outwardSign": "ZÁRVA",
+    "uiNotice": "A teljes rendelés elküldve: 7 800 Ft. Szállítás: 8 másodperc.",
+    "spoken": "",
+    "orderLines": [],
+    "menuStart": {
+      "serializedVersion": "2",
+      "x": 364,
+      "y": 220,
+      "width": 552,
+      "height": 52
+    },
+    "menuSettings": {
+      "serializedVersion": "2",
+      "x": 364,
+      "y": 344,
+      "width": 552,
+      "height": 52
+    },
+    "menuBinding": {
+      "serializedVersion": "2",
+      "x": 744,
+      "y": 318,
+      "width": 148,
+      "height": 34
+    },
+    "menuDefaults": {
+      "serializedVersion": "2",
+      "x": 364,
+      "y": 562,
+      "width": 266,
+      "height": 44
+    },
+    "menuBack": {
+      "serializedVersion": "2",
+      "x": 642,
+      "y": 562,
+      "width": 274,
+      "height": 44
+    },
+    "cardConfirm": {
+      "serializedVersion": "2",
+      "x": 6692.64892578125,
+      "y": 917.0189819335938,
+      "width": 1039.19970703125,
+      "height": 161.92413330078125
+    },
+    "cardBack": {
+      "serializedVersion": "2",
+      "x": 7621.8291015625,
+      "y": 1073.4368896484375,
+      "width": 1393.27734375,
+      "height": 217.8724365234375
+    },
+    "settingsOpen": false,
+    "movementLearned": false,
+    "grounded": true,
+    "verticalSpeed": -2.119999885559082,
+    "cardDigits": [
+      {
+        "serializedVersion": "2",
+        "x": 7304.91259765625,
+        "y": 1073.4375,
+        "width": 1336.64794921875,
+        "height": 217.873046875
+      },
+      {
+        "serializedVersion": "2",
+        "x": 5100.2216796875,
+        "y": 703.0310668945312,
+        "width": 611.00634765625,
+        "height": 100.27984619140625
+      },
+      {
+        "serializedVersion": "2",
+        "x": 5203.2919921875,
+        "y": 703.031005859375,
+        "width": 622.943359375,
+        "height": 100.27960205078125
+      },
+      {
+        "serializedVersion": "2",
+        "x": 5306.359375,
+        "y": 703.0308837890625,
+        "width": 634.880859375,
+        "height": 100.27947998046875
+      },
+      {
+        "serializedVersion": "2",
+        "x": 5624.0927734375,
+        "y": 797.4293823242188,
+        "width": 760.923828125,
+        "height": 125.43463134765625
+      },
+      {
+        "serializedVersion": "2",
+        "x": 5739.2685546875,
+        "y": 797.4292602539062,
+        "width": 776.03515625,
+        "height": 125.43438720703125
+      },
+      {
+        "serializedVersion": "2",
+        "x": 5854.4423828125,
+        "y": 797.4290161132812,
+        "width": 791.146484375,
+        "height": 125.434326171875
+      },
+      {
+        "serializedVersion": "2",
+        "x": 6287.404296875,
+        "y": 917.01953125,
+        "width": 977.8828125,
+        "height": 161.9248046875
+      },
+      {
+        "serializedVersion": "2",
+        "x": 6417.9091796875,
+        "y": 917.0194091796875,
+        "width": 997.6279296875,
+        "height": 161.9244384765625
+      },
+      {
+        "serializedVersion": "2",
+        "x": 6548.4091796875,
+        "y": 917.0191040039062,
+        "width": 1017.37451171875,
+        "height": 161.92425537109375
+      }
+    ],
+    "cardUndo": {
+      "serializedVersion": "2",
+      "x": 5420.27783203125,
+      "y": 703.0308227539062,
+      "width": 648.07470703125,
+      "height": 100.27947998046875
+    },
+    "cardClear": {
+      "serializedVersion": "2",
+      "x": 5981.74072265625,
+      "y": 797.428955078125,
+      "width": 807.84912109375,
+      "height": 125.4342041015625
+    },
+    "cardDisplayAmount": "0 Ft",
+    "cardDisplayStatus": "KÉSZENLÉT",
+    "device": "Monitor",
+    "retailShelfLabel": "Lucky Stroke • 2 200 Ft",
+    "warehouseShelfLabel": "",
+    "supplyPrompt": "",
+    "cartonQuantity": -1,
+    "warehouseGoods": 0,
+    "retailGoods": 8,
+    "storageLabels": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "lowerStorageLabel": "",
+    "storageTypes": [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "storagePlaces": 24,
+    "heldCartonType": -1,
+    "canDevelop": true,
+    "upgradesOwned": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "upgradeButtons": [
+      {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    ],
+    "upgradeCosts": [
+      24000,
+      9000,
+      16000,
+      18000,
+      7500
+    ],
+    "ingredientTarget": "",
+    "ingredientBrand": "",
+    "heldIngredientBrand": "",
+    "lotteryOwned": false,
+    "lotteryFirstSold": false,
+    "lotteryFirstRedeemed": false,
+    "lotterySales": 0,
+    "lotteryPayouts": 0,
+    "lotteryCommission": 0,
+    "lotteryOutstanding": 0,
+    "lotteryReserve": 0,
+    "lotteryFunds": 98200,
+    "lotteryDrawCount": 0,
+    "lotteryStock": [
+      0,
+      0,
+      0
+    ],
+    "lotteryPending": [
+      0,
+      0,
+      0
+    ],
+    "lotteryRequestedNumbers": [],
+    "lotteryDraw": [],
+    "lotteryFirstId": "",
+    "lotteryClaim": "",
+    "lotteryScanned": "",
+    "lotteryStatus": "Invalid",
+    "lotteryEntry": "",
+    "lotteryFeedback": "Válassz szolgáltatást.",
+    "lotteryControlIds": [],
+    "lotteryControls": [],
+    "lotteryNumberField": {
+      "serializedVersion": "2",
+      "x": 141.44137573242188,
+      "y": 306.90936279296875,
+      "width": 457.4246826171875,
+      "height": 49.415504455566406
+    },
+    "ingredientCoffee": 0,
+    "ingredientMilk": 0,
+    "readyCoffee": 0,
+    "readyMilk": 0,
+    "cashDenominations": [
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      }
+    ],
+    "cashKeys": [
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      }
+    ],
+    "cashCounts": [
+      4,
+      1,
+      0,
+      2,
+      1,
+      2,
+      5,
+      6,
+      6,
+      10,
+      8,
+      4
+    ],
+    "offeredCoins": [],
+    "selectedCoins": [],
+    "coinSelected": 0,
+    "coinTargets": [],
+    "coinClear": {
+      "serializedVersion": "2",
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    },
+    "coinPay": {
+      "serializedVersion": "2",
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    },
+    "lookingAtHand": false,
+    "handUpright": false,
+    "handSide": 0,
+    "handPrompt": "",
+    "cashPrice": 0,
+    "cashTender": 0,
+    "cameraFov": 60,
+    "cashDue": "98 200 Ft",
+    "cashReceived": "–",
+    "cashChange": "–",
+    "cashSelected": "–",
+    "coffeeButtons": [
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      {
+        "serializedVersion": "2",
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      }
+    ],
+    "coffeeScreenRecipe": "Rövid kávé",
+    "coffeeScreenStatus": "NINCS KÁVÉALAPANYAG",
+    "coffeeScreenSupplies": "0 KÁVÉ / 0 TEJ",
+    "brewRemaining": 0,
+    "coffeeActionEnabled": false,
+    "coffeeSlotHeld": false
+  }
+}

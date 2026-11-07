@@ -657,6 +657,100 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
       check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
     }
+    if (selected === 'partners' || selected === 'partner-summary') {
+      let q;
+      if (selected === 'partners') {
+        await viewport(1280,720);await probe('Prepare','partners');
+        const press=async id=>{
+          const q=await state();const editor=id.startsWith('Editor:');
+          const ids=editor?q.editorControlIds:q.computerControlIds;
+          const rects=editor?q.editorControls:q.computerControls;
+          const index=ids.indexOf(id);if(index<0)throw Error('Missing '+id);
+          await clickRect(rects[index]);
+        };
+        const openPartners=async()=>{await probe('Action','monitor-furnishing');await press('Furnishing:Partners');};
+        const move=async point=>{await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:point.x,y:height-point.y});await sleep(250);};
+        const worldClick=async()=>{
+          await send('Input.dispatchMouseEvent',{type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(90);
+          await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(300);
+        };
+        await openPartners();q=await state();const opening=q.balance;
+        check(q.partnerOwned.every(x=>!x)&&!q.supplyTypes.includes(16),'No partner variants or discounts before contract');
+        await capture('partner-offers-720');await viewport(1920,1080);await capture('partner-offers-1080');await viewport(1280,720);
+        await press('Partner:Buy:0');q=await state();await move(q.partnerDropTargets[0]);q=await state();
+        check(q.previewValid,'Branded fridge uses real furniture placement and path validation');
+        await press('Editor:Cancel');q=await state();
+        check(q.balance===opening&&q.partnerOwned.every(x=>!x),'Cancelling partner placement grants nothing and charges nothing');
+        for(const partner of [0,1]) {
+          await openPartners();await press('Partner:Buy:'+partner);q=await state();const point=q.partnerDropTargets[partner];
+          await move(point);q=await state();check(q.previewValid,'Valid branded fridge preview '+partner);
+          await click(point.x,height-point.y);q=await state();
+          check(q.plannedCost===20000&&!q.partnerOwned[partner],'Contract remains unpaid until saving '+partner);
+          await press('Editor:Save');q=await state();
+          check(q.partnerOwned[partner]&&q.balance===opening-(partner+1)*20000&&q.drawer===q.balance,'Save activates exactly one partner package '+partner);
+        }
+        await openPartners();await press('Partner:Buy:2');q=await state();
+        check(q.partnerOwned.every(Boolean)&&q.balance===opening-60000&&q.drawer===q.balance,'Counter display activates the third independent package once');
+        await press('Partner:Buy:2');q=await state();check(q.balance===opening-60000,'Repeated owned-package click cannot debit again');
+        await capture('owned-partners-720');await viewport(1920,1080);await capture('owned-partners-1080');await viewport(1280,720);
+        await probe('Action','partner-orders');
+        for(const type of [6,16,17,18,19,20,21,22]) {
+          let reached=false;
+          for(let attempt=0;attempt<45;attempt++) {
+            q=await state();const id='Cart:Plus:'+type;
+            if(q.computerControlIds.includes(id)){await press(id);reached=true;break;}
+            const visible=q.computerControlIds.filter(x=>x.startsWith('Cart:Plus:')).map(x=>+x.split(':').at(-1));
+            const sign=visible.length&&q.supplyTypes.indexOf(type)<q.supplyTypes.indexOf(visible[0])?-1:1;
+            const screen=q.computerScreen;
+            await send('Input.dispatchMouseEvent',{type:'mouseWheel',x:screen.x+screen.width*.78,y:screen.y+screen.height*.5,deltaX:0,deltaY:sign*96});await sleep(100);
+          }
+          check(reached,'Actual order-cart scrolling reaches variant '+type);
+        }
+        q=await state();check(q.partnerCartSubtotal===1863&&q.partnerCartPayment===1865,'Exact discounted units and separate five-forint basket rounding are displayed');
+        await capture('discounted-cart-720');await viewport(1920,1080);await capture('discounted-cart-1080');await viewport(1280,720);
+        const beforeOrder=q.balance;await press('Cart:Submit');q=await state();
+        check(q.balance===beforeOrder-1865&&q.drawer===q.balance&&q.lastPurchaseSubtotal===1863&&q.lastPurchaseTotal===1865,'One real supplier submission charges only the rounded payable quote');
+        check([16,17,18,19,20,21,22].every(t=>q.partnerPending[t]===1&&q.partnerStock[t]===0),'All seven variants ship separately and remain absent before arrival');
+        await probe('Action','partner-deliver');q=await state();check([16,17,18,19,20,21,22].every(t=>q.partnerStored[t]===1&&q.partnerPending[t]===0),'Distinct real cartons arrive for every unlocked variant');
+        for(const type of [6,16,17,18,19,20,21,22]) {
+          await probe('Action','partner-carton:'+type);await key('e','KeyE',69);q=await state();
+          check(q.cartonQuantity>0,'Actual E picks up partner carton '+type);
+          await probe('Action','partner-slot:'+type);
+          if(type%2===0)await worldClick();else await key('e','KeyE',69);
+          q=await state();check(q.partnerStock[type]===1,'Real '+(type%2===0?'mouse':'E')+' hand replenishment stocks family display '+type);
+          await probe('Action','partner-return-carton');
+        }
+        q=await state();const oldIndex=q.physicalProductIds.indexOf('energy');
+        check(oldIndex>=0&&q.physicalProductCosts[oldIndex]===300,'Pre-contract Hamster stock keeps its original physical unit cost');
+        await probe('Action','partner-fridges-view');await capture('stocked-fridges-720');await viewport(1920,1080);await capture('stocked-fridges-1080');await viewport(1280,720);
+        await probe('Action','partner-counter-view');await capture('stocked-counter-display-720');await viewport(1920,1080);await capture('stocked-counter-display-1080');await viewport(1280,720);
+        await probe('Action','partner-customer');q=await state();const beforeSale=q.balance,cost=q.costOfGoods;
+        check(q.stage==='Payment','Actual customer walks to new public stock and brings it to checkout');
+        await probe('Action','focus-request-terminal');await type('650');await enter();q=await state();
+        check(q.balance===beforeSale+650&&q.costOfGoods===cost+270&&q.drawer===q.balance,'One real card payment sells the new variant with its captured discounted cost');
+      } else {
+        await viewport(1280,720);await probe('Prepare','partners-visual');
+        await probe('Action','partner-customer');q=await state();const beforeSale=q.balance;
+        await probe('Action','focus-request-terminal');await type('650');await enter();q=await state();
+        check(q.balance===beforeSale+650&&q.drawer===q.balance,'Prepared summary fixture completes one actual card sale');
+      }
+      {
+        const stock=q.partnerStock,stored=q.partnerStored;
+        // Finish the paid visitor's departure before targeting the door-mounted sign.
+        await probe('Action','partner-deliver');
+        await probe('Action','aim-sign-stable');await key('e','KeyE',69);
+        await probe('Action','drain-shop');await probe('Action','aim-door');await key('e','KeyE',69);q=await state();
+        check(q.phase==='Summary','Partner stock reaches the daily summary through the real sign and door');
+        await capture('partner-summary-top-720');
+        await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:994,y:370});
+        await send('Input.dispatchMouseEvent',{type:'mousePressed',x:994,y:370,button:'left',buttons:1,clickCount:1});await sleep(150);
+        await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:994,y:525,button:'left',buttons:1});await sleep(150);
+        await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:994,y:525,button:'left',clickCount:1});await sleep(250);
+        await capture('partner-summary-stock-720');await viewport(1920,1080);await capture('partner-summary-stock-1080');
+        await enter();q=await state();
+        check(q.day===2&&q.phase==='Preparing'&&q.partnerOwned.every(Boolean)&&JSON.stringify(q.partnerStock)===JSON.stringify(stock)&&JSON.stringify(q.partnerStored)===JSON.stringify(stored),'Next day preserves all partner contracts and exact shop/warehouse stock');
+      }
+    }
     if (selected === 'corner-wall') {
       await viewport(1280,720);await probe('Prepare','furniture-editor');
       const press=async id=>{const s=await state();const ids=id.startsWith('Editor:')?s.editorControlIds:s.computerControlIds;const rects=id.startsWith('Editor:')?s.editorControls:s.computerControls;const i=ids.indexOf(id);if(i<0)throw Error('Missing '+id);await clickRect(rects[i]);};

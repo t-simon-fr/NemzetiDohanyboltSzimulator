@@ -38,10 +38,13 @@ public sealed class ProductSlot : MonoBehaviour
     public event System.Action<ShopProduct> ProductPlaced;
     public void NotifyProductPlaced(ShopProduct product) => ProductPlaced?.Invoke(product);
     public ShopProduct Occupant => occupant;
-    public bool AcceptsType(ShopProduct product) => product != null && (!exclusiveType || product.ProductId == allowedProductId) && (IsStockShelf || string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId || allowedProductId=="coffee"&&ShopCatalog.IsCoffee(ShopCatalog.Index(product.ProductId)));
+    private System.Predicate<string> stockFilter;
+    public void SetStockFilter(System.Predicate<string> filter) => stockFilter = filter;
+    private bool MatchesStockFilter(string id) => stockFilter == null || stockFilter(id);
+    public bool AcceptsType(ShopProduct product) => product != null && MatchesStockFilter(product.ProductId) && (!exclusiveType || product.ProductId == allowedProductId) && (IsStockShelf || string.IsNullOrEmpty(allowedProductId) || product.ProductId == allowedProductId || allowedProductId=="coffee"&&ShopCatalog.IsCoffee(ShopCatalog.Index(product.ProductId)));
     public bool CanAccept(ShopProduct product) => isActiveAndEnabled && AcceptsType(product) && (occupant == null || occupant == product);
 
-    public bool CanAcceptStock(string id) => isActiveAndEnabled && occupant==null && IsStockShelf && ShopCatalog.Index(id)>=0 && (!exclusiveType || id==allowedProductId);
+    public bool CanAcceptStock(string id) => isActiveAndEnabled && occupant==null && IsStockShelf && ShopCatalog.Index(id)>=0 && MatchesStockFilter(id) && (!exclusiveType || id==allowedProductId);
     public bool CanStock(string id,Vector3 size,out Pose pose)
     {
         pose=GetPose(size*.5f,Vector3.zero);

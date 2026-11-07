@@ -27,7 +27,7 @@ public sealed class MvpCustomerActor : MonoBehaviour
     public bool UsesCard {get;private set;}
     public readonly List<ShopProduct> ExtraItems=new List<ShopProduct>();
     private readonly List<ProductSlot> extraSources=new List<ProductSlot>();
-    public int StolenCost=>(BasketItem!=null?ShopCatalog.Costs[ShopCatalog.Index(BasketItem.ProductId)]:0)+ExtraItems.Where(p=>p!=null).Sum(p=>ShopCatalog.Costs[ShopCatalog.Index(p.ProductId)]);
+    public int StolenCost=>(BasketItem!=null?(BasketItem.UnitCost >= 0 ? BasketItem.UnitCost : ShopCatalog.Costs[ShopCatalog.Index(BasketItem.ProductId)]):0)+ExtraItems.Where(p=>p!=null).Sum(p=>p.UnitCost >= 0 ? p.UnitCost : ShopCatalog.Costs[ShopCatalog.Index(p.ProductId)]);
     public ShopProduct BasketItem { get; private set; }
     public bool ShoppingComplete { get; private set; }
     private int exitStep,shoppingStep,shoppingOrderIndex;

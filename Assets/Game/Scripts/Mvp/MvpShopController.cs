@@ -21,7 +21,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     private readonly List<ShopProduct> stock = new List<ShopProduct>();
     private readonly List<MvpCustomerActor> queue = new List<MvpCustomerActor>();
     private readonly List<MvpCustomerActor> departing = new List<MvpCustomerActor>();
-    private readonly ShopInventory inventory = new ShopInventory(ShopCatalog.Count);
+    private readonly ShopInventory inventory = new ShopInventory(ShopCatalog.SupplyCapacity);
     private readonly List<int> changeCoins = new List<int>();
     private MvpCustomerActor active;
     private ShopProduct prepared;
@@ -35,6 +35,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ShopModal Modal { get; private set; }
     public ServiceStage Stage { get => checkout.Stage; private set => checkout.Stage = value; }
     public ShopLedger Ledger { get; private set; }
+    public ShopPartnerships Partners { get; internal set; }
     public ShopPricing Pricing {get;internal set;}
     public ShopAfterHours AfterHours {get;internal set;}
     public int PriceRefusals {get;private set;}
@@ -80,6 +81,11 @@ public sealed partial class MvpShopController : MonoBehaviour
     public bool CanEndDay => dayCycle.CanEnd(ShopEmpty);
     public bool BuyPanicButton() => Security != null && Security.TryPurchase();
     public int AvailableProducts => Layout != null && Layout.Expanded ? ShopCatalog.Count : ShopCatalog.CigaretteCount;
+    public int[] SupplyTypes => Enumerable.Range(0, AvailableProducts)
+        .Concat(Enumerable.Range(ShopPartnerCatalog.FirstVariant, 7).Where(IsSupplyAvailable)).ToArray();
+    public bool IsSupplyAvailable(int type) => ShopCatalog.IsPackaged(type) &&
+        (type < ShopCatalog.Count ? type < AvailableProducts : Partners != null && Partners.State.Unlocked(type));
+    public int ProcurementCost(int type) => Partners?.State.UnitCost(type) ?? ShopCatalog.Costs[type];
     public bool CanDevelopShop => Ledger != null && dayCycle.CanDevelop(!Ledger.Closed, ShopEmpty);
     public int SelectedPieces(int value) => changeCoins.Count(c=>c==value);
     public bool HasHeldProduct => player != null && player.HasHeldItem;
@@ -95,8 +101,8 @@ public sealed partial class MvpShopController : MonoBehaviour
     public void DebugRestock()
     {
         if(!(Application.isEditor||Debug.isDebugBuild))return;
-        for(int type=0;type<AvailableProducts;type++)OrderSupply(type,2);Tick(8.1f);
-        foreach(int type in Enumerable.Range(0,AvailableProducts))while(WarehouseCount(type)>0)
+        foreach(int type in SupplyTypes)OrderSupply(type,2);Tick(8.1f);
+        foreach(int type in SupplyTypes)while(WarehouseCount(type)>0)
         {
             var slot=FindObjectsByType<ProductSlot>().FirstOrDefault(s=>s.CanAcceptStock(ShopCatalog.Ids[type])&&s.Fits(ProductVisuals.Size(type)));if(slot==null)break;
             if(!TryCreateSupply(type,out var item))break;item.AssignInitialSlot(slot);
@@ -270,7 +276,8 @@ public sealed partial class MvpShopController : MonoBehaviour
     private void SpawnCustomer(int forcedProduct=-1,bool forceThief=false)
     {
         int visit = Spawned;
-        int type = Layout != null && Layout.Expanded && visit % 2 == 1 ? ShopCatalog.CigaretteCount + ((visit + Day - 1) % (ShopCatalog.Count - ShopCatalog.CigaretteCount)) : ShopCatalog.VisitProducts[visit % TotalVisitors];
+        var additional = SupplyTypes.Where(t => t >= ShopCatalog.CigaretteCount).ToArray();
+        int type = additional.Length > 0 && visit % 2 == 1 ? additional[(visit + Day - 1) % additional.Length] : ShopCatalog.VisitProducts[visit % TotalVisitors];
         if(!SingleProductVisits&&StockCount(ShopCatalog.Contraband)>0&&visit%4==1)type=ShopCatalog.Contraband;
         if(forcedProduct>=0)type=forcedProduct;
         if(forcedProduct<0&&Activities.CoffeeOwned&&visit%4==2)type=SingleProductVisits?ShopCatalog.Coffee:ShopCatalog.Coffee+(visit/4+Day-1)%3;
@@ -329,7 +336,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         int type = active.Product;
         int[] pieces = ShopCatalog.Denominations.Select(SelectedPieces).ToArray();
         if (amount != ChangeSelected || !Drawer.CanSettle(active.Tender,pieces)) { Message = "A visszajárót a kassza rekeszeiből vedd ki."; return false; }
-        if (!TrySettleSale(() => Ledger.TrySell(active.TotalPrice, active.TotalCost, active.Tender, amount)))
+        if (!TrySettleSale(() => Ledger.TrySell(active.TotalPrice, CurrentOrderCost, active.Tender, amount)))
         {
             Message = "Nem stimmel a visszajáró. Számold újra, vagy töröld a kiválasztott címleteket."; return false;
         }
@@ -374,7 +381,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         if (active == null) return false;
         if (ShopLotteryCatalog.IsTicket(type)) return AvailableInventory(type) < active.OrderTypes.Count(t=>t==type);
-        int needed = active.OrderTypes.Count(t => t == type) - StockCount(type) - (type < ShopCatalog.Count ? WarehouseCount(type) : 0);
+        int needed = active.OrderTypes.Count(t => t == type) - StockCount(type) - (ShopCatalog.IsPackaged(type) ? WarehouseCount(type) : 0);
         if (ShopCatalog.IsCoffee(type) && Activities.BrewRemaining > 0 && Activities.SelectedRecipe == type) needed--;
         if (needed <= 0) return false;
         if (!ShopCatalog.IsCoffee(type)) return true;
@@ -389,7 +396,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         if(missing.Length==0)return false;
         int original = missing.Where(IsRequestedTypeUnavailable).DefaultIfEmpty(-1).First();
         if (original < 0) return false;
-        int replacement=Enumerable.Range(0,AvailableProducts).Where(t=>t!=original&&ShopCatalog.IsCigarette(t)==ShopCatalog.IsCigarette(original)&&StockCount(t)>active.OrderTypes.Count(x=>x==t)&&ShopPricing.Accepts(t,Pricing.Price(t),Spawned-1,Day)).DefaultIfEmpty(-1).First();
+        int replacement=SupplyTypes.Where(t=>t!=original&&ShopCatalog.IsCigarette(t)==ShopCatalog.IsCigarette(original)&&StockCount(t)>active.OrderTypes.Count(x=>x==t)&&ShopPricing.Accepts(t,Pricing.Price(t),Spawned-1,Day)).DefaultIfEmpty(-1).First();
         if(replacement<0||active.Person==2){Notify("Köszönöm, akkor most inkább elmegyek.");SkipCurrent();return false;}
         active.ReplaceRequested(original,replacement);Dialogue="Akkor "+ShopCatalog.ShortNames[replacement]+" jó lesz helyette, köszönöm.";Notify(Dialogue);ClosePanel();return true;
     }
@@ -461,6 +468,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public void ResetDemo()
     {
+        Partners?.ResetAll();
         Arrangement?.ResetLayout();
         AfterHours?.ResetEvenings();Pricing?.ResetPrices();GetComponent<ShopNextUpgrades>()?.ResetUpgrades();
         SingleProductVisits=false;AutomaticArrivals=true;checkout.ClearItems();
@@ -471,6 +479,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         foreach (ShopProduct item in stock) if (item != null) item.RemoveFromWorld();
         stock.Clear();CleanupReceipts(); inventory.Reset(); Warehouse?.ResetStorage();
         ClosePanel(); if (Layout != null) { Layout.SetExpanded(false); Layout.SetExtraShelf(false); }
+        LastPurchaseSubtotal = 0; LastPurchaseTotal = 0;
         SelectedSupply = 0; Day = 1; Ledger = new ShopLedger(6000); Drawer = new ShopCashDrawer();
         Lottery?.ResetLottery();
         for (int type = 0; type < ShopCatalog.CigaretteCount; type++)
@@ -497,6 +506,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         item.transform.localScale = ProductVisuals.Size(type);
         item.GetComponent<Renderer>().sharedMaterial = productMaterials[Mathf.Min(type,productMaterials.Length-1)];
         ShopProduct product = item.AddComponent<ShopProduct>(); product.ConfigureProduct(ShopCatalog.Ids[type], ShopCatalog.Names[type]);
+        product.SetUnitCost(ShopCatalog.Costs[type]);
         ProductVisuals.Add(item,type);
         stock.Add(product); return product;
     }
@@ -504,12 +514,13 @@ public sealed partial class MvpShopController : MonoBehaviour
     public int WarehouseCount(int type) => inventory.Stored(type);
     public int PendingQuantity(int type) => inventory.Pending(type);
     public float NextDelivery => inventory.NextDelivery;
-    public int AvailableInventory(int type) => ShopLotteryCatalog.IsTicket(type) ? Lottery?.Available(type) ?? 0 : StockCount(type) + WarehouseCount(type);
+    public int AvailableInventory(int type) => ShopPartnerCatalog.IsVariant(type) && !IsSupplyAvailable(type) ? 0 : ShopLotteryCatalog.IsTicket(type) ? Lottery?.Available(type) ?? 0 : StockCount(type) + WarehouseCount(type);
     public ShopProduct CreateLotteryProduct(int type)
     {
         if(!ShopLotteryCatalog.IsTicket(type))throw new ArgumentOutOfRangeException(nameof(type));
         return CreateProduct(type);
     }
+    private int CurrentOrderCost => receivedOrder.Sum(item => item.UnitCost >= 0 ? item.UnitCost : ShopCatalog.Costs[ShopCatalog.Index(item.ProductId)]);
     private bool TrySettleSale(Func<bool> payment) => checkout.TrySettle(() => Lottery.SettleSale(active,receivedOrder,payment));
     public void FinishLotteryVisit(string text)
     {
@@ -520,26 +531,27 @@ public sealed partial class MvpShopController : MonoBehaviour
     public bool OrderSupply(int type,int quantity)
     {
         if(Ledger.Closed){Message="A mai elszámolás már lezárult. Árurendeléshez kezdd el a következő napot.";return false;}
-        if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary) { Message = "Ez az áru a boltbővítés után rendelhető."; return false; }
+        if (!IsSupplyAvailable(type) || Phase == ShopPhase.Summary) { Message = "Ez az áru a boltbővítés után rendelhető."; return false; }
         if (quantity < 1 || quantity > ShopCatalog.MaxOrderQuantity) { Message = "Egy rendelésben 1–12 terméket választhatsz."; return false; }
-        var quantities = new int[ShopCatalog.Count];
+        var quantities = new int[ShopCatalog.SupplyCapacity];
         quantities[type] = quantity;
         if (!TryPurchase(quantities, out var quote))
         {
             Message = quote.Error == ShopPurchaseError.Capacity ? "A dobozban már elég áru vár ebből a termékből." :
-                "Nincs elég elkölthető pénz. Rendelés: "+ShopCatalog.Money(ShopCatalog.Costs[type]*quantity)+"; kasszaegyenleg: "+ShopCatalog.Money(Ledger.AvailableFunds)+".";
+                "Nincs elég elkölthető pénz. Rendelés: "+ShopCatalog.Money((int)ShopPurchaseRules.Payment((long)ProcurementCost(type)*quantity,5))+"; kasszaegyenleg: "+ShopCatalog.Money(Ledger.AvailableFunds)+".";
             return false;
         }
         SelectedSupply = type;
         Message = "Megrendelve " + quantity + " × " + ShopCatalog.Names[type] + ". A szállítás 8 másodperc.";
         return true;
     }
-    public void CycleSupply() { SelectedSupply = (SelectedSupply + 1) % AvailableProducts; Message = "Dobozból kiválasztva: " + ShopCatalog.Names[SelectedSupply]; }
+    public void CycleSupply() { var types = SupplyTypes; SelectedSupply = types[(Array.IndexOf(types, SelectedSupply) + 1) % types.Length]; Message = "Dobozból kiválasztva: " + ShopCatalog.Names[SelectedSupply]; }
     public bool TryCreateSupply(int type, out ShopProduct product)
     {
         product = null;
-        if (type < 0 || type >= AvailableProducts || Phase == ShopPhase.Summary || WarehouseCount(type) <= 0) return false;
+        if (!IsSupplyAvailable(type) || Phase == ShopPhase.Summary || WarehouseCount(type) <= 0) return false;
         product = CreateProduct(type); product.transform.position = (Warehouse!=null ? Warehouse.Dock(type).position : supplyPoint.position) + Vector3.up*.25f;
+        product.SetUnitCost(inventory.NextUnitCost(type));
         inventory.TryWithdraw(type); Warehouse?.SyncBoxes(); return true;
     }
     public bool StockFromCarton(WarehouseCarton carton,ProductSlot slot)
@@ -547,6 +559,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         if(carton==null||!carton.IsHeld||Phase==ShopPhase.Summary||!carton.CanPlace(slot)||WarehouseCount(carton.ProductType)<=0)return false;
         var product=CreateProduct(carton.ProductType);
         if(!(product.IsHeld?product.TryPlace(slot):product.AssignInitialSlot(slot))){product.RemoveFromWorld();return false;}
+        product.SetUnitCost(inventory.NextUnitCost(carton.ProductType));
         inventory.TryWithdraw(carton.ProductType);carton.AdjustQuantity(-1);
         slot.NotifyProductPlaced(product);
         Message=product.DisplayName+" a polcon. A dobozban még "+carton.Quantity+" db.";
@@ -556,12 +569,12 @@ public sealed partial class MvpShopController : MonoBehaviour
     public void TakeSupply(PlayerInteractor interactor,int brand)
     {
         if (interactor.HasHeldItem) return;
-        if (brand>=0 && brand<AvailableProducts) SelectedSupply=brand;
-        else if (brand>=AvailableProducts) { Message="Ez a márka a boltbővítés után rendelhető.";return; }
+        if (brand>=0 && IsSupplyAvailable(brand)) SelectedSupply=brand;
+        else if (brand>=0 && !IsSupplyAvailable(brand)) { Message="Ez a márka a boltbővítés után rendelhető.";return; }
         if (brand<0 && WarehouseCount(SelectedSupply) == 0)
         {
-            int available = inventory.FirstStoredType(AvailableProducts);
-            if (available >= 0 && available < AvailableProducts) SelectedSupply = available;
+            int available = SupplyTypes.Where(t => WarehouseCount(t) > 0).DefaultIfEmpty(-1).First();
+            if (available >= 0 && IsSupplyAvailable(available)) SelectedSupply = available;
         }
         if (!TryCreateSupply(SelectedSupply, out ShopProduct product))
         {
@@ -570,19 +583,19 @@ public sealed partial class MvpShopController : MonoBehaviour
                 : "A dobozban nincs megérkezett áru. Rendelj a pult bal oldalán lévő monitoron; a szállítás 8 másodperc.";
             return;
         }
-        if (!interactor.TryHold(product)) { inventory.RestoreWithdrawal(SelectedSupply); product.RemoveFromWorld(); Warehouse?.SyncBoxes(); return; }
+        if (!interactor.TryHold(product)) { inventory.RestoreWithdrawal(SelectedSupply, product.UnitCost); product.RemoveFromWorld(); Warehouse?.SyncBoxes(); return; }
         Message = "Kézben: " + product.DisplayName + ". A zöld keretek jelzik a megfelelő helyeket. E – lerakás; a doboznál E – visszarakás.";
     }
     public bool ReturnSupply(PlayerInteractor interactor,int brand=-1,WarehouseCarton targetCarton=null)
     {
         ShopProduct product = interactor.HeldProduct;
         int type = product == null ? -1 : ShopCatalog.Index(product.ProductId);
-        if (type < 0 || type>=ShopCatalog.Count || Phase == ShopPhase.Summary) return false;
+        if (!ShopCatalog.IsPackaged(type) || Phase == ShopPhase.Summary) return false;
         if (brand>=0 && brand!=type) { Message="Ez másik márka doboza. Keresd a "+ShopCatalog.Names[type]+" feliratot.";return false; }
         if (targetCarton != null && (targetCarton.ProductType != type || targetCarton.IsHeld || !targetCarton.gameObject.activeInHierarchy)) return false;
         if (!inventory.CanReturn(type)) { Message = "Ebből a termékből megtelt a szállítódoboz."; return false; }
         if (!interactor.RemoveHeld(product)) return false;
-        inventory.TryReturn(type);
+        inventory.TryReturn(type, product.UnitCost);
         if (targetCarton != null) targetCarton.AdjustQuantity(1);
         SelectedSupply = type; Warehouse?.SyncBoxes();
         Message = "Visszatéve a dobozba: " + ShopCatalog.Names[type] + ".";

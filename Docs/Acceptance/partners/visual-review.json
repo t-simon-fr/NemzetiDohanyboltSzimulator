@@ -1,0 +1,32 @@
+{
+  "reviewer": "Codex self-review",
+  "result": "passed",
+  "viewports": [
+    "1280x720",
+    "1920x1080"
+  ],
+  "images": [
+    "1280x720-discounted-cart-720.png",
+    "1280x720-owned-partners-720.png",
+    "1280x720-partner-offers-720.png",
+    "1280x720-partner-summary-stock-720.png",
+    "1280x720-partner-summary-top-720.png",
+    "1280x720-stocked-counter-display-720.png",
+    "1280x720-stocked-fridges-720.png",
+    "1920x1080-discounted-cart-1080.png",
+    "1920x1080-owned-partners-1080.png",
+    "1920x1080-partner-offers-1080.png",
+    "1920x1080-partner-summary-stock-1080.png",
+    "1920x1080-stocked-counter-display-1080.png",
+    "1920x1080-stocked-fridges-1080.png"
+  ],
+  "observations": [
+    "All three package offers, owned states and order controls fit and remain readable at both sizes.",
+    "Discounted unit costs, subtotal, rounding and payment are separately visible.",
+    "Branded fridges match in size; original Hamster artwork retained across the new variants; distinct drink packaging visible.",
+    "All three small bottles fit the cabinet, with separated labels and no bat/model intersection.",
+    "Actual scrollbar drag exposes all seven appended variants; summary and next-day controls stay visible."
+  ],
+  "carryForward": "Seven unchanged offers/owned/cart/counter images were byte-identical to already inspected captures from acceptance-1794089714097. Other final images were opened directly. Summary stock views are from the focused final scrollbar run.",
+  "interaction": "Actual mouse/keyboard package purchases/cancel/quote/submit, all seven carton pickups and E/mouse replenishment, NPC route and terminal payment, sign/door/scrollbar/next day. Fixture sets initial state, camera and simulation time; focused summary case starts with owned stocked fixtures."
+}

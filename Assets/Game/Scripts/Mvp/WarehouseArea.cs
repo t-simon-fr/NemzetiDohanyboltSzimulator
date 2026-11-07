@@ -9,7 +9,7 @@ public sealed class WarehouseArea : MonoBehaviour
     [SerializeField] private Material[] productMaterials;
     [SerializeField] private Transform looseCardboardPoint;
     private readonly List<WarehouseCarton> cartons = new List<WarehouseCarton>();
-    private WarehouseCarton[] current = new WarehouseCarton[ShopCatalog.Count];
+    private WarehouseCarton[] current = new WarehouseCarton[ShopCatalog.SupplyCapacity];
     private MvpShopController shop;
     private List<Transform> storageDocks;
     public void RegisterStorage(IEnumerable<Transform> locations)
@@ -79,7 +79,7 @@ public sealed class WarehouseArea : MonoBehaviour
 
     private Transform FreeDock(int preferred)
     {
-        if (CartonAt(docks[preferred]) == null) return docks[preferred];
+        if (preferred < docks.Length && CartonAt(docks[preferred]) == null) return docks[preferred];
         return StorageDocks.FirstOrDefault(dock => CartonAt(dock) == null);
     }
     private float nextLabelRefresh;
@@ -106,14 +106,14 @@ public sealed class WarehouseArea : MonoBehaviour
 
     public int DiscardedCartons { get; private set; }
     public MvpShopController Shop => shop != null ? shop : (shop=GetComponent<MvpShopController>());
-    public Transform Dock(int type) => docks[type];
+    public Transform Dock(int type) => type < docks.Length ? docks[type] : current[type] != null ? current[type].transform.parent : storageDocks?.FirstOrDefault() ?? docks[0];
     public WarehouseCarton Carton(int type) => current[type];
     public void Configure(Transform[] locations,Material paper,Material tape,Material[] goods,Transform loose)
     {docks=locations;cardboard=paper;packingTape=tape;productMaterials=goods;looseCardboardPoint=loose;}
     public void SyncBoxes()
     {
         if(docks==null||Shop.Ledger==null)return;
-        for(int i=0;i<docks.Length;i++)
+        for(int i=0;i<ShopCatalog.SupplyCapacity;i++)
         {
             int delta=Shop.WarehouseCount(i)-cartons.Where(c=>c!=null&&c.ProductType==i).Sum(c=>c.Quantity);
             if(delta>0)
@@ -125,7 +125,7 @@ public sealed class WarehouseArea : MonoBehaviour
                     box.transform.SetParent(dock != null ? dock : looseCardboardPoint, false);
                     box.transform.localPosition=Vector3.up*.055f;
                     var carton=box.AddComponent<WarehouseCarton>();
-                    carton.Configure(this,i,cardboard,packingTape,productMaterials[i]);
+                    carton.Configure(this,i,cardboard,packingTape,productMaterials[Mathf.Min(i,productMaterials.Length-1)]);
                     cartons.Add(carton);current[i]=carton;
                     if (dock == null) PlaceLoose(carton);
                 }
@@ -148,7 +148,7 @@ public sealed class WarehouseArea : MonoBehaviour
     public void PutBack(WarehouseCarton carton)
     {
         var source = carton.PickupDock;
-        if (!IsStorageDock(source)) source = docks[carton.ProductType];
+        if (!IsStorageDock(source)) source = carton.ProductType < docks.Length ? docks[carton.ProductType] : StorageDocks.FirstOrDefault(d => CartonAt(d) == null);
         if (TryDock(carton, source)) return;
         // A delivery may have occupied the source during carrying: never overwrite it.
         PlaceLoose(carton);
@@ -170,7 +170,7 @@ public sealed class WarehouseArea : MonoBehaviour
     public void ResetStorage()
     {
         foreach(var carton in cartons)if(carton!=null){carton.gameObject.SetActive(false);Destroy(carton.gameObject);}
-        cartons.Clear();current=new WarehouseCarton[ShopCatalog.Count];DiscardedCartons=0;
+        cartons.Clear();current=new WarehouseCarton[ShopCatalog.SupplyCapacity];DiscardedCartons=0;
         RefreshLabels();
     }
 }

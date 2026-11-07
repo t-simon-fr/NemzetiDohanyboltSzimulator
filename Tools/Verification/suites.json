@@ -53,7 +53,10 @@
       "expansion",
       "furniture-planning",
       "furniture-editor",
-      "corner-wall"
+      "corner-wall",
+      "partner-pricing",
+      "partner-integration",
+      "partner-targeting"
     ]
   },
   "suites": {
@@ -296,6 +299,21 @@
       "entry": "CornerWallChecks.Run",
       "file": "Tools/Checks/CornerWallChecks.cs",
       "purpose": "Front-wall facing and repeated rotation, physical wall gap, corner geometry/stock/NPC access/purchase/resale/day/reset and six-item catalog"
+    },
+    "partner-pricing": {
+      "entry": "PartnerChecks.Pricing",
+      "file": "Tools/Checks/PartnerChecks.cs",
+      "purpose": "Stable ids, isolated unlocks, discount rounding and shipment/item cost snapshots"
+    },
+    "partner-integration": {
+      "entry": "PartnerChecks.Integration",
+      "file": "Tools/Checks/PartnerChecks.cs",
+      "purpose": "Partner plan purchase/cancel/duplicate, family-only furniture, deliveries, real stocking, customer eligibility, pricing, day/reset and UI"
+    },
+    "partner-targeting": {
+      "entry": "PartnerChecks.Targeting",
+      "file": "Tools/Checks/PartnerChecks.cs",
+      "purpose": "Real camera rays hit each new carton and family slot; actual station pickup/replenishment and public NPC path reaches payment"
     }
   },
   "historicalExcluded": {

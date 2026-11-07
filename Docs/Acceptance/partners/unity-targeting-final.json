@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "partner-targeting"
+  ],
+  "startedUtc": "2026-11-07T22:10:43.5074589Z",
+  "source": {
+    "commit": "bc7b24715ba92d4e58ae7ddbbcf041289b442f14",
+    "sourceFingerprint": "cf18716b758345874b2200b501e7e3721271a16e8b6da86c502490c760d046bf",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "entry": "PartnerChecks.Targeting",
+      "failed": 0,
+      "seconds": 1.5575469,
+      "id": "partner-targeting",
+      "passed": 34
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0621914,
+  "finishedUtc": "2026-11-07T22:10:51.8190814Z",
+  "totalSeconds": 8.3221043
+}
