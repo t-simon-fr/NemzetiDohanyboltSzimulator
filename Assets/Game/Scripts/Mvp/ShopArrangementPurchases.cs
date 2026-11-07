@@ -6,7 +6,7 @@ public sealed partial class ShopArrangement
 {
     // Independently owned, repeatable furniture.
     public static readonly string[] CatalogNames = { "Normál polc", "Keskeny polc", "Kétoldalas polc", "Raktári állvány", "Hűtő", "Sarokpolc" };
-    public static readonly string[] CatalogDetails = { "1,2 × 0,5 × 2,5 m", "0,6 × 0,5 × 2,5 m", "1,2 × 0,9 m · kétoldalas", "1,2 × 0,6 m · raktár", "1,65 × 0,8 m", "0,8 × 0,8 × 2,5 m" };
+    public static readonly string[] CatalogDetails = { "1,2 × 0,5 × 2,5 m", "0,6 × 0,5 × 2,5 m", "1,2 × 0,9 m · kétoldalas", "1,2 × 0,6 m · raktár", "1,65 × 0,8 m", "1,2 × 1,2 × 2,5 m" };
     private readonly Dictionary<ShopFurniture, int> plannedPurchases = new Dictionary<ShopFurniture, int>();
     private ShopFurniture purchaseGhost;
     private int purchaseKind = -1;

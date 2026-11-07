@@ -291,7 +291,7 @@ public sealed partial class ShopArrangement
             };
             for (int y = 0; y < 64; y++)
                 for (int x = 0; x < 64; x++)
-                    cornerFootprint.SetPixel(x, y, new Color(1, 1, 1, (x + .5f) / 64f + (y + .5f) / 64f >= .625f ? 1 : 0));
+                    cornerFootprint.SetPixel(x, y, new Color(1, 1, 1, (x + .5f) / 64f + (y + .5f) / 64f >= ShopModularFurniture.CornerCutFraction ? 1 : 0));
             cornerFootprint.Apply();
         }
         var old = GUI.matrix;
@@ -306,7 +306,7 @@ public sealed partial class ShopArrangement
         GUI.matrix = old;
         var points = new[] {
             new Vector2(rect.x, rect.y), new Vector2(rect.xMax, rect.y), new Vector2(rect.xMax, rect.yMax),
-            new Vector2(rect.x + rect.width * .625f, rect.yMax), new Vector2(rect.x, rect.y + rect.height * .375f)
+            new Vector2(rect.x + rect.width * ShopModularFurniture.CornerCutFraction, rect.yMax), new Vector2(rect.x, rect.y + rect.height * (1 - ShopModularFurniture.CornerCutFraction))
         };
         float angle = turns * 90 * Mathf.Deg2Rad;
         for (int i = 0; i < points.Length; i++)

@@ -43,7 +43,7 @@ try {
     if($truth.result.scene -ne 'Assets/Game/Scenes/ShopPrototype.unity') { throw 'Open ShopPrototype before running gameplay checks.' }
     Invoke-UnityCommand $root 'editor.playmode start' | Out-Null
     $startedPlay=$true
-    Invoke-UnityCommand $root 'script eval' @{code='var g=MvpShopController.Instance; if(g==null)throw new System.Exception("Shop controller not ready");g.GetComponent<ShopMenu>().Resume();return true;'} | Out-Null
+    Invoke-UnityCommand $root 'script eval' @{code='var g=MvpShopController.Instance; if(g==null)throw new System.Exception("Shop controller not ready");g.GetComponent<ShopMenu>().Resume();UnityEngine.Application.runInBackground=true;return true;'} | Out-Null
     foreach($id in $selected) {
         $suiteDefinition=$registry.suites.$id
         $suiteTimer=[Diagnostics.Stopwatch]::StartNew()
