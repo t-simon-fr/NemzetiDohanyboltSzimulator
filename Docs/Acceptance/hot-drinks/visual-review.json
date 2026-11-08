@@ -1,0 +1,45 @@
+{
+  "reviewer": "Codex self-review",
+  "review": "passed",
+  "interactionReview": "passed",
+  "viewports": [
+    "1280x720",
+    "1920x1080"
+  ],
+  "images": [
+    "1280x720-hot-drinks-computer-720.png",
+    "1920x1080-hot-drinks-computer-1080.png",
+    "1280x720-hot-drinks-tea-package.png",
+    "1280x720-hot-drinks-cocoa-package.png",
+    "1280x720-hot-drinks-tea-720.png",
+    "1920x1080-hot-drinks-chocolate-1080.png",
+    "1280x720-hot-drinks-served-720.png",
+    "1920x1080-hot-drinks-served-1080.png",
+    "1280x720-hot-drinks-no-milk-720.png",
+    "1920x1080-hot-drinks-no-milk-1080.png",
+    "1920x1080-hot-drinks-tea-1080.png"
+  ],
+  "observations": [
+    "All four procurement rows and five recipes fit; the longer coffee row wraps inside its row without clipping.",
+    "Tea/cocoa brand and full tooltips identify packages; cocoa is physically behind front milk and becomes targetable after milk pickup.",
+    "Tea/chocolate selection, correct once-only consumption, real cup pickup, separate customer delivery and card posting passed actual browser inputs.",
+    "Both shortage views clearly disable cocoa with no milk; tea remains usable without coffee or milk."
+  ],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27180373,
+    "seconds": 257.7195562,
+    "error": "",
+    "completedUtc": "2026-11-08T16:28:11.879Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "70b0ed09796f44ed511a0f1c3f5f0895d72ce68532e533e0fc392336b2e7f427",
+      "AcceptanceWebGL.framework.js.unityweb": "0b3a84b2246fd33a9a6c8c2c7f8a18e7b7df3a86b814eed2ac68a337271d3e1b",
+      "AcceptanceWebGL.loader.js": "ca2ccb3e4ecd440ca51d574f907650bca7682bd920d420ff62ebe7bddfc887e1",
+      "AcceptanceWebGL.wasm.unityweb": "9936c7e7611bbb61e3d36479057531ae90fbdbd8096e94ddaee147706e41fd64"
+    }
+  },
+  "sourceFile": "source.json",
+  "runnerSourceFile": "browser-source.json"
+}

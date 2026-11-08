@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "result": {
+    "output": null,
+    "diagnostics": [],
+    "success": true,
+    "result": {
+      "held": "tea",
+      "device": "None",
+      "tea": 9,
+      "milk": 10,
+      "coffee": 0
+    }
+  }
+}

@@ -15,11 +15,19 @@ public sealed partial class ShopActivities
         float w=rect.width,h=rect.height;
         System.Action<string,string,Rect,System.Action,bool> add=(id,text,local,action,enabled)=>targets.Add(new ShopKeyboardTarget(id,text,new Rect(rect.x+local.x,rect.y+local.y,local.width,local.height),action,enabled));
         var app=shop.Devices.ComputerApp;
-        if(app==ShopComputerApp.Coffee&&CoffeeOwned)add("Coffee:Order","Alapanyag rendelése",new Rect(12,105,(w-30)/2,32),()=>OrderCoffeeSupplies(),true);
-        if(app==ShopComputerApp.Coffee&&CoffeeOwned)
+        if (app == ShopComputerApp.Coffee && CoffeeOwned)
         {
-            add("Coffee:Milk","Tej rendelése",new Rect(w/2+3,105,(w-30)/2,32),()=>OrderMilkSupplies(),true);
-            for(int i=0;i<3;i++){int type=ShopCatalog.Coffee+i;add("Coffee:Recipe:"+type,ShopCatalog.ShortNames[type],new Rect(12+i*(w-24)/3,h-88,(w-30)/3,32),()=>SelectRecipe(type),brewRemaining==0);}
+            foreach (var ingredient in ShopHotDrinkRecipes.Ingredients)
+            {
+                var selected = ingredient;
+                string id = ingredient == ShopDrinkIngredient.Coffee ? "Order" : ingredient.ToString();
+                add("Coffee:" + id, ShopHotDrinkRecipes.IngredientNames[(int)ingredient] + " rendelése", new Rect(12, 40 + (int)ingredient * 42, w - 24, 36), () => OrderIngredient(selected), true);
+            }
+            for (int i = 0; i < ShopHotDrinkRecipes.Types.Length; i++)
+            {
+                int type = ShopHotDrinkRecipes.Types[i];
+                add("Coffee:Recipe:" + type, ShopCatalog.ShortNames[type], new Rect(12 + i * (w - 24) / 5, h - 88, (w - 30) / 5, 32), () => SelectRecipe(type), brewRemaining == 0);
+            }
         }
         if(app==ShopComputerApp.Cameras)
         {

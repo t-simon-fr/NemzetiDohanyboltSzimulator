@@ -11,13 +11,18 @@ public sealed partial class ShopActivities
             => targets.Add(new ShopKeyboardTarget(id, text, new Rect(r.position + local.position, local.size), action, enabled));
         if (app == ShopComputerApp.Coffee && CoffeeOwned)
         {
-            Add("Coffee:Order", "+10 adag · 2 000 Ft", new Rect(748, 28, 372, 54), () => OrderCoffeeSupplies());
-            Add("Coffee:Milk", "+10 adag · 1 500 Ft", new Rect(748, 122, 372, 54), () => OrderMilkSupplies());
-            for (int i = 0; i < 3; i++)
+            foreach (var ingredient in ShopHotDrinkRecipes.Ingredients)
             {
-                int type = ShopCatalog.Coffee + i;
-                Add("Coffee:Recipe:" + type, ShopCatalog.ShortNames[type] + "\n" + ShopCatalog.Money(ShopCatalog.SalePrice(type)),
-                    new Rect(24 + i * 376, 282, 352, 88), () => SelectRecipe(type), brewRemaining == 0);
+                var selectedIngredient = ingredient;
+                string id = ingredient == ShopDrinkIngredient.Coffee ? "Order" : ingredient.ToString();
+                Add("Coffee:" + id, "+10 adag · " + ShopCatalog.Money(ShopHotDrinkRecipes.UnitCosts[(int)ingredient] * 10),
+                    new Rect(748, 18 + (int)ingredient * 65, 372, 50), () => OrderIngredient(selectedIngredient));
+            }
+            for (int i = 0; i < ShopHotDrinkRecipes.Types.Length; i++)
+            {
+                int type = ShopHotDrinkRecipes.Types[i];
+                Add("Coffee:Recipe:" + type, (SelectedRecipe == type ? "✓ " : "") + ShopCatalog.ShortNames[type] + "\n" + ShopCatalog.Money(ShopCatalog.SalePrice(type)),
+                    new Rect(24 + i * 224, 326, 208, 76), () => SelectRecipe(type), brewRemaining == 0);
             }
         }
         if (app == ShopComputerApp.Cameras)
@@ -61,11 +66,15 @@ public sealed partial class ShopActivities
                     ShopComputerTheme.Label(new Rect(28, 40, 1000, 60), "Kávégép az Üzletfejlesztésben · 16 000 Ft", 26);
                     return;
                 }
-                ShopComputerTheme.Label(new Rect(24, 24, 700, 62), $"La Vazze kávé   {CoffeeSupplies} adag   ·   úton {pendingCoffee}", 26, true);
-                ShopComputerTheme.Label(new Rect(24, 118, 700, 62), $"Albro tej   {MilkSupplies} adag   ·   úton {pendingMilk}", 26, true);
-                ShopUi.Fill(new Rect(24, 214, r.width - 48, 1), ShopComputerTheme.Rule);
-                ShopComputerTheme.Label(new Rect(24, 232, 700, 36), "Kiválasztott recept", 22);
-                ShopComputerTheme.Label(new Rect(24, 412, r.width - 48, 40), "A gépet a raktárból, kézzel töltheted fel.", 19);
+                foreach (var ingredient in ShopHotDrinkRecipes.Ingredients)
+                {
+                    string text = ShopHotDrinkRecipes.Brands[(int)ingredient] + " · " + ShopHotDrinkRecipes.IngredientNames[(int)ingredient].ToLowerInvariant() +
+                        "   " + LoadedIngredient(ingredient) + " adag   ·   úton " + PendingIngredient(ingredient) + "   ·   raktár " + ReadyIngredient(ingredient);
+                    ShopComputerTheme.Label(new Rect(24, 18 + (int)ingredient * 65, 700, 50), text, 24, true);
+                }
+                ShopUi.Fill(new Rect(24, 282, r.width - 48, 1), ShopComputerTheme.Rule);
+                ShopComputerTheme.Label(new Rect(24, 288, 700, 32), "Kiválasztott recept", 22);
+                ShopComputerTheme.Label(new Rect(24, 412, r.width - 48, 40), "Az alapanyagokat a raktárból, kézzel töltheted a gépbe.", 19);
             }
             if (app == ShopComputerApp.Cameras)
             {

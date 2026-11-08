@@ -649,13 +649,77 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
         for(let wait=0;wait<40 && !(await state()).cup;wait++)await sleep(100);
         s=await state();check(!!s.cup,'Physical coffee menu brews cup '+i);
         await clickRect(s.coffeeButtons[3]);s=await state();check(!!s.held,'Physical menu gives actual cup '+i);
-        await probe('Action','aim-coffee-handover-'+i);await key('e','KeyE',69);s=await state();
+        // Use the free front input again after each cup moves to its own receipt place.
+        await probe('Action','aim-coffee-handover-'+(i===0?0:2));await key('e','KeyE',69);s=await state();
         check(!s.held && s.received===i+1,'Actual E serves coffee in a free customer-zone place '+i);
       }
       check(s.stage==='Payment' && s.scannerCount===coffeeScans && s.coffee===0 && s.milk===0,'Three prepared coffees reach payment without barcode scans or lost ingredients');await capture('three-coffees-served');
       await viewport(1920,1080);await capture('three-coffees-served-large');await viewport(1280,720);
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
       check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
+    }
+    if (selected === 'hot-drinks') {
+      const worldClick=async()=>{
+        await send('Input.dispatchMouseEvent',{type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(90);
+        await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(300);
+      };
+      const press=async id=>{
+        const q=await state(), i=q.computerControlIds.indexOf(id);
+        if(i<0) throw Error('Missing hot drink control '+id);
+        await clickRect(q.computerControls[i]);
+      };
+      await probe('Prepare','hot-drinks'); let q=await state(); const start=q.balance;
+      check(q.computerApp==='Coffee'&&q.tea===0&&q.cocoa===0,'Existing coffee app shows empty separate tea/cocoa stock');
+      check(q.computerControlIds.includes('Coffee:Recipe:23')&&q.computerControlIds.includes('Coffee:Recipe:24'),'Both new recipes are accessible in TobaccOS');
+      check(q.computerControls.every(r=>r.x>=0&&r.y>=0&&r.x+r.width<=width&&r.y+r.height<=height),'All four orders and five recipes fit at 720p');
+      await capture('hot-drinks-computer-720');await viewport(1920,1080);await capture('hot-drinks-computer-1080');await viewport(1280,720);
+      for(const id of ['Coffee:Tea','Coffee:Cocoa','Coffee:Milk']) await press(id);
+      q=await state();check(q.balance===start-3700&&q.pendingTea===10&&q.pendingCocoa===10&&q.tea===0&&q.cocoa===0,'Actual procurement buttons charge once and queue distinct ingredients');
+      await probe('Action','hot-drinks-live');await key('Escape','Escape',27);await probe('Action','hot-drinks-deliver');q=await state();
+      check(q.readyTea===10&&q.readyCocoa===10&&q.tea===0&&q.cocoa===0,'Timed deliveries create physical packages, not automatic refill');
+      for(const [index,kind,brand] of [[0,'tea','Levélke'],[1,'milk','Albro'],[2,'cocoa','Kakaóka']]){
+        await probe('Action','aim-ingredient-'+kind);q=await state();
+        check(q.ingredientTarget===kind&&q.ingredientBrand===brand,'Delivered '+kind+' is targetable and named');
+        if(kind!=='milk')await capture('hot-drinks-'+kind+'-package');
+        if(index===1)await worldClick();else await key('e','KeyE',69);q=await state();
+        check(q.tool==='CoffeeRefill'&&q.heldIngredientBrand===brand,'Actual input picks up '+kind);
+        await probe('Action','aim-refill-machine');
+        if(index===1)await key('e','KeyE',69);else await worldClick();q=await state();
+        check(!q.tool&&q.device==='None'&&q.brewRemaining===0,'Actual input refills '+kind+' without opening/brewing');
+      }
+      check(q.tea===10&&q.cocoa===10&&q.milk===10&&q.coffee===0&&q.balance===start-3700,'All manual refills conserve exact quantities and money');
+      await probe('Action','hot-drinks-customer');const paid=(await state()).sales;
+      for(const [i,button,id] of [[0,4,'tea'],[1,5,'hot_chocolate']]){
+        await probe('Action','aim-coffee-display');await key('e','KeyE',69);q=await state();
+        check(q.device==='Coffee'&&q.coffeeButtons.length===6,'Actual E opens all five physical recipes');
+        await clickRect(q.coffeeButtons[button]);q=await state();
+        check(q.recipe===23+i&&q.coffeeActionEnabled,'Physical selection enables '+id+' independently of coffee stock');
+        if(i===1){await viewport(1920,1080);await capture('hot-drinks-chocolate-1080');await viewport(1280,720);q=await state();}
+        else await capture('hot-drinks-tea-720');
+        await clickRect(q.coffeeButtons[3]);q=await state();const remaining=q.brewRemaining;
+        check(remaining>0&&q.tea===9&&q.cocoa===(i===0?10:9)&&q.milk===(i===0?10:9),'One physical brew consumes only correct ingredients '+id);
+        await clickRect(q.coffeeButtons[button]);await clickRect((await state()).coffeeButtons[3]);q=await state();
+        check(q.recipe===23+i&&q.tea===9&&q.cocoa===(i===0?10:9),'Busy recipe and repeated brew cannot duplicate consumption '+id);
+        await key('Escape','Escape',27);
+        for(let wait=0;wait<60&&(await state()).cup!==id;wait++)await sleep(100);
+        await probe('Action','aim-coffee-display');await key('e','KeyE',69);q=await state();
+        check(q.cup===id&&q.coffeeScreenStatus.startsWith('ELKÉSZÜLT'),'Brew completes after menu close and reopening '+id);
+        await clickRect(q.coffeeButtons[3]);q=await state();check(q.held===id&&q.device==='None','Physical take returns correct cup '+id);
+        await probe('Action','aim-coffee-handover-'+(i===0?0:2));await key('e','KeyE',69);q=await state();
+        check(!q.held&&q.received===i+1,'Actual E hands over exact new drink '+id);
+      }
+      check(q.stage==='Payment'&&q.missing===0&&q.coffee===0&&q.tea===9&&q.cocoa===9&&q.milk===9,'Both hot drinks reach payment with zero coffee consumption');
+      await capture('hot-drinks-served-720');await viewport(1920,1080);await capture('hot-drinks-served-1080');await viewport(1280,720);
+      const cash=q.balance;await probe('Action','focus-request-terminal');await type('1350');await enter();q=await state();
+      check(q.sales===paid+1&&q.balance===cash+1350&&q.drawer===q.balance,'One actual card approval settles tea and hot chocolate');
+      await enter();check((await state()).balance===cash+1350,'Repeated approval never posts another hot drink sale');
+      await probe('Action','aim-coffee-display');await key('e','KeyE',69);q=await state();
+      await probe('Action','empty-coffee-milk');await clickRect((await state()).coffeeButtons[5]);q=await state();
+      check(q.coffeeScreenStatus==='NINCS TEJ'&&!q.coffeeActionEnabled,'Hot chocolate explains shared milk shortage without requiring coffee');
+      await capture('hot-drinks-no-milk-720');await viewport(1920,1080);await capture('hot-drinks-no-milk-1080');
+      await clickRect((await state()).coffeeButtons[4]);q=await state();
+      check(q.coffeeActionEnabled&&q.coffeeScreenStatus==='KÉSZENLÉT','Tea remains usable without coffee or milk');
+      await capture('hot-drinks-tea-1080');await viewport(1280,720);
     }
     if (selected === 'reputation') {
       const press=async id=>{

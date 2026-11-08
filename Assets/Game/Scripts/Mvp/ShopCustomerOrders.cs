@@ -10,17 +10,16 @@ public sealed partial class MvpShopController
         int types = ShopCatalog.Ids.Length;
         var remaining = Enumerable.Range(0, types)
             .Select(AvailableInventory).ToArray();
-        int coffee = Activities.CoffeeOwned ? Activities.CoffeeSupplies + Activities.ReadyCoffee : 0;
-        int milk = Activities.CoffeeOwned ? Activities.MilkSupplies + Activities.ReadyMilk : 0;
+        int[] ingredients = Activities.IngredientBudget();
         if (Activities.BrewRemaining > 0) remaining[Activities.SelectedRecipe]++;
 
         bool Take(int type)
         {
             if (ShopLotteryCatalog.IsTicket(type) && !ShopLotteryCatalog.IsTicket(preferred)) return false;
             if (remaining[type] > 0) { remaining[type]--; return true; }
-            if (!ShopCatalog.IsCoffee(type) || coffee == 0 || type == ShopCatalog.Latte && milk == 0) return false;
-            coffee--;
-            if (type == ShopCatalog.Latte) milk--;
+            var recipe = ShopHotDrinkRecipes.Get(type);
+            if (!Activities.CoffeeOwned || recipe == null || !recipe.CanMake(ingredients)) return false;
+            recipe.Consume(ingredients);
             return true;
         }
 

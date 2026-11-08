@@ -18,7 +18,7 @@ public sealed partial class ShopPricing
     public string Draft => draft;
     public string Error => error;
     public ShopPriceCategory Category { get; private set; }
-    public static readonly string[] CategoryNames = { "Dohánytermékek", "Üdítők és víz", "Alkoholos italok", "Kávék" };
+    public static readonly string[] CategoryNames = { "Dohánytermékek", "Üdítők és víz", "Alkoholos italok", "Meleg italok" };
     public static ShopPriceCategory CategoryOf(int type) => ShopCatalog.IsCigarette(type) ? ShopPriceCategory.Tobacco :
         ShopCatalog.IsCoffee(type) ? ShopPriceCategory.Coffee : type == 7 || type == 8 || ShopPartnerCatalog.IsSpirit(type) ? ShopPriceCategory.Alcohol : ShopPriceCategory.SoftDrinks;
     public int[] VisibleTypes => AvailableTypes.Where(t => CategoryOf(t) == Category).ToArray();

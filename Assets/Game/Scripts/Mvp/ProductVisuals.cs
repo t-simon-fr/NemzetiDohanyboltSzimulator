@@ -83,8 +83,10 @@ public static class ProductVisuals
             var body=GameObject.CreatePrimitive(PrimitiveType.Cylinder);body.name="Coffee cup";body.transform.SetParent(item.transform,false);body.transform.localScale=new Vector3(.84f,.48f,.84f);
             var cup=new Material(Shader.Find("Universal Render Pipeline/Lit")){color=new Color(.9f,.87f,.78f)};body.GetComponent<Renderer>().sharedMaterial=cup;
             var liquid=GameObject.CreatePrimitive(PrimitiveType.Cylinder);liquid.name="Fresh coffee";liquid.transform.SetParent(item.transform,false);liquid.transform.localPosition=Vector3.up*.485f;liquid.transform.localScale=new Vector3(.73f,.008f,.73f);
-            var brown=new Material(Shader.Find("Universal Render Pipeline/Lit")){color=type==ShopCatalog.Latte?new Color(.80f,.66f,.46f):new Color(.10f,.04f,.01f)};liquid.GetComponent<Renderer>().sharedMaterial=brown;
+            var brown=new Material(Shader.Find("Universal Render Pipeline/Lit")){color=type == ShopCatalog.Latte ? new Color(.80f,.66f,.46f) : type == ShopCatalog.Tea ? new Color(.60f,.28f,.04f) : type == ShopCatalog.HotChocolate ? new Color(.29f,.13f,.055f) : new Color(.10f,.04f,.01f)};liquid.GetComponent<Renderer>().sharedMaterial=brown;
             foreach(var collider in new[]{body.GetComponent<Collider>(),liquid.GetComponent<Collider>()}){collider.enabled=false;Object.Destroy(collider);}
+            if (type == ShopCatalog.Tea || type == ShopCatalog.HotChocolate)
+                Text(item.transform, "Drink name", ShopCatalog.ShortNames[type].ToUpperInvariant(), new Vector3(0, .04f, -.425f), Quaternion.identity, .065f, new Color(.18f,.12f,.07f));
             var cleanup=item.AddComponent<ShopProductMaterials>();cleanup.Materials=new[]{cup,brown};return;
         }
         if(type==ShopCatalog.Contraband)

@@ -1,0 +1,15 @@
+{
+  "reviewer": "Codex self-review",
+  "source": {
+    "commit": "11172d236874edf5938a37f57b1dd033e4f13d63",
+    "sourceFingerprint": "9ca64e000e8d06e118509126f955df0abc653ea4c6660207f9cac87f7b70f503",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "scenario": "current",
+  "review": "passed",
+  "image": "native-computer.png",
+  "interactionReview": "passed",
+  "capturedUtc": "2026-11-08T16:15:49.7657482Z",
+  "observation": "Readable five recipes and four ingredient lines; native Input System mouse selected tea, started one brew and picked up the real tea cup. Procurement/refill and time advance were API fixture setup, not OS input."
+}

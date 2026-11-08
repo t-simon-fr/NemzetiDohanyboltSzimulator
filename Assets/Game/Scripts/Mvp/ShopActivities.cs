@@ -162,32 +162,16 @@ public sealed partial class ShopActivities : MonoBehaviour
         if(!shop.Ledger.TryImprove(CoffeeMachinePrice)){shop.Notify("Nincs elég pénz a kávégépre.");return false;}
         shop.SyncCashDrawer();CoffeeOwned=true;shop.Navigation?.Rebuild();coffeeRoot.gameObject.SetActive(true);shop.Notify("Kávégép felszerelve. A Kávé alkalmazásban rendelhetsz alapanyagot.");return true;
     }
-    public bool OrderCoffeeSupplies()
-    {
-        bool attemptedDebit = false;
-        bool ordered = coffeeState.TryOrder(false, ReadyCoffee, shop.Phase == ShopPhase.Summary, () =>
-        {
-            attemptedDebit = true;
-            return shop.Ledger.TryBuy(ShopCatalog.Costs[ShopCatalog.Coffee], 10);
-        });
-        if (!ordered)
-        {
-            shop.Notify(attemptedDebit ? "Nincs elég pénz a kávéalapanyagra." : "Kávégép szükséges; legfeljebb 60 adag alapanyagot tárolhatsz.");
-            return false;
-        }
-        shop.SyncCashDrawer();
-        shop.Notify("Megrendelve 10 adag kávéalapanyag. Szállítás: 8 másodperc.");
-        return true;
-    }
+    public bool OrderCoffeeSupplies() => OrderIngredient(ShopDrinkIngredient.Coffee);
     public bool BrewCoffee()
     {
         var result = coffeeState.TryBrew(shop.Phase == ShopPhase.Summary, CoffeeOutput.Occupant != null);
         if (result != ShopBrewResult.Started)
         {
-            shop.Notify(result == ShopBrewResult.MilkMissing ? "A lattéhoz tölts tejet a gépbe." : "Kávéfőzéshez szabad tálca és megérkezett alapanyag szükséges.");
+            shop.Notify(result == ShopBrewResult.MilkMissing || result == ShopBrewResult.IngredientsMissing ? MissingDrinkIngredients : "Italkészítéshez szabad gép és üres tálca szükséges.");
             return false;
         }
-        shop.Notify("Készül a kávé…");
+        shop.Notify("Készül: " + ShopCatalog.ShortNames[SelectedRecipe] + "…");
         CoffeeDisplay.Refresh();
         return true;
     }
@@ -225,6 +209,11 @@ public sealed partial class ShopActivities : MonoBehaviour
         var arrivals = coffeeState.TickDeliveries(dt);
         if (arrivals.milk > 0) SpawnIngredientPackage(arrivals.milk, true);
         if (arrivals.coffee > 0) { SpawnIngredientPackage(arrivals.coffee); shop.Notify("Megérkezett a kávéalapanyag."); }
+        foreach (var ingredient in new[] { ShopDrinkIngredient.Tea, ShopDrinkIngredient.Cocoa })
+        {
+            int amount = coffeeState.TickDelivery(ingredient, dt);
+            if (amount > 0) SpawnIngredientPackage(amount, ingredient);
+        }
         int completedRecipe = coffeeState.TickBrew(dt);
         if (completedRecipe >= 0)
         {
@@ -235,7 +224,7 @@ public sealed partial class ShopActivities : MonoBehaviour
                 coffeeState.RefundBrew(completedRecipe);
                 shop.Notify("A főzőtálca foglalt, az alapanyag megmaradt.");
             }
-            else shop.Notify("Elkészült a kávé. E a gépen: felvétel.");
+            else shop.Notify("Elkészült: " + ShopCatalog.ShortNames[completedRecipe] + ". E / bal kattintás a gépen: felvétel.");
         }
         CoffeeDisplay.Refresh();
         if(shop.Modal==ShopModal.None&&shop.Phase==ShopPhase.Open)
@@ -392,9 +381,11 @@ public sealed partial class ShopActivities : MonoBehaviour
     {
         GUI.Label(new Rect(16,5,width-32,32),"TRAFIK PRESSZÓ",heading);
         if(!CoffeeOwned){GUI.Label(new Rect(16,55,width-32,100),"Kávégép vásárolható az Üzletfejlesztésben: "+ShopCatalog.Money(CoffeeMachinePrice),label);return;}
-        GUI.Label(new Rect(16,40,width-32,60),"Betöltve: "+CoffeeSupplies+" kávé • "+MilkSupplies+" tej\nÚton: "+pendingCoffee+" kávé • "+pendingMilk+" tej",label);
-        if(GUI.Button(new Rect(12,105,(width-30)/2,32),"10 adag kávé • 2000 Ft",buttonStyle))OrderCoffeeSupplies();
-        if(GUI.Button(new Rect(width/2+3,105,(width-30)/2,32),"10 adag tej • 1500 Ft",buttonStyle))OrderMilkSupplies();
+        foreach (var ingredient in ShopHotDrinkRecipes.Ingredients)
+        {
+            string caption = ShopHotDrinkRecipes.IngredientNames[(int)ingredient] + ": " + LoadedIngredient(ingredient) + " · úton " + PendingIngredient(ingredient) + " · +10: " + ShopCatalog.Money(ShopHotDrinkRecipes.UnitCosts[(int)ingredient] * 10);
+            if (GUI.Button(new Rect(12, 40 + (int)ingredient * 42, width - 24, 36), caption, buttonStyle)) OrderIngredient(ingredient);
+        }
         DrawRecipeControls(width,height);
         GUI.Label(new Rect(16,height-45,width-32,42),shop.Message,label);
     }

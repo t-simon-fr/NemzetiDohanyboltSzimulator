@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "partner-pricing",
+    "partner-integration",
+    "partner-targeting",
+    "reputation-state",
+    "reputation-integration",
+    "hot-drinks-state",
+    "hot-drinks-integration"
+  ],
+  "startedUtc": "2026-11-08T16:23:34.3903248Z",
+  "source": {
+    "commit": "11172d236874edf5938a37f57b1dd033e4f13d63",
+    "sourceFingerprint": "008e4a3f223f57656b4e5213f77453a41e99e383438cbb47cc886438e38e9567",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "seconds": 0.8147285,
+      "id": "partner-pricing",
+      "passed": 20,
+      "failed": 0,
+      "entry": "PartnerChecks.Pricing"
+    },
+    {
+      "seconds": 0.6506538,
+      "id": "partner-integration",
+      "passed": 79,
+      "failed": 0,
+      "entry": "PartnerChecks.Integration"
+    },
+    {
+      "seconds": 0.973683,
+      "id": "partner-targeting",
+      "passed": 34,
+      "failed": 0,
+      "entry": "PartnerChecks.Targeting"
+    },
+    {
+      "seconds": 0.3259056,
+      "id": "reputation-state",
+      "passed": 27,
+      "failed": 0,
+      "entry": "ReputationChecks.State"
+    },
+    {
+      "seconds": 0.6015368,
+      "id": "reputation-integration",
+      "passed": 38,
+      "failed": 0,
+      "entry": "ReputationChecks.Integration"
+    },
+    {
+      "seconds": 0.1538523,
+      "id": "hot-drinks-state",
+      "passed": 130,
+      "failed": 0,
+      "entry": "HotDrinkChecks.State"
+    },
+    {
+      "seconds": 0.2972938,
+      "id": "hot-drinks-integration",
+      "passed": 48,
+      "failed": 0,
+      "entry": "HotDrinkChecks.Integration"
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0635248,
+  "finishedUtc": "2026-11-08T16:23:43.5905389Z",
+  "totalSeconds": 9.208373
+}

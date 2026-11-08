@@ -58,7 +58,9 @@
       "partner-integration",
       "partner-targeting",
       "reputation-state",
-      "reputation-integration"
+      "reputation-integration",
+      "hot-drinks-state",
+      "hot-drinks-integration"
     ]
   },
   "suites": {
@@ -326,6 +328,16 @@
       "file": "Tools/Checks/ReputationChecks.cs",
       "entry": "ReputationChecks.Integration",
       "purpose": "Real unlocked/delivered choice, coffee/lottery, pause/focus/closing, physical checkout, daily summary and existing regular NPC favourites/dialogue"
+    },
+    "hot-drinks-state": {
+      "file": "Tools/Checks/HotDrinkChecks.cs",
+      "entry": "HotDrinkChecks.State",
+      "purpose": "Configurable five recipes, separate deliveries and ingredients, shared milk, single consumption/output and refunds"
+    },
+    "hot-drinks-integration": {
+      "file": "Tools/Checks/HotDrinkChecks.cs",
+      "entry": "HotDrinkChecks.Integration",
+      "purpose": "Paid procurement, physical packages/refill, eligible orders, real cups, wrong-drink rejection, pricing and once-only card checkout"
     }
   },
   "historicalExcluded": {

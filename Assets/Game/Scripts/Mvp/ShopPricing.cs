@@ -12,7 +12,7 @@ public sealed partial class ShopPricing:MonoBehaviour
     public void Configure(MvpShopController owner){shop=owner;ResetPrices();}
     public void ResetPrices(){prices=(int[])ShopCatalog.Prices.Clone();selected=0;ResetEditor();}
     public int Price(int type)=>prices[type];
-    public int[] AvailableTypes=>shop.SupplyTypes.Concat(shop.Activities.CoffeeOwned?new[]{ShopCatalog.Coffee,ShopCatalog.LongCoffee,ShopCatalog.Latte}:Array.Empty<int>()).Concat(shop.StockCount(ShopCatalog.Contraband)>0?new[]{ShopCatalog.Contraband}:Array.Empty<int>()).ToArray();
+    public int[] AvailableTypes=>shop.SupplyTypes.Concat(shop.Activities.CoffeeOwned?ShopHotDrinkRecipes.Types:Array.Empty<int>()).Concat(shop.StockCount(ShopCatalog.Contraband)>0?new[]{ShopCatalog.Contraband}:Array.Empty<int>()).ToArray();
     public int SelectedType=>AvailableTypes.Contains(selected)?selected:0;
     public static int Minimum(int type)=>Mathf.CeilToInt(ShopCatalog.Prices[type]*.5f/5)*5;
     public static int Maximum(int type)=>ShopCatalog.Prices[type]*3;
