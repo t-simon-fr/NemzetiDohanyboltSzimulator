@@ -1,6 +1,8 @@
 # Elfogadási ellenőrzések
 
-Legfrissebb fejlesztés: [#111 tea és forró csoki](hot-drinks/REPORT.md): 55 natív suite lefedve (1162 baseline + 376 friss érintett állítás), 35 + 19 + 26 WebGL-ellenőrzés, 0 konzolhiba. A natív és 720p/1080p képek átnézve. Pagesre nincs kiadva.
+Legfrissebb fejlesztés: [#107 telefonfeltöltés](mobile-topup/REPORT.md): 57 suite / 1597 állításos baseline, 116 érkezési és 78 végső célzott állítás; 38 + 18 + 29 WebGL-ellenőrzés, 0 konzolhiba. Natív és 720p/1080p képek átnézve. Pagesre nincs kiadva.
+
+Korábbi fejlesztés: [#111 tea és forró csoki](hot-drinks/REPORT.md): 55 natív suite lefedve (1162 baseline + 376 friss érintett állítás), 35 + 19 + 26 WebGL-ellenőrzés, 0 konzolhiba. A natív és 720p/1080p képek átnézve. Pagesre nincs kiadva.
 
 Korábbi fejlesztés: [#122 üzletreputáció](reputation/REPORT.md): 53 natív suite lefedve (1261 baseline + 99 friss érintett állítás), 15 + 45 + 26 WebGL-ellenőrzés, 0 konzolhiba. A hírnévoldal/összesítő/törzsvendég 720p/1080p képei átnézve. Pagesre nincs kiadva.
 

@@ -50,7 +50,7 @@ public sealed partial class ShopReputation : MonoBehaviour
     {
         if (!actor.Entered || actor.WillSteal) return;
         if (!visitIds.TryGetValue(actor,out int id)) { id=++nextVisitId; visitIds.Add(actor,id); }
-        State.Enter(id,ShopReputationConfig.Allowance(actor.OrderTypes,actor.LotteryClaimId!=null));
+        State.Enter(id,ShopReputationConfig.Allowance(actor.OrderTypes,actor.LotteryClaimId!=null || actor.MobileRequest!=null));
     }
     public void MarkMissing(MvpCustomerActor actor) { if(actor!=null && visitIds.TryGetValue(actor,out int id)) State.MarkMissing(id); }
     public void Complete(MvpCustomerActor actor, ShopVisitOutcome outcome)

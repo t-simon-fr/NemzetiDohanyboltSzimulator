@@ -1,0 +1,36 @@
+{
+  "reviewer": "Codex self-review",
+  "result": "passed",
+  "input": "Real browser mouse, keyboard and text input; fixture only prepares day, customer and camera.",
+  "resolutions": [
+    "1280x720",
+    "1920x1080"
+  ],
+  "images": [
+    "1280x720-mobile-locked-720.png",
+    "1920x1080-mobile-locked-1080.png",
+    "1280x720-mobile-form-720.png",
+    "1920x1080-mobile-form-1080.png",
+    "1280x720-mobile-invalid-720.png",
+    "1280x720-mobile-receipt-720.png",
+    "1920x1080-mobile-receipt-1080.png",
+    "1280x720-mobile-account-720.png",
+    "1920x1080-mobile-account-1080.png",
+    "1280x720-mobile-summary-720.png",
+    "1280x720-mobile-cash-form-720.png",
+    "1920x1080-mobile-cash-form-1080.png",
+    "1280x720-mobile-cash-invalid-720.png",
+    "1280x720-mobile-cash-receipt-720.png",
+    "1920x1080-mobile-cash-receipt-1080.png",
+    "1280x720-mobile-cash-account-720.png",
+    "1920x1080-mobile-cash-account-1080.png",
+    "1280x720-mobile-cash-summary-720.png"
+  ],
+  "buildAssets": {
+    "AcceptanceWebGL.data.unityweb": "e8b497f3229ac8ad861e38bb8fe1276c096eae456387dd473ebcd89abe813780",
+    "AcceptanceWebGL.framework.js.unityweb": "97ab81f3b5aaa20157ddf4338facfaf0481161e8240dc67f78bdd4d34da058a4",
+    "AcceptanceWebGL.loader.js": "9871d5be636460756f40706bc20b2a077374e45102dc7fed912dbd42c8c116e4",
+    "AcceptanceWebGL.wasm.unityweb": "ad245403d295b12bc4495f842945371433a6a9dbe37d6301cc24eb2ceb519857"
+  },
+  "notes": "Forms, validation, receipts and settlement fit and are readable. Daily summary details use the existing scroll region."
+}

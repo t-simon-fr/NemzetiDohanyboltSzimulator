@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public sealed class MvpCustomerActor : MonoBehaviour
 {
+    public ShopMobileRequest MobileRequest { get; private set; }
     public int Person { get; private set; }
     public bool IsRegular { get; private set; }
     public void MarkRegular() => IsRegular = true;
@@ -15,9 +16,9 @@ public sealed class MvpCustomerActor : MonoBehaviour
     public int[] OrderTypes {get;private set;}
     public int[] UnitPrices {get;private set;}
     public bool AcceptsPrices {get;private set;}
-    public int TotalPrice=>UnitPrices.Sum();
+    public int TotalPrice => MobileRequest?.Amount ?? UnitPrices.Sum();
     public int TotalCost=>OrderTypes.Sum(t=>ShopCatalog.Costs[t]);
-    public string OrderDescription=>string.Join(" + ",OrderTypes.Select(t=>ShopCatalog.ShortNames[t]));
+    public string OrderDescription => MobileRequest != null ? MobileRequest.Description : string.Join(" + ",OrderTypes.Select(t=>ShopCatalog.ShortNames[t]));
     public int Tender { get; private set; }
     public float WaitTime { get; set; }
     public bool Entered { get; private set; }
@@ -41,19 +42,19 @@ public sealed class MvpCustomerActor : MonoBehaviour
     private List<Vector3> route;
     private int routeIndex, routeVersion = -1;
     private Vector3 routeGoal;
-    public void Initialize(int person,int product,int visit,int[] order=null,string lotteryClaimId=null)
+    public void Initialize(int person,int product,int visit,int[] order=null,string lotteryClaimId=null, ShopMobileRequest mobileRequest=null)
     {
         var game = MvpShopController.Instance;
-        LotteryClaimId=lotteryClaimId;
-        OrderTypes = lotteryClaimId!=null ? System.Array.Empty<int>() : order ?? game.CreateCustomerOrder(product,visit);
-        if (OrderTypes.Length == 0 && lotteryClaimId==null) throw new System.ArgumentException("Customer requires an available order.");
+        LotteryClaimId=lotteryClaimId; MobileRequest=mobileRequest;
+        OrderTypes = lotteryClaimId!=null || mobileRequest!=null ? System.Array.Empty<int>() : order ?? game.CreateCustomerOrder(product,visit);
+        if (OrderTypes.Length == 0 && lotteryClaimId==null && mobileRequest==null) throw new System.ArgumentException("Customer requires an available order.");
         Person=person;Product=OrderTypes.Length>0?OrderTypes[0]:-1;product=Product;
         if(product==ShopLotteryCatalog.NumberType)
         {lotteryNumbers=game.Lottery.Book.QuickPick();LotteryQuickPick=visit%2==0;}
         UnitPrices=OrderTypes.Select(ShopCatalog.SalePrice).ToArray();AcceptsPrices=OrderTypes.Select((t,i)=>ShopPricing.Accepts(t,UnitPrices[i],visit,game.Day)).All(x=>x);int price=TotalPrice;
         Tender=visit%3==1?price:price>2000?Mathf.CeilToInt(price/5000f)*5000:price>500?Mathf.CeilToInt(price/1000f)*1000:500;
-        UsesCard=!game.SingleProductVisits&&visit%4==3;
-        UsesCoins=lotteryClaimId==null&&!ShopLotteryCatalog.IsTicket(product)&&!UsesCard&&price<=1000 && visit%4<=2;
+        UsesCard = !game.SingleProductVisits && (mobileRequest != null ? (visit / 6) % 2 == 1 : visit % 4 == 3);
+        UsesCoins=mobileRequest==null&&lotteryClaimId==null&&!ShopLotteryCatalog.IsTicket(product)&&!UsesCard&&price<=1000 && visit%4<=2;
         layout=Object.FindAnyObjectByType<ShopLayout>();security=layout.GetComponent<ShopSecurity>();
         WillSteal=AcceptsPrices&&layout.IsPublicProduct(product) && (visit+MvpShopController.Instance.Day)%6==4;
         transform.SetPositionAndRotation(layout.EntryOutside,Quaternion.identity);

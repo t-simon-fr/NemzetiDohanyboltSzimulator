@@ -60,7 +60,9 @@
       "reputation-state",
       "reputation-integration",
       "hot-drinks-state",
-      "hot-drinks-integration"
+      "hot-drinks-integration",
+      "mobile-state",
+      "mobile-integration"
     ]
   },
   "suites": {
@@ -338,6 +340,16 @@
       "file": "Tools/Checks/HotDrinkChecks.cs",
       "entry": "HotDrinkChecks.Integration",
       "purpose": "Paid procurement, physical packages/refill, eligible orders, real cups, wrong-drink rejection, pricing and once-only card checkout"
+    },
+    "mobile-state": {
+      "file": "Tools/Checks/MobileTopUpChecks.cs",
+      "entry": "MobileTopUpChecks.State",
+      "purpose": "Automatic second-Monday activation, validated service cash/card checkout, single receipts and isolated provider accounting"
+    },
+    "mobile-integration": {
+      "file": "Tools/Checks/MobileTopUpChecks.cs",
+      "entry": "MobileTopUpChecks.Integration",
+      "purpose": "Automatic second-Monday activation, validated service cash/card checkout, single receipts and isolated provider accounting"
     }
   },
   "historicalExcluded": {

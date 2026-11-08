@@ -34,13 +34,20 @@ public sealed class ShopLedger
     public int BankBalance {get;private set;}
     public int CardRevenue {get;private set;}
     public int LotteryReserve { get; private set; }
-    public int AvailableFunds => Math.Max(0, Cash - LotteryReserve);
+    public int MobileReserve { get; private set; }
+    public int AvailableFunds => Math.Max(0, Cash - LotteryReserve - MobileReserve);
+    public void SetMobileReserve(int amount) => MobileReserve = Math.Max(0, amount);
+    public bool TrySettleMobile(int amount)
+    {
+        if (Closed || amount <= 0 || amount != MobileReserve || (long)Cash - amount < LotteryReserve) return false;
+        Cash -= amount; MobileReserve = 0; return true;
+    }
     public void SetLotteryReserve(int amount) => LotteryReserve = Math.Max(0, amount);
     // Operator transfers are cash movements, never a second sale, profit or purchase.
     public bool TryOperatorTransfer(int delta)
     {
         long next = (long)Cash + delta;
-        if (Closed || delta == 0 || delta % 5 != 0 || next < 0 || next > int.MaxValue) return false;
+        if (Closed || delta == 0 || delta % 5 != 0 || next < MobileReserve || next > int.MaxValue) return false;
         Cash = (int)next;
         return true;
     }

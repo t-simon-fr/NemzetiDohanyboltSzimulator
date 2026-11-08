@@ -658,6 +658,66 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
       check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
     }
+    if (selected === 'mobile') {
+      const press=async id=>{const q=await state(),i=q.mobileControlIds.indexOf(id);if(i<0)throw Error('Missing mobile control '+id);await clickRect(q.mobileControls[i]);};
+      const fill=async(field,text)=>{
+        const q=await state();await clickRect(q[field]);
+        await send('Input.dispatchKeyEvent',{type:'keyDown',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await send('Input.dispatchKeyEvent',{type:'keyUp',key:'a',code:'KeyA',windowsVirtualKeyCode:65,modifiers:2});
+        await key('Backspace','Backspace',8);
+        for(const character of text)await send('Input.dispatchKeyEvent',{type:'char',text:character,unmodifiedText:character});await sleep(300);
+      };
+      await probe('Prepare','mobile-locked');let q=await state();
+      check(!q.mobileOwned&&!q.mobileControlIds.includes('Mobile:Confirm')&&q.balance===6000,'First week exposes the automatic-unlock information without a purchase or customer request');
+      await capture('mobile-locked-720');await viewport(1920,1080);await capture('mobile-locked-1080');await viewport(1280,720);
+      for(const scenario of ['mobile','mobile-cash']){
+        await probe('Prepare',scenario);q=await state();const cash=q.balance,sales=q.sales,amount=q.mobileAmount,provider=q.mobileProvider,number=q.mobileNumber;
+        check(q.day===6&&q.mobileOwned&&q.mobileAmount>0&&q.balance===6000,'Second-Monday fixture has free service and a real requesting customer '+scenario);
+        await key('e','KeyE',69);q=await state();
+        check(q.device==='Mobile'&&q.blocked,'Actual E on physical POS opens separate top-up mode '+scenario);
+        check(q.mobileControls.every(r=>r.x>=0&&r.y>=0&&r.x+r.width<=width&&r.y+r.height<=height),'Service controls fit small viewport '+scenario);
+        await capture(scenario+'-form-720');await viewport(1920,1080);await capture(scenario+'-form-1080');await viewport(1280,720);
+        await press('Mobile:Provider:'+provider);await fill('mobileNumberField','123');await fill('mobileAmountField',String(amount));
+        await press('Mobile:Confirm');q=await state();
+        check(q.stage==='Order'&&!q.mobilePrepared&&!q.mobileReceipt&&q.balance===cash,'Malformed typed number rejects service without a receipt or charge '+scenario);
+        await capture(scenario+'-invalid-720');
+        await fill('mobileNumberField',number);await press('Mobile:Provider:'+((provider+1)%3));await press('Mobile:Confirm');q=await state();
+        check(q.stage==='Order'&&!q.mobilePrepared&&q.mobileFeedback.includes('vevő'),'Mismatched provider gives customer feedback and can be corrected '+scenario);
+        await press('Mobile:Provider:'+provider);await fill('mobileAmountField','2001');await press('Mobile:Confirm');q=await state();
+        check(q.stage==='Order'&&!q.mobilePrepared&&q.balance===cash,'Unsupported typed amount cannot finalize '+scenario);
+        await press('Mobile:Amount:'+amount);await press('Mobile:Cancel');q=await state();
+        check(q.stage==='Order'&&!q.mobilePrepared&&!q.mobileReceipt&&q.balance===cash,'Actual cancel clears draft without posting '+scenario);
+        await press('Mobile:Provider:'+provider);await fill('mobileNumberField',number);await press('Mobile:Amount:'+amount);
+        await press('Mobile:Confirm');q=await state();
+        check(q.stage==='Payment'&&q.mobilePrepared&&!q.mobileReceipt&&q.balance===cash,'Corrected input prepares payment but does not activate credit '+scenario);
+        if(scenario==='mobile'){
+          check(q.device==='Terminal','Card customer switches from service mode to physical card keypad');
+          await type('1');await enter();q=await state();
+          check(q.mobilePrepared&&!q.mobileReceipt&&q.mobileDailyCount===0&&q.balance===cash,'Wrong card amount cannot create credit or commission');
+          await clickRect(q.cardClear);await type(String(amount));await enter();
+        } else {
+          check(q.device==='Till','Cash customer opens existing change drawer');
+          await clickRect(q.cashKeys[3]);q=await state();
+          check(!q.mobileReceipt&&q.balance===cash,'Wrong cash change cannot activate top-up');
+          await clickRect(q.cashDenominations[5]);await clickRect((await state()).cashKeys[3]);
+        }
+        q=await state();
+        check(q.mobileDailyCount===1&&!!q.mobileReceipt&&q.balance===cash+amount&&q.drawer===q.balance,'Real payment creates exactly one top-up and reconciled receipt '+scenario);
+        check(q.mobileDailySales===amount&&q.mobileCommission===amount*.05&&q.mobileOutstanding===amount*.95&&q.mobileReserve===amount*.95&&q.availableFunds===cash+amount*.05,'Only commission is spendable; provider funds remain reserved '+scenario);
+        const receipt=q.mobileReceipt;await enter();q=await state();
+        check(q.mobileDailyCount===1&&q.mobileReceipt===receipt&&q.balance===cash+amount,'Repeated approval cannot duplicate top-up '+scenario);
+        await probe('Action','mobile-receipt');await capture(scenario+'-receipt-720');await viewport(1920,1080);await capture(scenario+'-receipt-1080');await viewport(1280,720);
+        await probe('Action','mobile-account');await capture(scenario+'-account-720');await viewport(1920,1080);await capture(scenario+'-account-1080');await viewport(1280,720);
+        await probe('Action','lottery-home');await key('e','KeyE',69);q=await state();
+        check(q.phase==='Summary'&&q.mobileReserve===amount*.95,'Actual door day-end retains operator liability '+scenario);
+        await capture(scenario+'-summary-720');await enter();q=await state();
+        check(q.day===7&&q.mobileOwned&&q.mobileDailySales===0&&q.mobileOutstanding===amount*.95&&q.mobileReceipt===receipt,'Actual next day retains service and receipt, resets daily counters '+scenario);
+        const balance=q.balance;await probe('Action','mobile-account');await press('Mobile:Settle');q=await state();
+        check(q.mobileOutstanding===0&&q.mobileReserve===0&&q.balance===balance-amount*.95&&q.drawer===q.balance,'Actual settlement button transfers provider share once '+scenario);
+        await press('Mobile:Settle');check((await state()).balance===q.balance,'Repeated operator settlement cannot debit twice '+scenario);
+        await key('Escape','Escape',27);q=await state();check(q.device==='None'&&!q.blocked,'Leaving service restores world input '+scenario);
+      }
+    }
     if (selected === 'hot-drinks') {
       const worldClick=async()=>{
         await send('Input.dispatchMouseEvent',{type:'mousePressed',x:width/2,y:height/2,button:'left',clickCount:1});await sleep(90);

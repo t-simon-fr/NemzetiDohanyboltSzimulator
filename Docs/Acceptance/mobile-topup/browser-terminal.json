@@ -1,0 +1,103 @@
+{
+  "started": "2026-11-08T20:41:52.672Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Card checkout focuses actual terminal",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 0",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 1",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 2",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 3",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 4",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 5",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 6",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 7",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 8",
+      "passed": true
+    },
+    {
+      "label": "Actual physical numeric button 9",
+      "passed": true
+    },
+    {
+      "label": "Physical terminal rejects wrong input on its own display",
+      "passed": true
+    },
+    {
+      "label": "Physical correction and keyboard share live terminal amount",
+      "passed": true
+    },
+    {
+      "label": "Physical OK pays once and keeps success visible",
+      "passed": true
+    },
+    {
+      "label": "Successful card payment automatically restores normal player view and input",
+      "passed": true
+    },
+    {
+      "label": "Repeated confirmation after auto-close cannot double charge",
+      "passed": true
+    },
+    {
+      "label": "Physical ESC leaves terminal at large viewport",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-physical-terminal-error.png",
+    "1280x720-physical-terminal-approved.png",
+    "1920x1080-physical-terminal-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27190574,
+    "seconds": 245.2838526,
+    "error": "",
+    "completedUtc": "2026-11-08T20:39:57.229Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "e8b497f3229ac8ad861e38bb8fe1276c096eae456387dd473ebcd89abe813780",
+      "AcceptanceWebGL.framework.js.unityweb": "97ab81f3b5aaa20157ddf4338facfaf0481161e8240dc67f78bdd4d34da058a4",
+      "AcceptanceWebGL.loader.js": "9871d5be636460756f40706bc20b2a077374e45102dc7fed912dbd42c8c116e4",
+      "AcceptanceWebGL.wasm.unityweb": "ad245403d295b12bc4495f842945371433a6a9dbe37d6301cc24eb2ceb519857"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-08T20:42:39.298Z",
+  "localRun": "Builds\\Verification\\acceptance-1794170512671"
+}

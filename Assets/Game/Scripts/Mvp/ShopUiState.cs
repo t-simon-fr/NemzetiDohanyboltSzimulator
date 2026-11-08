@@ -26,6 +26,8 @@ public sealed class ShopUiState
     public static ShopOrderLine[] Order(MvpShopController shop)
     {
         if (shop.ActiveCustomer == null) return Array.Empty<ShopOrderLine>();
+        if (shop.ActiveCustomer.MobileRequest != null)
+            return new[] { new ShopOrderLine { Type = -1, Required = 1, Delivered = shop.Stage == ServiceStage.Thanks ? 1 : 0, ServiceDescription = shop.Mobile.RequestText } };
         int[] missing = shop.MissingOrderTypes;
         return shop.ActiveCustomer.OrderTypes.GroupBy(t => t).Select(group => new ShopOrderLine {
             Type = group.Key, Required = group.Count(),
@@ -40,5 +42,6 @@ public struct ShopOrderLine
 {
     public int Type, Required, Delivered;
     public bool Unavailable;
-    public string Description => ShopCatalog.ShortNames[Type] + "  —  " + Delivered + " / " + Required + " átadva";
+    public string ServiceDescription;
+    public string Description => ServiceDescription ?? ShopCatalog.ShortNames[Type] + "  —  " + Delivered + " / " + Required + " átadva";
 }

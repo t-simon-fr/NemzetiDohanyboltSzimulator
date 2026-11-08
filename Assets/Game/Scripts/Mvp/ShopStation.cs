@@ -28,7 +28,7 @@ public sealed class ShopStation : MonoBehaviour
             if(kind==ShopStationKind.Smuggler)return "E – Beszélgetés a gyanús alakkal";
             if(IsPanicButton)return shop.Security.Prompt;
             if(kind==ShopStationKind.Monitor)return "E / B – Számítógép: rendelések és berendezés";
-            if(kind==ShopStationKind.Terminal)return "E – Bankkártyaterminál";
+            if(kind==ShopStationKind.Terminal)return shop.Mobile.IsCurrent ? "E / bal kattintás – Telefonfeltöltés / fizetés" : "E – Bankkártyaterminál";
             if(IsCoffeeControl)return "E – Kávégép kijelzője: italválasztás és főzés";
             if(kind==ShopStationKind.CustomerHand)return "E / bal kattintás – Aprópénz kiválogatása";
             if(kind==ShopStationKind.Till)return "E – Kassza / fizetés";
@@ -46,7 +46,7 @@ public sealed class ShopStation : MonoBehaviour
         else if(kind==ShopStationKind.Smuggler)shop.AfterHours.OpenTrade();
         else if(IsPanicButton)shop.Security.Toggle();
         else if(kind==ShopStationKind.Monitor)shop.OpenSupplier();
-        else if(kind==ShopStationKind.Terminal)shop.Devices.Focus(ShopDeviceKind.Terminal);
+        else if(kind==ShopStationKind.Terminal) { if(shop.Mobile.IsCurrent && shop.Stage==ServiceStage.Order)shop.Mobile.Open();else shop.Devices.Focus(ShopDeviceKind.Terminal); }
         else if(IsCoffeeControl)shop.Devices.Focus(ShopDeviceKind.Coffee);
         else if(kind==ShopStationKind.CustomerHand)
         {

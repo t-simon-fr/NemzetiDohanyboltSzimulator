@@ -24,6 +24,12 @@ public sealed partial class ShopDevices
     public List<ShopKeyboardTarget> KeyboardTargets()
     {
         if(ComputerShellActive)return ComputerKeyboardTargets();
+        if (FocusKind == ShopDeviceKind.Mobile)
+        {
+            var controls = shop.Mobile.Controls(ShopMobileTopUp.TerminalBody);
+            foreach (var control in controls) control.Bounds = ShopUi.ScreenRect(control.Bounds);
+            return controls;
+        }
         if(FocusKind==ShopDeviceKind.Lottery)
         {
             var controls=shop.Lottery.Controls(ShopLotteryRetailer.TerminalBody);
@@ -70,6 +76,7 @@ public sealed partial class ShopDevices
     public bool HandleDeviceKey(DeviceKey key,bool shift=false)
     {
         if(!Focused||shop==null)return false;
+        if ((FocusKind == ShopDeviceKind.Mobile || FocusKind == ShopDeviceKind.Monitor && ComputerApp == ShopComputerApp.Mobile) && shop.Mobile.Editing && key != DeviceKey.Escape) return false;
         if((FocusKind==ShopDeviceKind.Lottery||FocusKind==ShopDeviceKind.Monitor&&ComputerApp==ShopComputerApp.Lottery)
             &&shop.Lottery.EditingNumbers&&key!=DeviceKey.Escape)return false;
         if (FocusKind == ShopDeviceKind.Monitor && ComputerApp == ShopComputerApp.Orders) { if(cartEditing)return false; if(HandleCartKey(key))return true; }
@@ -149,6 +156,7 @@ public sealed partial class ShopDevices
     {
         if(!Focused || ShopMenu.Active)return;GUI.depth=-100;
         if(ComputerShellActive){DrawComputer();return;}
+        if(FocusKind==ShopDeviceKind.Mobile){shop.Mobile.DrawTerminal();return;}
         if(FocusKind==ShopDeviceKind.Lottery){shop.Lottery.DrawTerminal();return;}
         if(keyboardOutline&&keyboardTargetId!=null)
         {
