@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public enum ShopDeviceKind { None, Monitor, Till, Coins, Terminal, Coffee, Lottery }
-public enum ShopComputerApp { Desktop, Orders, Furnishing, Coffee, Cameras, Games, Prices, Lottery }
+public enum ShopComputerApp { Desktop, Orders, Furnishing, Coffee, Cameras, Games, Prices, Lottery, Reputation }
 public sealed partial class ShopDevices : MonoBehaviour
 {
     [SerializeField] private Transform monitor, drawer, changeTray, tillDisplay;

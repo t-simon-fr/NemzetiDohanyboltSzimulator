@@ -8,7 +8,7 @@ public sealed partial class ShopDevices
     public const float ComputerWidth = 1200, ComputerHeight = 680;
     public static readonly Rect ComputerBody = new Rect(24, 124, 1152, 478);
     public bool ComputerShellActive => FocusKind == ShopDeviceKind.Monitor;
-    private static readonly string[] AppNames = { "Asztal", "Árurendelés", "Üzletkezelés", "Kávégép", "Kamerák", "Játékok", "Árak", "Lottópont" };
+    private static readonly string[] AppNames = { "Asztal", "Árurendelés", "Üzletkezelés", "Kávégép", "Kamerák", "Játékok", "Árak", "Lottópont", "Üzlet hírneve" };
 
     public Rect ComputerScreenRect
     {
@@ -46,6 +46,7 @@ public sealed partial class ShopDevices
                     () => OpenApp((ShopComputerApp)app));
             }
             Add("OpenApp:7","Lottópont",new Rect(704,410,380,72),()=>OpenApp(ShopComputerApp.Lottery));
+            Add("OpenApp:8","Üzlet hírneve",new Rect(704,494,380,72),()=>OpenApp(ShopComputerApp.Reputation));
         }
         if (ComputerApp == ShopComputerApp.Furnishing)
         {
@@ -53,6 +54,7 @@ public sealed partial class ShopDevices
         }
         shop.Activities.AddComputerControls(controls, ComputerBody);
         if(ComputerApp==ShopComputerApp.Lottery)controls.AddRange(shop.Lottery.Controls(ComputerBody));
+        if(ComputerApp==ShopComputerApp.Reputation)shop.Reputation.AddControls(controls,ComputerBody);
         return controls;
     }
 
@@ -102,10 +104,12 @@ public sealed partial class ShopDevices
             else if (ComputerApp == ShopComputerApp.Furnishing) DrawComputerUpgrades();
             else if (ComputerApp == ShopComputerApp.Prices) shop.Pricing.DrawEditor(ComputerBody);
             else if (ComputerApp == ShopComputerApp.Lottery) shop.Lottery.Draw(ComputerBody);
+            else if (ComputerApp == ShopComputerApp.Reputation) shop.Reputation.Draw(ComputerBody);
             else shop.Activities.DrawComputerContent(ComputerBody);
             foreach (var target in ComputerControls())
             {
                 bool selected = target.Id == keyboardTargetId && keyboardOutline ||
+                    ComputerApp==ShopComputerApp.Reputation && target.Id==shop.Reputation.SelectedTabId ||
                     target.Id == (furnishingPage == 0 ? "Furnishing:Developments" : furnishingPage == 1 ? "Furnishing:Furniture" : "Furnishing:Partners");
                 GUI.enabled = target.Enabled;
                 if (GUI.Button(target.Bounds, target.Label, ShopComputerTheme.Button(selected || target.Id.StartsWith("Coffee:Recipe:") &&

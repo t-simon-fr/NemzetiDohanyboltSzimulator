@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #122: négytényezős üzletreputáció, egyszeri és legfeljebb ±4 pontos napzárási változás, TobaccOS Ma/Lezárt nap nézet, napi összesítő, korlátozott érkezés-/kosárhatások és meglévő törzsvendégek kedvenccel/saját abszurd mondattal. **53 natív suite lefedve: 1261 érintetlen baseline + 99 friss érintett állítás; 15 reputációs, 45 partnerségi és 26 forgalmi/kiszolgálási WebGL-ellenőrzés**, 0 konzolhiba. A részleges profil és a csak acceptance kamerát érintő fix hatóköre a [jelentésben](../Acceptance/reputation/REPORT.md); natív és 720p/1080p képek átnézve. [Használat](../Architecture/Reputation/README.md). Pagesre nincs kiadva.
+
 - #124: Hamster Energy, Loca Cola és Kevert / Műszakkezdő partnercsomagok, hét új termékváltozat, két egyező méretű márkahűtő és egy pult feletti tartó; csomagonként 20 000 Ft és 10% jövőbeli beszerzési kedvezmény, megőrzött régi egységköltségekkel. **1295 natív állítás / 51 suite baseline, 114 friss HUD-/napváltási és 34 végső célzási állítás; 45 + 6 + 15 + 4 WebGL-ellenőrzés**, 0 konzolhiba. Natív és 720p/1080p képek átnézve. [Jelentés](../Acceptance/partners/REPORT.md), [használat](../Architecture/Partners/README.md). Pagesre nincs kiadva.
 
 - #134: 120×120×250 cm-es sarokelem, mindkét oldalon 50 cm mély csatlakozással a normál polcsorokhoz; egyező öt polcszint, közös mesh-/kontúrarány, átlós NPC-foglalás biztonsági távolsággal. **1162 natív állítás / 48 suite, 15 sarokcsatlakozási és 15 készletes átrendezési WebGL-ellenőrzés**, 0 konzolhiba; natív és 720p/1080p képek átnézve. [Jelentés](../Acceptance/corner-connector/REPORT.md). Pagesre nincs kiadva.

@@ -1,0 +1,499 @@
+{
+  "started": "2026-11-08T15:47:07.490Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "No partner variants or discounts before contract",
+      "passed": true
+    },
+    {
+      "label": "Branded fridge uses real furniture placement and path validation",
+      "passed": true
+    },
+    {
+      "label": "Cancelling partner placement grants nothing and charges nothing",
+      "passed": true
+    },
+    {
+      "label": "Valid branded fridge preview 0",
+      "passed": true
+    },
+    {
+      "label": "Contract remains unpaid until saving 0",
+      "passed": true
+    },
+    {
+      "label": "Save activates exactly one partner package 0",
+      "passed": true
+    },
+    {
+      "label": "Valid branded fridge preview 1",
+      "passed": true
+    },
+    {
+      "label": "Contract remains unpaid until saving 1",
+      "passed": true
+    },
+    {
+      "label": "Save activates exactly one partner package 1",
+      "passed": true
+    },
+    {
+      "label": "Counter display activates the third independent package once",
+      "passed": true
+    },
+    {
+      "label": "Repeated owned-package click cannot debit again",
+      "passed": true
+    },
+    {
+      "label": "Actual order-cart scrolling reaches variant 6",
+      "passed": true
+    },
+    {
+      "label": "Actual order-cart scrolling reaches variant 16",
+      "passed": true
+    },
+    {
+      "label": "Actual order-cart scrolling reaches variant 17",
+      "passed": true
+    },
+    {
+      "label": "Actual order-cart scrolling reaches variant 18",
+      "passed": true
+    },
+    {
+      "label": "Actual order-cart scrolling reaches variant 19",
+      "passed": true
+    },
+    {
+      "label": "Actual order-cart scrolling reaches variant 20",
+      "passed": true
+    },
+    {
+      "label": "Actual order-cart scrolling reaches variant 21",
+      "passed": true
+    },
+    {
+      "label": "Actual order-cart scrolling reaches variant 22",
+      "passed": true
+    },
+    {
+      "label": "Exact discounted units and separate five-forint basket rounding are displayed",
+      "passed": true
+    },
+    {
+      "label": "One real supplier submission charges only the rounded payable quote",
+      "passed": true
+    },
+    {
+      "label": "All seven variants ship separately and remain absent before arrival",
+      "passed": true
+    },
+    {
+      "label": "Distinct real cartons arrive for every unlocked variant",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up partner carton 6",
+      "passed": true
+    },
+    {
+      "label": "Real mouse hand replenishment stocks family display 6",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up partner carton 16",
+      "passed": true
+    },
+    {
+      "label": "Real mouse hand replenishment stocks family display 16",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up partner carton 17",
+      "passed": true
+    },
+    {
+      "label": "Real E hand replenishment stocks family display 17",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up partner carton 18",
+      "passed": true
+    },
+    {
+      "label": "Real mouse hand replenishment stocks family display 18",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up partner carton 19",
+      "passed": true
+    },
+    {
+      "label": "Real E hand replenishment stocks family display 19",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up partner carton 20",
+      "passed": true
+    },
+    {
+      "label": "Real mouse hand replenishment stocks family display 20",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up partner carton 21",
+      "passed": true
+    },
+    {
+      "label": "Real E hand replenishment stocks family display 21",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks up partner carton 22",
+      "passed": true
+    },
+    {
+      "label": "Real mouse hand replenishment stocks family display 22",
+      "passed": true
+    },
+    {
+      "label": "Pre-contract Hamster stock keeps its original physical unit cost",
+      "passed": true
+    },
+    {
+      "label": "Actual customer walks to new public stock and brings it to checkout",
+      "passed": true
+    },
+    {
+      "label": "One real card payment sells the new variant with its captured discounted cost",
+      "passed": true
+    },
+    {
+      "label": "Partner stock reaches the daily summary through the real sign and door",
+      "passed": true
+    },
+    {
+      "label": "Next day preserves all partner contracts and exact shop/warehouse stock",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-partner-offers-720.png",
+    "1920x1080-partner-offers-1080.png",
+    "1280x720-owned-partners-720.png",
+    "1920x1080-owned-partners-1080.png",
+    "1280x720-discounted-cart-720.png",
+    "1920x1080-discounted-cart-1080.png",
+    "1280x720-stocked-fridges-720.png",
+    "1920x1080-stocked-fridges-1080.png",
+    "1280x720-stocked-counter-display-720.png",
+    "1920x1080-stocked-counter-display-1080.png",
+    "1280x720-partner-summary-top-720.png",
+    "1280x720-partner-summary-stock-720.png",
+    "1920x1080-partner-summary-stock-1080.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27161956,
+    "seconds": 570.1382315999999,
+    "error": "",
+    "completedUtc": "2026-11-08T15:46:24.131Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "f4ede922992fa909c5d60df607ea0d34c8844078e7e0a5b580385c727921db3a",
+      "AcceptanceWebGL.framework.js.unityweb": "09449c641b16177a7920273ef6202613da142afe3c193955139fd2d3a2c62311",
+      "AcceptanceWebGL.loader.js": "e46139629a6f510511847af1438d753fd2a94a1567f5806079c7e7bfe05ca94c",
+      "AcceptanceWebGL.wasm.unityweb": "a62cf5123952eec125f0fc8ed2c12648913dd109d944ebc07cff2fd7741adc73"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-08T15:48:39.213Z",
+  "case": "partners",
+  "rawReport": "Builds/Verification/acceptance-1794152827489/report.json",
+  "stateSampleCount": 141,
+  "finalState": {
+    "reputation": 50,
+    "reputationSeconds": 0,
+    "reputationChange": 0,
+    "arrivalScale": 1,
+    "reputationScores": [
+      50,
+      50,
+      50,
+      50
+    ],
+    "reputationEvidence": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "reputationVisits": 0,
+    "reputationServiceVisits": 0,
+    "reputationMissing": 0,
+    "reputationRefusals": 0,
+    "reputationRegulars": 0,
+    "reputationReasons": [
+      "Még kevés az adat: legalább 30 nyitott másodperc és 3 lezárt látogatás kell."
+    ],
+    "reputationLast": true,
+    "regularCustomer": false,
+    "reputationViewingLast": false,
+    "reputationViewDay": 2,
+    "scannerCount": 0,
+    "requestsSpawned": 0,
+    "clock": "08:00",
+    "phase": "Preparing",
+    "modal": "None",
+    "order": "",
+    "balance": 444185,
+    "drawer": 444185,
+    "sales": 0,
+    "received": 0,
+    "milk": 0,
+    "coffee": 0,
+    "day": 2,
+    "dirt": 0,
+    "elapsed": 0,
+    "partnerOwned": [
+      true,
+      true,
+      true
+    ],
+    "partnerStock": [
+      8,
+      8,
+      8,
+      8,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "partnerStored": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partnerPending": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partnerCosts": [
+      1500,
+      1600,
+      1700,
+      1850,
+      150,
+      162,
+      270,
+      198,
+      280,
+      200,
+      200,
+      350,
+      700,
+      450,
+      900,
+      450,
+      270,
+      297,
+      162,
+      162,
+      234,
+      243,
+      225
+    ],
+    "partnerCartQuantities": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "physicalProductCosts": [
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      300,
+      297,
+      162,
+      225,
+      243,
+      234,
+      162
+    ],
+    "physicalProductIds": [
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "energy",
+      "energy_mango",
+      "fantom",
+      "muszak_mixed",
+      "muszak_pear",
+      "muszak_plum",
+      "spritz"
+    ],
+    "partnerDropTargets": [
+      {
+        "x": 2407.0078125,
+        "y": 2309.25634765625,
+        "z": -2.456218957901001
+      },
+      {
+        "x": 3168.591064453125,
+        "y": 2309.25634765625,
+        "z": -2.456218957901001
+      }
+    ],
+    "partnerCartSubtotal": 0,
+    "partnerCartPayment": 0,
+    "lastPurchaseSubtotal": 1863,
+    "lastPurchaseTotal": 1865,
+    "purchaseRounding": 0,
+    "costOfGoods": 0,
+    "orderLines": []
+  }
+}

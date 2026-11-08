@@ -88,6 +88,7 @@ public sealed partial class MvpShopController
     }
     private void CompleteSale()
     {
+        Reputation?.Complete(active,ShopVisitOutcome.Served);
         active.ReturnUnusedBasket(receivedOrder.ToArray());foreach(var sold in receivedOrder.ToArray())if(sold!=null){var slot=sold.CurrentSlot;sold.AcceptDelivery();if(checkout.OwnsReceipt(slot))checkout.RemoveReceipt(slot);}
         checkout.ClearItems();prepared=null;active.SellBasket();
         Activities.ClearHand();Stage=ServiceStage.Thanks;thanksTimer=2.5f;

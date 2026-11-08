@@ -1,0 +1,62 @@
+[
+  {
+    "image": "native-today.png",
+    "review": "passed",
+    "source": {
+      "commit": "ac39281e431cdaa4fb56422b2c3ed05a3821e63b",
+      "sourceFingerprint": "8af1fb1ed04ec7dd325aaaa9a0c4c52062b4f14abfe419399c0ef59c2c921f19",
+      "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+      "dirty": true
+    },
+    "capturedUtc": "2026-11-08T15:31:02.6056184Z",
+    "interactionReview": "API-prepared native scene using existing visits/receipts/payment methods; actual browser input recorded separately.",
+    "scenario": "current",
+    "reviewer": "Codex self-review",
+    "observations": "Four ratings, concrete observations and real waiting duration fit the screen; active Today tab is clear."
+  },
+  {
+    "image": "native-summary.png",
+    "review": "passed",
+    "source": {
+      "commit": "ac39281e431cdaa4fb56422b2c3ed05a3821e63b",
+      "sourceFingerprint": "8af1fb1ed04ec7dd325aaaa9a0c4c52062b4f14abfe419399c0ef59c2c921f19",
+      "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+      "dirty": true
+    },
+    "capturedUtc": "2026-11-08T15:31:04.0284930Z",
+    "interactionReview": "API-prepared native scene using existing visits/receipts/payment methods; actual browser input recorded separately.",
+    "scenario": "current",
+    "reviewer": "Codex self-review",
+    "observations": "Daily value, bounded change and four ratings fit the scrollable summary; next-day action is unobstructed."
+  },
+  {
+    "image": "native-last.png",
+    "review": "passed",
+    "source": {
+      "commit": "ac39281e431cdaa4fb56422b2c3ed05a3821e63b",
+      "sourceFingerprint": "8af1fb1ed04ec7dd325aaaa9a0c4c52062b4f14abfe419399c0ef59c2c921f19",
+      "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+      "dirty": true
+    },
+    "capturedUtc": "2026-11-08T15:31:05.4520457Z",
+    "interactionReview": "API-prepared native scene using existing visits/receipts/payment methods; actual browser input recorded separately.",
+    "scenario": "current",
+    "reviewer": "Codex self-review",
+    "observations": "Last-day tab retains the settled day and change after advancing to day two."
+  },
+  {
+    "image": "native-regular.png",
+    "review": "passed",
+    "source": {
+      "commit": "ac39281e431cdaa4fb56422b2c3ed05a3821e63b",
+      "sourceFingerprint": "8af1fb1ed04ec7dd325aaaa9a0c4c52062b4f14abfe419399c0ef59c2c921f19",
+      "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+      "dirty": true
+    },
+    "capturedUtc": "2026-11-08T15:31:06.8457071Z",
+    "interactionReview": "API-prepared native scene using existing visits/receipts/payment methods; actual browser input recorded separately.",
+    "scenario": "current",
+    "reviewer": "Codex self-review",
+    "observations": "Existing regular has an available favourite and an absurd remark; order, quantities and total remain readable."
+  }
+]

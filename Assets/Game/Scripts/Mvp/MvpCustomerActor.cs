@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public sealed class MvpCustomerActor : MonoBehaviour
 {
     public int Person { get; private set; }
+    public bool IsRegular { get; private set; }
+    public void MarkRegular() => IsRegular = true;
     public int Product { get; private set; }
     public string LotteryClaimId { get; private set; }
     private int[] lotteryNumbers = System.Array.Empty<int>();

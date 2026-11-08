@@ -39,6 +39,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     public ShopHandTool Bat=>bat;
     public ShopHandTool Mop=>mop;
     public int DirtCount=>spills.Count(s=>s!=null&&s.gameObject.activeSelf);
+    public IEnumerable<ShopFeatureTarget> ActiveSpills => spills.Where(s=>s!=null&&s.gameObject.activeInHierarchy);
     public ShopSnake Snake=>snake;
     public ShopMemoryGame Memory=>memory;
     public int CameraCount=>cameras.Count;

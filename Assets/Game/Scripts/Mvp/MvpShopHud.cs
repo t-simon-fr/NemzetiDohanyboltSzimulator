@@ -142,6 +142,7 @@ public sealed class MvpShopHud : MonoBehaviour
         ShopUi.Fill(new Rect(278, 335, 724, 1), ShopUi.Rule);
         GUILayout.BeginArea(SummaryDetailsRect);
         summaryScroll = GUILayout.BeginScrollView(summaryScroll);
+        shop.Reputation?.DrawSummary();
         GUILayout.Label("Működési költség: " + ShopCatalog.Money(shop.Ledger.OperatingCosts) + "  •  Kártyás bevétel: " + ShopCatalog.Money(shop.Ledger.CardRevenue), ShopUi.Text(16));
         GUILayout.Label("Lopáskár: " + ShopCatalog.Money(shop.Ledger.StockLoss) + "  •  Megállított tolvaj: " + shop.CaughtToday, ShopUi.Text(16));
         GUILayout.Label("Utánrendelés: " + ShopCatalog.Money(shop.Ledger.Purchases) + "  •  Beruházás: " + ShopCatalog.Money(shop.Ledger.Improvements), ShopUi.Text(16));

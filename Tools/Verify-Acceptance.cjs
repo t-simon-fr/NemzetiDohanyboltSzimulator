@@ -657,6 +657,40 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await probe('Action','focus-request-terminal');await type('2500');await enter();s=await state();
       check(s.sales===coffeeSales+1 && s.balance===coffeeCash+2500 && s.drawer===s.balance && s.coffeeMerchandise===0,'One real card approval sells all three served coffees and reconciles stock and money');
     }
+    if (selected === 'reputation') {
+      const press=async id=>{
+        const q=await state();const i=q.computerControlIds.indexOf(id);
+        if(i<0)throw Error('Missing reputation control '+id);
+        await clickRect(q.computerControls[i]);
+      };
+      await viewport(1280,720);await probe('Prepare','reputation');
+      await press('OpenApp:8');let q=await state();
+      check(q.computerApp==='Reputation'&&q.reputation===50&&!q.reputationLast&&q.reputationEvidence.every(v=>!v),'Actual desktop button opens the neutral no-data reputation page');
+      check(q.computerControls.every(r=>r.x>=0&&r.y>=0&&r.x+r.width<=width&&r.y+r.height<=height),'Reputation controls fit the small viewport');
+      await capture('reputation-empty-720');await viewport(1920,1080);await capture('reputation-empty-1080');await viewport(1280,720);
+      for(let visit=0;visit<3;visit++){
+        await probe('Action','reputation-customer');q=await state();const cash=q.balance,count=q.reputationVisits;
+        check(q.stage==='Payment'&&q.reputation===50,'Real visitor has a prepared physical receipt before settlement '+visit);
+        await type('2200');await enter();q=await state();
+        check(q.reputationVisits===count+1&&q.reputationServiceVisits===visit+1&&q.balance===cash+2200&&q.drawer===q.balance,'Real card approval records one measured visit without changing the sale '+visit);
+      }
+      await probe('Action','reputation-depart');await probe('Action','reputation-monitor');await press('OpenApp:8');q=await state();
+      check(q.reputation===50&&q.reputationVisits===3&&q.reputationSeconds>=30&&q.reputationScores.every(Number.isFinite),'Live observations do not apply reputation before day close');
+      await capture('reputation-today-720');await viewport(1920,1080);await capture('reputation-today-1080');await viewport(1280,720);
+      await probe('Action','reputation-depart');await probe('Action','aim-sign-stable');await key('e','KeyE',69);await probe('Action','drain-shop');
+      await probe('Action','aim-door');await key('e','KeyE',69);q=await state();
+      check(q.phase==='Summary'&&q.reputation>50&&q.reputation<=54&&q.reputationLast&&q.reputationChange>0,'Actual sign and door settle one bounded reputation result');
+      const reputation=q.reputation;await capture('reputation-summary-720');await viewport(1920,1080);await capture('reputation-summary-1080');await viewport(1280,720);
+      await enter();q=await state();
+      check(q.day===2&&q.phase==='Preparing'&&q.reputation===reputation&&q.reputationSeconds===0&&q.reputationVisits===0,'Actual next-day input preserves the result and clears daily evidence');
+      await probe('Action','reputation-monitor');await press('OpenApp:8');await press('Reputation:Last');q=await state();
+      check(q.reputationViewingLast&&q.reputationViewDay===1&&q.reputation===reputation,'Actual last-day tab reads the retained day without applying it again');
+      await capture('reputation-last-720');await viewport(1920,1080);await capture('reputation-last-1080');await viewport(1280,720);
+      await press('Reputation:Today');q=await state();check(!q.reputationViewingLast&&q.reputationViewDay===2&&q.reputation===reputation,'Today tab returns to empty next-day observations');
+      await probe('Action','reputation-regular');q=await state();
+      check(q.regularCustomer&&q.reputationRegulars===1&&q.arrivalScale<1&&q.orderLines.every(line=>!line.Unavailable),'High-reputation fixture returns a familiar existing customer with a stocked favourite');
+      await capture('reputation-regular-720');await viewport(1920,1080);await capture('reputation-regular-1080');
+    }
     if (selected === 'partners' || selected === 'partner-summary') {
       let q;
       if (selected === 'partners') {

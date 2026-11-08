@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "partner-targeting",
+    "reputation-state",
+    "reputation-integration"
+  ],
+  "startedUtc": "2026-11-08T15:36:26.8492818Z",
+  "source": {
+    "commit": "ac39281e431cdaa4fb56422b2c3ed05a3821e63b",
+    "sourceFingerprint": "865ae405fb58ee63d530abb59b0b00b382bd4af486b811e8c5ae59e57e722eb4",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "entry": "PartnerChecks.Targeting",
+      "seconds": 1.4878765,
+      "id": "partner-targeting",
+      "failed": 0,
+      "passed": 34
+    },
+    {
+      "entry": "ReputationChecks.State",
+      "seconds": 0.2850013,
+      "id": "reputation-state",
+      "failed": 0,
+      "passed": 27
+    },
+    {
+      "entry": "ReputationChecks.Integration",
+      "seconds": 0.6180348,
+      "id": "reputation-integration",
+      "failed": 0,
+      "passed": 38
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0528888,
+  "finishedUtc": "2026-11-08T15:36:33.9539947Z",
+  "totalSeconds": 7.1131251
+}
