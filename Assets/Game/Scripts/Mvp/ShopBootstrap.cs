@@ -23,6 +23,8 @@ public sealed class ShopBootstrap
         shop.gameObject.AddComponent<ShopNextUpgrades>().Configure(shop);
         shop.Lottery = shop.gameObject.AddComponent<ShopLotteryRetailer>();
         shop.Lottery.Configure(shop);
+        shop.Mobile = shop.gameObject.AddComponent<ShopMobileTopUp>();
+        shop.Mobile.Configure(shop);
         shop.Pricing = shop.gameObject.AddComponent<ShopPricing>();
         shop.Pricing.Configure(shop);
         shop.AfterHours = shop.gameObject.AddComponent<ShopAfterHours>();

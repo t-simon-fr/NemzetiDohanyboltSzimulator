@@ -54,6 +54,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public MvpCustomerActor ActiveCustomer => active;
     public ProductSlot DeliverySlot => delivery;
     public ShopBarcodeScanner Scanner { get; internal set; }
+    public ShopMobileTopUp Mobile { get; internal set; }
     public ShopLotteryRetailer Lottery { get; internal set; }
     public string Dialogue { get; private set; } = "";
     private string message = "";
@@ -247,7 +248,8 @@ public sealed partial class MvpShopController : MonoBehaviour
                 active = customer; Stage = ServiceStage.Order;
                 ResetCardTerminal();
                 if(!customer.AcceptsPrices){Reputation?.Complete(customer,ShopVisitOutcome.PriceRefusal);PriceRefusals++;Missed++;Notify(ShopPeople.Names[customer.Person]+": Ennyiért inkább nem kérem. Túl drága! Állíts kedvezőbb árat az Árak alkalmazásban.");DismissActive();i--;continue;}
-                Dialogue = Lottery.Arrive(active);
+                Mobile.Arrive();
+                Dialogue = active.MobileRequest != null ? "Kérek egy telefonfeltöltést: " + active.MobileRequest.Description + ". A másik számomat mindig otthon felejtem." : Lottery.Arrive(active);
                 if (active.IsRegular) Dialogue = Reputation.RegularOrder(active);
                 if (active.BasketItem != null)
                 { if(Activities.PlaceBasket(active)){prepared=active.BasketItem;BeginPayment();} }
@@ -295,20 +297,29 @@ public sealed partial class MvpShopController : MonoBehaviour
         if (forcedProduct<0 && !SingleProductVisits && returning==null && !ShopLotteryCatalog.IsTicket(type) &&
             Reputation.ChooseRegular(visit,out int familiar,out int favourite))
         { person=familiar; type=favourite; regular=true; }
-        int[] order = returning!=null ? Array.Empty<int>() : CreateCustomerOrder(type, visit);
-        if (order.Length == 0 && returning==null) return;
+        ShopMobileRequest mobileRequest = forcedProduct == -2 || forcedProduct < 0 && !forceThief && !SingleProductVisits && returning == null && visit % 6 == 4
+            ? Mobile.Book.CreateRequest(visit) : null;
+        if (mobileRequest != null) regular = false;
+        int[] order = returning!=null || mobileRequest != null ? Array.Empty<int>() : CreateCustomerOrder(type, visit);
+        if (order.Length == 0 && returning == null && mobileRequest == null && forcedProduct < 0 && !forceThief && Mobile.Owned)
+        {
+            // An activated service remains usable even when all merchandise has sold out.
+            mobileRequest = Mobile.Book.CreateRequest(visit);
+            regular = false;
+        }
+        if (order.Length == 0 && returning==null && mobileRequest==null) return;
         Spawned++;
         GameObject clone = Instantiate(customerTemplate, actorRoot);
         clone.SetActive(false);
         var legacy = clone.GetComponent<CustomerOrderController>(); if (legacy != null) legacy.enabled = false;
         MvpCustomerActor actor = clone.AddComponent<MvpCustomerActor>();
-        actor.Initialize(person, order.Length>0?order[0]:-1, visit, order, returning?.Id);
+        actor.Initialize(person, order.Length>0?order[0]:-1, visit, order, returning?.Id, mobileRequest);
         if (regular) { actor.MarkRegular(); Reputation.State.RecordRegular(); }
         if(forceThief)actor.SetTheftIntent();clone.SetActive(true); queue.Add(actor);
     }
     private void OnDelivery(ShopProduct product)
     {
-        if (active == null || Stage != ServiceStage.Order || product == null || product.IsHeld ||
+        if (active == null || active.MobileRequest != null || Stage != ServiceStage.Order || product == null || product.IsHeld ||
             (product.CurrentSlot != delivery&&product.CurrentSlot!=Activities.BasketSlot&&!Activities.CustomerHandoverSlots.Contains(product.CurrentSlot))) return;
         if (!active.OrderTypes.Contains(ShopCatalog.Index(product.ProductId)))
         {
@@ -319,7 +330,8 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     private void BeginPayment()
     {
-        CollectOrderItem(prepared);foreach(var item in active.ExtraItems)CollectOrderItem(item);if(!PreparedIsValid())return;
+        if (active.MobileRequest == null) { CollectOrderItem(prepared); foreach(var item in active.ExtraItems)CollectOrderItem(item); }
+        if(!PreparedIsValid())return;
         Stage = ServiceStage.Payment; changeCoins.Clear();
         if(CardPayment){ClearCardAmount();Drawer.CancelTender();Dialogue="Bankkártyával fizetnék.";Message="E vagy F a kasszánál: kártyás fizetés jóváhagyása.";return;}
         if(CoinPayment){Drawer.CancelTender();Activities.ShowCoins(active);Dialogue="Kiválasztaná belőle? Nekem ma nem megy a számolás.";Message="Nézz a vásárló tenyerére: E vagy bal kattintás az aprópénzhez. F a kasszánál is használható.";return;}
@@ -327,7 +339,18 @@ public sealed partial class MvpShopController : MonoBehaviour
         Dialogue = "Tessék a pénz. A visszajárót azért megvárom.";
         Message = "A pénz a kasszánál van. E vagy F – pénztárgép.";
     }
-    private bool PreparedIsValid() => active != null && active.LotteryClaimId == null && checkout.IsComplete(active.OrderTypes);
+    private bool PreparedIsValid() => active != null && active.LotteryClaimId == null &&
+        (active.MobileRequest != null ? Mobile.Book.IsPrepared(active.MobileRequest) : checkout.IsComplete(active.OrderTypes));
+    public void BeginMobilePayment()
+    {
+        if (active?.MobileRequest == null || Stage != ServiceStage.Order || !Mobile.Book.IsPrepared(active.MobileRequest)) return;
+        BeginPayment(); ClosePanel(); OpenCash();
+    }
+    public void CancelMobilePayment()
+    {
+        if (active?.MobileRequest == null || Stage == ServiceStage.Thanks) return;
+        Drawer.CancelTender(); ClearChange(); ResetCardTerminal(); Stage = ServiceStage.Order;
+    }
     private Vector3 ReceiptPosition(int index) => Activities.BasketSlot.transform.position + Counter.transform.rotation * new Vector3(index == 2 ? -.24f : 0, 0, index == 0 ? 0 : -.22f);
     private bool CollectOrderItem(ShopProduct product)
     {
@@ -420,6 +443,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     private void DismissActive()
     {
+        Mobile?.EndVisit();
         Lottery?.CancelVisit(active);
         active.ReturnBasket();
         foreach(var item in receivedOrder)
@@ -470,14 +494,17 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     private void BeginPreparation()
     {
+        bool mobileWasOwned = Mobile != null && Mobile.Owned;
         Reputation?.BeginDay();
         Lottery?.AdvanceDay();
+        Mobile?.BeginDay();
         ResetCardTerminal();
         Security?.ReleaseEntrance();
         dayCycle.Prepare(); Stage = ServiceStage.None; Spawned = 0; Missed = 0;
         StolenToday=0;CaughtToday=0;PriceRefusals=0;
         checkout.ClearItems();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.";
         SetModal(ShopModal.None);
+        if (!mobileWasOwned && Mobile != null && Mobile.Owned) Notify("Második hét, hétfő: a telefonfeltöltés automatikusan aktiválódott. Használd a pulti terminált.");
     }
     public void ResetDemo()
     {
@@ -496,6 +523,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         LastPurchaseSubtotal = 0; LastPurchaseTotal = 0;
         SelectedSupply = 0; Day = 1; Ledger = new ShopLedger(6000); Drawer = new ShopCashDrawer();
         Lottery?.ResetLottery();
+        Mobile?.ResetAll();
         for (int type = 0; type < ShopCatalog.CigaretteCount; type++)
         {
             int seeded = 0;
@@ -534,8 +562,8 @@ public sealed partial class MvpShopController : MonoBehaviour
         if(!ShopLotteryCatalog.IsTicket(type))throw new ArgumentOutOfRangeException(nameof(type));
         return CreateProduct(type);
     }
-    private int CurrentOrderCost => receivedOrder.Sum(item => item.UnitCost >= 0 ? item.UnitCost : ShopCatalog.Costs[ShopCatalog.Index(item.ProductId)]);
-    private bool TrySettleSale(Func<bool> payment) => checkout.TrySettle(() => Lottery.SettleSale(active,receivedOrder,payment));
+    private int CurrentOrderCost => active?.MobileRequest != null ? active.MobileRequest.Amount - Mobile.Book.Config.Commission(active.MobileRequest.Amount) : receivedOrder.Sum(item => item.UnitCost >= 0 ? item.UnitCost : ShopCatalog.Costs[ShopCatalog.Index(item.ProductId)]);
+    private bool TrySettleSale(Func<bool> payment) => checkout.TrySettle(() => active.MobileRequest != null ? Mobile.SettleSale(payment) : Lottery.SettleSale(active,receivedOrder,payment));
     public void FinishLotteryVisit(string text)
     {
         if(active==null||active.LotteryClaimId==null||Stage!=ServiceStage.Order)return;

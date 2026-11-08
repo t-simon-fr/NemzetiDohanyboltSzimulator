@@ -100,6 +100,13 @@ public sealed class ShopCardTerminal : MonoBehaviour
     }
     public void Refresh()
     {
+        if (shop.Mobile != null && shop.Mobile.IsCurrent && shop.Stage != ServiceStage.Payment)
+        {
+            due.text = "TELEFONFELTÖLTÉS";
+            entered.text = ShopCatalog.Money(shop.Mobile.Request.Amount);
+            status.text = shop.Stage == ServiceStage.Thanks ? "SIKERES FELTÖLTÉS" : "E: ADATOK MEGADÁSA";
+            return;
+        }
         bool paying = shop.Stage == ServiceStage.Payment && shop.CardPayment;
         due.text = paying ? "FIZETENDŐ " + ShopCatalog.Money(shop.ActiveCustomer.TotalPrice) : "TRAFIK / BANKKÁRTYA";
         entered.text = shop.CardStatus == CardTerminalStatus.Approved ? ShopCatalog.Money(shop.LastApprovedCardAmount) : (string.IsNullOrEmpty(shop.CardAmount) ? "0" : shop.CardAmount) + " Ft";

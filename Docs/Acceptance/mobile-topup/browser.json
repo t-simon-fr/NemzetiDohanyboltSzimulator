@@ -1,0 +1,198 @@
+{
+  "started": "2026-11-08T20:40:22.381Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "First week exposes the automatic-unlock information without a purchase or customer request",
+      "passed": true
+    },
+    {
+      "label": "Second-Monday fixture has free service and a real requesting customer mobile",
+      "passed": true
+    },
+    {
+      "label": "Actual E on physical POS opens separate top-up mode mobile",
+      "passed": true
+    },
+    {
+      "label": "Service controls fit small viewport mobile",
+      "passed": true
+    },
+    {
+      "label": "Malformed typed number rejects service without a receipt or charge mobile",
+      "passed": true
+    },
+    {
+      "label": "Mismatched provider gives customer feedback and can be corrected mobile",
+      "passed": true
+    },
+    {
+      "label": "Unsupported typed amount cannot finalize mobile",
+      "passed": true
+    },
+    {
+      "label": "Actual cancel clears draft without posting mobile",
+      "passed": true
+    },
+    {
+      "label": "Corrected input prepares payment but does not activate credit mobile",
+      "passed": true
+    },
+    {
+      "label": "Card customer switches from service mode to physical card keypad",
+      "passed": true
+    },
+    {
+      "label": "Wrong card amount cannot create credit or commission",
+      "passed": true
+    },
+    {
+      "label": "Real payment creates exactly one top-up and reconciled receipt mobile",
+      "passed": true
+    },
+    {
+      "label": "Only commission is spendable; provider funds remain reserved mobile",
+      "passed": true
+    },
+    {
+      "label": "Repeated approval cannot duplicate top-up mobile",
+      "passed": true
+    },
+    {
+      "label": "Actual door day-end retains operator liability mobile",
+      "passed": true
+    },
+    {
+      "label": "Actual next day retains service and receipt, resets daily counters mobile",
+      "passed": true
+    },
+    {
+      "label": "Actual settlement button transfers provider share once mobile",
+      "passed": true
+    },
+    {
+      "label": "Repeated operator settlement cannot debit twice mobile",
+      "passed": true
+    },
+    {
+      "label": "Leaving service restores world input mobile",
+      "passed": true
+    },
+    {
+      "label": "Second-Monday fixture has free service and a real requesting customer mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Actual E on physical POS opens separate top-up mode mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Service controls fit small viewport mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Malformed typed number rejects service without a receipt or charge mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Mismatched provider gives customer feedback and can be corrected mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Unsupported typed amount cannot finalize mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Actual cancel clears draft without posting mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Corrected input prepares payment but does not activate credit mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Cash customer opens existing change drawer",
+      "passed": true
+    },
+    {
+      "label": "Wrong cash change cannot activate top-up",
+      "passed": true
+    },
+    {
+      "label": "Real payment creates exactly one top-up and reconciled receipt mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Only commission is spendable; provider funds remain reserved mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Repeated approval cannot duplicate top-up mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Actual door day-end retains operator liability mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Actual next day retains service and receipt, resets daily counters mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Actual settlement button transfers provider share once mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Repeated operator settlement cannot debit twice mobile-cash",
+      "passed": true
+    },
+    {
+      "label": "Leaving service restores world input mobile-cash",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-mobile-locked-720.png",
+    "1920x1080-mobile-locked-1080.png",
+    "1280x720-mobile-form-720.png",
+    "1920x1080-mobile-form-1080.png",
+    "1280x720-mobile-invalid-720.png",
+    "1280x720-mobile-receipt-720.png",
+    "1920x1080-mobile-receipt-1080.png",
+    "1280x720-mobile-account-720.png",
+    "1920x1080-mobile-account-1080.png",
+    "1280x720-mobile-summary-720.png",
+    "1280x720-mobile-cash-form-720.png",
+    "1920x1080-mobile-cash-form-1080.png",
+    "1280x720-mobile-cash-invalid-720.png",
+    "1280x720-mobile-cash-receipt-720.png",
+    "1920x1080-mobile-cash-receipt-1080.png",
+    "1280x720-mobile-cash-account-720.png",
+    "1920x1080-mobile-cash-account-1080.png",
+    "1280x720-mobile-cash-summary-720.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27190574,
+    "seconds": 245.2838526,
+    "error": "",
+    "completedUtc": "2026-11-08T20:39:57.229Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "e8b497f3229ac8ad861e38bb8fe1276c096eae456387dd473ebcd89abe813780",
+      "AcceptanceWebGL.framework.js.unityweb": "97ab81f3b5aaa20157ddf4338facfaf0481161e8240dc67f78bdd4d34da058a4",
+      "AcceptanceWebGL.loader.js": "9871d5be636460756f40706bc20b2a077374e45102dc7fed912dbd42c8c116e4",
+      "AcceptanceWebGL.wasm.unityweb": "ad245403d295b12bc4495f842945371433a6a9dbe37d6301cc24eb2ceb519857"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-08T20:41:43.295Z",
+  "localRun": "Builds\\Verification\\acceptance-1794170422381"
+}

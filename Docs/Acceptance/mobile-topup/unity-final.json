@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "mobile-state",
+    "mobile-integration",
+    "computer-ui"
+  ],
+  "startedUtc": "2026-11-08T20:35:18.2501191Z",
+  "source": {
+    "commit": "aef2b1db2bf975744969bf08e8639c9f7759031c",
+    "sourceFingerprint": "63c0193bdd169f262d3066b2ae6bdcf1a40172f76dbad8e5a97292dae4631fde",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "id": "mobile-state",
+      "entry": "MobileTopUpChecks.State",
+      "seconds": 0.8382367,
+      "passed": 28,
+      "failed": 0
+    },
+    {
+      "id": "mobile-integration",
+      "entry": "MobileTopUpChecks.Integration",
+      "seconds": 0.6546661,
+      "passed": 38,
+      "failed": 0
+    },
+    {
+      "id": "computer-ui",
+      "entry": "VisualRefreshChecks.Computer",
+      "seconds": 0.2976768,
+      "passed": 12,
+      "failed": 0
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0676189,
+  "finishedUtc": "2026-11-08T20:35:25.4623816Z",
+  "totalSeconds": 7.2200136
+}

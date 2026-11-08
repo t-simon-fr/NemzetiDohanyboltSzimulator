@@ -97,7 +97,7 @@ public sealed class MvpShopHud : MonoBehaviour
         top += listHeight + 12;
         ShopUi.Label(new Rect(x + 16, top, inner, 28), customer.LotteryClaimId!=null?"Szelvényellenőrzés":"Összesen  " + ShopCatalog.Money(customer.TotalPrice), 20, true);
         string action = shop.Stage == ServiceStage.Order ?
-            (customer.LotteryClaimId!=null?"Olvasd be a szelvényt a lottóponton.\nX: Most nem tudom kiszolgálni":shop.HasUnavailableRequest ? "T: Másik árut ajánlok\nX: Nem tudom kiszolgálni" : "Tedd a kért árut az átadóhelyre.\nX: Nem tudom kiszolgálni") :
+            (customer.MobileRequest != null ? "E a terminálon: telefonfeltöltés\nX: Most nem tudom kiszolgálni" : customer.LotteryClaimId!=null?"Olvasd be a szelvényt a lottóponton.\nX: Most nem tudom kiszolgálni":shop.HasUnavailableRequest ? "T: Másik árut ajánlok\nX: Nem tudom kiszolgálni" : "Tedd a kért árut az átadóhelyre.\nX: Nem tudom kiszolgálni") :
             shop.Stage == ServiceStage.Payment ? (shop.CardPayment ? "Bankkártya  /  F: Terminál" : shop.CoinPayment ? "Aprópénz  /  F: Érmék átvétele" : "Készpénz  /  F: Kassza") : "A vásárló elköszön.";
         ShopUi.Label(new Rect(x + 16, top + 34, inner, 52), ShopUi.BoundText(action), 15);
     }
@@ -148,6 +148,13 @@ public sealed class MvpShopHud : MonoBehaviour
         GUILayout.Label("Utánrendelés: " + ShopCatalog.Money(shop.Ledger.Purchases) + "  •  Beruházás: " + ShopCatalog.Money(shop.Ledger.Improvements), ShopUi.Text(16));
         if (shop.Ledger.PurchaseRounding != 0)
             GUILayout.Label("Beszerzési kerekítés: " + ShopCatalog.Money(shop.Ledger.PurchaseRounding), ShopUi.Text(16));
+        if (shop.Mobile.Owned)
+        {
+            var mobile = shop.Mobile.Book;
+            GUILayout.Label("TELEFONFELTÖLTÉS", ShopUi.Text(14,true));
+            GUILayout.Label("Névérték: " + ShopCatalog.Money(mobile.DailySales) + " · Jutalék: " + ShopCatalog.Money(mobile.DailyCommission), ShopUi.Text(16));
+            GUILayout.Label("Szolgáltatói rész: " + ShopCatalog.Money(mobile.DailySales - mobile.DailyCommission) + " · Tartozás / elkülönítve: " + ShopCatalog.Money(mobile.Outstanding), ShopUi.Text(16));
+        }
         if(shop.Lottery.Owned)
         {
             var book=shop.Lottery.Book;

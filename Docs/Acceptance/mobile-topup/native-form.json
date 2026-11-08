@@ -1,0 +1,15 @@
+{
+  "reviewer": "Codex self-review",
+  "scenario": "current",
+  "capturedUtc": "2026-11-08T20:27:08.3277213Z",
+  "interactionReview": "API integration passed; real browser input recorded separately",
+  "image": "native-form.png",
+  "review": "passed",
+  "source": {
+    "commit": "aef2b1db2bf975744969bf08e8639c9f7759031c",
+    "sourceFingerprint": "ef5a42cb31aa4a02fea0e1768ec7558936368a0c23f5d892240af41eb2928076",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "observations": "Requested provider names Ureskom / Notyet tel / Two (Hungarian spelling in image), fields, receipt and commission/operator values fit and are readable. Native state/payment used normal gameplay APIs, not claimed as OS mouse input."
+}

@@ -55,7 +55,23 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "hot-drinks")
+        if (scenario == "mobile" || scenario == "mobile-cash" || scenario == "mobile-locked")
+        {
+            Shop.AutomaticArrivals = false;
+            if (scenario != "mobile-locked")
+            {
+                Set(Shop, "Day", 6); Shop.Mobile.BeginDay();
+                Visit(3, -2);
+                Set(Shop.ActiveCustomer, "UsesCard", scenario != "mobile-cash");
+                Set(Shop.ActiveCustomer, "UsesCoins", false);
+                if (scenario == "mobile-cash") Set(Shop.ActiveCustomer, "Tender", Shop.ActiveCustomer.TotalPrice + 500);
+                Aim(Shop.Devices.Terminal.transform.position, 1.1f, Vector3.left);
+                Shop.Mobile.SelectPage(0);
+            }
+            else { Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Mobile); }
+            Shop.ManualTick = false;
+        }
+        else if (scenario == "hot-drinks")
         {
             Shop.Ledger.TrySellCard(60000, 0); Shop.SyncCashDrawer(); Shop.Activities.BuyCoffeeMachine();
             Shop.AutomaticArrivals = false;
@@ -417,6 +433,10 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             View.transform.position=action=="design-exterior"?new Vector3(-4.5f,2.5f,-12):new Vector3(1.7f,1.7f,-4);
             View.transform.LookAt(action=="design-exterior"?new Vector3(1,1.9f,-1.5f):new Vector3(-.4f,1.3f,.8f));
         }
+        if (action == "mobile-open") Shop.Mobile.Open();
+        if (action == "mobile-account") { Shop.Mobile.Open(); Shop.Mobile.SelectPage(1); }
+        if (action == "mobile-receipt") { Shop.Mobile.Open(); Shop.Mobile.SelectPage(2); }
+        if (action == "mobile-aim-terminal") Aim(Shop.Devices.Terminal.transform.position, 1.1f, Vector3.left);
         if (action == "hot-drinks-deliver") Shop.Tick(8.1f);
         if (action == "hot-drinks-customer")
         {
@@ -790,6 +810,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public string[] lotteryControlIds;
         public Rect[] lotteryControls;
         public Rect lotteryNumberField;
+        public bool mobileOwned, mobilePrepared;
+        public int mobileProvider, mobileAmount, mobileCommission, mobileOutstanding, mobileDailySales, mobileDailyCount, mobileReserve, availableFunds;
+        public string mobileNumber, mobileFeedback, mobileReceipt, mobileNumberEntry, mobileAmountEntry;
+        public string[] mobileControlIds;
+        public Rect[] mobileControls;
+        public Rect mobileNumberField, mobileAmountField;
         public int ingredientCoffee,ingredientMilk,readyCoffee,readyMilk;
         public int tea, cocoa, readyTea, readyCocoa, pendingTea, pendingCocoa;
         public Rect[] cashDenominations, cashKeys;
@@ -832,6 +858,19 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             applicationFocused = Application.isFocused, cursorLocked = Cursor.lockState == CursorLockMode.Locked,
             receipts = receipts.Select(p => p.transform.position).ToArray()
         };
+        var mobile = g.Mobile;
+        state.mobileOwned = mobile.Owned; state.mobilePrepared = mobile.Book.IsPrepared(mobile.Request);
+        state.mobileProvider = mobile.Request?.Provider ?? -1; state.mobileNumber = mobile.Request?.Number ?? ""; state.mobileAmount = mobile.Request?.Amount ?? 0;
+        state.mobileCommission = mobile.Book.DailyCommission; state.mobileOutstanding = mobile.Book.Outstanding; state.mobileDailySales = mobile.Book.DailySales; state.mobileDailyCount = mobile.Book.DailyCount;
+        state.mobileReserve = g.Ledger.MobileReserve; state.availableFunds = g.Ledger.AvailableFunds;
+        state.mobileFeedback = mobile.Feedback; state.mobileReceipt = mobile.Book.LastReceipt?.Id ?? "";
+        state.mobileNumberEntry = mobile.NumberEntry; state.mobileAmountEntry = mobile.AmountEntry;
+        var mobileTargets = g.Devices.FocusKind == ShopDeviceKind.Mobile ? g.Devices.KeyboardTargets() : g.Devices.FocusKind == ShopDeviceKind.Monitor && g.Devices.ComputerApp == ShopComputerApp.Mobile ? g.Devices.ComputerKeyboardTargets() : new System.Collections.Generic.List<ShopKeyboardTarget>();
+        state.mobileControlIds = mobileTargets.Select(t => t.Id).ToArray(); state.mobileControls = mobileTargets.Select(t => t.Bounds).ToArray();
+        Rect mobileRect = g.Devices.FocusKind == ShopDeviceKind.Mobile ? ShopMobileTopUp.TerminalBody : ShopDevices.ComputerBody;
+        Rect numberField = new Rect(mobileRect.x + 24, mobileRect.y + 208, 496, 48), amountField = new Rect(mobileRect.x + 566, mobileRect.y + 208, 474, 48);
+        state.mobileNumberField = g.Devices.FocusKind == ShopDeviceKind.Mobile ? ShopUi.ScreenRect(numberField) : g.Devices.ComputerToScreen(numberField);
+        state.mobileAmountField = g.Devices.FocusKind == ShopDeviceKind.Mobile ? ShopUi.ScreenRect(amountField) : g.Devices.ComputerToScreen(amountField);
         state.clock=ShopUiState.Clock(g.ClockElapsed);
         state.requestsSpawned=g.Spawned;
         state.coffeeMerchandise=Enumerable.Range(ShopCatalog.Coffee,3).Sum(g.StockCount);

@@ -4,8 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum ShopDeviceKind { None, Monitor, Till, Coins, Terminal, Coffee, Lottery }
-public enum ShopComputerApp { Desktop, Orders, Furnishing, Coffee, Cameras, Games, Prices, Lottery, Reputation }
+public enum ShopDeviceKind { None, Monitor, Till, Coins, Terminal, Coffee, Lottery, Mobile }
+public enum ShopComputerApp { Desktop, Orders, Furnishing, Coffee, Cameras, Games, Prices, Lottery, Reputation, Mobile }
 public sealed partial class ShopDevices : MonoBehaviour
 {
     [SerializeField] private Transform monitor, drawer, changeTray, tillDisplay;
@@ -199,6 +199,7 @@ public sealed partial class ShopDevices : MonoBehaviour
     public void Focus(ShopDeviceKind kind)
     {
         if (kind == ShopDeviceKind.Coffee && (shop == null || !shop.Activities.CoffeeOwned)) return;
+        if (kind == ShopDeviceKind.Mobile && (shop == null || !shop.Mobile.Owned)) return;
         if (kind == ShopDeviceKind.Lottery && (shop == null || !shop.Lottery.Owned)) return;
         if (kind == ShopDeviceKind.Till && shop != null && shop.CardPayment) kind = ShopDeviceKind.Terminal;
         if(view==null||shop==null||shop.HasHeldProduct)return;
@@ -225,7 +226,7 @@ public sealed partial class ShopDevices : MonoBehaviour
             registerDrawer.SetOpen(false);
             shop.Activities.CoffeeDisplay.Focus(view);
         }
-        else if (kind == ShopDeviceKind.Terminal)
+        else if (kind == ShopDeviceKind.Terminal || kind == ShopDeviceKind.Mobile)
         {
             registerDrawer.SetOpen(false);
             Terminal.Focus(view);
@@ -263,7 +264,7 @@ public sealed partial class ShopDevices : MonoBehaviour
         string selection=string.Join(",",ShopCatalog.Denominations.Select(shop.SelectedPieces));
         if(lastSelection!=selection){lastSelection=selection;RefreshTray();}
         PollDeviceKeyboard();
-        if(FocusKind==ShopDeviceKind.Monitor||FocusKind==ShopDeviceKind.Lottery)return;
+        if(FocusKind==ShopDeviceKind.Monitor||FocusKind==ShopDeviceKind.Lottery||FocusKind==ShopDeviceKind.Mobile)return;
         if(ShopInputGate.WorldActionConsumed||!Focused||!Application.isFocused||Mouse.current==null||!Mouse.current.leftButton.wasPressedThisFrame)return;
         if(Keyboard.current!=null&&ShopBindings.Pressed(UnityEngine.InputSystem.Key.Escape))return;
         Ray ray=view.ScreenPointToRay(Mouse.current.position.ReadValue());

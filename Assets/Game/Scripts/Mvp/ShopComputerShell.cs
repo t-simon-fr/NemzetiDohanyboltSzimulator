@@ -8,7 +8,7 @@ public sealed partial class ShopDevices
     public const float ComputerWidth = 1200, ComputerHeight = 680;
     public static readonly Rect ComputerBody = new Rect(24, 124, 1152, 478);
     public bool ComputerShellActive => FocusKind == ShopDeviceKind.Monitor;
-    private static readonly string[] AppNames = { "Asztal", "Árurendelés", "Üzletkezelés", "Kávégép", "Kamerák", "Játékok", "Árak", "Lottópont", "Üzlet hírneve" };
+    private static readonly string[] AppNames = { "Asztal", "Árurendelés", "Üzletkezelés", "Kávégép", "Kamerák", "Játékok", "Árak", "Lottópont", "Üzlet hírneve", "Telefonfeltöltés" };
 
     public Rect ComputerScreenRect
     {
@@ -45,6 +45,7 @@ public sealed partial class ShopDevices
                 Add("OpenApp:" + app, AppNames[app], new Rect(36 + (i - 1) % 2 * 284, 154 + (i - 1) / 2 * 144, 260, 116),
                     () => OpenApp((ShopComputerApp)app));
             }
+            Add("OpenApp:9", "Telefonfeltöltés", new Rect(704,154,380,72), () => OpenApp(ShopComputerApp.Mobile));
             Add("OpenApp:7","Lottópont",new Rect(704,410,380,72),()=>OpenApp(ShopComputerApp.Lottery));
             Add("OpenApp:8","Üzlet hírneve",new Rect(704,494,380,72),()=>OpenApp(ShopComputerApp.Reputation));
         }
@@ -53,6 +54,7 @@ public sealed partial class ShopDevices
             AddFurnishingControls(controls);
         }
         shop.Activities.AddComputerControls(controls, ComputerBody);
+        if(ComputerApp==ShopComputerApp.Mobile)controls.AddRange(shop.Mobile.Controls(ComputerBody));
         if(ComputerApp==ShopComputerApp.Lottery)controls.AddRange(shop.Lottery.Controls(ComputerBody));
         if(ComputerApp==ShopComputerApp.Reputation)shop.Reputation.AddControls(controls,ComputerBody);
         return controls;
@@ -103,6 +105,7 @@ public sealed partial class ShopDevices
             else if (ComputerApp == ShopComputerApp.Orders) DrawOrderCart();
             else if (ComputerApp == ShopComputerApp.Furnishing) DrawComputerUpgrades();
             else if (ComputerApp == ShopComputerApp.Prices) shop.Pricing.DrawEditor(ComputerBody);
+            else if (ComputerApp == ShopComputerApp.Mobile) shop.Mobile.Draw(ComputerBody);
             else if (ComputerApp == ShopComputerApp.Lottery) shop.Lottery.Draw(ComputerBody);
             else if (ComputerApp == ShopComputerApp.Reputation) shop.Reputation.Draw(ComputerBody);
             else shop.Activities.DrawComputerContent(ComputerBody);
@@ -110,6 +113,7 @@ public sealed partial class ShopDevices
             {
                 bool selected = target.Id == keyboardTargetId && keyboardOutline ||
                     ComputerApp==ShopComputerApp.Reputation && target.Id==shop.Reputation.SelectedTabId ||
+                    ComputerApp==ShopComputerApp.Mobile && (target.Id=="Mobile:Page:"+shop.Mobile.Page || target.Id=="Mobile:Provider:"+shop.Mobile.Provider) ||
                     target.Id == (furnishingPage == 0 ? "Furnishing:Developments" : furnishingPage == 1 ? "Furnishing:Furniture" : "Furnishing:Partners");
                 GUI.enabled = target.Enabled;
                 if (GUI.Button(target.Bounds, target.Label, ShopComputerTheme.Button(selected || target.Id.StartsWith("Coffee:Recipe:") &&

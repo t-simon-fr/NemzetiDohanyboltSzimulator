@@ -1,0 +1,157 @@
+{
+  "started": "2026-11-08T20:42:39.701Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Lottery starts locked",
+      "passed": true
+    },
+    {
+      "label": "Actual TobaccOS click buys lottery development once",
+      "passed": true
+    },
+    {
+      "label": "Consignment order waits for delivery without charging face value",
+      "passed": true
+    },
+    {
+      "label": "Consignment arrives as selectable ticket stock",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks one unpaid scratch ticket from its rack",
+      "passed": true
+    },
+    {
+      "label": "Actual barcode handover prepares payment but does not activate the ticket",
+      "passed": true
+    },
+    {
+      "label": "Actual F opens existing cash register for lottery sale",
+      "passed": true
+    },
+    {
+      "label": "Actual cash approval activates one ticket and updates the shared till",
+      "passed": true
+    },
+    {
+      "label": "Only commission is spendable, operator stake remains reserved",
+      "passed": true
+    },
+    {
+      "label": "Repeated cash approval cannot sell the paper twice",
+      "passed": true
+    },
+    {
+      "label": "Actual door interaction closes the lottery day",
+      "passed": true
+    },
+    {
+      "label": "Enter starts next day with lottery state intact",
+      "passed": true
+    },
+    {
+      "label": "Development, paid paper and reserve survive day transition",
+      "passed": true
+    },
+    {
+      "label": "Original NPC brings back the exact paid paper",
+      "passed": true
+    },
+    {
+      "label": "Actual E opens physical lottery terminal",
+      "passed": true
+    },
+    {
+      "label": "Terminal scans the actual paid winning paper",
+      "passed": true
+    },
+    {
+      "label": "Actual prize confirmation pays once from the shared physical till",
+      "passed": true
+    },
+    {
+      "label": "Prize payout creates correct operator receivable",
+      "passed": true
+    },
+    {
+      "label": "Actual settlement credits operator reimbursement without a second sale",
+      "passed": true
+    },
+    {
+      "label": "Escape restores normal world input after lottery terminal",
+      "passed": true
+    },
+    {
+      "label": "Duplicate typed numbers cannot print or consume a blank",
+      "passed": true
+    },
+    {
+      "label": "Actual typed customer numbers print one physical number ticket",
+      "passed": true
+    },
+    {
+      "label": "Number ticket uses the existing physical bank card terminal",
+      "passed": true
+    },
+    {
+      "label": "Wrong card amount cannot activate number ticket",
+      "passed": true
+    },
+    {
+      "label": "Correct card approval activates number ticket with exact commission and reserve",
+      "passed": true
+    },
+    {
+      "label": "Actual door interaction closes the lottery day",
+      "passed": true
+    },
+    {
+      "label": "Enter starts next day with lottery state intact",
+      "passed": true
+    },
+    {
+      "label": "Next game day resolves one five-number draw",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-lottery-development.png",
+    "1280x720-lottery-stock.png",
+    "1920x1080-lottery-stock-large.png",
+    "1280x720-lottery-physical-rack.png",
+    "1280x720-lottery-held-paper.png",
+    "1280x720-lottery-daily-summary.png",
+    "1280x720-lottery-winning-scan.png",
+    "1280x720-lottery-settlement.png",
+    "1280x720-lottery-invalid-numbers.png",
+    "1280x720-lottery-number-paper.png",
+    "1280x720-lottery-daily-summary.png",
+    "1280x720-lottery-draw-results.png",
+    "1920x1080-lottery-draw-results-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27190574,
+    "seconds": 245.2838526,
+    "error": "",
+    "completedUtc": "2026-11-08T20:39:57.229Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "e8b497f3229ac8ad861e38bb8fe1276c096eae456387dd473ebcd89abe813780",
+      "AcceptanceWebGL.framework.js.unityweb": "97ab81f3b5aaa20157ddf4338facfaf0481161e8240dc67f78bdd4d34da058a4",
+      "AcceptanceWebGL.loader.js": "9871d5be636460756f40706bc20b2a077374e45102dc7fed912dbd42c8c116e4",
+      "AcceptanceWebGL.wasm.unityweb": "ad245403d295b12bc4495f842945371433a6a9dbe37d6301cc24eb2ceb519857"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-08T20:43:30.633Z",
+  "localRun": "Builds\\Verification\\acceptance-1794170559700"
+}
