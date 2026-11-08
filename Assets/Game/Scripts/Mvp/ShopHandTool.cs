@@ -25,8 +25,8 @@ public sealed class ShopHandTool : MonoBehaviour
             if (Kind == ShopToolKind.ContrabandBox) return "Dnyipro doboz • "+GetComponent<ShopContrabandBox>().Quantity+" db • E a pult alatti polcon: bepakolás";
             if (Kind!=ShopToolKind.CoffeeRefill) return Kind==ShopToolKind.Bat?"Baseballütő":"Seprű";
             var package=GetComponent<ShopIngredientPackage>();
-            return (package != null && package.Milk > 0 ? "Tej" : "Kávéalapanyag")
-                + (package != null ? " • " + package.Brand : "")
+            return (package != null ? ShopHotDrinkRecipes.IngredientNames[(int)package.Ingredient] : "Alapanyag")
+                + (package != null ? " • " + package.Brand + " • " + package.Amount + " adag" : "")
                 + " • E / bal kattintás a gépen: feltöltés";
         }
     }

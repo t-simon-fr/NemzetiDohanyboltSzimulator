@@ -1,0 +1,162 @@
+{
+  "started": "2026-11-08T16:38:11.193Z",
+  "finished": "2026-11-08T16:39:14.940Z",
+  "result": "passed",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Open shop receives visits beyond the old fixed daily limit",
+      "passed": true
+    },
+    {
+      "label": "Actual sign interaction closes ongoing arrivals",
+      "passed": true
+    },
+    {
+      "label": "No new arrivals after closing while existing customers leave",
+      "passed": true
+    },
+    {
+      "label": "Cigarette cannot be placed directly in customer zone and no green guide appears there",
+      "passed": true
+    },
+    {
+      "label": "Mouse puts cigarette on scanner and internal handover reaches payment",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks the leaning corner broom",
+      "passed": true
+    },
+    {
+      "label": "Empty broom home is a reachable return target",
+      "passed": true
+    },
+    {
+      "label": "Mouse returns broom to permanent leaning home without picking it up again",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks mounted bat",
+      "passed": true
+    },
+    {
+      "label": "Actual E returns bat to its wall mount",
+      "passed": true
+    },
+    {
+      "label": "Both physical ceiling fixtures are lit after closing",
+      "passed": true
+    },
+    {
+      "label": "Actual W walks outside with no invisible wall and no automatic day ending",
+      "passed": true
+    },
+    {
+      "label": "Actual S walks back through the open doorway",
+      "passed": true
+    },
+    {
+      "label": "Explicit E at doorway finishes the closed day exactly once",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 0",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 0",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 0",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 1",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 1",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 1",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 2",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 2",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 2",
+      "passed": true
+    },
+    {
+      "label": "Three prepared coffees reach payment without barcode scans or lost ingredients",
+      "passed": true
+    },
+    {
+      "label": "One real card approval sells all three served coffees and reconciles stock and money",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27180373,
+    "seconds": 257.7195562,
+    "error": "",
+    "completedUtc": "2026-11-08T16:28:11.879Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "70b0ed09796f44ed511a0f1c3f5f0895d72ce68532e533e0fc392336b2e7f427",
+      "AcceptanceWebGL.framework.js.unityweb": "0b3a84b2246fd33a9a6c8c2c7f8a18e7b7df3a86b814eed2ac68a337271d3e1b",
+      "AcceptanceWebGL.loader.js": "ca2ccb3e4ecd440ca51d574f907650bca7682bd920d420ff62ebe7bddfc887e1",
+      "AcceptanceWebGL.wasm.unityweb": "9936c7e7611bbb61e3d36479057531ae90fbdbd8096e94ddaee147706e41fd64"
+    }
+  },
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-continuous-arrivals.png",
+    "1280x720-customer-zone-cigarette-blocked.png",
+    "1920x1080-scanner-zone-separated-large.png",
+    "1280x720-broom-corner.png",
+    "1280x720-broom-return-target.png",
+    "1280x720-bat-returned.png",
+    "1280x720-fixture-lights-off.png",
+    "1280x720-fixture-lights-on.png",
+    "1920x1080-fixture-lights-on-large.png",
+    "1280x720-outside-after-closing.png",
+    "1280x720-explicit-day-end.png",
+    "1280x720-three-coffees-served.png",
+    "1920x1080-three-coffees-served-large.png"
+  ],
+  "failure": null,
+  "localRun": "Builds/Verification/acceptance-1794155891193",
+  "lastState": {
+    "device": "None",
+    "held": "",
+    "cup": "",
+    "recipe": 11,
+    "coffee": 0,
+    "milk": 0,
+    "balance": 52500,
+    "drawer": 52500,
+    "sales": 2,
+    "received": 0,
+    "missing": 3,
+    "stage": "Thanks",
+    "scannerCount": 1,
+    "coffeeMerchandise": 0
+  }
+}

@@ -42,7 +42,7 @@ public sealed partial class ShopReputation : MonoBehaviour
     public bool IsAvailable(int type)
     {
         if (ShopCatalog.IsCoffee(type))
-            return shop.StockCount(type)>0 || shop.Activities.CoffeeSupplies>0 && (type!=ShopCatalog.Latte || shop.Activities.MilkSupplies>0) ||
+            return shop.StockCount(type)>0 || shop.Activities.CanPrepareDrink(type) ||
                 shop.Activities.BrewRemaining>0 && shop.Activities.SelectedRecipe==type;
         return shop.AvailableInventory(type)>0;
     }

@@ -284,7 +284,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         int type = additional.Length > 0 && visit % 2 == 1 ? additional[(visit + Day - 1) % additional.Length] : ShopCatalog.VisitProducts[visit % TotalVisitors];
         if(!SingleProductVisits&&StockCount(ShopCatalog.Contraband)>0&&visit%4==1)type=ShopCatalog.Contraband;
         if(forcedProduct>=0)type=forcedProduct;
-        if(forcedProduct<0&&Activities.CoffeeOwned&&visit%4==2)type=SingleProductVisits?ShopCatalog.Coffee:ShopCatalog.Coffee+(visit/4+Day-1)%3;
+        if(forcedProduct<0&&Activities.CoffeeOwned&&visit%4==2)type=SingleProductVisits?ShopCatalog.Coffee:ShopHotDrinkRecipes.Types[(visit/4+Day-1)%ShopHotDrinkRecipes.Types.Length];
         LotteryTicket returning = null;
         if(forcedProduct<0&&!SingleProductVisits&&Lottery.Owned&&visit%4==1)
             returning=Lottery.Book.ScheduleReturn(Day);
@@ -395,8 +395,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         if (ShopCatalog.IsCoffee(type) && Activities.BrewRemaining > 0 && Activities.SelectedRecipe == type) needed--;
         if (needed <= 0) return false;
         if (!ShopCatalog.IsCoffee(type)) return true;
-        return !Activities.CoffeeOwned || Activities.CoffeeSupplies + Activities.ReadyCoffee < needed ||
-            type == ShopCatalog.Latte && Activities.MilkSupplies + Activities.ReadyMilk < needed;
+        return !Activities.CanPrepareDrink(type, true, needed);
     }
     public bool HasUnavailableRequest => active != null && active.OrderTypes.Any(IsRequestedTypeUnavailable);
     public bool OfferAlternative()

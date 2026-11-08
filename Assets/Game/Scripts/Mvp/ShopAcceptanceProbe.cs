@@ -55,7 +55,13 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "reputation" || scenario == "reputation-visual")
+        if (scenario == "hot-drinks")
+        {
+            Shop.Ledger.TrySellCard(60000, 0); Shop.SyncCashDrawer(); Shop.Activities.BuyCoffeeMachine();
+            Shop.AutomaticArrivals = false;
+            Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Coffee);
+        }
+        else if (scenario == "reputation" || scenario == "reputation-visual")
         {
             Shop.AutomaticArrivals=false;
             if (scenario=="reputation-visual")
@@ -411,6 +417,18 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             View.transform.position=action=="design-exterior"?new Vector3(-4.5f,2.5f,-12):new Vector3(1.7f,1.7f,-4);
             View.transform.LookAt(action=="design-exterior"?new Vector3(1,1.9f,-1.5f):new Vector3(-.4f,1.3f,.8f));
         }
+        if (action == "hot-drinks-deliver") Shop.Tick(8.1f);
+        if (action == "hot-drinks-customer")
+        {
+            Shop.ClosePanel(); Shop.SingleProductVisits = true; Visit(3, ShopCatalog.Tea);
+            Set(Shop.ActiveCustomer, "OrderTypes", new[] { ShopCatalog.Tea, ShopCatalog.HotChocolate });
+            Set(Shop.ActiveCustomer, "UnitPrices", new[] { Shop.Pricing.Price(ShopCatalog.Tea), Shop.Pricing.Price(ShopCatalog.HotChocolate) });
+            Set(Shop.ActiveCustomer, "UsesCard", true); Set(Shop.ActiveCustomer, "UsesCoins", false);
+            AimCoffeeDisplay(); Shop.ManualTick = false;
+        }
+        if (action == "hot-drinks-live") Shop.ManualTick = false;
+        if (action == "aim-ingredient-tea") AimIngredient(ShopDrinkIngredient.Tea);
+        if (action == "aim-ingredient-cocoa") AimIngredient(ShopDrinkIngredient.Cocoa);
         if (action == "aim-ingredient-coffee") AimIngredient(false);
         if (action == "advance-requests-arrivals")
         {
@@ -425,7 +443,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         if (action == "aim-customer-zone") Aim(Shop.Activities.BasketSlot.transform.position+Vector3.up*.1f,1.2f);
         if (action == "aim-scanner") Aim(Shop.DeliverySlot.transform.position+Vector3.up*.05f,1.2f);
         if (action.StartsWith("aim-coffee-handover-") && int.TryParse(action.Substring("aim-coffee-handover-".Length),out int coffeePlace) && coffeePlace>=0 && coffeePlace<3)
-            Aim(Shop.Activities.CustomerHandoverSlots[coffeePlace].transform.position+Vector3.up*.20f,1.1f,Vector3.left);
+            Aim(Shop.Activities.CustomerHandoverSlots[coffeePlace].transform.position+Vector3.up*.20f,1.1f,new Vector3(-1,0,-.8f).normalized);
         if (action == "aim-broom-rack") Aim(Shop.Activities.Mop.Rack.transform.TransformPoint(Vector3.up*.55f),1.1f,new Vector3(-1,0,-.6f).normalized);
         if (action == "aim-bat-rack") Aim(Shop.Activities.Bat.Rack.transform.TransformPoint(Vector3.up*.45f),1.1f,Vector3.forward);
         if (action == "fixture-lights-off") foreach(var light in Shop.InteriorLighting.Lights)light.enabled=false;
@@ -589,10 +607,11 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Aim(dock.position + Vector3.up * .15f, 1.45f, new Vector3(1.2f, 0, .8f).normalized);
     }
 
-    private void AimIngredient(bool milk)
+    private void AimIngredient(bool milk) => AimIngredient(milk ? ShopDrinkIngredient.Milk : ShopDrinkIngredient.Coffee);
+    private void AimIngredient(ShopDrinkIngredient ingredient)
     {
         Physics.SyncTransforms();
-        var package=FindObjectsByType<ShopIngredientPackage>().First(p=>milk?p.Milk>0:p.Coffee>0);
+        var package = FindObjectsByType<ShopIngredientPackage>().First(p => p.Ingredient == ingredient);
         Aim(package.GetComponentInChildren<Collider>().bounds.center,1.25f,Vector3.right);
     }
 
@@ -772,6 +791,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public Rect[] lotteryControls;
         public Rect lotteryNumberField;
         public int ingredientCoffee,ingredientMilk,readyCoffee,readyMilk;
+        public int tea, cocoa, readyTea, readyCocoa, pendingTea, pendingCocoa;
         public Rect[] cashDenominations, cashKeys;
         public int[] cashCounts;
         public int[] offeredCoins;
@@ -949,7 +969,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.canDevelop = g.CanDevelopShop;
         var targetTool=typeof(PlayerInteractor).GetField("targetTool",Private).GetValue(Player) as ShopHandTool;
         var targetPackage=targetTool!=null?targetTool.GetComponent<ShopIngredientPackage>():null;
-        state.ingredientTarget=targetPackage!=null?(targetPackage.Milk>0?"milk":"coffee"):"";
+        state.ingredientTarget=targetPackage!=null?targetPackage.Ingredient.ToString().ToLowerInvariant():"";
         state.ingredientBrand = targetPackage != null ? targetPackage.Brand : "";
         var heldIngredient = Player.HeldTool != null ? Player.HeldTool.GetComponent<ShopIngredientPackage>() : null;
         state.heldIngredientBrand = heldIngredient != null ? heldIngredient.Brand : "";
@@ -969,6 +989,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.lotteryControlIds=lotteryTargets.Select(t=>t.Id).ToArray();state.lotteryControls=lotteryTargets.Select(t=>t.Bounds).ToArray();
         state.lotteryNumberField=g.Devices.FocusKind==ShopDeviceKind.Lottery?ShopUi.ScreenRect(new Rect(128,318,500,54)):
             g.Devices.ComputerToScreen(new Rect(ShopDevices.ComputerBody.x+24,ShopDevices.ComputerBody.y+178,500,54));
+        state.tea=g.Activities.LoadedIngredient(ShopDrinkIngredient.Tea); state.cocoa=g.Activities.LoadedIngredient(ShopDrinkIngredient.Cocoa);
+        state.readyTea=g.Activities.ReadyIngredient(ShopDrinkIngredient.Tea); state.readyCocoa=g.Activities.ReadyIngredient(ShopDrinkIngredient.Cocoa);
+        state.pendingTea=g.Activities.PendingIngredient(ShopDrinkIngredient.Tea); state.pendingCocoa=g.Activities.PendingIngredient(ShopDrinkIngredient.Cocoa);
         state.ingredientCoffee=g.Activities.CoffeeSupplies;state.ingredientMilk=g.Activities.MilkSupplies;
         state.readyCoffee=g.Activities.ReadyCoffee;state.readyMilk=g.Activities.ReadyMilk;
         state.upgradesOwned = new[]{g.Layout.Expanded,g.Layout.ExtraShelfOwned,g.Activities.CoffeeOwned,g.GetComponent<ShopNextUpgrades>().FridgeOwned,g.Security.Owned};
@@ -1007,7 +1030,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.coinClear = coinTargets.FirstOrDefault(t => t.Id == "Coins:Clear")?.Bounds ?? Rect.zero;
         state.coinPay = coinTargets.FirstOrDefault(t => t.Id == "Coins:Pay")?.Bounds ?? Rect.zero;
         state.device = g.Devices.FocusKind.ToString();
-        state.coffeeButtons = Enumerable.Range(0, 4).Select(index => g.Activities.CoffeeDisplay.Bounds(View, index)).ToArray();
+        state.coffeeButtons = Enumerable.Range(0, g.Activities.CoffeeDisplay.Controls.Count).Select(index => g.Activities.CoffeeDisplay.Bounds(View, index)).ToArray();
         state.coffeeScreenRecipe = g.Activities.CoffeeDisplay.DisplayRecipe;
         state.coffeeScreenStatus = g.Activities.CoffeeDisplay.DisplayStatus;
         state.coffeeScreenSupplies = g.Activities.CoffeeDisplay.DisplaySupplies;
