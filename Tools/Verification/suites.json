@@ -56,7 +56,9 @@
       "corner-wall",
       "partner-pricing",
       "partner-integration",
-      "partner-targeting"
+      "partner-targeting",
+      "reputation-state",
+      "reputation-integration"
     ]
   },
   "suites": {
@@ -314,6 +316,16 @@
       "entry": "PartnerChecks.Targeting",
       "file": "Tools/Checks/PartnerChecks.cs",
       "purpose": "Real camera rays hit each new carton and family slot; actual station pickup/replenishment and public NPC path reaches payment"
+    },
+    "reputation-state": {
+      "file": "Tools/Checks/ReputationChecks.cs",
+      "entry": "ReputationChecks.State",
+      "purpose": "Four-factor evidence/confidence, one daily update, single outcome attribution, cancellation anti-exploit, bounded seeded traffic/baskets and lifecycle"
+    },
+    "reputation-integration": {
+      "file": "Tools/Checks/ReputationChecks.cs",
+      "entry": "ReputationChecks.Integration",
+      "purpose": "Real unlocked/delivered choice, coffee/lottery, pause/focus/closing, physical checkout, daily summary and existing regular NPC favourites/dialogue"
     }
   },
   "historicalExcluded": {

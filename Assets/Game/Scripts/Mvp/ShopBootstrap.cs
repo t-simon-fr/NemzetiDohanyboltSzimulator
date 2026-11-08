@@ -33,6 +33,8 @@ public sealed class ShopBootstrap
         shop.gameObject.AddComponent<ShopModularFurniture>().Configure(shop);
         shop.Partners = shop.gameObject.AddComponent<ShopPartnerships>();
         shop.Partners.Configure(shop);
+        shop.Reputation = shop.gameObject.AddComponent<ShopReputation>();
+        shop.Reputation.Configure(shop);
         shop.Navigation.Configure(shop);
         shop.InitializeCheckout();
         shop.Scanner = new GameObject("Checkout barcode scanner").AddComponent<ShopBarcodeScanner>();

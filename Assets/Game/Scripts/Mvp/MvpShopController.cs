@@ -36,6 +36,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ServiceStage Stage { get => checkout.Stage; private set => checkout.Stage = value; }
     public ShopLedger Ledger { get; private set; }
     public ShopPartnerships Partners { get; internal set; }
+    public ShopReputation Reputation { get; internal set; }
     public ShopPricing Pricing {get;internal set;}
     public ShopAfterHours AfterHours {get;internal set;}
     public int PriceRefusals {get;private set;}
@@ -206,6 +207,8 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         if (Ledger == null || Phase == ShopPhase.Summary || Arrangement != null && Arrangement.Active) return;
         dt = Mathf.Max(0f, dt);
+        bool liveMonitor=Devices!=null&&Devices.FocusKind==ShopDeviceKind.Monitor&&(Devices.ComputerApp==ShopComputerApp.Cameras||Devices.ComputerApp==ShopComputerApp.Games);
+        if (!ShopMenu.Active && Modal==ShopModal.None) Reputation?.Tick(dt);
         Lottery?.Tick(dt);
         dayCycle.TickClock(dt);
         if(Phase==ShopPhase.AfterHours){Activities?.Tick(dt);return;}
@@ -215,7 +218,6 @@ public sealed partial class MvpShopController : MonoBehaviour
             Message = "Megérkezett: " + arrival.Quantity + " × " + ShopCatalog.Names[arrival.Type] + ". A raktárban megtalálod a márka dobozában!";
         }
         Activities?.Tick(dt);
-        bool liveMonitor=Devices!=null&&Devices.FocusKind==ShopDeviceKind.Monitor&&(Devices.ComputerApp==ShopComputerApp.Cameras||Devices.ComputerApp==ShopComputerApp.Games);
         if (Modal != ShopModal.None || (Devices != null && Devices.Focused && !liveMonitor) || Phase == ShopPhase.Preparing) return;
         AdvanceFleeing(dt);
         dayCycle.TickService(dt);
@@ -225,7 +227,7 @@ public sealed partial class MvpShopController : MonoBehaviour
             if (spawnTimer <= 0f && queue.Count < 3)
             {
                 SpawnCustomer();
-                spawnTimer = UnityEngine.Random.Range(12f,28f);
+                spawnTimer = UnityEngine.Random.Range(12f,28f)*(float)(Reputation?.State.ArrivalScale ?? 1);
             }
         }
         for (int i = departing.Count - 1; i >= 0; i--)
@@ -238,13 +240,15 @@ public sealed partial class MvpShopController : MonoBehaviour
             MvpCustomerActor customer = queue[i];
             Vector3 target = Counter.QueuePoint(i);
             bool arrived = customer.Advance(dt, target);
+            Reputation?.Observe(customer);
             if(customer.IsStealing){queue.RemoveAt(i--);fleeing.Add(customer);continue;}
             if (i == 0 && active == null && arrived)
             {
                 active = customer; Stage = ServiceStage.Order;
                 ResetCardTerminal();
-                if(!customer.AcceptsPrices){PriceRefusals++;Missed++;Notify(ShopPeople.Names[customer.Person]+": Ennyiért inkább nem kérem. Túl drága! Állíts kedvezőbb árat az Árak alkalmazásban.");DismissActive();i--;continue;}
+                if(!customer.AcceptsPrices){Reputation?.Complete(customer,ShopVisitOutcome.PriceRefusal);PriceRefusals++;Missed++;Notify(ShopPeople.Names[customer.Person]+": Ennyiért inkább nem kérem. Túl drága! Állíts kedvezőbb árat az Árak alkalmazásban.");DismissActive();i--;continue;}
                 Dialogue = Lottery.Arrive(active);
+                if (active.IsRegular) Dialogue = Reputation.RegularOrder(active);
                 if (active.BasketItem != null)
                 { if(Activities.PlaceBasket(active)){prepared=active.BasketItem;BeginPayment();} }
                 else
@@ -286,6 +290,11 @@ public sealed partial class MvpShopController : MonoBehaviour
             returning=Lottery.Book.ScheduleReturn(Day);
         if(forcedProduct<0&&!SingleProductVisits&&returning==null&&visit%4==3)
         {int lotteryType=Lottery.ChooseOrder(visit);if(lotteryType>=0)type=lotteryType;}
+        int person = returning!=null ? returning.Owner : (visit+Day-1)%4;
+        bool regular = false;
+        if (forcedProduct<0 && !SingleProductVisits && returning==null && !ShopLotteryCatalog.IsTicket(type) &&
+            Reputation.ChooseRegular(visit,out int familiar,out int favourite))
+        { person=familiar; type=favourite; regular=true; }
         int[] order = returning!=null ? Array.Empty<int>() : CreateCustomerOrder(type, visit);
         if (order.Length == 0 && returning==null) return;
         Spawned++;
@@ -293,7 +302,8 @@ public sealed partial class MvpShopController : MonoBehaviour
         clone.SetActive(false);
         var legacy = clone.GetComponent<CustomerOrderController>(); if (legacy != null) legacy.enabled = false;
         MvpCustomerActor actor = clone.AddComponent<MvpCustomerActor>();
-        actor.Initialize(returning!=null?returning.Owner:(visit + Day - 1) % 4, order.Length>0?order[0]:-1, visit, order, returning?.Id);
+        actor.Initialize(person, order.Length>0?order[0]:-1, visit, order, returning?.Id);
+        if (regular) { actor.MarkRegular(); Reputation.State.RecordRegular(); }
         if(forceThief)actor.SetTheftIntent();clone.SetActive(true); queue.Add(actor);
     }
     private void OnDelivery(ShopProduct product)
@@ -396,6 +406,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         if(missing.Length==0)return false;
         int original = missing.Where(IsRequestedTypeUnavailable).DefaultIfEmpty(-1).First();
         if (original < 0) return false;
+        Reputation?.MarkMissing(active);
         int replacement=SupplyTypes.Where(t=>t!=original&&ShopCatalog.IsCigarette(t)==ShopCatalog.IsCigarette(original)&&StockCount(t)>active.OrderTypes.Count(x=>x==t)&&ShopPricing.Accepts(t,Pricing.Price(t),Spawned-1,Day)).DefaultIfEmpty(-1).First();
         if(replacement<0||active.Person==2){Notify("Köszönöm, akkor most inkább elmegyek.");SkipCurrent();return false;}
         active.ReplaceRequested(original,replacement);Dialogue="Akkor "+ShopCatalog.ShortNames[replacement]+" jó lesz helyette, köszönöm.";Notify(Dialogue);ClosePanel();return true;
@@ -403,6 +414,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public void SkipCurrent()
     {
         if (active == null || (Stage != ServiceStage.Order && Stage != ServiceStage.Payment)) return;
+        Reputation?.Complete(active,active.OrderTypes.Any(IsRequestedTypeUnavailable) ? ShopVisitOutcome.MissingStock : ShopVisitOutcome.Cancelled);
         Missed++; Dialogue = "Most nem tudtuk kiszolgálni. Majd legközelebb!";
         if (Devices != null && Devices.Focused) ClosePanel();
         DismissActive();
@@ -422,6 +434,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     private void CleanupReceipts() => checkout.CleanupEmptyReceipts();
     private void FinishDay()
     {
+        Reputation?.State.CloseDay();
         Lottery?.Book.Tick(8.1f);
         inventory.CompleteDeliveries();
         Warehouse?.SyncBoxes();
@@ -458,6 +471,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     private void BeginPreparation()
     {
+        Reputation?.BeginDay();
         Lottery?.AdvanceDay();
         ResetCardTerminal();
         Security?.ReleaseEntrance();
@@ -468,6 +482,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     }
     public void ResetDemo()
     {
+        Reputation?.ResetAll();
         Partners?.ResetAll();
         Arrangement?.ResetLayout();
         AfterHours?.ResetEvenings();Pricing?.ResetPrices();GetComponent<ShopNextUpgrades>()?.ResetUpgrades();
@@ -525,6 +540,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     public void FinishLotteryVisit(string text)
     {
         if(active==null||active.LotteryClaimId==null||Stage!=ServiceStage.Order)return;
+        Reputation?.Complete(active,ShopVisitOutcome.Served);
         Stage=ServiceStage.Thanks;thanksTimer=2.5f;Dialogue=text;Notify(text);ClosePanel();
     }
     public bool OrderSupply(int type) => OrderSupply(type,3);

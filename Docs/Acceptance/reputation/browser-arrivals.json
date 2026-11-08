@@ -1,0 +1,429 @@
+{
+  "started": "2026-11-08T15:48:39.603Z",
+  "viewport": null,
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Open shop receives visits beyond the old fixed daily limit",
+      "passed": true
+    },
+    {
+      "label": "Actual sign interaction closes ongoing arrivals",
+      "passed": true
+    },
+    {
+      "label": "No new arrivals after closing while existing customers leave",
+      "passed": true
+    },
+    {
+      "label": "Cigarette cannot be placed directly in customer zone and no green guide appears there",
+      "passed": true
+    },
+    {
+      "label": "Mouse puts cigarette on scanner and internal handover reaches payment",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks the leaning corner broom",
+      "passed": true
+    },
+    {
+      "label": "Empty broom home is a reachable return target",
+      "passed": true
+    },
+    {
+      "label": "Mouse returns broom to permanent leaning home without picking it up again",
+      "passed": true
+    },
+    {
+      "label": "Actual E picks mounted bat",
+      "passed": true
+    },
+    {
+      "label": "Actual E returns bat to its wall mount",
+      "passed": true
+    },
+    {
+      "label": "Both physical ceiling fixtures are lit after closing",
+      "passed": true
+    },
+    {
+      "label": "Actual W walks outside with no invisible wall and no automatic day ending",
+      "passed": true
+    },
+    {
+      "label": "Actual S walks back through the open doorway",
+      "passed": true
+    },
+    {
+      "label": "Explicit E at doorway finishes the closed day exactly once",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 0",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 0",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 0",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 1",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 1",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 1",
+      "passed": true
+    },
+    {
+      "label": "Physical coffee menu brews cup 2",
+      "passed": true
+    },
+    {
+      "label": "Physical menu gives actual cup 2",
+      "passed": true
+    },
+    {
+      "label": "Actual E serves coffee in a free customer-zone place 2",
+      "passed": true
+    },
+    {
+      "label": "Three prepared coffees reach payment without barcode scans or lost ingredients",
+      "passed": true
+    },
+    {
+      "label": "One real card approval sells all three served coffees and reconciles stock and money",
+      "passed": true
+    }
+  ],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-continuous-arrivals.png",
+    "1280x720-customer-zone-cigarette-blocked.png",
+    "1920x1080-scanner-zone-separated-large.png",
+    "1280x720-broom-corner.png",
+    "1280x720-broom-return-target.png",
+    "1280x720-bat-returned.png",
+    "1280x720-fixture-lights-off.png",
+    "1280x720-fixture-lights-on.png",
+    "1920x1080-fixture-lights-on-large.png",
+    "1280x720-outside-after-closing.png",
+    "1280x720-explicit-day-end.png",
+    "1280x720-three-coffees-served.png",
+    "1920x1080-three-coffees-served-large.png"
+  ],
+  "errors": [],
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27161956,
+    "seconds": 570.1382315999999,
+    "error": "",
+    "completedUtc": "2026-11-08T15:46:24.131Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "f4ede922992fa909c5d60df607ea0d34c8844078e7e0a5b580385c727921db3a",
+      "AcceptanceWebGL.framework.js.unityweb": "09449c641b16177a7920273ef6202613da142afe3c193955139fd2d3a2c62311",
+      "AcceptanceWebGL.loader.js": "e46139629a6f510511847af1438d753fd2a94a1567f5806079c7e7bfe05ca94c",
+      "AcceptanceWebGL.wasm.unityweb": "a62cf5123952eec125f0fc8ed2c12648913dd109d944ebc07cff2fd7741adc73"
+    }
+  },
+  "result": "passed",
+  "finished": "2026-11-08T15:49:43.463Z",
+  "case": "requests-batch",
+  "rawReport": "Builds/Verification/acceptance-1794152919603/report.json",
+  "stateSampleCount": 89,
+  "finalState": {
+    "reputation": 50,
+    "reputationSeconds": 30.447000324493274,
+    "reputationChange": 0,
+    "arrivalScale": 1,
+    "reputationScores": [
+      62.57375013422771,
+      62.68625013520553,
+      60.14900010816443,
+      66.66666666666666
+    ],
+    "reputationEvidence": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "reputationVisits": 1,
+    "reputationServiceVisits": 1,
+    "reputationMissing": 0,
+    "reputationRefusals": 0,
+    "reputationRegulars": 0,
+    "reputationReasons": [
+      "Még kevés az adat: legalább 30 nyitott másodperc és 3 lezárt látogatás kell.",
+      "Nyitvatartás alatt tiszta volt a bolt."
+    ],
+    "reputationLast": false,
+    "regularCustomer": false,
+    "reputationViewingLast": false,
+    "reputationViewDay": 1,
+    "scannerCount": 1,
+    "requestsSpawned": 1,
+    "clock": "08:30",
+    "phase": "Open",
+    "modal": "None",
+    "order": "Rövid kávé + Hosszú kávé + Latte",
+    "balance": 52500,
+    "drawer": 52500,
+    "sales": 2,
+    "received": 0,
+    "milk": 0,
+    "coffee": 0,
+    "day": 1,
+    "dirt": 0,
+    "elapsed": 11.428837776184082,
+    "partnerOwned": [
+      false,
+      false,
+      false
+    ],
+    "partnerStock": [
+      8,
+      8,
+      8,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partnerStored": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partnerPending": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partnerCosts": [
+      1500,
+      1600,
+      1700,
+      1850,
+      150,
+      180,
+      300,
+      220,
+      280,
+      200,
+      200,
+      350,
+      700,
+      450,
+      900,
+      450,
+      300,
+      330,
+      180,
+      180,
+      260,
+      270,
+      250
+    ],
+    "partnerCartQuantities": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "physicalProductCosts": [
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1600,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1850,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1700,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500,
+      1500
+    ],
+    "physicalProductIds": [
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_blue",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_davidon",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_gold",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red",
+      "cig_red"
+    ],
+    "partnerDropTargets": [
+      {
+        "x": 321.57440185546875,
+        "y": 393.7205505371094,
+        "z": 6.391537189483643
+      },
+      {
+        "x": 394.4429016113281,
+        "y": 433.74041748046875,
+        "z": 8.288212776184082
+      }
+    ],
+    "partnerCartSubtotal": 0,
+    "partnerCartPayment": 0,
+    "lastPurchaseSubtotal": 0,
+    "lastPurchaseTotal": 0,
+    "purchaseRounding": 0,
+    "costOfGoods": 750,
+    "orderLines": [
+      {
+        "Type": 9,
+        "Required": 1,
+        "Delivered": 1,
+        "Unavailable": true
+      },
+      {
+        "Type": 10,
+        "Required": 1,
+        "Delivered": 1,
+        "Unavailable": true
+      },
+      {
+        "Type": 11,
+        "Required": 1,
+        "Delivered": 1,
+        "Unavailable": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "reviewer": "Codex self-review",
+  "result": "passed",
+  "viewports": [
+    "1280x720",
+    "1920x1080"
+  ],
+  "images": [
+    "1280x720-reputation-empty-720.png",
+    "1280x720-reputation-last-720.png",
+    "1280x720-reputation-regular-720.png",
+    "1280x720-reputation-summary-720.png",
+    "1280x720-reputation-today-720.png",
+    "1920x1080-reputation-empty-1080.png",
+    "1920x1080-reputation-last-1080.png",
+    "1920x1080-reputation-regular-1080.png",
+    "1920x1080-reputation-summary-1080.png",
+    "1920x1080-reputation-today-1080.png"
+  ],
+  "observations": [
+    "Neutral no-data page is explicit; four scores and the entire minimum-data explanation fit at both resolutions.",
+    "Current and last-day tabs are visually distinct. Values, source observations and actual average wait are readable.",
+    "Daily summary shows all four ratings and change without covering next-day/reset actions.",
+    "The regular customer keeps a readable three-product request, quantities, price and original absurd remark."
+  ],
+  "interaction": "Actual desktop/tab clicks; three real card approvals on prepared physical receipts; sign/door close, Enter next day and last/current tabs. NPC routes, waiting periods and physical receipt transfer are fixture-prepared through existing game APIs. The final regular scene explicitly starts at reputation85 with a known favourite; it does not claim a one-day increase to85.",
+  "source": "source.json"
+}

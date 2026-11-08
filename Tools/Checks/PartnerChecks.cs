@@ -161,6 +161,7 @@ public static class PartnerChecks
         var g=MvpShopController.Instance;
         var player=UnityEngine.Object.FindAnyObjectByType<PlayerInteractor>();
         var probe=UnityEngine.Object.FindAnyObjectByType<ShopAcceptanceProbe>();
+        GameObject raisedFloor=null;
         bool own=probe==null;
         if(own)probe=new GameObject("Partner targeting probe").AddComponent<ShopAcceptanceProbe>();
         try
@@ -178,6 +179,15 @@ public static class PartnerChecks
                     "Standing camera ray reaches a physical supply station "+type+": "+(station==null?"none":station.name));
                 station.Use(player);
                 check(player.HeldCarton!=null && player.HeldCarton.ProductType==type,"Real targeted station picks up the correct partner carton "+type+"; got "+(player.HeldCarton==null?-1:player.HeldCarton.ProductType)+"; station "+station.name+"; carton "+g.Warehouse.Carton(type)?.transform.position+"; eye "+Camera.main.transform.position);
+                if(type==6)
+                {
+                    var slot=g.Arrangement.Furniture.First(f=>f.CatalogKind==6).Slots.First(p=>p.Occupant==null);
+                    var front=slot.HintCenter-slot.transform.forward*slot.GetComponent<BoxCollider>().size.z*.4f;
+                    raisedFloor=GameObject.CreatePrimitive(PrimitiveType.Cube);raisedFloor.name="Partner targeting raised floor";
+                    raisedFloor.transform.position=new Vector3(front.x,.12f,front.z-1.15f);
+                    raisedFloor.transform.localScale=new Vector3(.8f,.2f,.8f);raisedFloor.GetComponent<Renderer>().enabled=false;
+                    Physics.SyncTransforms();
+                }
                 var expectedSlot = type>=20 ? g.Partners.CounterDisplay.GetComponentsInChildren<ProductSlot>().First(s=>s.Occupant==null) : null;
                 probe.Action("partner-slot:"+type);
                 player.GetComponent<CharacterController>().Move(Vector3.down*.1f);
@@ -187,12 +197,13 @@ public static class PartnerChecks
                     "; eye "+Camera.main.transform.position+"; expected "+expectedSlot?.transform.position+"; target "+player.TargetSlot?.transform.position+"; hits "+string.Join(",",Physics.RaycastAll(Camera.main.ViewportPointToRay(new Vector3(.5f,.5f,0)),3).OrderBy(h=>h.distance).Select(h=>h.collider.name+"@"+h.point)));
                 check(player.HeldCarton.TryPlaceOne(player.TargetSlot),"Targeted hand replenishment succeeds "+type);
                 probe.Action("partner-return-carton");
+                if(raisedFloor!=null){raisedFloor.SetActive(false);UnityEngine.Object.Destroy(raisedFloor);raisedFloor=null;}
             }
             probe.Action("partner-customer");
             check(g.Stage==ServiceStage.Payment,"New product customer traverses the real fridge route and reaches checkout");
             return new {passed,failed=0};
         }
-        finally{player.ReturnCarton();g.ClosePanel();g.ResetDemo();g.ManualTick=false;if(own)UnityEngine.Object.Destroy(probe.gameObject);}
+        finally{if(raisedFloor!=null){raisedFloor.SetActive(false);UnityEngine.Object.Destroy(raisedFloor);}player.ReturnCarton();g.ClosePanel();g.ResetDemo();g.ManualTick=false;if(own)UnityEngine.Object.Destroy(probe.gameObject);}
     }
 
 }

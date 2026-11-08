@@ -55,7 +55,22 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         Shop.ResetDemo();
         Shop.ClosePanel();
         Shop.ManualTick = true;
-        if (scenario == "partners" || scenario == "partners-visual")
+        if (scenario == "reputation" || scenario == "reputation-visual")
+        {
+            Shop.AutomaticArrivals=false;
+            if (scenario=="reputation-visual")
+            {
+                var reputation=Shop.Reputation.State;
+                for(int i=0;i<4;i++)
+                {
+                    reputation.Enter(i,40);reputation.Observe(45,.7,65,85);
+                    reputation.Complete(i,i==0?ShopVisitOutcome.MissingStock:i==1?ShopVisitOutcome.Cancelled:ShopVisitOutcome.Served);
+                }
+                reputation.CloseDay();
+            }
+            Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Desktop);
+        }
+        else if (scenario == "partners" || scenario == "partners-visual")
         {
             Shop.Ledger.TrySellCard(500000,0);Shop.SyncCashDrawer();Shop.Layout.SetLevels(3,3);Shop.Navigation.Rebuild();
             Shop.OrderSupply(6,1);Shop.Tick(8.1f);
@@ -301,6 +316,29 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Preserve]
     public void Action(string action)
     {
+        if (action == "reputation-customer")
+        {
+            Shop.ManualTick=true;Shop.ClosePanel();Shop.Tick(10);
+            Shop.SingleProductVisits=true;Visit(Shop.Spawned,0);
+            foreach(var spill in Shop.Activities.ActiveSpills)spill.gameObject.SetActive(false);
+            Shop.Tick(35);
+            Set(Shop.ActiveCustomer,"UsesCard",true);Set(Shop.ActiveCustomer,"UsesCoins",false);
+            DeliverAll();Shop.Devices.Focus(ShopDeviceKind.Terminal);Shop.ManualTick=false;
+        }
+        if (action == "reputation-monitor") { Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Desktop); }
+        if (action == "reputation-depart") { Shop.ClosePanel();for(int i=0;i<100;i++)Shop.Tick(.1f); }
+        if (action == "reputation-regular")
+        {
+            Shop.ManualTick=true;Shop.ClosePanel();Shop.SingleProductVisits=false;Shop.OpenShop();
+            var reputation=new ShopReputationState(85);reputation.BeginDay(Shop.Day);reputation.Remember(0,0);
+            Set(Shop.Reputation,"State",reputation);
+            int visit=Enumerable.Range(0,5000).First(v=>v%4!=3 && Shop.Reputation.ChooseRegular(v,out var person,out var favourite));
+            Set(Shop,"Spawned",visit);
+            typeof(MvpShopController).GetMethod("SpawnCustomer",Private).Invoke(Shop,new object[]{-1,false});
+            for(int i=0;i<1000 && Shop.ActiveCustomer==null;i++)Shop.Tick(.1f);
+            if(Shop.ActiveCustomer==null || !Shop.ActiveCustomer.IsRegular)throw new Exception("Regular fixture failed.");
+            Aim(Shop.ActiveCustomer.transform.position+Vector3.up*1.2f,1.5f,Vector3.back,true);
+        }
         if (action == "partner-orders") { Shop.Devices.Focus(ShopDeviceKind.Monitor);Shop.Devices.OpenApp(ShopComputerApp.Orders); }
         if (action == "partner-deliver") Shop.Tick(8.1f);
         if (action == "partner-return-carton") Player.ReturnCarton();
@@ -323,6 +361,15 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             bool spirit = ShopPartnerCatalog.IsSpirit(type);
             Vector3 approach = spirit ? new Vector3((-1.4f-front.x)/1.35f,0,1) : -slot.transform.forward;
             Aim(front,spirit ? 1.35f : 1.15f,approach,true);
+            // Expanded floors can settle the standing capsule above the initial eye height.
+            // Aim from its actual position, rather than retaining the pre-contact pitch.
+            Player.GetComponent<CharacterController>().Move(Vector3.down*.1f);
+            Vector3 direction=front-View.transform.position;
+            Player.transform.rotation=Quaternion.LookRotation(Vector3.ProjectOnPlane(direction,Vector3.up));
+            direction=front-View.transform.position;
+            float pitch=-Mathf.Atan2(direction.y,Vector3.ProjectOnPlane(direction,Vector3.up).magnitude)*Mathf.Rad2Deg;
+            View.transform.localRotation=Quaternion.Euler(pitch,0,0);
+            typeof(FirstPersonController).GetField("pitch",Private).SetValue(Player.GetComponent<FirstPersonController>(),pitch);
             Physics.SyncTransforms();Player.RefreshTarget(View.ViewportPointToRay(new Vector3(.5f,.5f,0)));
         }
         if (action == "partner-fridges-view") Aim(new Vector3(6,1.15f,Shop.Layout.FurnitureArea(false).yMax-.15f),2.8f,Vector3.back,true);
@@ -638,6 +685,14 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     [Serializable]
     private sealed class State
     {
+        public double reputation,reputationSeconds,reputationChange,arrivalScale;
+        public double[] reputationScores;
+        public bool[] reputationEvidence;
+        public int reputationVisits,reputationServiceVisits,reputationMissing,reputationRefusals,reputationRegulars;
+        public string[] reputationReasons;
+        public bool reputationLast,regularCustomer;
+        public bool reputationViewingLast;
+        public int reputationViewDay;
         public int offeredQuantity, boxedQuantity, scannerCount;
         public int requestsSpawned,customerGuides,fixtureLights,coffeeMerchandise;
         public bool broomAtHome,batAtHome;
@@ -772,6 +827,15 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.scannerCount=g.Scanner.ScanCount;
         state.scannerProduct=g.Scanner.LastProductId;
         state.computerApp=g.Devices.ComputerApp.ToString();
+        var reputation=g.Reputation.State;var reputationReport=reputation.Preview();
+        state.reputation=reputation.Value;state.reputationSeconds=reputation.OpenSeconds;
+        state.reputationLast=reputation.LastReport!=null;state.reputationChange=reputation.LastReport?.Change??0;
+        state.reputationScores=reputationReport.Scores.ToArray();state.reputationEvidence=reputationReport.Evidence.ToArray();
+        state.reputationVisits=reputationReport.Visits;state.reputationServiceVisits=reputationReport.ServiceVisits;
+        state.reputationMissing=reputationReport.Missing;state.reputationRefusals=reputationReport.Refusals;
+        state.reputationReasons=reputationReport.Reasons.ToArray();state.reputationRegulars=reputation.RegularVisits;
+        state.arrivalScale=reputation.ArrivalScale;state.regularCustomer=g.ActiveCustomer!=null&&g.ActiveCustomer.IsRegular;
+        state.reputationViewingLast=g.Reputation.SelectedTabId=="Reputation:Last";state.reputationViewDay=g.Reputation.VisibleReport.Day;
         state.selectedPrice=g.Pricing.Price(g.Pricing.SelectedType);
         state.priceCategory=(int)g.Pricing.Category;
         state.priceDraft=g.Pricing.Draft;state.priceError=g.Pricing.Error;state.priceEditing=g.Pricing.Editing;
