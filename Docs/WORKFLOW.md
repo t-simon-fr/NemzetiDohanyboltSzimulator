@@ -39,6 +39,8 @@ Az ellenőrző registry a `Tools/Verification/suites.json`. `Tools/Verify-Projec
 
 Az új jelentések rögzítik a fordítás, az egyes suite-ok és a teljes futás idejét. Ne következtess gyorsulásra pusztán kisebb assertionszámból; a build/link és az emberi/AI várakozás külön költség. A teljes forráslenyomat Tools-fájlokat is tartalmaz: ha csak a böngészős runner vagy egy felirat változott, a korábbi bizonyítékot baseline-ként, a diffet és a friss célzott próbát külön rögzítsd. Régi futást ne nevezz friss teljes sikernek.
 
+Automatikus PR-kapu: minden PR-re és main-pushra lefut a `.github/workflows/ci.yml` — tooling-önellenőrzés (`Tools/Checks/WorkflowRunnerChecks.ps1`) és a változott Markdown-fájlok linkellenőrzése (`Tools/Review-Docs.ps1`), Unity nélkül. Piros checkkel nem mergelünk; a branch-védelem bekapcsolása külön döntés.
+
 Alapértelmezésben egy agent dolgozik, és egy tulajdonos vezérli a Unity-t. Alügynök csak meglévő felhasználói vagy magasabb szintű felhatalmazással használható; legyen külön feladat, fájltulajdon és integrációs felelős. Független kódírás külön worktree-t kaphat, közös Unity-projektben párhuzamos Play/build nem indulhat. Ugyanannak az agentnek a diff-review-ja nem független review.
 
 Termékviselkedési bizonytalanságnál kérdezz korán, közben az önálló részekkel haladj. Körülbelül percenként röviden jelezd a valódi előrelépést, fennmaradó kérdést vagy buildállapotot. Folytatáskor elég az issue, ág/commit, érintett fájlok, legutóbbi bizonyíték és következő konkrét lépés; ne másold a teljes beszélgetést a repóba. A kész munkát állítsd le az elfogadási feltételeknél, PR/merge és státuszrendezés után.
