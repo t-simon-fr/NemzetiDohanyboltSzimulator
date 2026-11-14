@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tooling-selfcheck:
+    name: Tooling self-check (no Unity)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run WorkflowRunnerChecks
+        shell: pwsh
+        run: pwsh -File Tools/Checks/WorkflowRunnerChecks.ps1
+
+  docs-links:
+    name: Docs link check (changed Markdown, PR only)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check relative links in changed Markdown files
+        shell: pwsh
+        run: |
+          $base = "origin/${{ github.base_ref }}"
+          $files = @(git diff --name-only --diff-filter=ACMRT "$base...HEAD" -- '*.md' | Where-Object { $_ -ne '' })
+          if ($files.Count -eq 0) {
+            Write-Output 'No changed Markdown files; nothing to check.'
+          } else {
+            pwsh -File Tools/Review-Docs.ps1 -Path $files
+          }
