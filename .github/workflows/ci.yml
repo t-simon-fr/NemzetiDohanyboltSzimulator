@@ -38,5 +38,6 @@ jobs:
           if ($files.Count -eq 0) {
             Write-Output 'No changed Markdown files; nothing to check.'
           } else {
-            pwsh -File Tools/Review-Docs.ps1 -Path $files
+            # NOTE: pwsh -File does not bind arrays to -Path; use direct invocation.
+          & ./Tools/Review-Docs.ps1 -Path $files
           }
