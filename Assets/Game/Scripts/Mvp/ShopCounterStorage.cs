@@ -3,6 +3,7 @@ using UnityEngine;
 public sealed class ShopCounterStorage : MonoBehaviour
 {
     public ProductSlot[] Slots { get; private set; }
+    public ProductSlot[] TicketSlots { get; private set; }
     private Material wood;
 
     public void Configure(MvpShopController shop)
@@ -33,6 +34,19 @@ public sealed class ShopCounterStorage : MonoBehaviour
         }
         var label = ProductVisuals.Text(root,"Private storage label","",new Vector3(0,-.42f,.387f),Quaternion.Euler(0,180,0),.025f,new Color(.8f,.75f,.6f));
         label.gameObject.AddComponent<ShopShelfPriceLabel>().Configure(label, Slots, true);
+        TicketSlots = new ProductSlot[10];
+        for (int i=0;i<TicketSlots.Length;i++)
+        {
+            bool book = i>=5;
+            var slot = new GameObject("Under counter ticket slot "+i).AddComponent<ProductSlot>();
+            slot.transform.SetParent(root,false);
+            slot.transform.localPosition = new Vector3(((i%5)-2)*.22f,book?.005f:-.30f,-.02f);
+            slot.Configure(new Vector3(.18f,.24f,.06f));
+            slot.RestrictExclusivelyTo(ShopCatalog.Ids[book?ShopCatalog.TicketBook:ShopCatalog.TicketSingle]);
+            TicketSlots[i] = slot;
+        }
+        var ticketLabel = ProductVisuals.Text(root,"Ticket storage label","",new Vector3(0,.30f,.387f),Quaternion.Euler(0,180,0),.025f,new Color(.8f,.75f,.6f));
+        ticketLabel.gameObject.AddComponent<ShopShelfPriceLabel>().Configure(ticketLabel, TicketSlots, true);
     }
 
     private void Box(Transform root,string title,Vector3 position,Vector3 size)

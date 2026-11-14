@@ -350,6 +350,16 @@
       "file": "Tools/Checks/MobileTopUpChecks.cs",
       "entry": "MobileTopUpChecks.Integration",
       "purpose": "Automatic second-Monday activation, validated service cash/card checkout, single receipts and isolated provider accounting"
+    },
+    "ticket-catalog": {
+      "file": "Tools/Checks/TicketChecks.cs",
+      "entry": "TicketChecks.Catalog",
+      "purpose": "Ticket catalog indices, procurement costs, price category, flat visuals and NPC budget guards"
+    },
+    "ticket-integration": {
+      "file": "Tools/Checks/TicketChecks.cs",
+      "entry": "TicketChecks.Integration",
+      "purpose": "Ticket procurement, behind-counter slots, requests, handover/scanner checkout, wrong-type rejection and day/reset conservation"
     }
   },
   "historicalExcluded": {

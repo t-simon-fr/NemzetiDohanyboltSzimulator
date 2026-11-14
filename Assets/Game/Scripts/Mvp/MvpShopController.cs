@@ -84,8 +84,9 @@ public sealed partial class MvpShopController : MonoBehaviour
     public bool BuyPanicButton() => Security != null && Security.TryPurchase();
     public int AvailableProducts => Layout != null && Layout.Expanded ? ShopCatalog.Count : ShopCatalog.CigaretteCount;
     public int[] SupplyTypes => Enumerable.Range(0, AvailableProducts)
-        .Concat(Enumerable.Range(ShopPartnerCatalog.FirstVariant, 7).Where(IsSupplyAvailable)).ToArray();
-    public bool IsSupplyAvailable(int type) => ShopCatalog.IsPackaged(type) &&
+        .Concat(Enumerable.Range(ShopPartnerCatalog.FirstVariant, 7).Where(IsSupplyAvailable))
+        .Concat(Enumerable.Range(ShopTicketCatalog.FirstType, ShopTicketCatalog.Types)).ToArray();
+    public bool IsSupplyAvailable(int type) => ShopTicketCatalog.IsTicket(type) || ShopCatalog.IsPackaged(type) &&
         (type < ShopCatalog.Count ? type < AvailableProducts : Partners != null && Partners.State.Unlocked(type));
     public int ProcurementCost(int type) => Partners?.State.UnitCost(type) ?? ShopCatalog.Costs[type];
     public bool CanDevelopShop => Ledger != null && dayCycle.CanDevelop(!Ledger.Closed, ShopEmpty);
@@ -285,6 +286,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         var additional = SupplyTypes.Where(t => t >= ShopCatalog.CigaretteCount).ToArray();
         int type = additional.Length > 0 && visit % 2 == 1 ? additional[(visit + Day - 1) % additional.Length] : ShopCatalog.VisitProducts[visit % TotalVisitors];
         if(!SingleProductVisits&&StockCount(ShopCatalog.Contraband)>0&&visit%4==1)type=ShopCatalog.Contraband;
+        else if(!SingleProductVisits&&visit%8==5&&(StockCount(ShopCatalog.TicketSingle)>0||StockCount(ShopCatalog.TicketBook)>0))type=StockCount(ShopCatalog.TicketBook)>0?ShopCatalog.TicketBook:ShopCatalog.TicketSingle;
         if(forcedProduct>=0)type=forcedProduct;
         if(forcedProduct<0&&Activities.CoffeeOwned&&visit%4==2)type=SingleProductVisits?ShopCatalog.Coffee:ShopHotDrinkRecipes.Types[(visit/4+Day-1)%ShopHotDrinkRecipes.Types.Length];
         LotteryTicket returning = null;

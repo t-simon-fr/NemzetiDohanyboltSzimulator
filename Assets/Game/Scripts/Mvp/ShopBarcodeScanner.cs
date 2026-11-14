@@ -38,7 +38,7 @@ public sealed class ShopBarcodeScanner : MonoBehaviour
     {
         if (product == null || product.IsHeld || product.CurrentSlot != slot || slot.Occupant != product) return false;
         int type=ShopCatalog.Index(product.ProductId);
-        if(!ShopCatalog.IsCigarette(type)&&!ShopLotteryCatalog.IsTicket(type))return false;
+        if(!ShopCatalog.IsCigarette(type)&&!ShopLotteryCatalog.IsTicket(type)&&!ShopTicketCatalog.IsTicket(type))return false;
         LastProductId = product.ProductId;
         ScanCount++;
         confirmationUntil = Time.unscaledTime + .55f;
