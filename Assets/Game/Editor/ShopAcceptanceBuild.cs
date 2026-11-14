@@ -10,6 +10,9 @@ public static class ShopAcceptanceBuild
 {
     public static void Queue()
     {
+        Directory.CreateDirectory("Builds/AcceptanceWebGL");
+        File.WriteAllText("Builds/AcceptanceWebGL/build-queued.json", JsonUtility.ToJson(new Queued { queuedUtc = DateTime.UtcNow.ToString("o"), success = false }, true));
+        UnityEngine.Debug.Log("[ShopAcceptanceBuild] Acceptance WebGL build queued. Build() runs on the next editor update; watch for build-started.json.");
         EditorApplication.delayCall += Build;
     }
 
@@ -17,6 +20,8 @@ public static class ShopAcceptanceBuild
     {
         const string status = "Builds/AcceptanceWebGL/build-result.json";
         Directory.CreateDirectory("Builds/AcceptanceWebGL");
+        File.WriteAllText("Builds/AcceptanceWebGL/build-started.json", JsonUtility.ToJson(new Queued { queuedUtc = DateTime.UtcNow.ToString("o"), success = false }, true));
+        UnityEngine.Debug.Log("[ShopAcceptanceBuild] Acceptance WebGL build started.");
         var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>("Assets/Settings/Mobile_RPAsset.asset");
         int oldQuality = QualitySettings.GetQualityLevel();
         try
@@ -56,5 +61,12 @@ public static class ShopAcceptanceBuild
         public ulong bytes;
         public double seconds;
         public string error;
+    }
+
+    [Serializable]
+    private sealed class Queued
+    {
+        public bool success;
+        public string queuedUtc;
     }
 }
