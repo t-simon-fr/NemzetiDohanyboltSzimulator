@@ -1,0 +1,33 @@
+{
+  "issue": 109,
+  "sourceCommit": "58caf3267b2b1bfb9f022a7f79529703707b1805",
+  "sourceFingerprint": "b58db49d2d1f8347f4b9057af60635c567231531d032873951459f1e6e185dd0",
+  "environment": "Unity 6000.6.7f1, Windows 11, ShopPrototype scene, starter shop (no expansion) for WebGL; native Game view 1918x879, WebGL 1280x720 + 1920x1080",
+  "reviewer": "OpenCode agent (this session), images inspected directly; user approval via PR",
+  "reviewedUtc": "2026-11-14T22:50:00Z",
+  "steps": [
+    "Staged tickets via script eval (procure 2 singles + 1 book, place into counter TicketSlots, open shop, spawn forced ticket customer), captured native request view",
+    "Moved one single ticket onto the delivery slot, captured native handover close-up",
+    "Opened TobaccOS Prices + Tickets category, captured native category view (found 4-wide button row cutting off Jegyek; fixed to Length-based layout + keyboard targets, re-verified)",
+    "WebGL: supplier cart ordering with scrolling, delivery, counter stocking, NPC request, Tickets price category — all with real browser input, captures at both resolutions"
+  ],
+  "images": [
+    "native-request.png",
+    "native-ticket-delivery.png",
+    "native-prices-tickets.png",
+    "1280x720-ticket-slots-720.png",
+    "1920x1080-ticket-slots-1080.png",
+    "1280x720-ticket-request-720.png",
+    "1920x1080-ticket-request-1080.png",
+    "1280x720-ticket-prices-720.png",
+    "1920x1080-ticket-prices-1080.png"
+  ],
+  "observations": [
+    "Order panel shows single ticket with quantity, handover progress and exact total; HUD cash matches procurement math (6000-3400=2600)",
+    "Physical ticket renders flat on the delivery slot with beige (single) / blue (book) paper like lottery slips; print faces away like lottery tickets, product identity carried by order panel, HUD, shelf labels",
+    "Counter price label reads ticket stock; no overlap or clipping in any view",
+    "Fifth price category (Jegyek) was cut off by a hardcoded 4-wide button row; fixed to CategoryNames.Length for buttons and keyboard targets; re-captured view confirms all five fit",
+    "WebGL request view framing centers on the shop aisle rather than the customer (probe camera aim limitation); order panel carries the requirement-relevant UI and is fully readable"
+  ],
+  "result": "passed"
+}

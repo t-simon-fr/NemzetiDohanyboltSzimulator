@@ -33,9 +33,9 @@ public sealed partial class ShopPricing:MonoBehaviour
     public void AddKeyboardTargets(List<ShopKeyboardTarget> targets,Rect r)
     {
         if(shop.Devices.ComputerApp!=ShopComputerApp.Prices)return;
-        for (int i=0;i<4;i++) {
+        for (int i=0;i<CategoryNames.Length;i++) {
             int category=i;
-            targets.Add(new ShopKeyboardTarget("Price:Category:"+i,CategoryNames[i],new Rect(r.x+i*r.width/4,r.y,r.width/4-8,44),()=>ChooseCategory((ShopPriceCategory)category)));
+            targets.Add(new ShopKeyboardTarget("Price:Category:"+i,CategoryNames[i],new Rect(r.x+i*r.width/CategoryNames.Length,r.y,r.width/CategoryNames.Length-8,44),()=>ChooseCategory((ShopPriceCategory)category)));
         }
         if(VisibleTypes.Length==0)return;
         float x=r.x+r.width*.32f+32;

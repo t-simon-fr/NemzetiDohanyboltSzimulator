@@ -238,6 +238,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             foreach (var slot in Shop.CounterStorage.Slots) Shop.CreateNightProduct().AssignInitialSlot(slot);
             Aim(Shop.CounterStorage.Slots[2].transform.position + Vector3.up*.13f);
         }
+        else if (scenario == "tickets")
+        {
+            Shop.ResetDemo(); Shop.ManualTick = true; Shop.ClosePanel();
+            Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Orders);
+            Shop.ManualTick = false;
+        }
         else if (scenario == "arrangement")
         {
             Shop.Ledger.TrySellCard(150000, 0);
@@ -405,6 +411,24 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.ManualTick=false;
         }
         if(action=="lottery-deliver")Shop.Tick(8.1f);
+        if (action == "ticket-deliver") Shop.Tick(8.1f);
+        if (action == "ticket-stock")
+        {
+            ShopProduct s1, s2, b1;
+            Shop.TryCreateSupply(25, out s1); Shop.TryCreateSupply(25, out s2); Shop.TryCreateSupply(26, out b1);
+            s1.AssignInitialSlot(Shop.CounterStorage.TicketSlots[0]);
+            s2.AssignInitialSlot(Shop.CounterStorage.TicketSlots[1]);
+            b1.AssignInitialSlot(Shop.CounterStorage.TicketSlots[5]);
+            Aim(Shop.CounterStorage.TicketSlots[0].transform.position + Vector3.up * .13f);
+        }
+        if (action == "ticket-customer")
+        {
+            Shop.ClosePanel(); Shop.SingleProductVisits = true; Visit(0, 25);
+        }
+        if (action == "ticket-prices")
+        {
+            Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Prices);
+        }
         if(action=="lottery-scratch-customer")
         {
             Shop.ClosePanel();Visit(0,13);AimLotteryStock(13);

@@ -815,6 +815,43 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(q.regularCustomer&&q.reputationRegulars===1&&q.arrivalScale<1&&q.orderLines.every(line=>!line.Unavailable),'High-reputation fixture returns a familiar existing customer with a stocked favourite');
       await capture('reputation-regular-720');await viewport(1920,1080);await capture('reputation-regular-1080');
     }
+    if (!selected || selected === 'tickets') {
+      await viewport(1280,720);await probe('Prepare','tickets');let q=await state();
+      check(q.balance===6000&&q.supplyTypes.includes(25)&&q.supplyTypes.includes(26),'Starter shop lists both ticket types for procurement');
+      const press=async id=>{
+        const q=await state();const i=q.computerControlIds.indexOf(id);
+        if(i<0)throw Error('Missing ticket control '+id);
+        await clickRect(q.computerControls[i]);
+      };
+      for(const [type,count] of [[25,2],[26,1]]) {
+        let reached=false;
+        for(let attempt=0;attempt<45;attempt++) {
+          q=await state();const id='Cart:Plus:'+type;
+          if(q.computerControlIds.includes(id)){reached=true;break;}
+          const visible=q.computerControlIds.filter(x=>x.startsWith('Cart:Plus:')).map(x=>+x.split(':').at(-1));
+          const sign=visible.length&&q.supplyTypes.indexOf(type)<q.supplyTypes.indexOf(visible[0])?-1:1;
+          const screen=q.computerScreen;
+          await send('Input.dispatchMouseEvent',{type:'mouseWheel',x:screen.x+screen.width*.78,y:screen.y+screen.height*.5,deltaX:0,deltaY:sign*96});await sleep(100);
+        }
+        check(reached,'Actual order-cart scrolling reaches ticket '+type);
+        for(let k=0;k<count;k++)await press('Cart:Plus:'+type);
+      }
+      q=await state();check(q.partnerCartSubtotal===3400&&q.partnerCartPayment===3400,'Exact ticket units without rounding');
+      await press('Cart:Submit');q=await state();
+      check(q.balance===2600&&q.partnerPending[25]===2&&q.partnerPending[26]===1,'One real supplier submission ships ticket stock');
+      await probe('Action','ticket-deliver');q=await state();
+      check(q.partnerStored[25]===2&&q.partnerStored[26]===1&&q.partnerPending[25]===0,'Distinct ticket shipments arrive with exact quantities');
+      await probe('Action','ticket-stock');q=await state();
+      check(q.partnerStock[25]===2&&q.partnerStock[26]===1,'Counter slots hold real placed tickets');
+      await capture('ticket-slots-720');await viewport(1920,1080);await capture('ticket-slots-1080');await viewport(1280,720);
+      await probe('Action','ticket-customer');q=await state();
+      check(q.order.includes('Vonaljegy'),'Actual NPC requests the stocked single ticket');
+      await capture('ticket-request-720');await viewport(1920,1080);await capture('ticket-request-1080');await viewport(1280,720);
+      await probe('Action','ticket-prices');q=await state();
+      await press('Price:Category:4');q=await state();
+      check(q.priceCategory===4&&q.priceProducts.includes('ticket_single')&&q.priceProducts.includes('ticket_book'),'Tickets category lists both types');
+      await capture('ticket-prices-720');await viewport(1920,1080);await capture('ticket-prices-1080');await viewport(1280,720);
+    }
     if (selected === 'partners' || selected === 'partner-summary') {
       let q;
       if (selected === 'partners') {

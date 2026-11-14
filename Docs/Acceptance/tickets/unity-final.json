@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "ticket-catalog",
+    "ticket-integration",
+    "ledger",
+    "stock-aware-orders",
+    "checkout-revision",
+    "price-editor"
+  ],
+  "startedUtc": "2026-11-14T21:49:55.2894110Z",
+  "source": {
+    "commit": "58caf3267b2b1bfb9f022a7f79529703707b1805",
+    "sourceFingerprint": "b58db49d2d1f8347f4b9057af60635c567231531d032873951459f1e6e185dd0",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "entry": "TicketChecks.Catalog",
+      "failed": 0,
+      "passed": 12,
+      "seconds": 0.2175562,
+      "id": "ticket-catalog"
+    },
+    {
+      "entry": "TicketChecks.Integration",
+      "failed": 0,
+      "passed": 35,
+      "seconds": 0.337564,
+      "id": "ticket-integration"
+    },
+    {
+      "entry": "LedgerChecks.Run",
+      "failed": 0,
+      "passed": 12,
+      "seconds": 0.0687637,
+      "id": "ledger"
+    },
+    {
+      "entry": "StockAwareOrderChecks.Run",
+      "failed": 0,
+      "passed": 34,
+      "seconds": 0.4403802,
+      "id": "stock-aware-orders"
+    },
+    {
+      "entry": "CheckoutRevisionChecks.Run",
+      "failed": 0,
+      "passed": 20,
+      "seconds": 0.1997969,
+      "id": "checkout-revision"
+    },
+    {
+      "entry": "VisualRefreshChecks.Prices",
+      "failed": 0,
+      "passed": 33,
+      "seconds": 0.2537822,
+      "id": "price-editor"
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.0791875,
+  "finishedUtc": "2026-11-14T21:49:59.8526992Z",
+  "totalSeconds": 4.5911363
+}

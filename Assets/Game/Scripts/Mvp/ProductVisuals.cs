@@ -8,6 +8,7 @@ public static class ProductVisuals
         if (ShopPartnerCatalog.IsSpirit(type)) return new Vector3(.085f, .22f, .085f);
         if (type == ShopPartnerCatalog.Fantom || type == ShopPartnerCatalog.Spritz) return new Vector3(.14f, .24f, .14f);
         if (ShopLotteryCatalog.IsTicket(type)) return new Vector3(.15f,.21f,.008f);
+        if (ShopTicketCatalog.IsTicket(type)) return new Vector3(.15f,.21f,.008f);
         if(ShopCatalog.IsCoffee(type))return new Vector3(.14f,type==ShopCatalog.Coffee?.16f:type==ShopCatalog.LongCoffee?.22f:.27f,.14f);
         if (ShopCatalog.IsCigarette(type)) return new Vector3(.16f,.26f,.08f);
         if (type == ShopCatalog.Index("kevert")) return new Vector3(.085f,.20f,.085f);
@@ -76,6 +77,14 @@ public static class ProductVisuals
         {
             MvpShopController.Instance.Lottery.AddTicketVisual(item, type);
             return;
+        }
+        if (ShopTicketCatalog.IsTicket(type))
+        {
+            var paper = new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = type == ShopCatalog.TicketBook ? new Color(.12f,.25f,.55f) : new Color(.85f,.78f,.55f) };
+            item.GetComponent<Renderer>().sharedMaterial = paper;
+            string title = type == ShopCatalog.TicketBook ? "GYŰJTŐJEGY\n10 UTAZÁS" : "VONALJEGY";
+            Text(item.transform, "Ticket title", title + "\n" + ShopCatalog.Money(ShopCatalog.Prices[type]), new Vector3(0, .06f, -.51f), Quaternion.identity, .13f, Color.white);
+            var cleanup = item.AddComponent<ShopProductMaterials>(); cleanup.Materials = new[] { paper }; return;
         }
         if(ShopCatalog.IsCoffee(type))
         {
