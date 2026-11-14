@@ -27,6 +27,18 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
     report.build = JSON.parse(fs.readFileSync(buildFile));
     if (!report.build.success) throw Error('Acceptance build has not succeeded.');
     report.build.completedUtc = fs.statSync(buildFile).mtime.toISOString();
+    const buildTime = fs.statSync(buildFile).mtimeMs;
+    const stale = [];
+    const scan = dir => {
+      for (const name of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, name.name);
+        if (name.isDirectory()) { scan(full); continue; }
+        if (fs.statSync(full).mtimeMs > buildTime) stale.push(path.relative('.', full));
+        if (stale.length >= 10) return;
+      }
+    };
+    for (const dir of ['Assets', 'ProjectSettings', 'Packages']) scan(path.resolve(dir));
+    if (stale.length) throw Error('Acceptance player is older than game sources — rebuild via ShopAcceptanceBuild.Queue, then rerun. Newer files: ' + stale.join(', '));
     report.build.assets = Object.fromEntries(fs.readdirSync(path.join(root, 'Build')).map(name =>
       [name, createHash('sha256').update(fs.readFileSync(path.join(root, 'Build', name))).digest('hex')]));
     server = http.createServer((req, res) => {
