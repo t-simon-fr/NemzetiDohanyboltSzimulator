@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #174: változatos kérések és mondatok — személyiség-súlyozott extra sorok, 3-as mondatpoolok, determinisztikus seed; az extrák csak publikusan levehető áruk lehetnek. Teljes `checkout` profil **57 suite / 1633 állítás, 0 hiba**. Pagesre nincs kiadva.
+
 - #169: Dnyipro kipakolása dobozból egyenként — egy E egy csomagot tesz szabad pult alatti helyre, a doboz maradéka és címkéje frissül; üres doboz eldobható. Teljes `checkout` profil **57 suite / 1637 állítás, 0 hiba**. Pagesre nincs kiadva.
 
 - #168: kosz csak ott gyűlik, ahol járnak — a foltforrás az aktív vevők közeléből szemez, üres boltban a tartalékhelyekkel. Teljes `checkout` profil **57 suite / 1637 állítás, 0 hiba**. Pagesre nincs kiadva.
