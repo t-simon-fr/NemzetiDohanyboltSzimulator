@@ -44,12 +44,11 @@ Státusz: terv, nincs implementálva. Kapcsolódó gyűjtő: #1 (dialógus-doboz
 - Képek 720p/1080p a dialógus-pillanatról; WebGL-eset valódi vevőfolyammal.
 - Perf: a kamera-lerp nem allokál frame-enként; a template-választás O(1).
 
-### 5. Nyitott döntések (jóváhagyásra várnak)
+### 5. Eldöntött kérdések (jóváhagyva)
 
-- Gépelős kiírás vagy azonnali szöveg?
-- Portré: most színes monogram, Misi/Nóra-arcok később (#11)?
-- Zoom: FOV vagy dolly?
-- E léptesse a szöveget?
+- Gépelős kiírás + E lépteti a szöveget.
+- Portré: színes monogram a meglévő `ShopPeople.Colors`-ból; Misi/Nóra-arcok később (#11).
+- Zoom: FOV-lerp (nincs ütközésveszély, nincs dolly).
 
 ## Kiszerelési javaslat
 
