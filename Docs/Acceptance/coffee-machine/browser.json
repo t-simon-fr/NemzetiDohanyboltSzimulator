@@ -1,0 +1,247 @@
+{
+  "started": "2026-11-15T20:00:01.996Z",
+  "finished": "2026-11-15T20:01:00.533Z",
+  "result": "passed",
+  "viewport": null,
+  "build": {
+    "success": true,
+    "errors": 0,
+    "warnings": 3,
+    "bytes": 27216407,
+    "seconds": 331.28037589999997,
+    "error": "",
+    "completedUtc": "2026-11-15T19:59:42.85Z",
+    "assets": {
+      "AcceptanceWebGL.data.unityweb": "32e2061ba388cce7b23f247244ab4218a2fc17f1b97b90091df4ccdeb8b847f9",
+      "AcceptanceWebGL.framework.js.unityweb": "f99039639fbd0b4545616765f0c6590cdb0cf0ed7a844c593f62d9b363bfad4a",
+      "AcceptanceWebGL.loader.js": "a287d14505c3497bf22ec3b3aa335c008388e22ca4b1335996e1aa3c7e75110d",
+      "AcceptanceWebGL.wasm.unityweb": "7d3080209ab0a3db4d71e36a85e1ba7c6e4147236d4da14148fa2020e92bf0ec"
+    }
+  },
+  "checks": [
+    {
+      "label": "Main menu starts by mouse",
+      "passed": true
+    },
+    {
+      "label": "Existing coffee app shows empty separate tea/cocoa stock",
+      "passed": true
+    },
+    {
+      "label": "Both new recipes are accessible in TobaccOS",
+      "passed": true
+    },
+    {
+      "label": "All four orders and five recipes fit at 720p",
+      "passed": true
+    },
+    {
+      "label": "Actual procurement buttons charge once and queue distinct ingredients",
+      "passed": true
+    },
+    {
+      "label": "Timed deliveries create physical packages, not automatic refill",
+      "passed": true
+    },
+    {
+      "label": "Delivered tea is targetable and named",
+      "passed": true
+    },
+    {
+      "label": "Actual input picks up tea",
+      "passed": true
+    },
+    {
+      "label": "Actual input refills tea without opening/brewing",
+      "passed": true
+    },
+    {
+      "label": "Delivered milk is targetable and named",
+      "passed": true
+    },
+    {
+      "label": "Actual input picks up milk",
+      "passed": true
+    },
+    {
+      "label": "Actual input refills milk without opening/brewing",
+      "passed": true
+    },
+    {
+      "label": "Delivered cocoa is targetable and named",
+      "passed": true
+    },
+    {
+      "label": "Actual input picks up cocoa",
+      "passed": true
+    },
+    {
+      "label": "Actual input refills cocoa without opening/brewing",
+      "passed": true
+    },
+    {
+      "label": "All manual refills conserve exact quantities and money",
+      "passed": true
+    },
+    {
+      "label": "Actual E opens all five physical recipes",
+      "passed": true
+    },
+    {
+      "label": "Physical selection enables tea independently of coffee stock",
+      "passed": true
+    },
+    {
+      "label": "One physical brew consumes only correct ingredients tea",
+      "passed": true
+    },
+    {
+      "label": "Busy recipe and repeated brew cannot duplicate consumption tea",
+      "passed": true
+    },
+    {
+      "label": "Brew completes after menu close and reopening tea",
+      "passed": true
+    },
+    {
+      "label": "Physical take returns correct cup tea",
+      "passed": true
+    },
+    {
+      "label": "Actual E hands over exact new drink tea",
+      "passed": true
+    },
+    {
+      "label": "Actual E opens all five physical recipes",
+      "passed": true
+    },
+    {
+      "label": "Physical selection enables hot_chocolate independently of coffee stock",
+      "passed": true
+    },
+    {
+      "label": "One physical brew consumes only correct ingredients hot_chocolate",
+      "passed": true
+    },
+    {
+      "label": "Busy recipe and repeated brew cannot duplicate consumption hot_chocolate",
+      "passed": true
+    },
+    {
+      "label": "Brew completes after menu close and reopening hot_chocolate",
+      "passed": true
+    },
+    {
+      "label": "Physical take returns correct cup hot_chocolate",
+      "passed": true
+    },
+    {
+      "label": "Actual E hands over exact new drink hot_chocolate",
+      "passed": true
+    },
+    {
+      "label": "Both hot drinks reach payment with zero coffee consumption",
+      "passed": true
+    },
+    {
+      "label": "One actual card approval settles tea and hot chocolate",
+      "passed": true
+    },
+    {
+      "label": "Repeated approval never posts another hot drink sale",
+      "passed": true
+    },
+    {
+      "label": "Hot chocolate explains shared milk shortage without requiring coffee",
+      "passed": true
+    },
+    {
+      "label": "Tea remains usable without coffee or milk",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "captures": [
+    "1280x720-main-menu.png",
+    "1280x720-hot-drinks-computer-720.png",
+    "1920x1080-hot-drinks-computer-1080.png",
+    "1280x720-hot-drinks-tea-package.png",
+    "1280x720-hot-drinks-cocoa-package.png",
+    "1280x720-hot-drinks-tea-720.png",
+    "1920x1080-hot-drinks-chocolate-1080.png",
+    "1280x720-hot-drinks-served-720.png",
+    "1920x1080-hot-drinks-served-1080.png",
+    "1280x720-hot-drinks-no-milk-720.png",
+    "1920x1080-hot-drinks-no-milk-1080.png",
+    "1920x1080-hot-drinks-tea-1080.png"
+  ],
+  "stateSampleCount": 70,
+  "finalState": {
+    "reputation": 50,
+    "reputationScores": [
+      54.07046300405289,
+      63.050000131382454,
+      60.440000105105966,
+      66.66666666666666
+    ],
+    "reputationVisits": 1,
+    "day": 1,
+    "phase": "Open",
+    "balance": 47650,
+    "drawer": 47650,
+    "sales": 2,
+    "missing": 2,
+    "received": 0,
+    "recipe": 23,
+    "milk": 0,
+    "coffee": 0,
+    "stage": "Thanks",
+    "coffeeButtons": [
+      {
+        "serializedVersion": "2",
+        "x": 689.9345703125,
+        "y": 272.725830078125,
+        "width": 170.657958984375,
+        "height": 69.14508056640625
+      },
+      {
+        "serializedVersion": "2",
+        "x": 875.5608520507812,
+        "y": 272.725830078125,
+        "width": 168.87823486328125,
+        "height": 69.14508056640625
+      },
+      {
+        "serializedVersion": "2",
+        "x": 1059.4072265625,
+        "y": 272.725830078125,
+        "width": 170.658447265625,
+        "height": 69.14508056640625
+      },
+      {
+        "serializedVersion": "2",
+        "x": 689.2363891601562,
+        "y": 475.1004638671875,
+        "width": 541.5269165039062,
+        "height": 65.5972900390625
+      },
+      {
+        "serializedVersion": "2",
+        "x": 692.02783203125,
+        "y": 367.6324462890625,
+        "width": 257.0030517578125,
+        "height": 67.47552490234375
+      },
+      {
+        "serializedVersion": "2",
+        "x": 970.9691772460938,
+        "y": 367.6324462890625,
+        "width": 257.00299072265625,
+        "height": 67.47552490234375
+      }
+    ],
+    "coffeeScreenStatus": "KÉSZENLÉT",
+    "coffeeActionEnabled": true,
+    "brewRemaining": 0
+  }
+}

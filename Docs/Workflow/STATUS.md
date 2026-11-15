@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #162: LaVazze Barista kávégép — a runtime primitív gép helyett Blender-szkripttel generált modell (zöld test, krém/bordó előlap, iker-kifolyó, tálca, oldaltartály, dísz tekerő/gombok), azonos befoglalómérettel és interakciós pontokkal; feliratok átírva. **244 célzott natív állítás; 35 WebGL-ellenőrzés**, 0 konzolhiba, 720p/1080p képek átnézve. [Jelentés](../Acceptance/coffee-machine/REPORT.md). Pagesre nincs kiadva.
+
 - #152/#154/#156: ellenőrzési hurok megerősítése és a #112 utóhatásainak rendezése — a runner múlékony transport-hibánál újrapróbálkozik és `transportRetries`-t rögzít, a checkek explicit out-változót használnak (`CS0165` ellen), a #112 után elavult `partner-integration` és `corner-wall` suite a katalógusból származtatja a várt értéket, a reputáció választék-metrikája pedig csak a ténylegesen hordozott jegy-/jégkrémkategóriát számolja. `WorkflowRunnerChecks`: 24 checks; teljes `checkout` profil **57 suite / 1626 állítás, 0 hiba**. Részletek a #152/#154/#156 issue-kban. Pagesre nincs kiadva.
 
 - #160: lefedettség — a `smoke` profil 16 suite-ra bővült (jegy, jégkrém, partner, sarokpolc, bútorplanning/editor, árszerkesztő, reputáció), hogy a katalógus- és bútorkind-eltolódás ne maradhasson észrevétlen; **16 suite / 516 állítás**. A #156 WebGL-bizonyítéka elkészült: **0 hiba / 3 figyelmeztetés, 286,5 s** build, **17 böngészős ellenőrzés, 0 konzolhiba**, a kezdő bolt választéka 100/100. [Jelentés](../Acceptance/reputation-choice/REPORT.md). Pagesre nincs kiadva.
