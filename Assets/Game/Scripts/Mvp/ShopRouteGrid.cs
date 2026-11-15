@@ -87,4 +87,39 @@ public sealed class ShopRouteGrid
         }
         return false;
     }
+
+    // Greedy line-of-sight shortcutting for NPC movement. Placement validation
+    // keeps using the raw grid path; only the walked waypoints are reduced.
+    // Every shortcut segment is sampled with the same walkability predicate,
+    // so smoothed paths keep the identical clearance as the raw grid route.
+    public List<Vector3> SmoothPath(List<Vector3> raw)
+    {
+        var smooth = new List<Vector3>();
+        if (raw == null || raw.Count == 0) return smooth;
+        smooth.Add(raw[0]);
+        int anchor = 0;
+        while (anchor < raw.Count - 1)
+        {
+            int farthest = anchor + 1;
+            for (int i = raw.Count - 1; i > anchor; i--)
+            {
+                if (LineWalkable(raw[anchor], raw[i])) { farthest = i; break; }
+            }
+            smooth.Add(raw[farthest]);
+            anchor = farthest;
+        }
+        return smooth;
+    }
+
+    private bool LineWalkable(Vector3 a, Vector3 b)
+    {
+        float distance = Vector3.Distance(new Vector3(a.x, 0, a.z), new Vector3(b.x, 0, b.z));
+        int steps = Mathf.Max(1, Mathf.CeilToInt(distance / .05f));
+        for (int i = 0; i <= steps; i++)
+        {
+            Vector3 point = Vector3.Lerp(a, b, (float)i / steps);
+            if (!canWalk(new Vector3(point.x, 0, point.z))) return false;
+        }
+        return true;
+    }
 }
