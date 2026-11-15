@@ -4,6 +4,7 @@ $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
 $root=Split-Path $PSScriptRoot -Parent
 Import-Module (Join-Path $PSScriptRoot 'Workflow.Common.psm1') -Force
+Reset-UnityTransportRetryCount
 $registry=Get-Content (Join-Path $PSScriptRoot 'Verification/suites.json') -Raw | ConvertFrom-Json
 $selected=@(Resolve-VerificationSuites -Registry $registry -Profile $Profile -Suite $Suite)
 if ($PlanOnly) {
@@ -60,6 +61,9 @@ finally {
     if($startedPlay) { try { Invoke-UnityCommand $root 'editor.playmode stop' | Out-Null } catch { $report.result='failed';$report.error='Could not exit Play mode: '+$_.Exception.Message } }
     $report.finishedUtc=[DateTime]::UtcNow.ToString('o')
     $report.totalSeconds=$timer.Elapsed.TotalSeconds
+    # Retries are recorded so a recovered transport loss is visible in the evidence instead of looking like a clean run.
+    $report.transportRetries=Get-UnityTransportRetryCount
+    if($report.transportRetries -gt 0) { Write-Host "Transport retries: $($report.transportRetries)" }
     $report | ConvertTo-Json -Depth 15 | Set-Content -LiteralPath (Join-Path $run 'report.json') -Encoding utf8
     Write-Host "Report: $run/report.json"
 }
