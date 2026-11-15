@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #152/#154: ellenőrzési hurok megerősítése — a runner múlékony transport-hibánál újrapróbálkozik és `transportRetries`-t rögzít, a checkek explicit out-változót használnak (`CS0165` ellen), a #112 után elavult `partner-integration` és `corner-wall` suite a katalógusból származtatja a várt értéket. `WorkflowRunnerChecks`: 24 checks; érintett suite-ok zöldek. Nyitott: `reputation-integration` choice-metrikája (#156). Részletek a #152/#154 issue-kban. Pagesre nincs kiadva.
+
 - #112: fagyasztóláda és három saját márkás csomagolt jégkrém (Hókristály csoki, Jeges Pötty eper, Sarki Fény vanília) pult melletti ládakészletből, kézi átadással/leolvasóval, vegyes kosárral és készpénz/kártya fizetéssel; új Jégkrém árkategória. **9 suite / 244 sikeres célzott natív állítás; 11 WebGL-ellenőrzés**, 0 konzolhiba. Natív logika és 720p/1080p képek átnézve (a ládafelirat tükrözése képről jött, javítva). [Jelentés](../Acceptance/ice-cream/REPORT.md); [használat](../Architecture/IceCream/README.md). Pagesre nincs kiadva.
 
 - #109: vonaljegy és 10 utazásos gyűjtőjegy pult mögötti készletből, kézi átadással/leolvasóval, vegyes kosárral és készpénz/kártya fizetéssel; új Jegyek árkategória. **6 suite / 146 sikeres célzott natív állítás; 10 WebGL-ellenőrzés**, 0 konzolhiba. Natív és 720p/1080p képek átnézve (az árkategória-sor javítása is képről jött). [Jelentés](../Acceptance/tickets/REPORT.md); [használat](../Architecture/Tickets/README.md). Pagesre nincs kiadva.
