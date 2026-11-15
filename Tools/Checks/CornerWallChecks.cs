@@ -107,7 +107,7 @@ public static class CornerWallChecks
             g.Devices.Focus(ShopDeviceKind.Monitor);g.Devices.OpenApp(ShopComputerApp.Furnishing);
             g.Devices.KeyboardTargets().Single(t=>t.Id=="Furnishing:Furniture").Activate();
             var screen=g.Devices.ComputerScreenRect;var targets=g.Devices.KeyboardTargets();
-            check(targets.Count(t=>t.Id.StartsWith("Module:Plan:"))==6&&targets.All(t=>screen.Contains(t.Bounds.min)&&screen.Contains(t.Bounds.max)),"Six catalog entries fit monitor and keyboard navigation");
+            check(targets.Count(t=>t.Id.StartsWith("Module:Plan:"))==ShopModularFurniture.Prices.Length&&targets.All(t=>screen.Contains(t.Bounds.min)&&screen.Contains(t.Bounds.max)),"Every catalog entry fits monitor and keyboard navigation");
             return new{passed,failed=0};
         }
         finally{e.Cancel();g.ClosePanel();g.ResetDemo();g.ManualTick=false;body.enabled=false;player.transform.position=home;body.enabled=true;}

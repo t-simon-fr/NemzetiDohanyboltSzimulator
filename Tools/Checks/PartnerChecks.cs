@@ -63,19 +63,21 @@ public static class PartnerChecks
             check(!g.OrderSupply(16,1) && !g.SupplyTypes.Contains(16), "Locked variants cannot be ordered or shown in procurement");
             check(g.OrderSupply(6,1), "Order base Hamster before signing its contract");
             int cash = g.Ledger.Cash;
+            int packageKind = ShopPartnerCatalog.FirstFurnitureKind;
+            check(ShopArrangement.CatalogPrice(packageKind) == ShopPartnerCatalog.PackagePrice && ShopPartnerCatalog.PackagePrice > 19995, "Partner package price stays above the unprotected remainder");
             g.Ledger.SetLotteryReserve(cash-19995);
-            check(e.Begin() && !e.StartPurchase(6), "Partner cannot spend protected lottery funds");
+            check(e.Begin() && !e.StartPurchase(packageKind), "Partner cannot spend protected lottery funds");
             e.Cancel(); g.Ledger.SetLotteryReserve(0);
             var area = g.Layout.FurnitureArea(false);
             var hamsterPose = new ShopFurniturePose(new Vector3(5,0,area.yMax-.4f),0);
             var colaPose = new ShopFurniturePose(new Vector3(7,0,area.yMax-.4f),0);
-            check(e.Begin() && e.StartPurchase(6) && e.PlacePurchase(hamsterPose), "Hamster package can be placed through shared furniture planning: "+e.Feedback);
-            check(!e.StartPurchase(6), "One contract cannot be queued twice");
+            check(e.Begin() && e.StartPurchase(packageKind) && e.PlacePurchase(hamsterPose), "Hamster package can be placed through shared furniture planning: "+e.Feedback);
+            check(!e.StartPurchase(packageKind), "One contract cannot be queued twice");
             e.Cancel();
             check(!p.State.AnyOwned && g.Ledger.Cash == cash, "Cancel grants no fridge, unlock or discount and charges nothing");
-            check(e.Begin() && e.StartPurchase(6), "Restart Hamster package");
+            check(e.Begin() && e.StartPurchase(packageKind), "Restart Hamster package");
             var hamster = e.PurchasePreview;
-            check(e.PlacePurchase(hamsterPose) && e.StartPurchase(7), "Independent Loca package shares one plan");
+            check(e.PlacePurchase(hamsterPose) && e.StartPurchase(packageKind+1), "Independent Loca package shares one plan");
             var cola = e.PurchasePreview;
             check(e.PlacePurchase(colaPose) && e.PlannedCost == 40000 && g.Ledger.Cash == cash, "Both packages remain one exact unpaid plan");
             check(e.Save() && g.Ledger.Cash == cash-40000 && g.Drawer.Total == g.Ledger.Cash && p.State.Owned(ShopPartnerKind.Hamster) && p.State.Owned(ShopPartnerKind.LocaCola), "Save atomically activates both contracts and debits once");
@@ -95,8 +97,9 @@ public static class PartnerChecks
                 check(!g.CreateCustomerOrder(type,0).Contains(type), "Pending delivery is not an available customer order: "+type);
             }
             g.Tick(8.1f);
-            bool oldCreated = g.TryCreateSupply(6,out var oldEnergy);
-            bool newCreated = g.TryCreateSupply(6,out var newEnergy);
+            ShopProduct oldEnergy = null, newEnergy = null;
+            bool oldCreated = g.TryCreateSupply(6,out oldEnergy);
+            bool newCreated = g.TryCreateSupply(6,out newEnergy);
             check(oldCreated && newCreated && oldEnergy.UnitCost == 300 && newEnergy.UnitCost == 270,
                 "Actual base goods preserve old and new costs after contract activation");
             oldEnergy.RemoveFromWorld();newEnergy.RemoveFromWorld();
@@ -181,7 +184,7 @@ public static class PartnerChecks
                 check(player.HeldCarton!=null && player.HeldCarton.ProductType==type,"Real targeted station picks up the correct partner carton "+type+"; got "+(player.HeldCarton==null?-1:player.HeldCarton.ProductType)+"; station "+station.name+"; carton "+g.Warehouse.Carton(type)?.transform.position+"; eye "+Camera.main.transform.position);
                 if(type==6)
                 {
-                    var slot=g.Arrangement.Furniture.First(f=>f.CatalogKind==6).Slots.First(p=>p.Occupant==null);
+                    var slot=g.Arrangement.Furniture.First(f=>f.CatalogKind==ShopPartnerCatalog.FirstFurnitureKind).Slots.First(p=>p.Occupant==null);
                     var front=slot.HintCenter-slot.transform.forward*slot.GetComponent<BoxCollider>().size.z*.4f;
                     raisedFloor=GameObject.CreatePrimitive(PrimitiveType.Cube);raisedFloor.name="Partner targeting raised floor";
                     raisedFloor.transform.position=new Vector3(front.x,.12f,front.z-1.15f);
