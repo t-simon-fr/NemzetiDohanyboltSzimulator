@@ -3,7 +3,21 @@
   "profiles": {
     "smoke": [
       "ledger",
-      "checkout-revision"
+      "checkout-revision",
+      "stock-aware-orders",
+      "ticket-catalog",
+      "ticket-integration",
+      "icecream-catalog",
+      "icecream-integration",
+      "partner-pricing",
+      "partner-integration",
+      "partner-targeting",
+      "corner-wall",
+      "furniture-planning",
+      "furniture-editor",
+      "price-editor",
+      "reputation-state",
+      "reputation-integration"
     ],
     "checkout": [
       "ledger",
