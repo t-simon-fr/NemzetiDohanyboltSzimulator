@@ -525,7 +525,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         foreach (ShopProduct item in stock) if (item != null) item.RemoveFromWorld();
         stock.Clear();CleanupReceipts(); inventory.Reset(); Warehouse?.ResetStorage();
         ClosePanel(); if (Layout != null) { Layout.SetExpanded(false); Layout.SetExtraShelf(false); }
-        LastPurchaseSubtotal = 0; LastPurchaseTotal = 0;
+        LastPurchaseSubtotal = 0; LastPurchaseTotal = 0; carried.Clear();
         SelectedSupply = 0; Day = 1; Ledger = new ShopLedger(6000); Drawer = new ShopCashDrawer();
         Lottery?.ResetLottery();
         Mobile?.ResetAll();

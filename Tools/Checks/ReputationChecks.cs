@@ -164,6 +164,19 @@ public static class ReputationChecks
             try {lowTraffic=Traffic(0);highTraffic=Traffic(100);}finally{UnityEngine.Random.state=random;}
             check(highTraffic>lowTraffic && lowTraffic>5,"Same actual Unity arrival seed produces more visitors at higher reputation while low reputation still receives trade");
             g.ResetDemo();check(g.Reputation.State.Value==50 && g.Reputation.State.LastReport==null && g.Reputation.State.PaidVisits(2)==0,"New game clears reputation, observations and regular habits");
+            g.ManualTick=true;g.Layout.SetLevels(3,3);ShopCheckFixtures.Fund(g,300000);g.OpenShop();g.Tick(.5f);
+            int offeringBase=g.Reputation.EligibleKinds;
+            check(!g.ChoiceTypes.Any(t=>ShopTicketCatalog.IsTicket(t)||ShopIceCreamCatalog.IsIceCream(t)),"Never-offered tickets and ice cream stay out of the choice denominator");
+            check(g.OrderSupply(25,1)&&g.OrderSupply(27,1),"Order one ticket and one ice cream for the choice metric");
+            g.Tick(.5f);
+            check(g.Reputation.EligibleKinds==offeringBase+2,"A newly ordered category joins the choice denominator exactly once");
+            g.Tick(8.1f);
+            ShopProduct ice=null;check(g.TryCreateSupply(27,out ice),"Withdraw the ordered ice cream from the box");
+            ice.RemoveFromWorld();
+            check(g.StockCount(27)==0&&g.WarehouseCount(27)==0,"Withdrawn ice cream leaves no on-hand stock");
+            check(g.ChoiceTypes.Contains(27),"A sold-out carried category stays in the choice denominator");
+            g.ResetDemo();g.ClosePanel();g.OpenShop();g.Tick(.5f);
+            check(!g.ChoiceTypes.Contains(27)&&!g.ChoiceTypes.Contains(25),"New game forgets carried categories");
             return new {passed,failed=0};
         }
         finally {player.CancelHeld();g.ClosePanel();g.ResetDemo();g.ManualTick=false;}

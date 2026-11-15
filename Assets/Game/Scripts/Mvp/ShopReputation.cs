@@ -22,7 +22,7 @@ public sealed partial class ShopReputation : MonoBehaviour
     public void Tick(float dt)
     {
         if (shop.Phase != ShopPhase.Open || dt<=0) return;
-        var kinds = shop.Pricing.AvailableTypes.Concat(shop.Lottery.Owned?Enumerable.Range(13,3):Enumerable.Empty<int>()).Distinct().ToArray();
+        var kinds = shop.ChoiceTypes.Concat(shop.Lottery.Owned?Enumerable.Range(13,3):Enumerable.Empty<int>()).Distinct().ToArray();
         EligibleKinds = kinds.Length; AvailableKinds = kinds.Count(IsAvailable);
         var spills = shop.Activities.ActiveSpills.ToArray();
         var live = new HashSet<ShopFeatureTarget>(spills);
