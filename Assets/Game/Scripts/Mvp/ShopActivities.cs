@@ -246,8 +246,17 @@ public sealed partial class ShopActivities : MonoBehaviour
     public ShopFeatureTarget SpawnSpill()
     {
         spills.RemoveAll(s=>s==null);if(DirtCount>=4)return null;
-        Vector3[] positions={new Vector3(-.8f,.008f,-.1f),new Vector3(.4f,.008f,.25f),new Vector3(1.65f,.008f,-2.6f),new Vector3(-1.2f,.008f,-3.1f)};
-        foreach(var point in positions)
+        // Dirt gathers where customers actually walk: seed from foot traffic first,
+        // keep the fixed positions as a fallback for an empty shop.
+        var spots=new List<Vector3>();
+        var walkers=FindObjectsByType<MvpCustomerActor>().Where(a=>a!=null&&a.gameObject.activeInHierarchy&&!a.WillSteal).ToArray();
+        if(walkers.Length>0)
+        {
+            var anchor=walkers[UnityEngine.Random.Range(0,walkers.Length)].transform.position;
+            for(int i=0;i<4;i++)spots.Add(new Vector3(anchor.x+UnityEngine.Random.Range(-.45f,.45f),.008f,anchor.z+UnityEngine.Random.Range(-.45f,.45f)));
+        }
+        spots.AddRange(new[]{new Vector3(-.8f,.008f,-.1f),new Vector3(.4f,.008f,.25f),new Vector3(1.65f,.008f,-2.6f),new Vector3(-1.2f,.008f,-3.1f)});
+        foreach(var point in spots)
         {
             if(spills.Any(s=>s!=null&&Vector3.Distance(s.transform.position,point)<.5f))continue;
             if(Physics.CheckBox(point+Vector3.up*.22f,new Vector3(.24f,.15f,.21f),Quaternion.identity,Physics.DefaultRaycastLayers,QueryTriggerInteraction.Ignore))continue;

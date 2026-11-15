@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #168: kosz csak ott gyűlik, ahol járnak — a foltforrás az aktív vevők közeléből szemez, üres boltban a tartalékhelyekkel. Teljes `checkout` profil **57 suite / 1637 állítás, 0 hiba**. Pagesre nincs kiadva.
+
 - #166: NPC útvonal simítás — a négy-szomszédos A* lépcsős cikkcakkja helyett greedy line-of-sight rövidítés a meglévő járhatósági predikátummal, azonos clearance-szel; a validáció nyers rácson marad. Teljes `checkout` profil **57 suite / 1633 állítás, 0 hiba**. Pagesre nincs kiadva.
 
 - #164: 17:00 után nem jön új vendég — az automatikus érkezés leáll az üzlet órája szerint (1 valódi másodperc = 1 kijelzett perc), a bolt nyitva marad a bent lévők kiszolgálására, egyszeri üzenet jelzi a váltást. Teljes `checkout` profil **57 suite / 1629 állítás, 0 hiba**. Pagesre nincs kiadva.

@@ -59,6 +59,17 @@ public static class FeatureBatchChecks
             check(g.CounterStorage.Slots.Select(slot=>slot.transform.position.y).Distinct().Count()==2,"Private storage has two physical shelf rows");
             check(g.Activities.Mop.DisplayName=="Seprű"&&g.Activities.Mop.transform.position.x< -2.5f,"Broom is stored in the warehouse");
             check(g.Activities.Bat.transform.position.z< -4 && g.Activities.Bat.GetComponentInChildren<MeshFilter>()!=null,"Bat has a modeled staff-side wall pickup");
+            g.ResetDemo();g.ClosePanel();g.OpenShop();
+            typeof(MvpShopController).GetMethod("SpawnCustomer",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).Invoke(g,new object[]{ShopCatalog.Index("water"),false});
+            ShopCheckFixtures.Tick(g,2);
+            var walkers=Object.FindObjectsByType<MvpCustomerActor>().Where(a=>a!=null&&a.gameObject.activeInHierarchy&&!a.WillSteal).ToArray();
+            check(walkers.Length>0,"Explicit visit provides foot traffic");
+            var traffic=g.Activities.SpawnSpill();
+            check(traffic!=null&&g.Activities.DirtCount==1,"Foot traffic receives a visible spill");
+            float nearest=walkers.Min(a=>Vector3.Distance(new Vector3(a.transform.position.x,0,a.transform.position.z),new Vector3(traffic.transform.position.x,0,traffic.transform.position.z)));
+            check(nearest<.8f,"Spill lands where customers actually walk");
+            for(int i=0;i<16;i++)traffic.Scrub(.1f);
+            check(g.Activities.DirtCount==0,"Traffic-seeded spill scrubs clean");
             g.ResetDemo();check(g.ClockElapsed==0&&g.StockCount(ShopCatalog.Contraband)==0,"New game resets clock and boxed stock");
             return new{passed,failed=0};
         }
