@@ -46,6 +46,10 @@ public sealed partial class MvpShopController : MonoBehaviour
     public int Spawned { get; private set; }
     // Fixtures can own their explicitly spawned visits without changing the live arrival policy.
     public bool AutomaticArrivals { get; set; } = true;
+    // One real second advances the displayed clock by one minute, so 17:00 is 540 seconds after the 08:00 opening.
+    public const float ArrivalClosingElapsed = 540f;
+    public bool ArrivalsOpen => ClockElapsed < ArrivalClosingElapsed;
+    private bool closingAnnounced;
     public int Missed { get; private set; }
     public int QueueCount => queue.Count;
     public int SelectedSupply { get; private set; }
@@ -225,7 +229,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         if (Modal != ShopModal.None || (Devices != null && Devices.Focused && !liveMonitor) || Phase == ShopPhase.Preparing) return;
         AdvanceFleeing(dt);
         dayCycle.TickService(dt);
-        if (Phase == ShopPhase.Open && AutomaticArrivals && (Security == null || !Security.Locked))
+        if (Phase == ShopPhase.Open && AutomaticArrivals && (Security == null || !Security.Locked) && ClockElapsed < ArrivalClosingElapsed)
         {
             spawnTimer -= dt;
             if (spawnTimer <= 0f && queue.Count < 3)
@@ -233,6 +237,11 @@ public sealed partial class MvpShopController : MonoBehaviour
                 SpawnCustomer();
                 spawnTimer = UnityEngine.Random.Range(12f,28f)*(float)(Reputation?.State.ArrivalScale ?? 1);
             }
+        }
+        if (Phase == ShopPhase.Open && !closingAnnounced && ClockElapsed >= ArrivalClosingElapsed)
+        {
+            closingAnnounced = true;
+            Notify("17:00 elmúlt: új vendég már nem érkezik. Szolgáld ki a bent lévőket, majd zárd a napot.");
         }
         for (int i = departing.Count - 1; i >= 0; i--)
         {
@@ -505,7 +514,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         Mobile?.BeginDay();
         ResetCardTerminal();
         Security?.ReleaseEntrance();
-        dayCycle.Prepare(); Stage = ServiceStage.None; Spawned = 0; Missed = 0;
+        dayCycle.Prepare(); Stage = ServiceStage.None; Spawned = 0; Missed = 0; closingAnnounced = false;
         StolenToday=0;CaughtToday=0;PriceRefusals=0;
         checkout.ClearItems();active = null; prepared = null; changeCoins.Clear(); Message = "Készülj fel, majd E-vel fordítsd meg az ajtón lévő táblát. Az óra csak nyitáskor indul.";
         SetModal(ShopModal.None);

@@ -38,6 +38,13 @@ public static class ContinuousArrivalChecks
             g.RequestClose();int closedCount=g.Spawned;
             for(int step=0;step<600;step++){g.Tick(.5f);if(g.ActiveCustomer!=null)g.SkipCurrent();}
             check(g.Spawned==closedCount && g.CanEndDay && !g.Ledger.Closed,"Closed shop drains existing visitors and waits for manual day end");
+            g.ResetDemo();g.ManualTick=true;g.OpenShop();g.AutomaticArrivals=false;
+            g.Tick(541f);
+            check(!g.ArrivalsOpen && g.Spawned==0 && g.Message.Contains("17:00"),"Crossing 17:00 announces the arrival stop with an empty shop");
+            g.AutomaticArrivals=true;int late=g.Spawned;g.Tick(120f);
+            check(g.Spawned==late && g.Phase==ShopPhase.Open,"Past 17:00 no new arrivals while the shop stays open");
+            g.ResetDemo();g.OpenShop();g.Tick(1f);
+            check(g.Spawned>0 && g.ArrivalsOpen,"Before 17:00 the open shop still receives arrivals");
             return new{passed,failed=0};
         }
         finally {g.ResetDemo();g.ManualTick=false;UnityEngine.Random.state=random;}
