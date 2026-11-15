@@ -122,7 +122,7 @@ public sealed class MvpShopHud : MonoBehaviour
     private void CoffeeControls()
     {
         ShopUi.Panel(new Rect(24, 24, 300, 252));
-        ShopUi.Label(new Rect(40, 40, 268, 28), "TRAFIK PRESSZÓ", 20, true);
+        ShopUi.Label(new Rect(40, 40, 268, 28), "LaVazze Barista", 20, true);
         ShopUi.Label(new Rect(40, 84, 268, 120), "Válassz italt a gép kijelzőjén, majd indítsd el a főzést.\n\nKattintás: receptválasztás\nEnter: főzés vagy italátvétel\nAz állapotot a gép jelzi.", 16);
         if (ShopUi.Button(new Rect(40, 216, 268, 40), "Vissza a boltba / Esc")) shop.ClosePanel();
     }
