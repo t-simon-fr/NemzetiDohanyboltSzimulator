@@ -8,7 +8,7 @@ public static class ShopPartnerCatalog
     public const int FirstVariant = 16;
     public const int Zero = 16, Mango = 17, Fantom = 18, Spritz = 19;
     public const int Plum = 20, Pear = 21, Mixed = 22;
-    public const int FirstFurnitureKind = 6;
+    public const int FirstFurnitureKind = 7;
     public static readonly string[] Names = { "Hamster Energy", "Loca Cola", "Kevert / Műszakkezdő" };
     public static readonly string[] Details = {
         "Zero • Pacific Mango • Hamster hűtő\n10% beszerzési kedvezmény",

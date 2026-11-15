@@ -17,7 +17,7 @@ public struct ShopFurniturePose
 public sealed class ShopFurniture : MonoBehaviour
 {
     public int CatalogKind { get; set; } = -1;
-    public bool IsFridge => CatalogKind == 4 || CatalogKind == 6 || CatalogKind == 7;
+    public bool IsFridge => CatalogKind == 4 || CatalogKind == 6 || CatalogKind >= ShopPartnerCatalog.FirstFurnitureKind;
     public bool InitiallyOwned { get; set; }
     public float Height { get; private set; }
     public string Dimensions => Size.x.ToString("0.##") + " × " + Size.y.ToString("0.##") + " × " + Height.ToString("0.##") + " m";

@@ -238,6 +238,12 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             foreach (var slot in Shop.CounterStorage.Slots) Shop.CreateNightProduct().AssignInitialSlot(slot);
             Aim(Shop.CounterStorage.Slots[2].transform.position + Vector3.up*.13f);
         }
+        else if (scenario == "icecream")
+        {
+            Shop.ResetDemo(); Shop.ManualTick = true; Shop.ClosePanel();
+            Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Orders);
+            Shop.ManualTick = false;
+        }
         else if (scenario == "tickets")
         {
             Shop.ResetDemo(); Shop.ManualTick = true; Shop.ClosePanel();
@@ -429,6 +435,43 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         {
             Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Prices);
         }
+        if (action == "icecream-deliver") Shop.Tick(8.1f);
+        if (action == "icecream-freezer")
+        {
+            Shop.Ledger.TrySellCard(500000, 0); Shop.SyncCashDrawer();
+            var e = Shop.Arrangement; e.Begin();
+            var area = Shop.Layout.FurnitureArea(false);
+            bool placed = false;
+            for (float z = area.yMin + .65f; !placed && z < area.yMax - .4f; z += .5f)
+                for (float x = area.xMin + .65f; !placed && x < area.xMax - .4f; x += .5f)
+                    for (int turn = 0; turn < 4 && !placed; turn++)
+                    {
+                        if (!e.StartPurchase(6)) throw new Exception("Freezer purchase blocked: " + e.Feedback);
+                        if (e.PlacePurchase(new ShopFurniturePose(new Vector3(x, 0, z), turn))) placed = true;
+                    }
+            if (!placed) throw new Exception("No starter-valid freezer pose.");
+            if (!e.Save() || !Shop.FreezerOwned) throw new Exception("Freezer arrangement save failed.");
+        }
+        if (action == "icecream-stock")
+        {
+            ShopProduct a, b, c;
+            Shop.TryCreateSupply(27, out a); Shop.TryCreateSupply(28, out b); Shop.TryCreateSupply(29, out c);
+            var freezer = Shop.Arrangement.Current().Keys.First(f => f.CatalogKind == 6);
+            var slots = freezer.GetComponentsInChildren<ProductSlot>();
+            a.AssignInitialSlot(slots.First(s => s.CanAcceptStock("ice_choc")));
+            b.AssignInitialSlot(slots.First(s => s.CanAcceptStock("ice_straw")));
+            c.AssignInitialSlot(slots.First(s => s.CanAcceptStock("ice_van")));
+            var facing = freezer.transform.TransformDirection(Vector3.forward);
+            Aim(freezer.transform.position + Vector3.up * .8f, 2.2f, facing, true);
+        }
+        if (action == "icecream-customer")
+        {
+            Shop.ClosePanel(); Shop.SingleProductVisits = true; Visit(0, 27);
+        }
+        if (action == "icecream-prices")
+        {
+            Shop.Devices.Focus(ShopDeviceKind.Monitor); Shop.Devices.OpenApp(ShopComputerApp.Prices);
+        }
         if(action=="lottery-scratch-customer")
         {
             Shop.ClosePanel();Visit(0,13);AimLotteryStock(13);
@@ -606,7 +649,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
     {
         int partner=ShopPartnerCatalog.PartnerFor(type);
         return partner==2 ? Shop.Partners.CounterDisplay.GetComponentsInChildren<ProductSlot>() :
-            Shop.Arrangement.Furniture.First(f=>f.CatalogKind==6+partner && f.gameObject.activeSelf).Slots;
+            Shop.Arrangement.Furniture.First(f=>f.CatalogKind==ShopPartnerCatalog.FirstFurnitureKind+partner && f.gameObject.activeSelf).Slots;
     }
     private void SetupPartnerVisuals()
     {
@@ -614,7 +657,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         arrangement.Begin();
         foreach(int partner in new[]{0,1})
         {
-            arrangement.StartPurchase(6+partner);
+            arrangement.StartPurchase(ShopPartnerCatalog.FirstFurnitureKind+partner);
             if(!arrangement.PlacePurchase(new ShopFurniturePose(new Vector3(5+partner*2,0,area.yMax-.4f),0)))throw new Exception(arrangement.Feedback);
         }
         if(!arrangement.Save()||!Shop.Partners.BuyCounterDisplay())throw new Exception("Partner fixture purchase failed.");

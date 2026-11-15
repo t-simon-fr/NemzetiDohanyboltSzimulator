@@ -21,6 +21,7 @@ public sealed partial class MvpShopController
         bool Take(int type)
         {
             if (ShopLotteryCatalog.IsTicket(type) && !ShopLotteryCatalog.IsTicket(preferred)) return false;
+            if (ShopIceCreamCatalog.IsIceCream(type) && !FreezerOwned) return false;
             if (remaining[type] > 0) { remaining[type]--; return true; }
             var recipe = ShopHotDrinkRecipes.Get(type);
             if (!Activities.CoffeeOwned || recipe == null || !recipe.CanMake(ingredients)) return false;

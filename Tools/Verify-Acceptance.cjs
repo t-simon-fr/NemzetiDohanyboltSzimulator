@@ -864,6 +864,44 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(q.priceCategory===4&&q.priceProducts.includes('ticket_single')&&q.priceProducts.includes('ticket_book'),'Tickets category lists both types');
       await capture('ticket-prices-720');await viewport(1920,1080);await capture('ticket-prices-1080');await viewport(1280,720);
     }
+    if (!selected || selected === 'icecream') {
+      await viewport(1280,720);await probe('Prepare','icecream');let q=await state();
+      check(q.balance===6000&&q.supplyTypes.includes(27)&&q.supplyTypes.includes(29),'Starter shop lists all three ice cream types for procurement');
+      const press=async id=>{
+        const q=await state();const i=q.computerControlIds.indexOf(id);
+        if(i<0)throw Error('Missing ice cream control '+id);
+        await clickRect(q.computerControls[i]);
+      };
+      for (const [type,count] of [[27,2],[28,1],[29,1]]) {
+        let reached=false;
+        for(let attempt=0;attempt<45;attempt++) {
+          q=await state();const id='Cart:Plus:'+type;
+          if(q.computerControlIds.includes(id)){reached=true;break;}
+          const visible=q.computerControlIds.filter(x=>x.startsWith('Cart:Plus:')).map(x=>+x.split(':').at(-1));
+          const sign=visible.length&&q.supplyTypes.indexOf(type)<q.supplyTypes.indexOf(visible[0])?-1:1;
+          const screen=q.computerScreen;
+          await send('Input.dispatchMouseEvent',{type:'mouseWheel',x:screen.x+screen.width*.78,y:screen.y+screen.height*.5,deltaX:0,deltaY:sign*96});await sleep(100);
+        }
+        check(reached,'Actual order-cart scrolling reaches ice cream '+type);
+        for(let k=0;k<count;k++)await press('Cart:Plus:'+type);
+      }
+      q=await state();check(q.partnerCartSubtotal===860&&q.partnerCartPayment===860,'Exact ice cream units without rounding');
+      await press('Cart:Submit');q=await state();
+      check(q.balance===5140&&q.partnerPending[27]===2&&q.partnerPending[28]===1&&q.partnerPending[29]===1,'One real supplier submission ships ice cream stock');
+      await probe('Action','icecream-deliver');q=await state();
+      check(q.partnerStored[27]===2&&q.partnerStored[28]===1&&q.partnerStored[29]===1&&q.partnerPending[27]===0,'Distinct ice cream shipments arrive with exact quantities');
+      await probe('Action','icecream-freezer');q=await state();
+      await probe('Action','icecream-stock');q=await state();
+      check(q.partnerStock[27]===1&&q.partnerStock[28]===1&&q.partnerStock[29]===1,'Freezer slots hold real placed packs');
+      await capture('icecream-slots-720');await viewport(1920,1080);await capture('icecream-slots-1080');await viewport(1280,720);
+      await probe('Action','icecream-customer');q=await state();
+      check(q.order.includes('Hókristály'),'Actual NPC requests the stocked choc ice');
+      await capture('icecream-request-720');await viewport(1920,1080);await capture('icecream-request-1080');await viewport(1280,720);
+      await probe('Action','icecream-prices');q=await state();
+      await press('Price:Category:5');q=await state();
+      check(q.priceCategory===5&&q.priceProducts.includes('ice_choc')&&q.priceProducts.includes('ice_van'),'Ice cream category lists all three types');
+      await capture('icecream-prices-720');await viewport(1920,1080);await capture('icecream-prices-1080');await viewport(1280,720);
+    }
     if (selected === 'partners' || selected === 'partner-summary') {
       let q;
       if (selected === 'partners') {

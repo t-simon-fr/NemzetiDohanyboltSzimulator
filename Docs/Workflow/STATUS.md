@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #112: fagyasztóláda és három saját márkás csomagolt jégkrém (Hókristály csoki, Jeges Pötty eper, Sarki Fény vanília) pult melletti ládakészletből, kézi átadással/leolvasóval, vegyes kosárral és készpénz/kártya fizetéssel; új Jégkrém árkategória. **9 suite / 244 sikeres célzott natív állítás; 11 WebGL-ellenőrzés**, 0 konzolhiba. Natív logika és 720p/1080p képek átnézve (a ládafelirat tükrözése képről jött, javítva). [Jelentés](../Acceptance/ice-cream/REPORT.md); [használat](../Architecture/IceCream/README.md). Pagesre nincs kiadva.
+
 - #109: vonaljegy és 10 utazásos gyűjtőjegy pult mögötti készletből, kézi átadással/leolvasóval, vegyes kosárral és készpénz/kártya fizetéssel; új Jegyek árkategória. **6 suite / 146 sikeres célzott natív állítás; 10 WebGL-ellenőrzés**, 0 konzolhiba. Natív és 720p/1080p képek átnézve (az árkategória-sor javítása is képről jött). [Jelentés](../Acceptance/tickets/REPORT.md); [használat](../Architecture/Tickets/README.md). Pagesre nincs kiadva.
 
 - #107: telefonfeltöltés a második hétfőn automatikusan és ingyen; Üreskom, Notyet tel, Two, készpénz/kártya, bizonylat, 5% jutalék és elkülönített szolgáltatói elszámolás. **57 suite / 1597 állításos baseline, 116 érkezési és 78 végső célzott állítás; 38 mobilos, 18 terminálos és 29 lottós WebGL-ellenőrzés**, 0 konzolhiba. A futások hatóköre és a 720p/1080p képek a [jelentésben](../Acceptance/mobile-topup/REPORT.md); [használat](../Architecture/MobileTopUp/README.md). A teljes heti/tutorial rendszer #139 marad. Pagesre nincs kiadva.

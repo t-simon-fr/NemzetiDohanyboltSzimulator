@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "profile": "targeted",
+  "selectedSuites": [
+    "icecream-catalog",
+    "icecream-integration",
+    "ledger",
+    "stock-aware-orders",
+    "checkout-revision",
+    "price-editor",
+    "furniture-planning",
+    "furniture-editor",
+    "arrangement"
+  ],
+  "startedUtc": "2026-11-15T18:12:06.9529114Z",
+  "source": {
+    "commit": "e2266c15e92467c31737f441992b792eb83c8497",
+    "sourceFingerprint": "80b7a893ecbd06890c4faded524951f5a451ab667b7d797bc343502128da2783",
+    "fingerprintScope": "Assets excluding user _Recovery, Packages, ProjectSettings, Tools",
+    "dirty": true
+  },
+  "compilation": "passed",
+  "tests": [
+    {
+      "seconds": 0.2130537,
+      "passed": 13,
+      "failed": 0,
+      "id": "icecream-catalog",
+      "entry": "IceCreamChecks.Catalog"
+    },
+    {
+      "seconds": 0.8183291,
+      "passed": 38,
+      "failed": 0,
+      "id": "icecream-integration",
+      "entry": "IceCreamChecks.Integration"
+    },
+    {
+      "seconds": 0.1205931,
+      "passed": 12,
+      "failed": 0,
+      "id": "ledger",
+      "entry": "LedgerChecks.Run"
+    },
+    {
+      "seconds": 0.3617476,
+      "passed": 34,
+      "failed": 0,
+      "id": "stock-aware-orders",
+      "entry": "StockAwareOrderChecks.Run"
+    },
+    {
+      "seconds": 0.2572352,
+      "passed": 20,
+      "failed": 0,
+      "id": "checkout-revision",
+      "entry": "CheckoutRevisionChecks.Run"
+    },
+    {
+      "seconds": 0.183802,
+      "passed": 34,
+      "failed": 0,
+      "id": "price-editor",
+      "entry": "VisualRefreshChecks.Prices"
+    },
+    {
+      "seconds": 10.9515816,
+      "passed": 32,
+      "failed": 0,
+      "id": "furniture-planning",
+      "entry": "FurniturePlanningChecks.Run"
+    },
+    {
+      "seconds": 0.9182448,
+      "passed": 34,
+      "failed": 0,
+      "id": "furniture-editor",
+      "entry": "FurnitureEditorChecks.Run"
+    },
+    {
+      "seconds": 0.2854688,
+      "passed": 27,
+      "failed": 0,
+      "id": "arrangement",
+      "entry": "ArrangementChecks.Run"
+    }
+  ],
+  "result": "passed",
+  "error": null,
+  "compileSeconds": 0.1586347,
+  "finishedUtc": "2026-11-15T18:12:24.4165719Z",
+  "totalSeconds": 17.4814545
+}

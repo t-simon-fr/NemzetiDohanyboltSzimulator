@@ -12,9 +12,9 @@ public static class TicketChecks
         check(ShopTicketCatalog.FirstType == 25 && ShopTicketCatalog.Types == 2, "Ticket catalog covers both types");
         check(ShopTicketCatalog.IsTicket(25) && ShopTicketCatalog.IsTicket(26) && !ShopTicketCatalog.IsTicket(24) && !ShopTicketCatalog.IsTicket(27) && ShopTicketCatalog.Index(26) == 1 && ShopTicketCatalog.Index(24) < 0, "Ticket type guard accepts only the two new types");
         check(ShopTicketCatalog.RidesPerBook == 10, "Collector ticket carries ten rides");
-        check(ShopCatalog.Ids.Length == ShopCatalog.SupplyCapacity && ShopCatalog.Ids.Length == 27, "Catalog arrays grow with supply capacity");
-        check(ShopCatalog.Prices.Length == 27 && ShopCatalog.Costs.Length == 27 && ShopCatalog.Names.Length == 27 && ShopCatalog.ShortNames.Length == 27, "All catalog arrays stay aligned");
-        check(ShopCatalog.Ids.Distinct().Count() == 27 && ShopCatalog.Index("ticket_single") == 25 && ShopCatalog.Index("ticket_book") == 26, "Ticket ids are unique and resolvable");
+        check(ShopCatalog.Ids.Length == ShopCatalog.SupplyCapacity && ShopCatalog.TicketSingle == 25 && ShopCatalog.TicketBook == 26, "Catalog arrays grow with supply capacity, ticket indices stay stable");
+        check(ShopCatalog.Prices.Length == ShopCatalog.Ids.Length && ShopCatalog.Costs.Length == ShopCatalog.Ids.Length && ShopCatalog.Names.Length == ShopCatalog.Ids.Length && ShopCatalog.ShortNames.Length == ShopCatalog.Ids.Length, "All catalog arrays stay aligned");
+        check(ShopCatalog.Ids.Distinct().Count() == ShopCatalog.Ids.Length && ShopCatalog.Index("ticket_single") == 25 && ShopCatalog.Index("ticket_book") == 26, "Ticket ids are unique and resolvable");
         check(ShopPricing.CategoryOf(25) == ShopPriceCategory.Tickets && ShopPricing.CategoryOf(26) == ShopPriceCategory.Tickets && ShopPricing.CategoryNames.Contains("Jegyek"), "Tickets have their own listed price category");
         check(ShopCatalog.Prices[25] == 600 && ShopCatalog.Prices[26] == 5000 && ShopCatalog.Costs[25] == 300 && ShopCatalog.Costs[26] == 2800, "Ticket prices and procurement costs match the issue");
         check(ShopPricing.Minimum(25) == 300 && ShopPricing.Maximum(26) == 15000, "Ticket price bounds derive from list prices");
@@ -55,7 +55,7 @@ public static class TicketChecks
             g.Devices.Focus(ShopDeviceKind.Monitor); g.Devices.OpenApp(ShopComputerApp.Prices);
             var priceControls = g.Devices.KeyboardTargets();
             var priceScreen = g.Devices.ComputerScreenRect;
-            check(priceControls.Count(t => t.Id.StartsWith("Price:Category:")) == 5, "All five price categories are clickable");
+            check(priceControls.Any(t => t.Id == "Price:Category:4"), "Tickets category button exists and is clickable");
             check(priceControls.Where(t => t.Id.StartsWith("Price:Category:")).All(t => priceScreen.Contains(t.Bounds.min) && priceScreen.Contains(t.Bounds.max)), "Price category buttons fit the monitor");
             priceControls.Single(t => t.Id == "Price:Category:4").Activate();
             check(g.Pricing.Category == ShopPriceCategory.Tickets && g.Pricing.VisibleTypes.SequenceEqual(new[] { 25, 26 }), "Tickets category lists both ticket types");
