@@ -5,6 +5,11 @@ using System.Linq;
 public sealed partial class MvpShopController
 {
     // A disposable budget: choosing an order never moves or consumes real inventory.
+    // Order lines scan EVERY type with available stock, starting from the preferred type and
+    // wrapping around the whole catalog: a stocked type can appear as an extra line in any order.
+    // Special families need an explicit guard in Take() (see the lottery rule below); without one,
+    // any stocked type joins mixed baskets. Only-tested-stock gating ("request only what was
+    // procured") falls out of remaining[] > 0, never from a separate unlock flag.
     public int[] CreateCustomerOrder(int preferred, int visit)
     {
         int types = ShopCatalog.Ids.Length;
