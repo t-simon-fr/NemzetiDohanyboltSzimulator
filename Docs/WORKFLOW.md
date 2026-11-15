@@ -59,6 +59,8 @@ pwsh -File Tools/Checks/WorkflowRunnerChecks.ps1
 
 `smoke`: ledger + aktuális checkout. `checkout`: smoke + teljes többtermékes nap + visszavétel/megszakítás. Minden futás új `Builds/Verification/<timestamp>/report.json` jelentést kap, HEAD-del és az Assets/Packages/ProjectSettings/Tools tartalmának lenyomatával. Hibánál nem futnak tovább a tesztek, a visszatérési kód nem nulla. Az aktuális gépi jelentés nem kerül Gitbe; a bizonyíték összefoglalója és tartós hivatkozása az issue-ba/PR-be kerül.
 
+A pipeline-végpont domain reload vagy WebGL-build után újraindulhat, és egy kéréselveszhet (`An error occurred while sending the request`). A runner ezért múlékony transport-hibánál legfeljebb négy kísérletig újrapróbálkozik, megvárva az editor új végpontját; a jelentés `transportRetries` mezője rögzíti az ismétléseket. Bukott állítás vagy fordítási hiba nem indul újra. A check-szkriptek script-eval fordításában a `TryCreateSupply(..., out var x)` későbbi utasításban használva néha `CS0165`-öt ad, ezért a suite-okban a kimeneti változó deklarációja explicit (`ShopProduct x = null;`).
+
 Új suite bejegyzéshez fájl, belépési pont, érintett profil és cél szükséges. A `CardAndSummaryChecks` régi külön bankszámlás elvárásokat tartalmaz, ezért nem része az aktuális csomagnak. A történeti kiadási jelentések csak a saját forrásváltozatukra érvényesek.
 
 ## 4. Vizuális játékpróba

@@ -40,4 +40,27 @@ $valid=@(Get-DocumentationLinkFailures -Root $root -DocumentPath $document -Cont
 if ($valid.Count -ne 0) { throw 'Valid relative documentation links were rejected.' };$passed++
 $broken=@(Get-DocumentationLinkFailures -Root $root -DocumentPath $document -Content '[missing](missing.md) [escape](../../../outside.md)')
 if ($broken.Count -ne 2) { throw 'Missing or escaping documentation links were accepted.' };$passed++
+if (!(Test-TransportFailure 'An error occurred while sending the request.')) { throw 'Dropped pipeline request was not classified as a transport failure.' };$passed++
+if (!(Test-TransportFailure 'No connection could be made because the target machine actively refused it. (127.0.0.1:7800)')) { throw 'Refused pipeline port was not classified as a transport failure.' };$passed++
+if ((Test-TransportFailure 'script run execution failed: {"diagnostics":[],"success":false}')) { throw 'Execution failure was misclassified as a transport failure.' };$passed++
+if ((Test-TransportFailure 'Unity compilation failed. Read the Unity console; no tests were run.')) { throw 'Compilation failure was misclassified as a transport failure.' };$passed++
+
+Reset-UnityTransportRetryCount
+$script:retryCalls=0
+$recovered=Invoke-WithTransportRetry { $script:retryCalls++; if($script:retryCalls -lt 3) { throw 'An error occurred while sending the request.' }; 'ok' } -BeforeRetry { param($attempt,$attempts) }
+if ($recovered -ne 'ok' -or $script:retryCalls -ne 3) { throw 'Transient transport failure was not repeated until success.' };$passed++
+if ((Get-UnityTransportRetryCount) -ne 2) { throw 'Transport retry counter does not match the actual repeats.' };$passed++
+
+Reset-UnityTransportRetryCount
+$script:retryCalls=0
+try { Invoke-WithTransportRetry { $script:retryCalls++; throw 'Use of unassigned local variable' } -BeforeRetry { param($attempt,$attempts) } | Out-Null } catch {}
+if ($script:retryCalls -ne 1) { throw 'Assertion-style failure was retried as a transport failure.' };$passed++
+if ((Get-UnityTransportRetryCount) -ne 0) { throw 'Non-transport failure incremented the retry counter.' };$passed++
+
+Reset-UnityTransportRetryCount
+$script:retryCalls=0
+$exhausted=$false
+try { Invoke-WithTransportRetry { $script:retryCalls++; throw 'Unable to connect to the remote server' } -Attempts 2 -BeforeRetry { param($attempt,$attempts) } | Out-Null } catch { $exhausted=$true }
+if (!$exhausted -or $script:retryCalls -ne 2) { throw 'Exhausted transport retries did not stop at the configured limit.' };$passed++
+Reset-UnityTransportRetryCount
 Write-Host "Workflow runner: $passed checks passed."

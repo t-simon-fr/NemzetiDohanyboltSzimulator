@@ -40,10 +40,11 @@ public static class TicketChecks
             check(g.CreateCustomerOrder(25, 0).Contains(25) && g.CreateCustomerOrder(26, 0).Contains(26), "Stocked tickets can be requested without reserving them");
             check(!g.CounterStorage.Slots.Any(s => s.CanAcceptStock("ticket_single") || s.CanAcceptStock("ticket_book")), "Dnyipro slots reject tickets");
             check(!g.CounterStorage.TicketSlots.Any(s => s.CanAcceptStock("dnyipro")), "Ticket slots reject Dnyipro");
-            check(g.TryCreateSupply(25, out var singleA), "Take first single ticket from the warehouse box");
-            check(g.TryCreateSupply(25, out var singleB), "Take second single ticket from the warehouse box");
-            check(g.TryCreateSupply(26, out var bookA), "Take first collector book from the warehouse box");
-            check(g.TryCreateSupply(26, out var bookB), "Take second collector book from the warehouse box");
+            ShopProduct singleA = null, singleB = null, bookA = null, bookB = null;
+            check(g.TryCreateSupply(25, out singleA), "Take first single ticket from the warehouse box");
+            check(g.TryCreateSupply(25, out singleB), "Take second single ticket from the warehouse box");
+            check(g.TryCreateSupply(26, out bookA), "Take first collector book from the warehouse box");
+            check(g.TryCreateSupply(26, out bookB), "Take second collector book from the warehouse box");
             var singleSlots = g.CounterStorage.TicketSlots.Where(s => s.CanAcceptStock("ticket_single")).ToArray();
             var bookSlots = g.CounterStorage.TicketSlots.Where(s => s.CanAcceptStock("ticket_book")).ToArray();
             check(singleSlots.Length == 5 && bookSlots.Length == 5, "Each ticket type has five exclusive counter slots");

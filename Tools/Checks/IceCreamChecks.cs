@@ -65,10 +65,11 @@ public static class IceCreamChecks
             g.Tick(8.1f);
             check(g.WarehouseCount(27) == 2 && g.WarehouseCount(28) == 1 && g.WarehouseCount(29) == 1, "Ice cream shipments arrive with exact quantities");
             check(g.CreateCustomerOrder(27, 0).Contains(27), "Stocked ice cream can be requested without reserving it");
-            check(g.TryCreateSupply(27, out var singleA), "Take first choc ice from the warehouse box");
-            check(g.TryCreateSupply(27, out var singleB), "Take second choc ice from the warehouse box");
-            check(g.TryCreateSupply(28, out var straw), "Take strawberry ice from the warehouse box");
-            check(g.TryCreateSupply(29, out var van), "Take vanilla ice from the warehouse box");
+            ShopProduct singleA = null, singleB = null, straw = null, van = null;
+            check(g.TryCreateSupply(27, out singleA), "Take first choc ice from the warehouse box");
+            check(g.TryCreateSupply(27, out singleB), "Take second choc ice from the warehouse box");
+            check(g.TryCreateSupply(28, out straw), "Take strawberry ice from the warehouse box");
+            check(g.TryCreateSupply(29, out van), "Take vanilla ice from the warehouse box");
             var chocSlots = freezerSlots.Where(s => s.CanAcceptStock("ice_choc")).ToArray();
             var strawSlots = freezerSlots.Where(s => s.CanAcceptStock("ice_straw")).ToArray();
             var vanSlots = freezerSlots.Where(s => s.CanAcceptStock("ice_van")).ToArray();
