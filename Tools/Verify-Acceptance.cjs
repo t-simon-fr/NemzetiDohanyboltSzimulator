@@ -812,6 +812,11 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       }
       await probe('Action','reputation-depart');await probe('Action','reputation-monitor');await press('OpenApp:8');q=await state();
       check(q.reputation===50&&q.reputationVisits===3&&q.reputationSeconds>=30&&q.reputationScores.every(Number.isFinite),'Live observations do not apply reputation before day close');
+      // Availability is the time average of available/eligible kinds, so a starter shop that only sells its four stocked
+      // cigarette kinds must reach 50+50*confidence. Orderable but never carried tickets and ice cream stay out of the
+      // denominator; counting them unconditionally would cap the value near 47 instead of 100.
+      check(q.supplyTypes.includes(25)&&q.supplyTypes.includes(27),'Tickets and ice cream remain orderable from the starter shop');
+      check(q.reputationMissing===0&&q.reputationScores[0]>=50+50*Math.min(1,q.reputationSeconds/120)-0.5,'Starter shop keeps full choice availability while never carrying tickets or ice cream');
       await capture('reputation-today-720');await viewport(1920,1080);await capture('reputation-today-1080');await viewport(1280,720);
       await probe('Action','reputation-depart');await probe('Action','aim-sign-stable');await key('e','KeyE',69);await probe('Action','drain-shop');
       await probe('Action','aim-door');await key('e','KeyE',69);q=await state();
