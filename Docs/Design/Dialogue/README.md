@@ -34,7 +34,7 @@ Státusz: terv, nincs implementálva. Kapcsolódó gyűjtő: #1 (dialógus-doboz
 
 ### 3. Panelek kinézete
 
-- Dialóguspanel (új): beszélő-chip a meglévő `ShopPeople.Colors`-ból + hangulatcímke (sietős/beszélgetős) + mondat; opcionális gépelős kiírás.
+- Dialóguspanel (új): beszélő-chip a meglévő `ShopPeople.Colors`-ból + hangulatcímke (sietős/beszélgetős) + mondat; opcionális gépelős kiírás. [Zoom-koncepció](dialogue-zoom-concept.webp): vevő-közeli nézet, alul RPG-panel névvel, hangulatjelzéssel, mondattal és `[E] Folytatás` hinttel.
 - Összesítőpanel (meglévő helyén): a koncepciókép szerint — név, hangulat, tételes sorok ikonokkal, összeg. Gombok nélkül: az átadás marad fizikai.
 - Betűkészlet marad (SDF, ékezetekkel); új betűtípus nincs.
 
