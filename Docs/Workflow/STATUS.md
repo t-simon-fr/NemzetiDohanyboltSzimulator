@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #169: Dnyipro kipakolása dobozból egyenként — egy E egy csomagot tesz szabad pult alatti helyre, a doboz maradéka és címkéje frissül; üres doboz eldobható. Teljes `checkout` profil **57 suite / 1637 állítás, 0 hiba**. Pagesre nincs kiadva.
+
 - #168: kosz csak ott gyűlik, ahol járnak — a foltforrás az aktív vevők közeléből szemez, üres boltban a tartalékhelyekkel. Teljes `checkout` profil **57 suite / 1637 állítás, 0 hiba**. Pagesre nincs kiadva.
 
 - #166: NPC útvonal simítás — a négy-szomszédos A* lépcsős cikkcakkja helyett greedy line-of-sight rövidítés a meglévő járhatósági predikátummal, azonos clearance-szel; a validáció nyers rácson marad. Teljes `checkout` profil **57 suite / 1633 állítás, 0 hiba**. Pagesre nincs kiadva.
