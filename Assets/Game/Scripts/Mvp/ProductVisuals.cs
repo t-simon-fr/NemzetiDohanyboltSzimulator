@@ -9,6 +9,7 @@ public static class ProductVisuals
         if (type == ShopPartnerCatalog.Fantom || type == ShopPartnerCatalog.Spritz) return new Vector3(.14f, .24f, .14f);
         if (ShopLotteryCatalog.IsTicket(type)) return new Vector3(.15f,.21f,.008f);
         if (ShopTicketCatalog.IsTicket(type)) return new Vector3(.15f,.21f,.008f);
+        if (ShopIceCreamCatalog.IsIceCream(type)) return new Vector3(.16f,.14f,.09f);
         if(ShopCatalog.IsCoffee(type))return new Vector3(.14f,type==ShopCatalog.Coffee?.16f:type==ShopCatalog.LongCoffee?.22f:.27f,.14f);
         if (ShopCatalog.IsCigarette(type)) return new Vector3(.16f,.26f,.08f);
         if (type == ShopCatalog.Index("kevert")) return new Vector3(.085f,.20f,.085f);
@@ -85,6 +86,14 @@ public static class ProductVisuals
             string title = type == ShopCatalog.TicketBook ? "GYŰJTŐJEGY\n10 UTAZÁS" : "VONALJEGY";
             Text(item.transform, "Ticket title", title + "\n" + ShopCatalog.Money(ShopCatalog.Prices[type]), new Vector3(0, .06f, -.51f), Quaternion.identity, .13f, Color.white);
             var cleanup = item.AddComponent<ShopProductMaterials>(); cleanup.Materials = new[] { paper }; return;
+        }
+        if (ShopIceCreamCatalog.IsIceCream(type))
+        {
+            Color pack = type == ShopCatalog.IceChoc ? new Color(.35f,.2f,.1f) : type == ShopCatalog.IceStraw ? new Color(.9f,.45f,.55f) : new Color(.92f,.88f,.75f);
+            var frozen = new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = pack };
+            item.GetComponent<Renderer>().sharedMaterial = frozen;
+            Text(item.transform, "Ice cream print", ShopCatalog.ShortNames[type].ToUpperInvariant() + "\n" + ShopCatalog.Money(ShopCatalog.Prices[type]), new Vector3(0, .06f, -.51f), Quaternion.identity, .13f, Color.white);
+            var cleanupPack = item.AddComponent<ShopProductMaterials>(); cleanupPack.Materials = new[] { frozen }; return;
         }
         if(ShopCatalog.IsCoffee(type))
         {

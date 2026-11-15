@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum ShopModuleKind { Shelf, Narrow, Island, Warehouse, Corner = 5 }
+public enum ShopModuleKind { Shelf, Narrow, Island, Warehouse, Corner = 5, Freezer = 6 }
 
 public sealed class ShopModularFurniture : MonoBehaviour
 {
-    public static readonly string[] Names = { "Bolti polc · 1,2 m", "Keskeny polc · 0,6 m", "Kétoldalas polc", "Raktári állvány", "Hűtő", "Sarokpolc" };
-    public static readonly int[] Prices = { 6000, 3500, 10000, 5000, 18000, 6500 };
+    public static readonly string[] Names = { "Bolti polc · 1,2 m", "Keskeny polc · 0,6 m", "Kétoldalas polc", "Raktári állvány", "Hűtő", "Sarokpolc", "Fagyasztóláda" };
+    public static readonly int[] Prices = { 6000, 3500, 10000, 5000, 18000, 6500, 12000 };
     public const float NormalShelfDepth = .5f;
     public const float CornerWidth = 1.2f;
     public const float CornerCutFraction = (CornerWidth - NormalShelfDepth) / CornerWidth;
@@ -54,11 +54,12 @@ public sealed class ShopModularFurniture : MonoBehaviour
     {
         var root=new GameObject(name).transform;root.SetParent(parent??transform,false);root.position=position;return root;
     }
-    private void Box(Transform parent,string name,Vector3 position,Vector3 size,Material material)
+    private GameObject Box(Transform parent,string name,Vector3 position,Vector3 size,Material material)
     {
         var item=GameObject.CreatePrimitive(PrimitiveType.Cube);item.name=name;
         item.transform.SetParent(parent,false);item.transform.localPosition=position;item.transform.localScale=size;
         item.GetComponent<Renderer>().sharedMaterial=material;
+        return item;
     }
     private void BuildFrame(Transform root,float width,float depth,bool island,int rows=4)
     {
@@ -83,6 +84,7 @@ public sealed class ShopModularFurniture : MonoBehaviour
     private ShopFurniture Create(ShopModuleKind kind)
     {
         if (kind == ShopModuleKind.Corner) return CreateCorner();
+        if (kind == ShopModuleKind.Freezer) return CreateFreezer();
         bool warehouse=kind==ShopModuleKind.Warehouse, island=kind==ShopModuleKind.Island;
         float width=kind==ShopModuleKind.Narrow?.6f:1.2f, depth=warehouse?.6f:island?.9f:NormalShelfDepth;
         var root=CreateRoot(Names[(int)kind],Vector3.zero);
@@ -114,6 +116,32 @@ public sealed class ShopModularFurniture : MonoBehaviour
         var item=root.gameObject.AddComponent<ShopFurniture>();item.Configure("module-"+(++serial),Names[(int)kind],new Vector2(width,depth));
         item.InWarehouse=warehouse;
         item.CatalogKind=(int)kind;
+        return item;
+    }
+    private ShopFurniture CreateFreezer()
+    {
+        var root = CreateRoot("Fagyasztóláda", Vector3.zero);
+        var body = resources.Own(new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = new Color(.82f, .84f, .86f) });
+        var dark = resources.Own(new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = new Color(.16f, .19f, .2f) });
+        Box(root, "Freezer body", new Vector3(0, .4f, 0), new Vector3(1.2f, .8f, .6f), body);
+        Box(root, "Freezer inner", new Vector3(0, .82f, 0), new Vector3(1.08f, .06f, .48f), dark);
+        var lid = Box(root, "Freezer lid", new Vector3(0, 1.15f, -.32f), new Vector3(1.2f, .06f, .55f), body);
+        lid.transform.localRotation = Quaternion.Euler(-38, 0, 0);
+        ProductVisuals.Text(root, "Freezer sign", "JÉGKRÉM", new Vector3(0, .55f, .31f), Quaternion.Euler(0, 180, 0), .05f, new Color(.1f, .35f, .6f));
+        ProductVisuals.Text(root, "Freezer temperature", "-18 °C", new Vector3(.42f, .55f, .31f), Quaternion.Euler(0, 180, 0), .035f, new Color(.3f, .8f, 1f));
+        string[] ids = { ShopCatalog.Ids[ShopCatalog.IceChoc], ShopCatalog.Ids[ShopCatalog.IceStraw], ShopCatalog.Ids[ShopCatalog.IceVan] };
+        for (int col = 0; col < 3; col++) for (int row = 0; row < 4; row++)
+        {
+            var slot = new GameObject("Freezer slot " + col + "-" + row).AddComponent<ProductSlot>();
+            slot.transform.SetParent(root, false);
+            slot.transform.localPosition = new Vector3((col - 1) * .35f, .2f + row * .17f, 0);
+            slot.Configure(new Vector3(.32f, .16f, .5f));
+            slot.RestrictExclusivelyTo(ids[col]);
+        }
+        AddLabels(root);
+        var item = root.gameObject.AddComponent<ShopFurniture>();
+        item.Configure("module-" + (++serial), Names[(int)ShopModuleKind.Freezer], new Vector2(1.2f, .6f));
+        item.CatalogKind = (int)ShopModuleKind.Freezer;
         return item;
     }
     private ShopFurniture CreateCorner()
@@ -198,8 +226,7 @@ public sealed class ShopModularFurniture : MonoBehaviour
         purchased.Add(item);
         if (item.InWarehouse)
             shop.Warehouse.RegisterStorage(item.GetComponentsInChildren<ShopStation>().Select(s => s.transform));
-        else
-            shop.Layout.RegisterPublicSlots(item.Slots);
+        else RegisterSlots(item);
     }
     public bool Buy(ShopModuleKind kind)
     {
@@ -222,8 +249,13 @@ public sealed class ShopModularFurniture : MonoBehaviour
         }
         shop.Arrangement.Adopt(item);purchased.Add(item);
         if(item.InWarehouse)shop.Warehouse.RegisterStorage(item.GetComponentsInChildren<ShopStation>().Select(s=>s.transform));
-        else shop.Layout.RegisterPublicSlots(item.Slots);
+        else RegisterSlots(item);
         shop.SyncCashDrawer();shop.Navigation.Rebuild();shop.Notify("Berendezés megvásárolva. Az átrendezésben szabadon elhelyezheted.");return true;
+    }
+    private void RegisterSlots(ShopFurniture item)
+    {
+        // Behind-counter exclusives (ice cream) never become public self-service stock.
+        shop.Layout.RegisterPublicSlots(item.Slots.Where(s => !ShopIceCreamCatalog.IsIceCream(ShopCatalog.Index(s.PreferredProductId ?? ""))).ToArray());
     }
     public void ResetPurchases()
     {

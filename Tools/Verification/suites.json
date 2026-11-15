@@ -360,6 +360,16 @@
       "file": "Tools/Checks/TicketChecks.cs",
       "entry": "TicketChecks.Integration",
       "purpose": "Ticket procurement, behind-counter slots, requests, handover/scanner checkout, wrong-type rejection and day/reset conservation"
+    },
+    "icecream-catalog": {
+      "file": "Tools/Checks/IceCreamChecks.cs",
+      "entry": "IceCreamChecks.Catalog",
+      "purpose": "Ice cream catalog indices, procurement costs, price category, flat frozen visuals and kind registration"
+    },
+    "icecream-integration": {
+      "file": "Tools/Checks/IceCreamChecks.cs",
+      "entry": "IceCreamChecks.Integration",
+      "purpose": "Freezer arrangement purchase/placement, exclusive slots, procurement, requests, handover/scanner checkout, wrong-flavor rejection and day/reset conservation"
     }
   },
   "historicalExcluded": {

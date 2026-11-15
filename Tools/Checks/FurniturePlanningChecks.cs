@@ -71,6 +71,7 @@ public static class FurniturePlanningChecks
                 check((aligned(bounds.xMin)||aligned(bounds.xMax))&&(aligned(bounds.yMin)||aligned(bounds.yMax))&&pose.Position.y==shelf.DefaultPose.Position.y,"Both footprint axes align after rotation "+turn);
             }
             shop.ResetDemo(); shop.ClosePanel();
+            ShopCheckFixtures.Fund(shop, 200000);
             check(!shop.GetComponent<ShopNextUpgrades>().FridgeOwned && editor.PlannedCount == 0 && !editor.Current().Keys.Any(f => f.InWarehouse), "New game clears owned and pending purchases");
             shop.Devices.Focus(ShopDeviceKind.Monitor); shop.Devices.OpenApp(ShopComputerApp.Furnishing);
             shop.Devices.KeyboardTargets().Single(t=>t.Id=="Furnishing:Developments").Activate();
@@ -79,8 +80,8 @@ public static class FurniturePlanningChecks
             check(!controls.Any(t => t.Id == "ExtraShelf:0" || t.Id.StartsWith("Module:Plan:")), "Legacy cigarette expansion and furniture not in developments");
             controls.Single(t => t.Id == "Furnishing:Furniture").Activate();
             controls = shop.Devices.KeyboardTargets();
-            check(controls.Count(t => t.Id.StartsWith("Module:Plan:")) == 6 && !controls.Any(t => t.Id == "Warehouse:Expand"), "Furniture catalog contains four racks and fridge, no building expansion");
-            check(!controls.Single(t => t.Id == "Module:Plan:4").Enabled, "Starter shop still locks fridge");
+            check(controls.Count(t => t.Id.StartsWith("Module:Plan:")) == 7 && !controls.Any(t => t.Id == "Warehouse:Expand"), "Furniture catalog contains four racks, fridge and freezer, no building expansion");
+            check(!controls.Single(t => t.Id == "Module:Plan:4").Enabled && controls.Single(t => t.Id == "Module:Plan:6").Enabled, "Starter shop still locks fridge but offers freezer");
             int before = shop.Ledger.Cash;
             controls.Single(t => t.Id == "Module:Plan:1").Activate();
             check(editor.Active && editor.PurchasePreview != null && shop.Ledger.Cash == before, "TobaccOS catalog enters placement without charging");
