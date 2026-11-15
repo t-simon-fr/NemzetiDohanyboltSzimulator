@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -91,6 +92,14 @@ public sealed partial class MvpShopController
     public int LastPurchaseSubtotal { get; private set; }
     public int LastPurchaseTotal { get; private set; }
     public int LastPurchaseRounding => LastPurchaseTotal - LastPurchaseSubtotal;
+    // A category joins the reputation choice denominator once the player actually carries it: ordered this game, waiting
+    // in the warehouse or standing on a shelf. Tickets and ice cream are orderable from the start, so counting them
+    // unconditionally would penalise a starter shop that never offers them.
+    private readonly HashSet<int> carried = new HashSet<int>();
+    private static bool IsOptionalChoice(int type) => ShopTicketCatalog.IsTicket(type) || ShopIceCreamCatalog.IsIceCream(type);
+    public int[] ChoiceTypes => Pricing.AvailableTypes
+        .Where(t => !IsOptionalChoice(t) || carried.Contains(t) || StockCount(t) > 0 || WarehouseCount(t) > 0 || PendingQuantity(t) > 0)
+        .ToArray();
     public bool OrderBasket(int[] quantities)
     {
         if (!TryPurchase(quantities, out var quote))
@@ -118,6 +127,7 @@ public sealed partial class MvpShopController
         quote = inventory.Quote(quantities, costs, ShopCatalog.SupplyCapacity,
             Ledger.AvailableFunds, Ledger.Closed || Phase == ShopPhase.Summary, ShopCatalog.MaxOrderQuantity, allowed, 5);
         if (!inventory.TryPurchase(quote, total => Ledger.TryBuy(total, 1))) return false;
+        for (int type = 0; type < ShopCatalog.SupplyCapacity; type++) if (quantities[type] > 0) carried.Add(type);
         LastPurchaseSubtotal = quote.Subtotal;
         LastPurchaseTotal = quote.Total;
         Ledger.RecordPurchaseRounding(quote.Rounding);
