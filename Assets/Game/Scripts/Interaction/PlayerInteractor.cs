@@ -150,8 +150,9 @@ public sealed class PlayerInteractor : MonoBehaviour
         {
             if (heldTool.Kind==ShopToolKind.ContrabandBox && targetSlot!=null && MvpShopController.Instance.CounterStorage.Slots.Contains(targetSlot))
             {
-                if (heldTool.GetComponent<ShopContrabandBox>().Unpack(MvpShopController.Instance.CounterStorage)) ConsumeHeldTool();
-                else MvpShopController.Instance.Notify("Nincs elég szabad hely a teljes doboznak.");
+                var box=heldTool.GetComponent<ShopContrabandBox>();
+                if(box.UnpackOne(targetSlot))MvpShopController.Instance.Notify(box.Quantity>0?"Kipakolva egy csomag.":"Az utolsó csomag is a helyére került. A doboz kiürült.");
+                else MvpShopController.Instance.Notify(box.Quantity>0?"Ez a hely foglalt.":"A doboz üres.");
             }
             return;
         }

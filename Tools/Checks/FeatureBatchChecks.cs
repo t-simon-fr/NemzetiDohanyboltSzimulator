@@ -51,9 +51,11 @@ public static class FeatureBatchChecks
             var box=g.AfterHours.DeliveryBox;
             check(player.TryHoldTool(box.GetComponent<ShopHandTool>()),"Whole paid delivery is carried as one item");
             var blockers=g.CounterStorage.Slots.Select(slot=>{var product=g.CreateNightProduct();product.AssignInitialSlot(slot);return product;}).ToArray();
-            check(!box.Unpack(g.CounterStorage)&&box.Quantity==quantity,"Full private storage rejects the box without losing its contents");
+            check(!box.UnpackOne(g.CounterStorage.Slots[0])&&box.Quantity==quantity,"Full private storage refuses a single pack without losing the box contents");
             foreach(var product in blockers)product.RemoveFromWorld();
-            check(box.Unpack(g.CounterStorage)&&box.Quantity==0,"Delivery unpacks into free private shelf places");
+            int guard=20;
+            while(box.Quantity>0&&guard-->0){var free=g.CounterStorage.Slots.FirstOrDefault(slot=>slot.Occupant==null);if(free==null||!box.UnpackOne(free))break;}
+            check(box.Quantity==0,"Delivery unpacks one by one into free private shelf places");
             player.ConsumeHeldTool();
             check(g.CounterStorage.Slots.Count(slot=>slot.Occupant!=null)==quantity&&g.StockCount(ShopCatalog.Contraband)==quantity,"Unpacking preserves exact paid stock");
             check(g.CounterStorage.Slots.Select(slot=>slot.transform.position.y).Distinct().Count()==2,"Private storage has two physical shelf rows");
