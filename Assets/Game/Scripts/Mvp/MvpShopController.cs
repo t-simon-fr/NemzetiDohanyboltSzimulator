@@ -314,7 +314,7 @@ public sealed partial class MvpShopController : MonoBehaviour
         ShopMobileRequest mobileRequest = forcedProduct == -2 || forcedProduct < 0 && !forceThief && !SingleProductVisits && returning == null && visit % 6 == 4
             ? Mobile.Book.CreateRequest(visit) : null;
         if (mobileRequest != null) regular = false;
-        int[] order = returning!=null || mobileRequest != null ? Array.Empty<int>() : CreateCustomerOrder(type, visit);
+        int[] order = returning!=null || mobileRequest != null ? Array.Empty<int>() : CreateCustomerOrder(type, visit, person);
         if (order.Length == 0 && returning == null && mobileRequest == null && forcedProduct < 0 && !forceThief && Mobile.Owned)
         {
             // An activated service remains usable even when all merchandise has sold out.
@@ -337,7 +337,7 @@ public sealed partial class MvpShopController : MonoBehaviour
             (product.CurrentSlot != delivery&&product.CurrentSlot!=Activities.BasketSlot&&!Activities.CustomerHandoverSlots.Contains(product.CurrentSlot))) return;
         if (!active.OrderTypes.Contains(ShopCatalog.Index(product.ProductId)))
         {
-            Dialogue = ShopPeople.Wrong[active.Person]; Message = "Vedd vissza a téves árut, és tedd félre egy másik pulthelyre."; return;
+            Dialogue = ShopPeople.Complain(active.Person, active.Visit, Day); Message = "Vedd vissza a téves árut, és tedd félre egy másik pulthelyre."; return;
         }
         if (product.CurrentSlot == delivery && !Scanner.TryScan(product)) return;
         prepared = product; BeginPayment();

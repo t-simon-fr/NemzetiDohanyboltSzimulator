@@ -185,7 +185,7 @@ public sealed partial class ShopLotteryRetailer : MonoBehaviour
                 "Egy Ötöskét kérek: "+string.Join(", ",actor.LotteryNumbers)+". Ugyanaz az öt szám, csak nehogy felismerjék.";
         }
         if(ShopLotteryCatalog.IsTicket(actor.Product))return "Egy "+ShopCatalog.ShortNames[actor.Product]+" sorsjegyet kérek. Most már statisztikailag muszáj lenne.";
-        return ShopPeople.Order(actor.Person,actor.OrderTypes);
+        return ShopPeople.Order(actor.Person,actor.OrderTypes,actor.Visit,shop.Day);
     }
     public bool ScanCurrent()
     {

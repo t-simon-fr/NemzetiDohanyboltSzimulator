@@ -146,15 +146,37 @@ public static class ShopInputGate
 
 public static class ShopPeople
 {
-    public static string Order(int person, int[] types)
+    public static string Order(int person, int[] types, int visit, int day)
     {
         string items = string.Join(", ", types.GroupBy(t => t).Select(g => g.Count() + " × " + ShopCatalog.ShortNames[g.Key]));
-        return "Kérek " + items + ". " + Greetings[person];
+        return "Kérek " + items + ". " + Greet(person, visit, day);
     }
+    private static int Pick(int person, int visit, int day, int salt)
+    {
+        return Math.Min(2, (int)(ShopReputationState.Sample(visit, day, (uint)(salt + person * 17)) * 3));
+    }
+    public static string Greet(int person, int visit, int day) => Greetings[person][Pick(person, visit, day, 311)];
+    public static string Thank(int person, int visit, int day) => Thanks[person][Pick(person, visit, day, 317)];
+    public static string Complain(int person, int visit, int day) => Wrong[person][Pick(person, visit, day, 313)];
+    private static readonly string[][] Greetings = {
+        new[]{"A szokásosat kérem. Most először vagyok itt, de nekem ez a szokásos.", "Ugyanazt, mint mindig. Tudja már fejből.", "A listám rövid és állandó."},
+        new[]{"Csak egy percre ugrottam be. A történet hosszabb lesz.", "Na, mi újság? Közben kérem a csomagom.", "Mesélek, de előbb a szokásos."},
+        new[]{"Sietek. Csak azt nem tudom még, hová.", "Gyorsan, gyorsan, lekésem a buszt.", "Egy percem van, de az az egy az enyém."},
+        new[]{"Munkába viszem. A munkát sajnos itt nem árulják.", "A kollégáknak is hozok, ők fizetnek. Talán.", "Hétfő van. Ebből is látszik."}
+    };
+    private static readonly string[][] Thanks = {
+        new[]{"Na, látja! Máris törzsvendég vagyok.", "Szokás szerint köszönöm.", "A szokásosat kaptam, szokás szerint köszönöm."},
+        new[]{"Köszönöm. Na és azt hallotta, hogy… jó, majd holnap.", "Köszi! Holnap folytatom a történetet.", "Köszi, és ne felejtse: holnap ugyanitt."},
+        new[]{"Köszi! A visszajáró legalább nem sietett el.", "Köszi, rohanok is!", "Köszi! Még a buszt is elérhetem."},
+        new[]{"Köszönöm, ezzel már majdnem munkakedvem is van.", "Köszi, a kollégák nevében is.", "Köszi, hétfőhöz képest ez siker."}
+    };
+    private static readonly string[][] Wrong = {
+        new[]{"Ez nem a szokásos. Ezt én is most látom először.", "Ez nem az én listámon volt.", "Ezt nem szoktam kérni."},
+        new[]{"Édesem, ezt a történetet nem így rendeltem.", "Félreértett, de megbocsátok. Ezt nem kérem.", "Ez most nem az én csomagom."},
+        new[]{"Sietni sietek, de azért a megfelelőt vinném.", "Nincs időm cserélgetni, ez nem az enyém.", "Rossz csomag, és sietek is. Szép napot."},
+        new[]{"Ezzel legfeljebb a főnököt lehet megkínálni.", "A kollégák ezt nem rendelték. Visszaviszem.", "Ez nem a munkába való."}
+    };
     public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy", "Kevert", "Kőfejtői", "Rövid kávé", "Hosszú kávé", "Latte", "Dnyipro" };
     public static readonly string[] Names = { "Józsi", "Marika", "Pisti", "Laci" };
     public static readonly Color[] Colors = { new Color(.22f,.35f,.29f), new Color(.60f,.23f,.35f), new Color(.18f,.33f,.65f), new Color(.63f,.42f,.13f) };
-    public static readonly string[] Greetings = { "A szokásosat kérem. Most először vagyok itt, de nekem ez a szokásos.", "Csak egy percre ugrottam be. A történet hosszabb lesz.", "Sietek. Csak azt nem tudom még, hová.", "Munkába viszem. A munkát sajnos itt nem árulják." };
-    public static readonly string[] Thanks = { "Na, látja! Máris törzsvendég vagyok.", "Köszönöm. Na és azt hallotta, hogy… jó, majd holnap.", "Köszi! A visszajáró legalább nem sietett el.", "Köszönöm, ezzel már majdnem munkakedvem is van." };
-    public static readonly string[] Wrong = { "Ez nem a szokásos. Ezt én is most látom először.", "Édesem, ezt a történetet nem így rendeltem.", "Sietni sietek, de azért a megfelelőt vinném.", "Ezzel legfeljebb a főnököt lehet megkínálni." };
 }

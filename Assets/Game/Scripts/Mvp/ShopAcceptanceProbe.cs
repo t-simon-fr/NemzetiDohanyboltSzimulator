@@ -229,7 +229,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Visit(2, 0);
             Set(Shop.ActiveCustomer, "OrderTypes", new[] { 0, 0, 1 });
             Set(Shop.ActiveCustomer, "UnitPrices", new[] { 2200, 2200, 2300 });
-            Set(Shop, "Dialogue", ShopPeople.Order(Shop.ActiveCustomer.Person, Shop.ActiveCustomer.OrderTypes));
+            Set(Shop, "Dialogue", ShopPeople.Order(Shop.ActiveCustomer.Person, Shop.ActiveCustomer.OrderTypes, Shop.ActiveCustomer.Visit, Shop.Day));
             Shop.Notify("A rendelés megérkezett. Tedd a kért árut az átadóhelyre.");
             Aim(Shop.DeliverySlot.transform.position + Vector3.up * .15f, 1.5f);
         }

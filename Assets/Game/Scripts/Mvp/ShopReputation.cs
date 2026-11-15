@@ -78,6 +78,6 @@ public sealed partial class ShopReputation : MonoBehaviour
             "Megint sietek. A tegnapi sietség még nincs kész.",
             "A munkakedvet továbbra is külön keresem."
         };
-        return ShopPeople.Order(actor.Person,actor.OrderTypes)+" "+lines[actor.Person];
+        return ShopPeople.Order(actor.Person,actor.OrderTypes,actor.Visit,shop.Day)+" "+lines[actor.Person];
     }
 }

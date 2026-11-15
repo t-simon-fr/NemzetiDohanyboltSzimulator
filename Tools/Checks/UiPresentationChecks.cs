@@ -21,7 +21,7 @@ public static class UiPresentationChecks
             check(lines.Length == 2 && lines[0].Required == 2 && lines[1].Required == 1, "Duplicate order groups preserve exact quantities");
             check(lines.All(l => l.Delivered == 0), "New order has no phantom deliveries");
             check(JsonUtility.FromJson<ShopOrderLine>(JsonUtility.ToJson(lines[0])).Required == 2, "Order quantities survive the WebGL fixture serialization boundary");
-            check(shop.Dialogue.Contains("2 × Lucky Stroke") && shop.Dialogue.Contains(ShopPeople.Greetings[shop.ActiveCustomer.Person]), "Spoken order includes quantities and actual character personality");
+            check(shop.Dialogue.Contains("2 × Lucky Stroke") && shop.Dialogue.Contains(ShopPeople.Greet(shop.ActiveCustomer.Person, shop.ActiveCustomer.Visit, shop.Day)), "Spoken order includes quantities and actual character personality");
             int cash = shop.Ledger.Cash;
             fixture.Action("deliver-ui-one");
             check(ShopUiState.Order(shop)[0].Delivered == 1 && shop.Ledger.Cash == cash, "View reads partial physical handover without crediting money");

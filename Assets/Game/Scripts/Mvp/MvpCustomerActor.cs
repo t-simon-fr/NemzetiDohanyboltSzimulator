@@ -6,6 +6,7 @@ public sealed class MvpCustomerActor : MonoBehaviour
 {
     public ShopMobileRequest MobileRequest { get; private set; }
     public int Person { get; private set; }
+    public int Visit { get; private set; }
     public bool IsRegular { get; private set; }
     public void MarkRegular() => IsRegular = true;
     public int Product { get; private set; }
@@ -45,8 +46,8 @@ public sealed class MvpCustomerActor : MonoBehaviour
     public void Initialize(int person,int product,int visit,int[] order=null,string lotteryClaimId=null, ShopMobileRequest mobileRequest=null)
     {
         var game = MvpShopController.Instance;
-        LotteryClaimId=lotteryClaimId; MobileRequest=mobileRequest;
-        OrderTypes = lotteryClaimId!=null || mobileRequest!=null ? System.Array.Empty<int>() : order ?? game.CreateCustomerOrder(product,visit);
+        LotteryClaimId=lotteryClaimId; MobileRequest=mobileRequest; Visit=visit;
+        OrderTypes = lotteryClaimId!=null || mobileRequest!=null ? System.Array.Empty<int>() : order ?? game.CreateCustomerOrder(product,visit,person);
         if (OrderTypes.Length == 0 && lotteryClaimId==null && mobileRequest==null) throw new System.ArgumentException("Customer requires an available order.");
         Person=person;Product=OrderTypes.Length>0?OrderTypes[0]:-1;product=Product;
         if(product==ShopLotteryCatalog.NumberType)
