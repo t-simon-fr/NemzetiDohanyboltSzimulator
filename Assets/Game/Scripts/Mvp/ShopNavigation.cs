@@ -16,7 +16,12 @@ public sealed class ShopNavigation : MonoBehaviour
         grid = Build(shop.Arrangement == null ? new Dictionary<ShopFurniture, ShopFurniturePose>() : shop.Arrangement.Current());
         Version++;
     }
-    public bool TryPath(Vector3 from, Vector3 to, out List<Vector3> path) => grid.TryPath(from, to, out path);
+    public bool TryPath(Vector3 from, Vector3 to, out List<Vector3> path)
+    {
+        if (!grid.TryPath(from, to, out path)) return false;
+        path = grid.SmoothPath(path);
+        return true;
+    }
 
     public List<Rect> StaticObstacles(bool placement = false)
     {

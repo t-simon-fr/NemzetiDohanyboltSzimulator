@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -14,6 +15,23 @@ public static class ArrangementChecks
             "A* takes real detour around obstructing furniture");
         grid = new ShopRouteGrid(new Rect(0,0,3,3), p => p.x < 1 || p.x > 1.5f);
         check(!grid.TryPath(new Vector3(.25f,0,.25f), new Vector3(2.75f,0,.25f), out var blocked), "Disconnected floor is rejected");
+        var openGrid = new ShopRouteGrid(new Rect(0,0,4,4), p => true);
+        check(openGrid.TryPath(new Vector3(.25f,0,.25f), new Vector3(3.75f,0,3.75f), out var raw) && raw.Count > 10, "Raw grid path staircases across open floor");
+        var smooth = openGrid.SmoothPath(raw);
+        check(smooth.Count <= 3 && smooth.First() == raw.First() && smooth.Last() == raw.Last(), "Smoothing shortcuts the open diagonal to its endpoints");
+        Func<Vector3,bool> walkable = p => p.x < 1 || p.x > 1.5f || p.z > 2;
+        var wallGrid = new ShopRouteGrid(new Rect(0,0,3,3), walkable);
+        check(wallGrid.TryPath(new Vector3(.25f,0,.25f), new Vector3(2.75f,0,.25f), out var wallRaw), "Walled floor stays connected");
+        var wallSmooth = wallGrid.SmoothPath(wallRaw);
+        bool clear = true;
+        for (int i = 0; clear && i < wallSmooth.Count - 1; i++)
+        {
+            float distance = Vector3.Distance(wallSmooth[i], wallSmooth[i + 1]);
+            int steps = Math.Max(1, (int)Math.Ceiling(distance / .05f));
+            for (int s = 0; s <= steps; s++)
+                if (!walkable(Vector3.Lerp(wallSmooth[i], wallSmooth[i + 1], (float)s / steps))) { clear = false; break; }
+        }
+        check(clear && wallSmooth.First() == wallRaw.First() && wallSmooth.Last() == wallRaw.Last(), "Smoothed detour keeps every segment walkable with identical endpoints");
         var shop = MvpShopController.Instance;
         var layout = shop.Arrangement;
         var player = Object.FindAnyObjectByType<PlayerInteractor>();
