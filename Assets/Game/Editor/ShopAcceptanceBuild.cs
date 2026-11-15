@@ -16,6 +16,53 @@ public static class ShopAcceptanceBuild
         EditorApplication.delayCall += Build;
     }
 
+    public static void QueueShipping()
+    {
+        Directory.CreateDirectory("Builds/ShippingWebGL");
+        File.WriteAllText("Builds/ShippingWebGL/build-queued.json", JsonUtility.ToJson(new Queued { queuedUtc = DateTime.UtcNow.ToString("o"), success = false }, true));
+        UnityEngine.Debug.Log("[ShopAcceptanceBuild] Shipping WebGL build queued (no acceptance probe). Build() runs on the next editor update; watch for build-started.json.");
+        EditorApplication.delayCall += BuildShipping;
+    }
+
+    private static void BuildShipping()
+    {
+        const string status = "Builds/ShippingWebGL/build-result.json";
+        Directory.CreateDirectory("Builds/ShippingWebGL");
+        File.WriteAllText("Builds/ShippingWebGL/build-started.json", JsonUtility.ToJson(new Queued { queuedUtc = DateTime.UtcNow.ToString("o"), success = false }, true));
+        UnityEngine.Debug.Log("[ShopAcceptanceBuild] Shipping WebGL build started.");
+        var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>("Assets/Settings/Mobile_RPAsset.asset");
+        int oldQuality = QualitySettings.GetQualityLevel();
+        try
+        {
+            GraphicsSettings.defaultRenderPipeline = pipeline;
+            QualitySettings.SetQualityLevel(Array.IndexOf(QualitySettings.names, "Mobile"), true);
+            GraphicsSettings.GetRenderPipelineSettings<URPShaderStrippingSetting>().stripUnusedVariants = true;
+            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+            PlayerSettings.WebGL.decompressionFallback = true;
+            AssetDatabase.SaveAssets();
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                scenes = new[] { "Assets/Game/Scenes/ShopPrototype.unity" },
+                locationPathName = "Builds/ShippingWebGL",
+                target = BuildTarget.WebGL,
+                options = BuildOptions.DetailedBuildReport
+            });
+            File.WriteAllText(status, JsonUtility.ToJson(new Result
+            {
+                success = report.summary.result == BuildResult.Succeeded,
+                errors = report.summary.totalErrors,
+                warnings = report.summary.totalWarnings,
+                bytes = report.summary.totalSize,
+                seconds = report.summary.totalTime.TotalSeconds
+            }, true));
+        }
+        catch (Exception error)
+        {
+            File.WriteAllText(status, JsonUtility.ToJson(new Result { success = false, error = error.ToString() }, true));
+        }
+        finally { QualitySettings.SetQualityLevel(oldQuality, true); }
+    }
+
     private static void Build()
     {
         const string status = "Builds/AcceptanceWebGL/build-result.json";
