@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "errors": 0,
+  "warnings": 3,
+  "bytes": 27216407,
+  "seconds": 331.28037589999997,
+  "error": "",
+  "completedUtc": "2026-11-15T19:59:42.85Z",
+  "assets": {
+    "AcceptanceWebGL.data.unityweb": "32e2061ba388cce7b23f247244ab4218a2fc17f1b97b90091df4ccdeb8b847f9",
+    "AcceptanceWebGL.framework.js.unityweb": "f99039639fbd0b4545616765f0c6590cdb0cf0ed7a844c593f62d9b363bfad4a",
+    "AcceptanceWebGL.loader.js": "a287d14505c3497bf22ec3b3aa335c008388e22ca4b1335996e1aa3c7e75110d",
+    "AcceptanceWebGL.wasm.unityweb": "7d3080209ab0a3db4d71e36a85e1ba7c6e4147236d4da14148fa2020e92bf0ec"
+  }
+}

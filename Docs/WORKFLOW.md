@@ -20,6 +20,7 @@ A felhasználó kérése alapján a gyorsan kipróbálható eredmény és az ar�
 - Előbb a működést véglegesítsd, utána egy vizuális finomítási kör következzen. Ha a megfigyelhető elfogadási feltételek teljesülnek és a tényleges játékpróba sikeres, fejezd be; további csiszolás külön kérésre történjen.
 - Röviden rögzítsd az eredményt, a lényeges döntéseket és az ellenőrzési bizonyítékot. Ne másold ugyanazt a részletes jelentést több helyre; használj hivatkozást.
 - Csak dokumentációt vagy munkaszabályt érintő változtatáshoz diff- és hivatkozásellenőrzés elegendő; ne indíts Unity-tesztet vagy WebGL-buildet.
+- Modellfrissítés kérésekor előbb a jelenlegi modell képe, majd a javasolt új modell képe készül; a javaslathoz funkciótérkép tartozik, amely minden kattintható, megfogható és kijelző elem régi és új pozícióját párosítja, azonos befoglalómérettel. A referencia-képek az `ArtSource/<Modell>/` mappába kerülnek.
 
 A releváns pénz-, készlet- és állapotellenőrzés, a látható változások tényleges játékpróbája és a külön publikálási engedély továbbra is szükséges.
 

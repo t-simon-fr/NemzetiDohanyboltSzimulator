@@ -58,7 +58,7 @@ public static class CoffeeDisplayChecks
                 shop.ClosePanel(); activities.Tick(4);
                 Physics.SyncTransforms();
                 check(activities.CoffeeOutput.Occupant != null && activities.CoffeeOutput.Occupant.ProductId == ShopCatalog.Ids[type] && display.DisplayStatus.StartsWith("ELKÉSZÜLT"), "Brew completes after leaving machine view");
-                check(!activities.CoffeeOutput.Occupant.GetComponent<Collider>().bounds.Intersects(display.transform.parent.Find("Coffee machine body").GetComponent<Collider>().bounds), "Brewed cup clears coffee machine housing");
+                check(!activities.CoffeeOutput.Occupant.GetComponent<Collider>().bounds.Intersects(display.transform.parent.Find("Coffee machine body collider").GetComponent<Collider>().bounds), "Brewed cup clears coffee machine housing");
                 shop.Devices.Focus(ShopDeviceKind.Coffee);
                 check(display.ActionControl.Kind == WorldControlKind.CoffeeTake && display.ActionControl.Interactable, "Completed drink enables real pickup");
                 click(3);

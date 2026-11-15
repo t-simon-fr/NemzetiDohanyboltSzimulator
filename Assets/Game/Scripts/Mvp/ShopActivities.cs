@@ -15,7 +15,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     private readonly List<Camera> cameras=new List<Camera>();
     private readonly List<RenderTexture> cameraImages=new List<RenderTexture>();
     private readonly List<ShopFeatureTarget> spills=new List<ShopFeatureTarget>();
-    private Material metal,ivory,dark,coffee,skin,dirt;
+    private Material metal,ivory,dark,skin,dirt;
     private ShopHandTool bat,mop;
     private Vector3 batHome,mopHome;
     private float dirtTimer=48,cameraTimer,snakeTimer,swingCooldown;
@@ -49,7 +49,7 @@ public sealed partial class ShopActivities : MonoBehaviour
         shop=controller;player=interactor;
         worldRoot=new GameObject("Shop Activities").transform;worldRoot.SetParent(transform,false);
         metal=Mat("Brushed steel",new Color(.45f,.49f,.51f));ivory=Mat("Coffee porcelain",new Color(.90f,.87f,.78f));dark=Mat("Activities charcoal",new Color(.045f,.065f,.07f));
-        coffee=Mat("Coffee",new Color(.12f,.055f,.018f));skin=Mat("Customer palm",new Color(.73f,.54f,.39f));dirt=Mat("Floor stain",new Color(.18f,.13f,.055f));
+        skin=Mat("Customer palm",new Color(.73f,.54f,.39f));dirt=Mat("Floor stain",new Color(.18f,.13f,.055f));
         var spare=shop.DeliverySlot.transform.parent.Find("Counter Slot 1");BasketSlot=spare!=null?spare.GetComponent<ProductSlot>():new GameObject("Customer basket handover").AddComponent<ProductSlot>();BasketSlot.transform.SetParent(shop.DeliverySlot.transform.parent,false);
         BasketSlot.transform.localPosition=new Vector3(.66f,.012f,-.01f);BasketSlot.Configure(new Vector3(.35f,.4f,.33f));
         // The visible mat follows its actual placement slot and leaves the blue tray clear.
@@ -80,17 +80,25 @@ public sealed partial class ShopActivities : MonoBehaviour
     private static GameObject Box(Transform parent,string name,Vector3 position,Vector3 scale,Material material,bool collision=false)=>Shape(parent,name,position,scale,material,PrimitiveType.Cube,collision);
     private void BuildCoffeeMachine()
     {
-        coffeeRoot=new GameObject("Purchased Coffee Machine").transform;coffeeRoot.SetParent(worldRoot,false);coffeeRoot.position=new Vector3(1.66f,0,1.02f);
-        Box(coffeeRoot,"Coffee cabinet",new Vector3(0,.41f,0),new Vector3(.65f,.82f,.55f),dark,true);
-        Box(coffeeRoot,"Coffee machine body",new Vector3(0,1.175f,.05f),new Vector3(.49f,.67f,.37f),metal,true);
-        Box(coffeeRoot,"Coffee drip tray",new Vector3(0,.84f,-.27f),new Vector3(.34f,.025f,.32f),dark,true);
-        Box(coffeeRoot,"Coffee nozzle",new Vector3(0,1.17f,-.235f),new Vector3(.06f,.065f,.21f),dark,true);
-        Shape(coffeeRoot,"Coffee bean hopper",new Vector3(0,1.56f,.05f),new Vector3(.22f,.07f,.22f),coffee,PrimitiveType.Cylinder);
-        var target=coffeeRoot.gameObject.AddComponent<ShopFeatureTarget>();target.Kind=ShopFeatureKind.CoffeeMachine;
-        CoffeeOutput=new GameObject("Coffee output slot").AddComponent<ProductSlot>();CoffeeOutput.transform.SetParent(coffeeRoot,false);CoffeeOutput.transform.localPosition=new Vector3(0,.86f,-.29f);CoffeeOutput.Configure(new Vector3(.2f,.23f,.2f));CoffeeOutput.RestrictTo("coffee");CoffeeOutput.Configure(new Vector3(.2f,.32f,.2f));
-        ProductVisuals.Text(coffeeRoot,"Coffee station sign","TRAFIK PRESSZÓ",new Vector3(0,.62f,-.281f),Quaternion.identity,.038f,Color.white);
+        coffeeRoot = new GameObject("Purchased Coffee Machine").transform; coffeeRoot.SetParent(worldRoot, false); coffeeRoot.position = new Vector3(1.66f, 0, 1.02f);
+        var body = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Equipment/CoffeeMachine/CoffeeMachine"), coffeeRoot, false);
+        body.name = "LaVazze Barista body";
+        // The authored model carries no colliders; these invisible boxes preserve the exact pre-model interaction envelope.
+        ColliderBox(coffeeRoot, "Coffee cabinet collider", new Vector3(0, .41f, 0), new Vector3(.65f, .82f, .55f));
+        ColliderBox(coffeeRoot, "Coffee machine body collider", new Vector3(0, 1.175f, .05f), new Vector3(.49f, .67f, .37f));
+        ColliderBox(coffeeRoot, "Coffee drip tray collider", new Vector3(0, .84f, -.27f), new Vector3(.34f, .025f, .32f));
+        ColliderBox(coffeeRoot, "Coffee nozzle collider", new Vector3(0, 1.17f, -.235f), new Vector3(.06f, .065f, .21f));
+        var target = coffeeRoot.gameObject.AddComponent<ShopFeatureTarget>(); target.Kind = ShopFeatureKind.CoffeeMachine;
+        CoffeeOutput = new GameObject("Coffee output slot").AddComponent<ProductSlot>(); CoffeeOutput.transform.SetParent(coffeeRoot, false); CoffeeOutput.transform.localPosition = new Vector3(0, .86f, -.29f); CoffeeOutput.Configure(new Vector3(.2f, .23f, .2f)); CoffeeOutput.RestrictTo("coffee"); CoffeeOutput.Configure(new Vector3(.2f, .32f, .2f));
+        ProductVisuals.Text(coffeeRoot, "Coffee station sign", "LaVazze Barista", new Vector3(0, .70f, -.289f), Quaternion.identity, .038f, new Color(.08f, .20f, .16f));
         CoffeeDisplay = new GameObject("Coffee machine touchscreen").AddComponent<ShopCoffeeDisplay>();
         CoffeeDisplay.Configure(this, shop, coffeeRoot);
+    }
+    private static void ColliderBox(Transform parent, string name, Vector3 position, Vector3 size)
+    {
+        var go = new GameObject(name); go.transform.SetParent(parent, false);
+        go.transform.localPosition = position;
+        var collider = go.AddComponent<BoxCollider>(); collider.center = Vector3.zero; collider.size = size;
     }
     private void BuildTools()
     {
@@ -379,7 +387,7 @@ public sealed partial class ShopActivities : MonoBehaviour
     }
     private void DrawCoffee(float width,float height)
     {
-        GUI.Label(new Rect(16,5,width-32,32),"TRAFIK PRESSZÓ",heading);
+        GUI.Label(new Rect(16,5,width-32,32),"LaVazze Barista",heading);
         if(!CoffeeOwned){GUI.Label(new Rect(16,55,width-32,100),"Kávégép vásárolható az Üzletfejlesztésben: "+ShopCatalog.Money(CoffeeMachinePrice),label);return;}
         foreach (var ingredient in ShopHotDrinkRecipes.Ingredients)
         {
