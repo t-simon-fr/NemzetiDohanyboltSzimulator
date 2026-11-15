@@ -2,7 +2,7 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
-- #152/#154: ellenőrzési hurok megerősítése — a runner múlékony transport-hibánál újrapróbálkozik és `transportRetries`-t rögzít, a checkek explicit out-változót használnak (`CS0165` ellen), a #112 után elavult `partner-integration` és `corner-wall` suite a katalógusból származtatja a várt értéket. `WorkflowRunnerChecks`: 24 checks; érintett suite-ok zöldek. Nyitott: `reputation-integration` choice-metrikája (#156). Részletek a #152/#154 issue-kban. Pagesre nincs kiadva.
+- #152/#154/#156: ellenőrzési hurok megerősítése és a #112 utóhatásainak rendezése — a runner múlékony transport-hibánál újrapróbálkozik és `transportRetries`-t rögzít, a checkek explicit out-változót használnak (`CS0165` ellen), a #112 után elavult `partner-integration` és `corner-wall` suite a katalógusból származtatja a várt értéket, a reputáció választék-metrikája pedig csak a ténylegesen hordozott jegy-/jégkrémkategóriát számolja. `WorkflowRunnerChecks`: 24 checks; teljes `checkout` profil **57 suite / 1626 állítás, 0 hiba**. Részletek a #152/#154/#156 issue-kban. Pagesre nincs kiadva.
 
 - #112: fagyasztóláda és három saját márkás csomagolt jégkrém (Hókristály csoki, Jeges Pötty eper, Sarki Fény vanília) pult melletti ládakészletből, kézi átadással/leolvasóval, vegyes kosárral és készpénz/kártya fizetéssel; új Jégkrém árkategória. **9 suite / 244 sikeres célzott natív állítás; 11 WebGL-ellenőrzés**, 0 konzolhiba. Natív logika és 720p/1080p képek átnézve (a ládafelirat tükrözése képről jött, javítva). [Jelentés](../Acceptance/ice-cream/REPORT.md); [használat](../Architecture/IceCream/README.md). Pagesre nincs kiadva.
 
