@@ -26,6 +26,16 @@ public static class StockAwareOrderChecks
             int cash=shop.Ledger.Cash, units=Enumerable.Range(0,ShopCatalog.Ids.Length).Sum(shop.StockCount);
             check(Enumerable.Range(0,8).All(v=>shop.CreateCustomerOrder(6,v).All(t=>t<ShopCatalog.CigaretteCount)), "Never-bought energy drink and other unstocked types are never requested");
             check(shop.CreateCustomerOrder(0,2).SequenceEqual(new[]{0,1,2}), "Existing preferred basket remains unchanged when all its stock exists");
+            reset(); ShopCheckFixtures.Fund(shop,100000); shop.TryExpand();
+            shop.OrderSupply(5,2); shop.OrderSupply(6,2); ShopCheckFixtures.Tick(shop,8.1f);
+            foreach(int type in new[]{5,6})for(int i=0;i<2;i++){ShopProduct p=null;shop.TryCreateSupply(type,out p);p.AssignInitialSlot(Object.FindObjectsByType<ProductSlot>().First(s=>s.name.StartsWith("Public slot")&&s.PreferredProductId==p.ProductId&&s.CanAcceptStock(p.ProductId)));}
+            check(shop.CreateCustomerOrder(5,2,3).SequenceEqual(shop.CreateCustomerOrder(5,2,3)),"Same seed repeats the same personal basket");
+            check(Enumerable.Range(0,12).Any(v=>!shop.CreateCustomerOrder(5,v,0).SequenceEqual(shop.CreateCustomerOrder(5,v,3))),"Persons shop differently from the same shelf");
+            check(Enumerable.Range(0,24).All(v=>{var o=shop.CreateCustomerOrder(5,v,v%4);return o.Skip(1).All(t=>shop.Layout.FindPublicStock(t)!=null);}),"Extra lines are always publicly pickable");
+            reset();
+            check(ShopPeople.Order(0,new[]{0},2,1)==ShopPeople.Order(0,new[]{0},2,1),"Same visit repeats the same sentence");
+            check(Enumerable.Range(0,12).Select(v=>ShopPeople.Order(1,new[]{0},v,1)).Distinct().Count()>1,"Visits vary the spoken order");
+            check(Enumerable.Range(0,12).Select(v=>ShopPeople.Thank(2,v,1)).Distinct().Count()>1,"Visits vary the spoken thanks");
             check(shop.Ledger.Cash==cash && Enumerable.Range(0,ShopCatalog.Ids.Length).Sum(shop.StockCount)==units, "Choosing orders consumes no real cash or stock");
             var last=Object.FindObjectsByType<ShopProduct>().First(p=>p.ProductId==ShopCatalog.Ids[0]);
             foreach(var p in Object.FindObjectsByType<ShopProduct>().Where(p=>p!=last))p.RemoveFromWorld();

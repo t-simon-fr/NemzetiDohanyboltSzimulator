@@ -92,7 +92,7 @@ public sealed partial class MvpShopController
         active.ReturnUnusedBasket(receivedOrder.ToArray());foreach(var sold in receivedOrder.ToArray())if(sold!=null){var slot=sold.CurrentSlot;sold.AcceptDelivery();if(checkout.OwnsReceipt(slot))checkout.RemoveReceipt(slot);}
         checkout.ClearItems();prepared=null;active.SellBasket();
         Activities.ClearHand();Stage=ServiceStage.Thanks;thanksTimer=2.5f;
-        Dialogue=ShopPeople.Thanks[active.Person];Message=active.MobileRequest != null ? "Sikeres telefonfeltöltés. Bizonylat: " + Mobile.Book.LastReceipt.Id : "Sikeres fizetés. A kassza és a készlet frissült.";
+        Dialogue=ShopPeople.Thank(active.Person,active.Visit,Day);Message=active.MobileRequest != null ? "Sikeres telefonfeltöltés. Bizonylat: " + Mobile.Book.LastReceipt.Id : "Sikeres fizetés. A kassza és a készlet frissült.";
         SetModal(ShopModal.None);
         changeCoins.Clear();
     }
