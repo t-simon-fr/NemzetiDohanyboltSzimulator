@@ -1,12 +1,13 @@
-"""Build Marika (#183): MPFB female base + mixamo_unity rig + procedural Karen styling.
+"""Build Marika (#183): MPFB female base + mixamo_unity rig + Karen styling.
 
 Run: D:\\Blender\\blender.exe --background --python Tools/Art/Build-Marika.py
-Source of truth for the Marika model. MPFB output is CC0. No downloaded assets:
-the install ships zero clothes/skin packs, so hair, blouse, skirt, shoes, brows
-and mouth variants are modelled here and skinned by nearest-body-vertex weights
-(the transfer was proven in the spike). Every custom part stays a separate
-skinned object with its own material, so no material-slot remap can wash the
-colors out. Mouths stay separate so the Unity rig can swap them like Pisti.
+Source of truth for the Marika model. MPFB output is CC0. The bob is the CC0
+Quaternius SimpleParted hairstyle (see ArtSource/Characters/Quaternius),
+auto-fitted to Marika's head; brows are thin angled liner planes, mouths are
+swap variants like Pisti's, clothes are painted material zones on the body.
+Every custom part stays a separate skinned object with its own material, so no
+material-slot remap can wash the colors out. Mouths stay separate so the Unity
+rig can swap them like Pisti.
 
 Writes ArtSource/Characters/Marika.fbx (+ previews) and copies the FBX into
 Assets/Game/Resources/Customers/Marika/ for Resources loading.
