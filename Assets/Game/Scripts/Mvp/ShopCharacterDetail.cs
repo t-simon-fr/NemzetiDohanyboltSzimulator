@@ -8,6 +8,23 @@ public sealed class ShopCharacterDetail:MonoBehaviour
     {var o=GameObject.CreatePrimitive(type);o.name=name;o.transform.SetParent(transform,false);o.transform.localPosition=position;o.transform.localScale=size;o.GetComponent<Renderer>().sharedMaterial=material;var c=o.GetComponent<Collider>();c.enabled=false;Destroy(c);return o;}
     public void Configure(int person)
     {
+        if (person == 2) { ConfigurePisti(); return; }
+        ConfigureLegacy(person);
+    }
+    private void ConfigurePisti()
+    {
+        var body = transform.Find("Body");
+        var prefab = Resources.Load<GameObject>("Customers/Pisti/Pisti");
+        var actor = GetComponent<MvpCustomerActor>();
+        if (prefab == null || body == null || actor == null) { ConfigureLegacy(2); return; }
+        body.GetComponent<Renderer>().enabled = false;
+        var model = Object.Instantiate(prefab, transform, false);
+        model.name = "PistiModel";
+        var rig = gameObject.AddComponent<ShopPistiRig>();
+        rig.Configure(actor, MvpShopController.Instance);
+    }
+    private void ConfigureLegacy(int person)
+    {
         var hair=Mat(new Color(.10f+person*.06f,.055f+person*.05f,.025f+person*.05f));var dark=Mat(new Color(.035f,.04f,.045f));var white=Mat(new Color(.9f,.87f,.79f));
         Shape("Hair",new Vector3(0,1.73f,0),new Vector3(.33f,.14f,.31f),hair,PrimitiveType.Sphere);
         foreach(int side in new[]{-1,1}){Shape("Eye",new Vector3(side*.065f,1.64f,.152f),new Vector3(.035f,.04f,.02f),dark,PrimitiveType.Sphere);Shape("Collar",new Vector3(side*.065f,1.36f,.17f),new Vector3(.08f,.045f,.015f),white).transform.localRotation=Quaternion.Euler(0,0,side*35);}

@@ -1233,6 +1233,16 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       await sleep(2000); s = await state();
       check(!s.dialoguePanel && s.cameraFov === 60, 'Leaving customer restores the normal lens');
     }
+    if (!selected || selected === 'pisti-handover') {
+      await viewport(1280, 720);
+      await probe('Prepare', 'pisti-handover'); let s = await state();
+      check(s.dialoguePanel && s.cameraFov < 60, 'Pisti takes the order with zoom and RPG panel');
+      await key('e', 'KeyE', 69); s = await state();
+      check(s.held === 'cig_red', 'Real E picks the requested cigarette for the new model');
+      await probe('Action', 'pisti-aim-tray'); await key('e', 'KeyE', 69); await sleep(2000); s = await state();
+      check(!s.held && s.stage === 'Payment' && !s.dialoguePanel && s.cameraFov === 60, 'Real E handover reaches payment and clears the panel');
+      await capture('pisti-handover');
+    }
     if (!selected || (selected === 'menu' || batchCase('menu'))) {
       await probe('Prepare', 'pickup'); await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); let s = await state();
       check(s.menu && s.timeScale === 0 && s.blocked, 'Escape pauses world and input');

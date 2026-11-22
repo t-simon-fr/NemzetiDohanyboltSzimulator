@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #181 pilot (Pisti): Blender-szkripttel generált sztereotip vásárlómodell (34 part, rig, séta/tolvaj-animációk, hangulat-szájak), változatlan játéklogikával. Teljes `checkout` profil **59 suite / 1692 állítás, 0 hiba**; **25 célzott `customer-pisti` állítás**; **4 `pisti-handover` + 8 dialógus + 10 UI WebGL-ellenőrzés**, 0 konzolhiba; 720p/1080p képek átnézve. [Jelentés](../Acceptance/pisti-pilot/REPORT.md). Marika/Józsi/Laci a következő szeletekben. Pagesre nincs kiadva.
+
 - #175: RPG dialóguspanel kamerazoommal + összesítő-felújítás — FOV-lerp (60→48), monogram-chip + hangulatcímke, gépelős mondat E-befejezéssel (akciófogyasztás nélkül), megújult összesítő. Teljes `checkout` profil **58 suite / 1665 állítás, 0 hiba**; **34 célzott `dialogue-zoom` állítás**; **8 dialógus + 10 UI WebGL-ellenőrzés**, 0 konzolhiba; 720p/1080p képek átnézve. [Jelentés](../Acceptance/dialogue-zoom/REPORT.md). Pagesre nincs kiadva.
 
 - #174: változatos kérések és mondatok — személyiség-súlyozott extra sorok, 3-as mondatpoolok, determinisztikus seed; az extrák csak publikusan levehető áruk lehetnek. Teljes `checkout` profil **57 suite / 1633 állítás, 0 hiba**. Pagesre publikálva; lásd az aktuális kiadást.

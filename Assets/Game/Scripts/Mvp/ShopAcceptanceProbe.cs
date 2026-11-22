@@ -334,6 +334,22 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.ClosePanel();
             Shop.ManualTick = false;
         }
+        else if (scenario == "pisti-handover")
+        {
+            Shop.SingleProductVisits = true;
+            Visit(2, 0);
+            ProductSlot shelf = null;
+            foreach (var s in FindObjectsByType<ProductSlot>())
+            {
+                if (s == null || !s.name.StartsWith("Cigarette slot") || s.Occupant == null) continue;
+                if (ShopCatalog.Index(s.Occupant.ProductId) != 0) continue;
+                shelf = s;
+                break;
+            }
+            if (shelf == null) throw new Exception("Pisti handover fixture found no cigarette.");
+            Aim(shelf.transform.position + Vector3.up * .09f, .85f, -shelf.transform.forward);
+            Shop.ManualTick = false;
+        }
         else if (scenario == "summary")
         {
             Shop.OpenShop();
@@ -544,6 +560,7 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
             Shop.TakeSupply(Player,6);
             Aim(Shop.DeliverySlot.transform.position + Vector3.up*.1f);
         }
+        if (action == "pisti-aim-tray") Aim(Shop.DeliverySlot.transform.position + Vector3.up * .05f, 1.2f);
         if (action.StartsWith("aim-storage-") && int.TryParse(action.Substring(12),out int dockIndex)) AimStorageDock(Shop.Warehouse.Dock(dockIndex));
         if (action == "aim-storage-lower") AimStorageDock(LowerStorageDock());
         if (action == "aim-warehouse-shelf") AimWarehouseShelf();

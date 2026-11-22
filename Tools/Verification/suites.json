@@ -77,10 +77,16 @@
       "hot-drinks-integration",
       "mobile-state",
       "mobile-integration",
-      "dialogue-zoom"
+      "dialogue-zoom",
+      "customer-pisti"
     ]
   },
   "suites": {
+    "customer-pisti": {
+      "file": "Tools/Checks/CustomerPistiChecks.cs",
+      "entry": "CustomerPistiChecks.Run",
+      "purpose": "Scripted Pisti model assembly, animation states, complaint/smile mouths and untouched money/stock flow"
+    },
     "dialogue-zoom": {
       "file": "Tools/Checks/DialogueZoomChecks.cs",
       "entry": "DialogueZoomChecks.Run",

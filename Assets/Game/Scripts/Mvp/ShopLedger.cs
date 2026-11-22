@@ -182,4 +182,10 @@ public static class ShopPeople
     private static readonly string[] Moods = { "RUTINOS", "BESZÉLGETŐS", "SIETŐS", "MUNKÁBA" };
     public static string Mood(int person) => Moods[Mathf.Clamp(person, 0, Moods.Length - 1)];
     public static string Monogram(int person) => Names[Mathf.Clamp(person, 0, Names.Length - 1)].Substring(0, 1);
+    public static bool IsComplaintLine(int person, string text)
+    {
+        if (string.IsNullOrEmpty(text) || person < 0 || person >= Wrong.Length) return false;
+        foreach (string line in Wrong[person]) if (line == text) return true;
+        return false;
+    }
 }
