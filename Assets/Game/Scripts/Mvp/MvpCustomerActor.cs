@@ -135,6 +135,11 @@ public sealed class MvpCustomerActor : MonoBehaviour
         if(BasketItem!=null){BasketItem.Drop(transform.position+transform.forward*.45f+Vector3.up*.7f,transform.forward*.4f);BasketItem=null;}
     }
     public void Leave(){Leaving=true;exitStep=0;}
+    public void TickVisual(float dt)
+    {
+        var rig = GetComponent<ShopPistiRig>();
+        if (rig != null) rig.Tick(dt);
+    }
     private bool Move(Vector3 target,float dt)
     {
         Vector3 delta = target - transform.position;

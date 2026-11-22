@@ -221,6 +221,9 @@ public sealed partial class MvpShopController : MonoBehaviour
         if (Ledger == null || Phase == ShopPhase.Summary || Arrangement != null && Arrangement.Active) return;
         dt = Mathf.Max(0f, dt);
         dialogue.Tick(this, dt);
+        for (int i = 0; i < queue.Count; i++) queue[i].TickVisual(dt);
+        for (int i = 0; i < departing.Count; i++) departing[i].TickVisual(dt);
+        for (int i = 0; i < fleeing.Count; i++) fleeing[i].TickVisual(dt);
         bool liveMonitor=Devices!=null&&Devices.FocusKind==ShopDeviceKind.Monitor&&(Devices.ComputerApp==ShopComputerApp.Cameras||Devices.ComputerApp==ShopComputerApp.Games);
         if (!ShopMenu.Active && Modal==ShopModal.None) Reputation?.Tick(dt);
         Lottery?.Tick(dt);
