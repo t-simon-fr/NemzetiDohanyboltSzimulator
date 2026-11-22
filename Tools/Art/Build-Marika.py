@@ -1,12 +1,13 @@
-"""Build Marika (#183): MPFB female base + mixamo_unity rig + procedural Karen styling.
+"""Build Marika (#183): MPFB female base + mixamo_unity rig + Karen styling.
 
 Run: D:\\Blender\\blender.exe --background --python Tools/Art/Build-Marika.py
-Source of truth for the Marika model. MPFB output is CC0. No downloaded assets:
-the install ships zero clothes/skin packs, so hair, blouse, skirt, shoes, brows
-and mouth variants are modelled here and skinned by nearest-body-vertex weights
-(the transfer was proven in the spike). Every custom part stays a separate
-skinned object with its own material, so no material-slot remap can wash the
-colors out. Mouths stay separate so the Unity rig can swap them like Pisti.
+Source of truth for the Marika model. MPFB output is CC0. The bob is the CC0
+Quaternius SimpleParted hairstyle (see ArtSource/Characters/Quaternius),
+auto-fitted to Marika's head; brows are thin angled liner planes, mouths are
+swap variants like Pisti's, clothes are painted material zones on the body.
+Every custom part stays a separate skinned object with its own material, so no
+material-slot remap can wash the colors out. Mouths stay separate so the Unity
+rig can swap them like Pisti.
 
 Writes ArtSource/Characters/Marika.fbx (+ previews) and copies the FBX into
 Assets/Game/Resources/Customers/Marika/ for Resources loading.
@@ -82,6 +83,8 @@ def main():
         'Skirt': principled('MarikaSkirt', (.16, .15, .17)),
         'Shoe': principled('MarikaShoe', (.10, .09, .10)),
         'Brow': principled('MarikaBrow', (.07, .05, .045)),
+        'Liner': principled('MarikaLiner', (.10, .07, .06)),
+        'Blush': principled('MarikaBlush', (.80, .42, .40)),
     }
     mouth_cols = {
         'MouthNeutral': (.55, .08, .12),
@@ -98,32 +101,10 @@ def main():
         obj.data.materials.append(mat)
         joined.append(obj)
 
-    # Bob hair: sphere over back/top/sides, face opening cut via bmesh.
-    import bmesh as _bmesh
-    bpy.ops.mesh.primitive_uv_sphere_add(segments=18, ring_count=12,
-                                         location=(head_w.x, head_w.y - 0.03, head_w.z + 0.05))
-    hair = bpy.context.object
-    hair.name = 'MarikaHair'
-    hair.dimensions = (0.32, 0.33, 0.36)
-    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-    bpy.context.view_layer.update()
-    _bm = _bmesh.new()
-    _bm.from_mesh(hair.data)
-    _bm.faces.ensure_lookup_table()
-    _kill = [f for f in _bm.faces
-             if abs((hair.matrix_world @ f.calc_center_median()).x - head_w.x) < 0.115
-             and (hair.matrix_world @ f.calc_center_median()).y - head_w.y > 0.045
-             and (hair.matrix_world @ f.calc_center_median()).z < head_w.z + 0.10]
-    _bmesh.ops.delete(_bm, geom=_kill, context='FACES')
-    _bm.to_mesh(hair.data)
-    _bm.free()
-    hair.data.update()
-    solid = hair.modifiers.new('Bob shell', 'SOLIDIFY')
-    solid.thickness = 0.012
-    bpy.context.view_layer.objects.active = hair
-    bpy.ops.object.modifier_apply(modifier=solid.name)
-    print('HAIR verts:', len(hair.data.vertices), 'faces cut:', len(_kill))
-    finish_custom(hair, mats['Hair'])
+    # Hair and brows come from the Quaternius CC0 pack (see
+    # ArtSource/Characters/Quaternius/): professionally modeled, smooth,
+    # textured. The pack's "Origin at 0" variants are fitted to Marika's head
+    # below and ride the skull rigidly, like the previous attachments.
 
     # No separate clothing geometry: the smooth MPFB body keeps its silhouette and
     # clothing is painted as material zones on the body mesh itself (see the
@@ -155,15 +136,97 @@ def main():
     brow_x = 0.058
     print('LIPS', round(mouth_y, 3), round(mouth_z, 3), 'BROW', round(brow_y, 3), round(brow_z, 3))
 
-    # Stern Karen brows, angled down toward the nose.
+    # Quaternius hair + brows (CC0, see ArtSource/Characters/Quaternius/),
+    # fitted to Marika's head: uniform scale about the feet origin, then
+    # translate onto the head center. Eyeliner planes finish the Karen look.
+    import bmesh as _bmesh
+    _qdir = art / 'Quaternius'
+
+    def _relink(_owner_mats):
+        for _m in _owner_mats:
+            if _m is None or not _m.use_nodes:
+                continue
+            for _n in _m.node_tree.nodes:
+                if _n.type != 'TEX_IMAGE':
+                    continue
+                _nm = _n.image.name if _n.image is not None else ''
+                _stem = _nm.split('.')[0]
+                for _cand in _qdir.glob('*.png'):
+                    if _cand.stem == _stem and _cand.stat().st_size > 0:
+                        try:
+                            if _n.image is not None and not _n.image.has_data:
+                                _n.image.filepath = str(_cand)
+                                _n.image.reload()
+                            else:
+                                _n.image = bpy.data.images.load(str(_cand))
+                            print('TEXLINK', _cand.name, 'px:', _n.image.has_data)
+                        except Exception as _e:
+                            print('TEXLINK_FAIL', _cand.name, _e)
+                        break
+
+    _fit_parts = []
+    for _fp in (_qdir / 'Hair_SimpleParted.fbx',):
+        bpy.ops.import_scene.fbx(filepath=str(_fp))
+        for _o in list(bpy.context.selected_objects):
+            if _o.type != 'MESH':
+                continue
+            _o.rotation_euler = (_o.rotation_euler.x, _o.rotation_euler.y, _o.rotation_euler.z + 3.14159265)
+            _relink(_o.data.materials)
+            for _mm in _o.data.materials:
+                if _mm is not None and _mm.use_nodes:
+                    _bsdf = _mm.node_tree.nodes.get('Principled BSDF')
+                    if _bsdf is not None:
+                        for _link in [l for l in _mm.node_tree.links if l.to_node == _bsdf and l.to_socket.name == 'Base Color']:
+                            _mm.node_tree.links.remove(_link)
+                        _tint = (0.16, 0.10, 0.07, 1) if 'brow' in _o.name.lower() or 'eye' in _o.name.lower() else (0.25, 0.14, 0.08, 1)
+                        _bsdf.inputs['Base Color'].default_value = _tint
+                        _mm.diffuse_color = _tint
+            _o.name = 'MarikaQ' + _o.name.replace('.', '_')
+            _o.location = (0.0, 0.0, 0.0)
+            _fit_parts.append(_o)
+    bpy.ops.object.select_all(action='DESELECT')
+    for _o in _fit_parts:
+        _o.select_set(True)
+    bpy.context.view_layer.objects.active = _fit_parts[0]
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    print('BAKED', [(o.name, tuple(round(v, 3) for v in o.location), tuple(round(v, 3) for v in o.scale)) for o in _fit_parts])
+    _hw = [body_world @ v.co for v in body_verts
+           if abs((body_world @ v.co).x - head_w.x) < 0.16
+           and abs((body_world @ v.co).y - head_w.y) < 0.16
+           and abs((body_world @ v.co).z - head_w.z) < 0.20]
+    _skullw = 2 * max(abs(w.x - head_w.x) for w in _hw)
+    _crown = max(w.z for w in _hw)
+
+    def _place(_o, _sx, _sy, _sz, _tx, _ty, _tz):
+        _xs = [float(v.co.x) for v in _o.data.vertices]
+        _ys = [float(v.co.y) for v in _o.data.vertices]
+        _zs = [float(v.co.z) for v in _o.data.vertices]
+        _cx = (min(_xs) + max(_xs)) / 2
+        _cy = (min(_ys) + max(_ys)) / 2
+        _cz = (min(_zs) + max(_zs)) / 2
+        _o.scale = (_sx, _sy, _sz)
+        _o.location = (_tx - _sx * _cx, _ty - _sy * _cy, _tz - _sz * _cz)
+        joined.append(_o)
+        print('PLACED', _o.name, 'scale', tuple(round(v, 3) for v in _o.scale), 'loc', tuple(round(v, 3) for v in _o.location))
+
+    _qh = [o for o in _fit_parts if 'Hair' in o.name][0]
+    _qhx = [float(v.co.x) for v in _qh.data.vertices]
+    _qhz = [float(v.co.z) for v in _qh.data.vertices]
+    _fx = (_skullw * 1.30) / ((max(_qhx) - min(_qhx)) or 1.0)
+    _fz = 0.30 / ((max(_qhz) - min(_qhz)) or 1.0)
+    print('HAIRFIT skull-w: %.3f quat-w: %.3f' % (_skullw, max(_qhx) - min(_qhx)))
+    _place(_qh, _fx, _fx, _fz, 0.0, head_w.y - 0.01, _crown - (max(_qhz) - min(_qhz)) * _fz / 2 + 0.06)
+
+
+    # Eyeliner: thin dark planes just under the brow ridge.
     for side, tag in ((-1, 'L'), (1, 'R')):
-        bpy.ops.mesh.primitive_cube_add(location=(side * brow_x, brow_y, brow_z))
-        brow = bpy.context.object
-        brow.name = 'MarikaBrow' + tag
-        brow.dimensions = (0.065, 0.016, 0.014)
-        brow.rotation_euler = (0, -side * 0.30, 0)
+        bpy.ops.mesh.primitive_cube_add(location=(side * 0.058, brow_y - 0.002, brow_z - 0.028))
+        liner = bpy.context.object
+        liner.name = 'MarikaLiner' + tag
+        liner.dimensions = (0.055, 0.010, 0.008)
+        liner.rotation_euler = (0, -side * 0.22, 0)
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
-        finish_custom(brow, mats['Brow'])
+        finish_custom(liner, mats['Liner'])
 
     # (Sleeves are painted zones on the arms, not geometry; see the zone pass.)
     bpy.context.view_layer.update()
@@ -198,7 +261,8 @@ def main():
     # Face attachments ride the skull rigidly: 100% Head bone. The body's own
     # mouth-area verts sit on spine/neck weights, so nearest-transfer would
     # leave hair and brows behind on a head turn.
-    for rigid in [b for b in joined if 'Brow' in b.name or 'Hair' in b.name]:
+    for rigid in [b for b in joined if 'Brow' in b.name or 'Hair' in b.name
+                or 'Eyebrow' in b.name or 'Liner' in b.name]:
         for _g in list(rigid.vertex_groups):
             rigid.vertex_groups.remove(_g)
         rigid.vertex_groups.new(name='mixamorig:Head')
@@ -392,13 +456,20 @@ def main():
     # is created as skin, then the clothing slots.
     _mesh = human.data
     _skin = principled('MarikaSkin', (.72, .52, .38))
-    for _mat in (_skin, mats['Blouse'], mats['Skirt'], mats['Shoe']):
+    for _mat in (_skin, mats['Blouse'], mats['Skirt'], mats['Shoe'], mats['Blush']):
         _mesh.materials.append(_mat)
     _bidx = {m.name: i for i, m in enumerate(_mesh.materials)}
+    # Blush band anchored to the actual mouth plane (post-normalize-proof).
+    _m0 = mouths[0]
+    _mcen = _m0.matrix_world @ _m0.data.vertices[0].co
+    for _v in _m0.data.vertices[1:]:
+        _mcen += _m0.matrix_world @ _v.co
+    _mcen /= len(_m0.data.vertices)
     _counts = {}
     for _p in _mesh.polygons:
         _w = human.matrix_world @ _mesh.vertices[_p.vertices[0]].co
         _wx = abs(_w.x)
+        _wy = _w.y
         _wz = _w.z
         _domname = ''
         _bw = 0.0
@@ -408,9 +479,13 @@ def main():
                 _domname, _bw = _gn, _g.weight
         _is_hand = 'Hand' in _domname or 'Finger' in _domname or 'Thumb' in _domname
         _is_arm = ('Arm' in _domname) or (_wx > 0.24 and _wz > 0.60)
+        _is_blush = (_mcen.z + 0.012 < _wz < _mcen.z + 0.095
+                     and 0.035 < _wx < 0.115 and _wy > _mcen.y - 0.02)
         _zone = None
         if _is_hand:
             _zone = None
+        elif _is_blush:
+            _zone = 'MarikaBlush'
         elif _is_arm:
             _zone = 'MarikaBlouse' if 1.24 <= _wz <= 1.54 else None
         elif _wz < 1.02 and abs(_wx) < 0.30:

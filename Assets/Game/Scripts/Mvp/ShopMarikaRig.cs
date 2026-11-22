@@ -54,6 +54,8 @@ public sealed class ShopMarikaRig : MonoBehaviour
                     fixedMat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
                     if (src.HasProperty("_Color")) fixedMat.color = src.color;
                     else if (src.HasProperty("_BaseColor")) fixedMat.SetColor("_BaseColor", src.GetColor("_BaseColor"));
+                    if (src.HasProperty("_MainTex")) fixedMat.SetTexture("_BaseMap", src.GetTexture("_MainTex"));
+                    if (src.HasProperty("_BumpMap")) fixedMat.SetTexture("_BumpMap", src.GetTexture("_BumpMap"));
                     // The MPFB base ships without skin textures, so its imported grey is
                     // replaced with the game's warm skin tone; clothes keep their colors.
                     if (src.name.Contains("Skin") || (renderer.name == "Human" && i == 0)) fixedMat.color = new Color(.72f, .52f, .38f);
