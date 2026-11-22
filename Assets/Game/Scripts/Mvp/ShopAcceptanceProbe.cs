@@ -347,7 +347,23 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
                 break;
             }
             if (shelf == null) throw new Exception("Pisti handover fixture found no cigarette.");
-            Aim(shelf.transform.position + Vector3.up * .09f, .85f, -shelf.transform.forward);
+            Aim(shelf.Occupant.transform.position, .85f, -shelf.transform.forward);
+            Shop.ManualTick = false;
+        }
+        else if (scenario == "marika-handover")
+        {
+            Shop.SingleProductVisits = true;
+            Visit(1, 0);
+            ProductSlot shelf = null;
+            foreach (var s in FindObjectsByType<ProductSlot>())
+            {
+                if (s == null || !s.name.StartsWith("Cigarette slot") || s.Occupant == null) continue;
+                if (ShopCatalog.Index(s.Occupant.ProductId) != 0) continue;
+                shelf = s;
+                break;
+            }
+            if (shelf == null) throw new Exception("Marika handover fixture found no cigarette.");
+            Aim(shelf.Occupant.transform.position, .85f, -shelf.transform.forward);
             Shop.ManualTick = false;
         }
         else if (scenario == "summary")

@@ -1243,6 +1243,17 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
       check(!s.held && s.stage === 'Payment' && !s.dialoguePanel && s.cameraFov === 60, 'Real E handover reaches payment and clears the panel');
       await capture('pisti-handover');
     }
+    if (!selected || selected === 'marika-handover') {
+      await viewport(1280, 720);
+      await probe('Prepare', 'marika-handover'); let s = await state();
+      check(s.dialoguePanel && s.cameraFov < 60, 'Marika takes the order with zoom and RPG panel');
+      for (let i = 0; i < 20 && s.dialogueTyping; i++) { await sleep(300); s = await state(); }
+      await key('e', 'KeyE', 69); s = await state();
+      check(s.held === 'cig_red', 'Real E picks the requested cigarette for the MPFB model');
+      await probe('Action', 'pisti-aim-tray'); await key('e', 'KeyE', 69); await sleep(2000); s = await state();
+      check(!s.held && s.stage === 'Payment' && !s.dialoguePanel && s.cameraFov === 60, 'Real E handover reaches payment and clears the panel');
+      await capture('marika-handover');
+    }
     if (!selected || (selected === 'menu' || batchCase('menu'))) {
       await probe('Prepare', 'pickup'); await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); let s = await state();
       check(s.menu && s.timeScale === 0 && s.blocked, 'Escape pauses world and input');
