@@ -179,4 +179,7 @@ public static class ShopPeople
     public static readonly string[] ShortNames = { "Lucky Stroke", "Marlbroke", "Downhill", "Davidon", "ReturAqua", "Loca Cola", "Hamster Energy", "Kevert", "Kőfejtői", "Rövid kávé", "Hosszú kávé", "Latte", "Dnyipro" };
     public static readonly string[] Names = { "Józsi", "Marika", "Pisti", "Laci" };
     public static readonly Color[] Colors = { new Color(.22f,.35f,.29f), new Color(.60f,.23f,.35f), new Color(.18f,.33f,.65f), new Color(.63f,.42f,.13f) };
+    private static readonly string[] Moods = { "RUTINOS", "BESZÉLGETŐS", "SIETŐS", "MUNKÁBA" };
+    public static string Mood(int person) => Moods[Mathf.Clamp(person, 0, Moods.Length - 1)];
+    public static string Monogram(int person) => Names[Mathf.Clamp(person, 0, Names.Length - 1)].Substring(0, 1);
 }

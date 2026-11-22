@@ -1221,8 +1221,17 @@ const check = (ok, label) => { report.checks.push({ label, passed: !!ok }); cons
     }
     if (!selected || selected === 'dialogue') {
       await probe('Prepare', 'dialogue'); let s = await state(); check(s.unavailable && s.modal === 'None', 'Real shortage offers inline dialogue without modal'); await capture('dialogue-shortage');
+      await sleep(800); s = await state();
+      check(s.dialoguePanel && s.cameraFov < 60, 'Order arrival zooms in with the RPG dialogue panel');
+      check(s.dialogueTyping && s.dialogueShown.length > 0 && s.dialogueShown.length < s.spoken.length, 'Long order sentence types out gradually');
+      await capture('dialogue-zoom');
+      await key('e', 'KeyE', 69); s = await state();
+      check(!s.dialogueTyping && s.dialogueShown === s.spoken && s.unavailable && s.sales === 0, 'E completes the typed sentence without charging');
+      await viewport(1920, 1080); await capture('dialogue-zoom-large'); await viewport(1280, 720);
       await key('t', 'KeyT', 84); s = await state(); check(s.modal === 'None' && s.order.includes('Marlbroke') && s.sales === 0, 'Inline reply accepts available alternative without charging');
       await probe('Prepare', 'refuse'); await capture('dialogue-multi-item'); await key('t', 'KeyT', 84); s = await state(); check(s.missed === 1 && !s.order && s.sales === 0, 'Customer refuses substitution and leaves without charge');
+      await sleep(2000); s = await state();
+      check(!s.dialoguePanel && s.cameraFov === 60, 'Leaving customer restores the normal lens');
     }
     if (!selected || (selected === 'menu' || batchCase('menu'))) {
       await probe('Prepare', 'pickup'); await probe('Action', 'live-clock'); await key('Escape', 'Escape', 27); let s = await state();

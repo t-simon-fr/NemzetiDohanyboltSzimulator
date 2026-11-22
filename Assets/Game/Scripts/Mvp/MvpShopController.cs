@@ -61,6 +61,11 @@ public sealed partial class MvpShopController : MonoBehaviour
     public ShopMobileTopUp Mobile { get; internal set; }
     public ShopLotteryRetailer Lottery { get; internal set; }
     public string Dialogue { get; private set; } = "";
+    private readonly ShopDialogueDirector dialogue = new ShopDialogueDirector();
+    public ShopDialogueDirector DialogueDirector => dialogue;
+    public string DialogueShown => dialogue.ShownText(Dialogue);
+    public bool DialoguePanelVisible => dialogue.PanelVisible;
+    public bool TryAdvanceDialogue() => dialogue.Complete();
     private string message = "";
     public int MessageRevision { get; private set; }
     public string Message
@@ -215,6 +220,7 @@ public sealed partial class MvpShopController : MonoBehaviour
     {
         if (Ledger == null || Phase == ShopPhase.Summary || Arrangement != null && Arrangement.Active) return;
         dt = Mathf.Max(0f, dt);
+        dialogue.Tick(this, dt);
         bool liveMonitor=Devices!=null&&Devices.FocusKind==ShopDeviceKind.Monitor&&(Devices.ComputerApp==ShopComputerApp.Cameras||Devices.ComputerApp==ShopComputerApp.Games);
         if (!ShopMenu.Active && Modal==ShopModal.None) Reputation?.Tick(dt);
         Lottery?.Tick(dt);

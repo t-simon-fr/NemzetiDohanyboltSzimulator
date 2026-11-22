@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #175: RPG dialóguspanel kamerazoommal + összesítő-felújítás — FOV-lerp (60→48), monogram-chip + hangulatcímke, gépelős mondat E-befejezéssel (akciófogyasztás nélkül), megújult összesítő. Teljes `checkout` profil **58 suite / 1665 állítás, 0 hiba**; **34 célzott `dialogue-zoom` állítás**; **8 dialógus + 10 UI WebGL-ellenőrzés**, 0 konzolhiba; 720p/1080p képek átnézve. [Jelentés](../Acceptance/dialogue-zoom/REPORT.md). Pagesre nincs kiadva.
+
 - #174: változatos kérések és mondatok — személyiség-súlyozott extra sorok, 3-as mondatpoolok, determinisztikus seed; az extrák csak publikusan levehető áruk lehetnek. Teljes `checkout` profil **57 suite / 1633 állítás, 0 hiba**. Pagesre publikálva; lásd az aktuális kiadást.
 
 - #169: Dnyipro kipakolása dobozból egyenként — egy E egy csomagot tesz szabad pult alatti helyre, a doboz maradéka és címkéje frissül; üres doboz eldobható. Teljes `checkout` profil **57 suite / 1637 állítás, 0 hiba**. Pagesre publikálva; lásd az aktuális kiadást.

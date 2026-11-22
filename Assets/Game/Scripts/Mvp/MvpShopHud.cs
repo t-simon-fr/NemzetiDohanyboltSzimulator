@@ -56,6 +56,7 @@ public sealed class MvpShopHud : MonoBehaviour
             ShopUi.Label(new Rect(40, 139, 298, height - 24), task, 16);
         }
         if (shop.ActiveCustomer != null) Customer();
+        if (shop.DialoguePanelVisible) DialoguePanel();
         string notice = CurrentNotice;
         if (!string.IsNullOrEmpty(notice) && notice != shop.Dialogue)
         {
@@ -70,18 +71,22 @@ public sealed class MvpShopHud : MonoBehaviour
     {
         const float x = 866, width = 390, inner = 358;
         var customer = shop.ActiveCustomer;
-        float dialogueHeight = ShopUi.Text(18).CalcHeight(new GUIContent(shop.Dialogue), inner);
+        int person = Mathf.Clamp(customer.Person, 0, ShopPeople.Names.Length - 1);
+        string mood = customer.IsRegular ? "TÖRZSVENDÉG" : ShopPeople.Mood(person);
         float listHeight = Mathf.Min(148, OrderLines.Sum(line => ShopUi.Text(16).CalcHeight(new GUIContent(line.Description), inner - 72) + 12));
-        float height = 170 + dialogueHeight + listHeight;
+        float height = 198 + listHeight;
         ShopUi.Panel(new Rect(x, 24, width, height));
-        ShopUi.Label(new Rect(x + 16, 39, 230, 30), ShopPeople.Names[customer.Person], 24, true);
+        ShopUi.Fill(new Rect(x + 16, 36, 40, 40), ShopPeople.Colors[person]);
+        ShopUi.Label(new Rect(x + 16, 36, 40, 40), ShopPeople.Monogram(person), 22, true, true);
+        ShopUi.Label(new Rect(x + 64, 32, 180, 30), ShopPeople.Names[person], 24, true);
+        ShopUi.Label(new Rect(x + 64, 60, 180, 20), mood, 13, true);
         GUI.Label(new Rect(x + 230, 44, 144, 24), shop.Stage == ServiceStage.Payment ? "FIZETÉS" : shop.Stage == ServiceStage.Thanks ? "ELKÖSZÖNÉS" : "RENDELÉS",
             ShopUi.Text(13, true, false, TextAnchor.UpperRight));
-        float top = 80;
-        ShopUi.Label(new Rect(x + 16, top, inner, dialogueHeight + 4), shop.Dialogue);
-        top += dialogueHeight + 18;
+        float top = 88;
         ShopUi.Fill(new Rect(x + 16, top, inner, 1), ShopUi.Rule);
-        top += 12;
+        top += 10;
+        ShopUi.Label(new Rect(x + 16, top, inner, 22), "RENDELÉS", 14, true);
+        top += 26;
         GUILayout.BeginArea(new Rect(x + 16, top, inner, listHeight));
         orderScroll = GUILayout.BeginScrollView(orderScroll, GUIStyle.none, GUI.skin.verticalScrollbar);
         foreach (var line in OrderLines)
@@ -100,6 +105,31 @@ public sealed class MvpShopHud : MonoBehaviour
             (customer.MobileRequest != null ? "E a terminálon: telefonfeltöltés\nX: Most nem tudom kiszolgálni" : customer.LotteryClaimId!=null?"Olvasd be a szelvényt a lottóponton.\nX: Most nem tudom kiszolgálni":shop.HasUnavailableRequest ? "T: Másik árut ajánlok\nX: Nem tudom kiszolgálni" : "Tedd a kért árut az átadóhelyre.\nX: Nem tudom kiszolgálni") :
             shop.Stage == ServiceStage.Payment ? (shop.CardPayment ? "Bankkártya  /  F: Terminál" : shop.CoinPayment ? "Aprópénz  /  F: Érmék átvétele" : "Készpénz  /  F: Kassza") : "A vásárló elköszön.";
         ShopUi.Label(new Rect(x + 16, top + 34, inner, 52), ShopUi.BoundText(action), 15);
+    }
+    private void DialoguePanel()
+    {
+        var customer = shop.ActiveCustomer;
+        if (customer == null) return;
+        int person = Mathf.Clamp(customer.Person, 0, ShopPeople.Names.Length - 1);
+        string name = ShopPeople.Names[person];
+        string mood = customer.IsRegular ? "TÖRZSVENDÉG" : ShopPeople.Mood(person);
+        string shown = shop.DialogueShown;
+        bool typing = shop.DialogueDirector.Typing;
+        const float x = 24, width = 1232, inner = 1200;
+        float textHeight = ShopUi.Text(20).CalcHeight(new GUIContent(shown), inner - 40);
+        float height = 128 + textHeight;
+        float y = 720 - height - 16;
+        ShopUi.Panel(new Rect(x, y, width, height), true);
+        ShopUi.Fill(new Rect(x + 16, y + 14, 44, 44), ShopPeople.Colors[person]);
+        ShopUi.Label(new Rect(x + 16, y + 14, 44, 44), ShopPeople.Monogram(person), 24, true, true);
+        ShopUi.Label(new Rect(x + 72, y + 12, 340, 48), name, 30, true, true);
+        float nameWidth = ShopUi.Text(30, true, true).CalcSize(new GUIContent(name)).x;
+        float moodWidth = ShopUi.Text(14, true, true).CalcSize(new GUIContent(mood)).x + 28;
+        ShopUi.Fill(new Rect(x + 84 + nameWidth, y + 22, moodWidth, 30), ShopPeople.Colors[person]);
+        ShopUi.Label(new Rect(x + 84 + nameWidth, y + 22, moodWidth, 30), mood, 14, true, true);
+        ShopUi.Label(new Rect(x + 32, y + 70, inner - 40, textHeight + 8), shown, 20, false, true);
+        if (typing)
+            GUI.Label(new Rect(x + width - 236, y + height - 38, 220, 28), "[E] Folytatás", ShopUi.Text(15, false, true, TextAnchor.UpperRight));
     }
     private void CashFeedback()
     {
