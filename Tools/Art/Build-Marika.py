@@ -212,10 +212,10 @@ def main():
     _qh = [o for o in _fit_parts if 'Hair' in o.name][0]
     _qhx = [float(v.co.x) for v in _qh.data.vertices]
     _qhz = [float(v.co.z) for v in _qh.data.vertices]
-    _fx = (_skullw * 1.30) / ((max(_qhx) - min(_qhx)) or 1.0)
-    _fz = 0.30 / ((max(_qhz) - min(_qhz)) or 1.0)
+    _fx = (_skullw * 1.30) / ((max(_qhx) - min(_qhx)) or 1.0) * 0.85
+    _fz = 0.30 / ((max(_qhz) - min(_qhz)) or 1.0) * 0.85
     print('HAIRFIT skull-w: %.3f quat-w: %.3f' % (_skullw, max(_qhx) - min(_qhx)))
-    _place(_qh, _fx, _fx, _fz, 0.0, head_w.y - 0.01, _crown - (max(_qhz) - min(_qhz)) * _fz / 2 + 0.06)
+    _place(_qh, _fx, _fx, _fz, 0.0, head_w.y - 0.04, _crown - (max(_qhz) - min(_qhz)) * _fz / 2 + 0.10)
 
 
     # Eyeliner: thin dark planes just under the brow ridge.
