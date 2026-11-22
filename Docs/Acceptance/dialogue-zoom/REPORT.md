@@ -1,6 +1,6 @@
 # #175 — RPG dialóguspanel kamerazoommal + összesítő-felújítás
 
-Elfogadási jelentés. Terv: [Docs/Design/Dialogue/README.md](../Design/Dialogue/README.md).
+Elfogadási jelentés. Terv: [Docs/Design/Dialogue/README.md](../../Design/Dialogue/README.md).
 Issue-k: #175 (implementáció), #172 (spike/terv), #174 (változatosság-motor, már publikálva).
 
 ## Játékosi eredmény

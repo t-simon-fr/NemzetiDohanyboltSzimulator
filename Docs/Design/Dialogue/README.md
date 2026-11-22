@@ -1,6 +1,6 @@
 # Párbeszéd-rendszer újradolgozása — terv
 
-Státusz: implementálva a #175-ben (dialógus-zoom + RPG-panel + összesítő-felújítás). Bizonyíték: [elfogadási jelentés](../Acceptance/dialogue-zoom/REPORT.md). Kapcsolódó gyűjtő: #1 (dialógus-dobozok átdolgozása sor).
+Státusz: implementálva a #175-ben (dialógus-zoom + RPG-panel + összesítő-felújítás). Bizonyíték: [elfogadási jelentés](../../Acceptance/dialogue-zoom/REPORT.md). Kapcsolódó gyűjtő: #1 (dialógus-dobozok átdolgozása sor).
 
 ## Cél
 
