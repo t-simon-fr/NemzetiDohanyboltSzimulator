@@ -76,10 +76,16 @@
       "hot-drinks-state",
       "hot-drinks-integration",
       "mobile-state",
-      "mobile-integration"
+      "mobile-integration",
+      "dialogue-zoom"
     ]
   },
   "suites": {
+    "dialogue-zoom": {
+      "file": "Tools/Checks/DialogueZoomChecks.cs",
+      "entry": "DialogueZoomChecks.Run",
+      "purpose": "Order-phase FOV zoom, RPG dialogue panel, typewriter E-step, focus/pause guards and camera restore"
+    },
     "scanner-placement": {
       "file": "Tools/Checks/ScannerPlacementChecks.cs",
       "entry": "ScannerPlacementChecks.Run",

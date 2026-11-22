@@ -851,6 +851,8 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         public string outwardSign;
         public string uiNotice, spoken;
         public ShopOrderLine[] orderLines;
+        public bool dialoguePanel, dialogueTyping;
+        public string dialogueShown;
         public Rect menuStart, menuSettings, menuBinding, menuDefaults, menuBack, cardConfirm, cardBack;
         public bool settingsOpen, movementLearned;
         public bool grounded;
@@ -1148,6 +1150,9 @@ public sealed class ShopAcceptanceProbe : MonoBehaviour
         state.orderLines = hud.OrderLines;
         state.uiNotice = hud.CurrentNotice;
         state.spoken = g.Dialogue;
+        state.dialoguePanel = g.DialoguePanelVisible;
+        state.dialogueShown = g.DialogueShown;
+        state.dialogueTyping = g.DialogueDirector.Typing;
         state.grounded = Player.GetComponent<FirstPersonController>().IsGrounded;
         state.verticalSpeed = Player.GetComponent<FirstPersonController>().VerticalSpeed;
         // WebGL's log transport truncates large individual messages. Keep complete

@@ -140,6 +140,8 @@ public sealed class PlayerInteractor : MonoBehaviour
             && featureTarget != null && featureTarget.Kind == ShopFeatureKind.CoffeeMachine;
         bool primaryInteraction = (heldTool == null || targetRack != null || refillTarget)
             && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+        // Gépelős dialógus: az E a mondatot is befejezi, de a világ-akciót nem eszi meg.
+        if (ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && MvpShopController.Instance != null) MvpShopController.Instance.TryAdvanceDialogue();
         if (!ShopBindings.Pressed(UnityEngine.InputSystem.Key.E) && !primaryInteraction) return;
         if(targetRack!=null && heldTool!=null){TryReturnHeldTool(targetRack);return;}
         if (station != null && station.IsPanicButton) { station.Use(this); return; }
@@ -323,7 +325,7 @@ public sealed class PlayerInteractor : MonoBehaviour
             string label = ShopUi.BoundText(prompt);
             float textHeight = ShopUi.Text(17).CalcHeight(new GUIContent(label), 580);
             float height = textHeight + 28 + (string.IsNullOrEmpty(hint) ? 0 : 28);
-            bool meaningful = HasHeldItem || target != null || station != null || targetBin != null || targetTool != null || featureTarget != null || !cursorLocked || !hud.MovementLearned;
+            bool meaningful = (HasHeldItem || target != null || station != null || targetBin != null || targetTool != null || featureTarget != null || !cursorLocked || !hud.MovementLearned) && !MvpShopController.Instance.DialoguePanelVisible;
             if (meaningful && !string.IsNullOrEmpty(prompt))
             {
                 Rect panel = new Rect(334, 696 - height, 612, height);
