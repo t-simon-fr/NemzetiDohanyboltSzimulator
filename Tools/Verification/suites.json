@@ -78,7 +78,8 @@
       "mobile-state",
       "mobile-integration",
       "dialogue-zoom",
-      "customer-pisti"
+      "customer-pisti",
+      "customer-marika"
     ]
   },
   "suites": {
@@ -86,6 +87,11 @@
       "file": "Tools/Checks/CustomerPistiChecks.cs",
       "entry": "CustomerPistiChecks.Run",
       "purpose": "Scripted Pisti model assembly, animation states, complaint/smile mouths and untouched money/stock flow"
+    },
+    "customer-marika": {
+      "file": "Tools/Checks/CustomerMarikaChecks.cs",
+      "entry": "CustomerMarikaChecks.Run",
+      "purpose": "MPFB Marika model assembly, Animator takes, complaint/smile mouths and untouched money/stock flow"
     },
     "dialogue-zoom": {
       "file": "Tools/Checks/DialogueZoomChecks.cs",

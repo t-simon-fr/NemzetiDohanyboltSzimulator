@@ -2,6 +2,8 @@
 
 A GitHub issue-k az elsődleges feladatlista. A `Docs/CONTINUE.md` régebbi részei történetiek.
 
+- #183 (Marika): MPFB-alapú női test + Mixamo-rig + 4 Blender-átvétel (séta/tétlen/bemutató/panasz), Karen-bob és szigorú szemöldök, testre festett időtlen ruha (bordó blúz, szénszürke nadrág), hangulat-szájak; nevek és játéklogika változatlan. Teljes `checkout` profil **60 suite / 1722 állítás, 0 hiba**; **30 célzott `customer-marika` állítás**; WebGL `marika-handover` zoom+panel PASS, E-átadás játék-szintű WebGL-hiba miatt bukik (**#184**, a régi modellre is). 720p/1080p képek átnézve. [Jelentés](../Acceptance/marika-mpfb/REPORT.md). Józsi/Laci a következő szeletekben. Pagesre nincs kiadva.
+
 - #181 pilot (Pisti): Blender-szkripttel generált sztereotip vásárlómodell (34 part, rig, séta/tolvaj-animációk, hangulat-szájak), változatlan játéklogikával. Teljes `checkout` profil **59 suite / 1692 állítás, 0 hiba**; **25 célzott `customer-pisti` állítás**; **4 `pisti-handover` + 8 dialógus + 10 UI WebGL-ellenőrzés**, 0 konzolhiba; 720p/1080p képek átnézve. [Jelentés](../Acceptance/pisti-pilot/REPORT.md). Marika/Józsi/Laci a következő szeletekben. Pagesre nincs kiadva.
 
 - #175: RPG dialóguspanel kamerazoommal + összesítő-felújítás — FOV-lerp (60→48), monogram-chip + hangulatcímke, gépelős mondat E-befejezéssel (akciófogyasztás nélkül), megújult összesítő. Teljes `checkout` profil **58 suite / 1665 állítás, 0 hiba**; **34 célzott `dialogue-zoom` állítás**; **8 dialógus + 10 UI WebGL-ellenőrzés**, 0 konzolhiba; 720p/1080p képek átnézve. [Jelentés](../Acceptance/dialogue-zoom/REPORT.md). Pagesre nincs kiadva.

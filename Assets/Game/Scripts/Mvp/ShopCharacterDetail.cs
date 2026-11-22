@@ -9,6 +9,7 @@ public sealed class ShopCharacterDetail:MonoBehaviour
     public void Configure(int person)
     {
         if (person == 2) { ConfigurePisti(); return; }
+        if (person == 1) { ConfigureMarika(); return; }
         ConfigureLegacy(person);
     }
     private void ConfigurePisti()
@@ -21,6 +22,18 @@ public sealed class ShopCharacterDetail:MonoBehaviour
         var model = Object.Instantiate(prefab, transform, false);
         model.name = "PistiModel";
         var rig = gameObject.AddComponent<ShopPistiRig>();
+        rig.Configure(actor, MvpShopController.Instance);
+    }
+    private void ConfigureMarika()
+    {
+        var body = transform.Find("Body");
+        var prefab = Resources.Load<GameObject>("Customers/Marika/Marika");
+        var actor = GetComponent<MvpCustomerActor>();
+        if (prefab == null || body == null || actor == null) { ConfigureLegacy(1); return; }
+        body.GetComponent<Renderer>().enabled = false;
+        var model = Object.Instantiate(prefab, transform, false);
+        model.name = "MarikaModel";
+        var rig = gameObject.AddComponent<ShopMarikaRig>();
         rig.Configure(actor, MvpShopController.Instance);
     }
     private void ConfigureLegacy(int person)

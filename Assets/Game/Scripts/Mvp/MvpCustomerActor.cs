@@ -139,6 +139,8 @@ public sealed class MvpCustomerActor : MonoBehaviour
     {
         var rig = GetComponent<ShopPistiRig>();
         if (rig != null) rig.Tick(dt);
+        var marika = GetComponent<ShopMarikaRig>();
+        if (marika != null) marika.Tick(dt);
     }
     private bool Move(Vector3 target,float dt)
     {
