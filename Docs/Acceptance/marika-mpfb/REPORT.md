@@ -1,10 +1,11 @@
 # #183 — Marika: MPFB-alapú sztereotip vásárlómodell
 
 Második karakterszelet: Marika (1-es személy) a Pisti-pilot (#181) után. Irány:
-félrealisztikus MPFB-női alap + kézzel modellezett Karen-stílus (bob-frizura,
-szigorú szemöldök, piros száj-variánsok), időtlen hétköznapi ruha testre festett
-zónaként (bordó blúz, szénszürke nadrág, sötét cipő). Nincs szögletes ruha-
-geometria: a test sziluettje végig az MPFB-anatómia. Nevek, mondatok és
+félrealisztikus MPFB-női alap + Quaternius CC0 SimpleParted bob-frizura,
+modellezett szemöldök helyett vékony szigorú tusvonal, piros száj-variánsok,
+pirosító, időtlen hétköznapi ruha testre festett zónaként (bordó blúz,
+szénszürke nadrág, sötét cipő). Nincs szögletes geometria: a test sziluettje
+végig az MPFB-anatómia, a haj profi modellezés. Nevek, mondatok és
 személyiség-logika változatlan; tolvaj-futás gyorsított séta-átvétellel.
 Issue: #183. Forrás: `Tools/Art/Build-Marika.py` (+ `ArtSource/Characters/Marika.*`).
 MPFB-kimenet: CC0.
